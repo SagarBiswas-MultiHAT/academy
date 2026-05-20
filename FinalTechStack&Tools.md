@@ -24,7 +24,7 @@
 | **Zod**                         | 3.x             | Schema validation for forms and API request/response types.                                                                          | Free         |
 | **Recharts / Shadcn/ui Charts** | latest          | Dashboard visualizations: quiz score history, purchase timeline, progress charts.                                                    | Free         |
 | **Axios**                       | 1.x             | HTTP client for REST API calls from the frontend to the NestJS backend.                                                              | Free         |
-| **Vercel**                      | –               | Frontend hosting: custom domain, automatic HTTPS, global CDN, CI/CD from GitHub.                                                     | Free (Hobby) |
+| **Vercel**                      | –               | Frontend hosting for `academy.multihat.dev`: automatic HTTPS, global CDN, CI/CD from GitHub.                                         | Free (Hobby) |
 
 ---
 
@@ -54,7 +54,7 @@
 
 | Component      | Details                                                                                                                                           | Cost               |
 | :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------ |
-| **PostgreSQL** | Relational database engine. ACID‑compliant, ideal for transactional e‑commerce data (orders, payments, user accounts). Hosted on DigitalOcean Droplet. | Included in Droplet |
+| **PostgreSQL** | Relational database engine. ACID‑compliant, ideal for transactional e‑commerce data (orders, payments, user accounts). Hosted on existing DigitalOcean Droplet (1 vCPU · 1 GB RAM · 25 GB Disk). | Existing (no extra cost) |
 | **Prisma ORM** | Type‑safe database access layer. Auto‑generated TypeScript client, declarative `schema.prisma`, versioned SQL migrations via `prisma migrate`.    | Free                |
 | **Prisma Studio** | Built‑in visual database browser for development and debugging — browse and edit data without writing queries.                                  | Free                |
 
@@ -144,11 +144,11 @@
 | :------------------------- | :----------------------------------------------------------------------------------------------------- | :--- |
 | **Helmet**                 | Sets secure HTTP headers: CSP, HSTS, X‑Frame‑Options, X‑Content‑Type‑Options.                         | Free |
 | **@nestjs/throttler**      | Rate limiting: configurable per‑route (e.g., 10 login attempts/min, 100 API requests/min).             | Free |
-| **CORS (strict)**          | Only the Vercel frontend domain is allowlisted for cross‑origin requests.                              | Free |
+| **CORS (strict)**          | Only `academy.multihat.dev` (Vercel frontend) is allowlisted for cross‑origin requests.                | Free |
 | **Prisma (parameterized)** | All database queries use parameterized statements — eliminates SQL injection vectors.                  | Free |
 | **bcrypt**                 | Passwords hashed with bcrypt (salt rounds ≥ 10); plaintext never stored or logged.                     | Free |
 | **JWT (short‑lived)**      | Access tokens (15 min) + refresh tokens (7 days); stored in HTTP‑only cookies or `Authorization` header. | Free |
-| **Nginx + Let's Encrypt**  | Reverse proxy on DigitalOcean Droplet with auto‑renewing SSL certificates.                             | Free |
+| **Nginx + Cloudflare Origin SSL** | Reverse proxy on DigitalOcean Droplet; Cloudflare handles public SSL, Nginx terminates Cloudflare Origin Certificate for end‑to‑end encryption. | Free |
 | **IPN Signature Check**    | aamarPay webhook payloads verified by signature before processing; idempotency prevents duplicates.    | Free |
 | **.env + .gitignore**      | All secrets in environment variables via `@nestjs/config`; `.env` excluded from version control.       | Free |
 
@@ -201,7 +201,8 @@
                                               │  (JSON / HTTPS)
                                               ▼
                               ┌──────────────────────────────────┐
-                              │    DigitalOcean Droplet (VPS)    │
+                              │  DigitalOcean Droplet (Existing) │
+                              │  1 vCPU · 1 GB RAM · 25 GB Disk │
                               │  ┌────────────────────────────┐  │
                               │  │   Nginx (Reverse Proxy)    │  │
                               │  │   Let's Encrypt SSL        │  │
@@ -245,8 +246,9 @@
 
 | Item                          | Cost                                                    |
 | :---------------------------- | :------------------------------------------------------ |
-| Domain (annual)               | ~$10                                                    |
-| DigitalOcean Droplet (basic)  | ~$7/month → ~$84/year (NestJS + PostgreSQL + Nginx)     |
+| Domain (`academy.multihat.dev`) | $0 — free subdomain of existing `multihat.dev` (name.com) |
+| Cloudflare DNS & CDN          | $0 — free plan, already configured for `multihat.dev`   |
+| DigitalOcean Droplet          | $0 additional — existing droplet (1 vCPU · 1 GB RAM · 25 GB Disk) already provisioned |
 | Vercel Hosting (Frontend)     | Free (Hobby plan)                                       |
 | Resend Email                  | Free (100 emails/day)                                   |
 | aamarPay Fees                 | ~2% per transaction (only when you sell)                |
@@ -254,7 +256,7 @@
 | GitHub Actions CI/CD          | Free (2,000 minutes/month)                              |
 | All Other Tools & Libraries   | Open source, free                                       |
 
-**Total fixed cost: ~$94/year** (~$10 domain + ~$84 hosting)  
+**Total additional fixed cost: $0/year** — all infrastructure is either already owned or on free tiers.  
 **Variable cost:** only aamarPay transaction fees (1.85–2.75%) when a sale occurs.
 
 ---
@@ -271,7 +273,8 @@
 | **Auth**       | JWT + Passport.js              | Stateless authentication                   |
 | **Email**      | Resend                         | Transactional email delivery               |
 | **PDFs**       | PDFKit + pdf‑lib               | Watermarked e‑books + certificates         |
-| **Hosting**    | Vercel + DigitalOcean Droplet  | Frontend CDN + backend VPS                 |
+| **Domain**     | `academy.multihat.dev`         | Subdomain of existing `multihat.dev` via Cloudflare |
+| **Hosting**    | Vercel + DigitalOcean Droplet (existing) | Frontend CDN + backend VPS (1 vCPU · 1 GB · 25 GB) |
 | **CI/CD**      | GitHub Actions                 | Automated testing and deployment           |
 | **Security**   | Helmet, Throttler, bcrypt, Prisma | Defense‑in‑depth                         |
 

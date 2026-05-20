@@ -58,7 +58,7 @@ The solution was to build **MultiHAT Academy**—a platform that not only sells 
 
 - 150 e‑book sales × \$10 avg = \$1,500
 - 50 certification kits × \$20 = \$1,000
-- Gross: \$2,500. After aamarPay fees (~2%) and infrastructure cost (~\$84/year), net profit exceeds \$2,300.
+- Gross: \$2,500. After aamarPay fees (~2%), net profit exceeds \$2,400. Infrastructure cost is negligible—the domain is a free subdomain of an existing domain, and the DigitalOcean Droplet is already provisioned.
 
 ---
 
@@ -104,7 +104,7 @@ The academy is built as a **full‑stack application** using modern JavaScript/T
 | SEO       | Built‑in `metadata` API, canonical tags, Open Graph, Twitter Cards via `next‑seo`, and sitemap generation                                                            |
 | Theming   | **next‑themes** for dark/light mode support                                                                                                                          |
 | Charts    | **Recharts** / Shadcn/ui Charts for user dashboard visualizations (progress, quiz scores)                                                                            |
-| Hosting   | **Vercel** (Hobby plan) — custom domain, automatic HTTPS, CI/CD from GitHub                                                                                          |
+| Hosting   | **Vercel** (Hobby plan) — serving `academy.multihat.dev`, automatic HTTPS, global CDN, CI/CD from GitHub                                                               |
 
 ### 3.2 Backend (NestJS)
 
@@ -120,7 +120,7 @@ The academy is built as a **full‑stack application** using modern JavaScript/T
 | Email          | **Resend** (transactional emails, PDF delivery, purchase receipts)                                                                                                                |
 | Validation     | **class‑validator** and **class‑transformer** for DTO validation and serialization                                                                                                |
 | Configuration  | **@nestjs/config** for environment variables and secrets management                                                                                                               |
-| Hosting        | **DigitalOcean Droplet** — self‑managed Ubuntu VPS for both NestJS and PostgreSQL                                                                                                 |
+| Hosting        | **DigitalOcean Droplet** (1 vCPU · 1 GB RAM · 25 GB Disk) — existing self‑managed Ubuntu VPS running both NestJS and PostgreSQL                                                   |
 
 ### 3.3 Database Design (PostgreSQL + Prisma)
 
@@ -227,7 +227,7 @@ User (Browser)          Next.js           NestJS API          PostgreSQL        
 | :------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Transport Security**     | HTTPS enforced on all endpoints (Vercel auto‑HTTPS for frontend; Nginx reverse proxy with Let's Encrypt on DigitalOcean for backend)                       |
 | **HTTP Headers**           | **Helmet.js** middleware in NestJS — sets `Content-Security-Policy`, `X-Frame-Options`, `Strict-Transport-Security`, and other protective headers           |
-| **CORS**                   | Strict origin allowlist: only the Vercel frontend domain is permitted to make cross‑origin requests to the NestJS API                                      |
+| **CORS**                   | Strict origin allowlist: only `academy.multihat.dev` (Vercel frontend) is permitted to make cross‑origin requests to the NestJS API                        |
 | **Rate Limiting**          | **@nestjs/throttler** — configurable per‑route limits (e.g., 10 login attempts per minute, 100 API requests per minute per IP)                             |
 | **Input Validation**       | All incoming data validated via **class‑validator** DTOs before reaching service logic; rejects malformed payloads at the controller layer                  |
 | **SQL Injection Prevention** | **Prisma ORM** uses parameterized queries exclusively — raw SQL is avoided, eliminating injection vectors                                                  |
@@ -258,10 +258,10 @@ User (Browser)          Next.js           NestJS API          PostgreSQL        
 
 | Component            | Provider                  | Details                                                                                      |
 | :------------------- | :------------------------ | :------------------------------------------------------------------------------------------- |
-| **Frontend Hosting** | Vercel (Hobby)            | Automatic deployments from GitHub `main` branch; global CDN; custom domain with auto‑HTTPS  |
-| **Backend Hosting**  | DigitalOcean Droplet      | Ubuntu VPS running NestJS via PM2 or Docker; Nginx reverse proxy with Let's Encrypt SSL     |
+| **Domain**           | name.com + Cloudflare     | `academy.multihat.dev` — subdomain of existing `multihat.dev`; DNS managed via Cloudflare (free plan) with DDoS protection and CDN caching |
+| **Frontend Hosting** | Vercel (Hobby)            | Serves `academy.multihat.dev`; automatic deployments from GitHub `main` branch; global CDN; auto‑HTTPS |
+| **Backend Hosting**  | DigitalOcean Droplet      | Existing VPS (1 vCPU · 1 GB RAM · 25 GB Disk) running NestJS via PM2; Nginx reverse proxy with Cloudflare Origin SSL |
 | **Database**         | DigitalOcean Droplet      | PostgreSQL installed on the same droplet (or a separate managed database for future scaling) |
-| **DNS**              | Cloudflare (free)         | DNS management, DDoS protection, and optional CDN caching for static assets                 |
 | **Email**            | Resend                    | Transactional email delivery (100 emails/day free tier)                                     |
 | **CI/CD**            | GitHub Actions            | Automated testing, linting, and deployment pipeline triggered on push to `main`             |
 | **Process Manager**  | PM2                       | Keeps NestJS running, handles restarts, log management, and cluster mode if needed          |
@@ -319,7 +319,7 @@ User (Browser)          Next.js           NestJS API          PostgreSQL        
 
 ## 8. Why This Will Succeed
 
-- **Minimal Fixed Cost:** Hosting (DigitalOcean Droplet ~\$7/month), domain (~\$10/year), and all other tools (Vercel free tier, Resend free plan, aamarPay pay‑as‑you‑go) keep overhead under \$100/year.
+- **Near‑Zero Fixed Cost:** The `academy.multihat.dev` subdomain is free (under the existing `multihat.dev` domain), the DigitalOcean Droplet is already provisioned, and all other tools (Vercel free tier, Cloudflare free plan, Resend free plan, aamarPay pay‑as‑you‑go) have generous free tiers. No additional infrastructure spend is required to launch.
 - **Content Is Already Written:** The notebooks are complete; the only work is building the platform around them.
 - **Founder‑Market Fit:** Sagar is both a security researcher and a developer; he understands the audience's pain points intimately.
 - **Dual Purpose:** The project serves as both a business and an academic requirement, guaranteeing dedicated effort.
