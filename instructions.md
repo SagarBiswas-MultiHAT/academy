@@ -1,45 +1,150 @@
 # MultiHAT Academy — Full-Stack Build Instructions (A to Z)
 
-This document is the master engineering guide for building **MultiHAT Academy** (`academy.multihat.dev`) from scratch. It is designed to be fed directly into **Google Antigravity** and **GitHub Copilot** as a step-by-step execution roadmap.
+> **Version:** 4.0 — Production-Ready  
+> **Last Updated:** May 21, 2026  
+> **Author:** Sagar Biswas (MultiHAT)
+
+This document is the **master engineering guide** for building MultiHAT Academy (`academy.multihat.dev`) from scratch. Every section is aligned with [`CaseStudy.md`](./CaseStudy.md), [`FinalTechStack&Tools.md`](./FinalTechStack&Tools.md), and the [8 Mermaid architecture diagrams](./diagrams/). It is designed to be fed directly into **Google Antigravity** and **GitHub Copilot** as a step-by-step execution roadmap.
+
+---
+
+## Table of Contents
+
+- [Step 0: Prerequisites & DNS Preparation](#step-0-prerequisites--dns-preparation)
+- [Step 1: Project Initialization & Environment Setup](#step-1-project-initialization--environment-setup)
+- [Step 2: Database Schema & Prisma ORM](#step-2-database-schema--prisma-orm)
+- [Step 3: Backend Core Infrastructure](#step-3-backend-core-infrastructure)
+- [Step 4: Authentication & Authorization](#step-4-authentication--authorization)
+- [Step 5: Backend Feature Modules](#step-5-backend-feature-modules)
+- [Step 6: Backend Utilities — PDF Engines](#step-6-backend-utilities--pdf-engines)
+- [Step 7: Frontend Architecture](#step-7-frontend-architecture)
+- [Step 8: Testing Strategy](#step-8-testing-strategy)
+- [Step 9: Infrastructure & Deployment](#step-9-infrastructure--deployment)
+- [Step 10: Production Deployment Checklist](#step-10-production-deployment-checklist)
 
 ---
 
 ## Workspace Directory Structure
 
-To keep the project organized, we will use a monorepo-style structure or two distinct sibling directories in the `academy` repository:
-
 ```
 academy/
 ├── backend/                  # NestJS 11 REST API & Prisma Engine
-├── frontend/                 # Next.js 14 Client Web App (Tailwind & Shadcn)
-├── diagrams/                 # Mermaid architecture flows (01-08)
-├── CaseStudy.md              # Technical Case Study
-├── FinalTechStack&Tools.md   # Complete Tech Stack Specs
-├── README.md                 # Project Overview
-└── instructions.md           # This build guide
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   └── seed.ts
+│   ├── src/
+│   │   ├── common/           # Shared: guards, interceptors, decorators, utils
+│   │   ├── auth/             # JWT strategy, login, register
+│   │   ├── users/            # User profile, PATCH /me
+│   │   ├── books/            # Product CRUD (admin + public)
+│   │   ├── coupons/          # Discount code management
+│   │   ├── orders/           # Purchase flow
+│   │   ├── payments/         # aamarPay IPN webhook
+│   │   ├── quizzes/          # Quiz engine & scoring
+│   │   ├── certificates/     # Certificate generation & verification
+│   │   ├── email/            # Resend transactional email service
+│   │   ├── prisma/           # PrismaService (shared DB access)
+│   │   ├── app.module.ts
+│   │   └── main.ts
+│   ├── templates/            # PDF templates (certificate base, e-book source)
+│   ├── generated/            # Runtime-generated PDFs (gitignored)
+│   ├── ecosystem.config.js   # PM2 process config
+│   ├── .env                  # Environment variables (gitignored)
+│   └── package.json
+├── frontend/                 # Next.js 14 Client Web App
+│   ├── src/
+│   │   ├── app/              # App Router pages & layouts
+│   │   ├── components/       # Reusable UI components
+│   │   ├── lib/              # API client, auth context, utilities
+│   │   └── styles/           # Global CSS
+│   ├── public/               # Static assets
+│   ├── .env.local            # Frontend env vars (gitignored)
+│   └── package.json
+├── .github/workflows/        # CI/CD pipeline
+│   └── deploy.yml
+├── diagrams/                 # 8 Mermaid architecture flow diagrams
+├── docker-compose.yml        # Local PostgreSQL for development
+├── CaseStudy.md
+├── FinalTechStack&Tools.md
+├── README.md
+└── instructions.md           # ← This file
 ```
 
 ---
 
-## Step 0: Domain & DNS Preparation (Cloudflare)
+## Environment Variables Reference
 
-Before writing code, ensure your DNS records in Cloudflare are set up to map domains to your Vercel frontend and DigitalOcean backend Droplet.
+### Backend (`backend/.env`)
 
-1. **Frontend (Vercel):** Create a CNAME record for `academy` pointing to `cname.vercel-dns.com` (Vercel will provide the exact value during project link).
-2. **Backend API (DigitalOcean):** Create an A record for `api` pointing to your DigitalOcean Droplet IPv4 address (e.g., `api.multihat.dev` -> `DROPLET_IP`). Ensure the Cloudflare proxy (orange cloud) is turned ON.
-3. **SSL Certificates:** Generate a Cloudflare Origin Certificate for `*.multihat.dev` and `multihat.dev` to install on the Droplet later for Nginx.
+| Variable | Example Value | Purpose |
+|:---------|:-------------|:--------|
+| `DATABASE_URL` | `postgresql://postgres:localpassword123@localhost:5432/academy_db?schema=public` | Prisma database connection |
+| `JWT_ACCESS_SECRET` | `change-me-access-secret-256bit` | Signs short-lived access tokens (15 min) |
+| `JWT_REFRESH_SECRET` | `change-me-refresh-secret-256bit` | Signs long-lived refresh tokens (7 days) |
+| `PORT` | `5000` | NestJS server listen port |
+| `AAMARPAY_STORE_ID` | `aamarpaytest` | aamarPay merchant store ID |
+| `AAMARPAY_SIGNATURE_KEY` | `dbb74894e82415a2f7ff0ec3a97e4183` | aamarPay signature key for hash verification |
+| `AAMARPAY_BASE_URL` | `https://sandbox.aamarpay.com` | aamarPay base URL (sandbox or live) |
+| `RESEND_API_KEY` | `re_123456789` | Resend API key for transactional email |
+| `SENDER_EMAIL` | `academy@multihat.dev` | From address for outgoing emails |
+| `FRONTEND_URL` | `http://localhost:3000` | Frontend origin (CORS + redirect URLs) |
+| `NODE_ENV` | `development` | Environment flag |
+
+### Frontend (`frontend/.env.local`)
+
+| Variable | Example Value | Purpose |
+|:---------|:-------------|:--------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:5000/api/v1` | Backend API base URL |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Public site URL (for SEO/OG tags) |
+| `NEXT_PUBLIC_GA_ID` | `G-XXXXXXXXXX` | Google Analytics 4 measurement ID |
+
+> **Production:** On Vercel, set `NEXT_PUBLIC_API_URL=https://api.multihat.dev/api/v1` and `NEXT_PUBLIC_SITE_URL=https://academy.multihat.dev`.
+
+---
+
+## Step 0: Prerequisites & DNS Preparation
+
+### 0.1 Required Tools
+
+Ensure the following are installed on your development machine:
+
+| Tool | Version | Purpose |
+|:-----|:--------|:--------|
+| Node.js | 20 LTS | Runtime for both NestJS and Next.js |
+| npm | 10.x | Package manager |
+| Docker Desktop | Latest | Local PostgreSQL via Docker Compose |
+| Git | Latest | Version control |
+| VS Code | Latest | Editor (with TypeScript, Prisma, Tailwind extensions) |
+
+### 0.2 Cloudflare DNS Configuration
+
+Before writing code, configure DNS records in Cloudflare for `multihat.dev`:
+
+1. **Frontend (Vercel):** CNAME record — `academy` → `cname.vercel-dns.com` (Vercel provides the exact value during project linking). Proxy status: **DNS only** (grey cloud) — Vercel handles its own SSL.
+2. **Backend API (DigitalOcean):** A record — `api` → `<DROPLET_IPv4>` (e.g., `164.90.xxx.xxx`). Proxy status: **Proxied** (orange cloud) — Cloudflare provides DDoS protection and CDN.
+3. **SSL Mode:** Set Cloudflare SSL/TLS encryption mode to **Full (Strict)**.
+
+### 0.3 Cloudflare Origin Certificate (for Backend)
+
+Generate a Cloudflare Origin Certificate to install on the DigitalOcean Droplet for end-to-end encryption between Cloudflare and Nginx:
+
+1. In Cloudflare dashboard → SSL/TLS → Origin Server → Create Certificate.
+2. Hostnames: `*.multihat.dev`, `multihat.dev`.
+3. Validity: 15 years.
+4. Save the **Origin Certificate** to `/etc/ssl/certs/multihat_origin.pem` on the Droplet.
+5. Save the **Private Key** to `/etc/ssl/private/multihat_origin.key` on the Droplet.
+
+> **Important:** This is a Cloudflare Origin Certificate, NOT Let's Encrypt. It is only valid when traffic is proxied through Cloudflare. This matches the Nginx config in Step 9.
 
 ---
 
 ## Step 1: Project Initialization & Environment Setup
 
-### 1.1 Local Database Setup (Docker Compose)
-Create a `docker-compose.yml` in the root of the project to spawn a local PostgreSQL database during development.
+### 1.1 Local Database (Docker Compose)
 
-Create `c:\GitHub\academy\docker-compose.yml`:
+Create `academy/docker-compose.yml`:
+
 ```yaml
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -58,66 +163,62 @@ volumes:
   pgdata:
 ```
 
-*Command to spin up local db:*
+Start the local database:
+
 ```bash
-docker-compose up -d
+# Run from: academy/
+docker compose up -d
 ```
+
+### 1.2 Backend Scaffold (NestJS 11)
+
+```bash
+# Run from: academy/
+npx -y @nestjs/cli new backend --directory backend --package-manager npm --skip-git
+```
+
+Install all backend dependencies:
+
+```bash
+# Run from: academy/backend/
+npm install @prisma/client @nestjs/config @nestjs/jwt @nestjs/passport @nestjs/swagger @nestjs/throttler passport passport-jwt bcrypt class-validator class-transformer helmet pdf-lib axios resend swagger-ui-express
+npm install --save-dev prisma @types/bcrypt @types/passport-jwt @types/node
+```
+
+> **Note:** We use `pdf-lib` for both watermarking and certificate generation (consistent library). We use `axios` for aamarPay HTTP calls (direct API integration rather than the `aamarpay.v2` SDK for full control over the payment flow). `resend` is the official Node.js SDK for transactional email.
+
+### 1.3 Frontend Scaffold (Next.js 14)
+
+```bash
+# Run from: academy/
+npx -y create-next-app@14 frontend --typescript --tailwind --eslint --app --src-dir --use-npm --import-alias "@/*"
+```
+
+Install all frontend dependencies:
+
+```bash
+# Run from: academy/frontend/
+npm install axios lucide-react react-hook-form @hookform/resolvers zod next-themes next-seo recharts clsx tailwind-merge
+npx -y shadcn-ui@latest init
+```
+
+> **Note:** `next-seo` is used for Open Graph, Twitter Cards, and JSON-LD structured data as specified in the tech stack. `axios` is the HTTP client for all REST API calls to the NestJS backend.
 
 ---
 
-### 1.2 NestJS 11 Backend Scaffold
-Navigate to the root directory and initialize the backend application.
-
-```bash
-# Verify Nest CLI is installed or run it using npx
-npx -y @nestjs/cli new backend --directory backend --package-manager npm
-```
-
-Configure NestJS dependencies. Open `c:\GitHub\academy\backend\package.json` and add the following:
-```bash
-cd backend
-npm install @prisma/client @nestjs/config @nestjs/jwt @nestjs/passport passport passport-jwt passport-local bcrypt class-validator class-transformer @nestjs/throttler helmet pdfkit pdf-lib axios
-npm install --save-dev prisma ts-node @types/bcrypt @types/passport-jwt @types/passport-local @types/pdfkit @types/node ts-loader @types/express
-```
-
----
-
-### 1.3 Next.js 14 Frontend Scaffold
-Navigate back to the root directory and initialize the Next.js frontend application.
-
-```bash
-cd ..
-npx create-next-app@14.2.3 frontend --typescript --tailwind --eslint --app --src-dir --use-npm --import-alias "@/*"
-```
-
-Configure Frontend dependencies & Environment:
-```bash
-cd frontend
-npm install axios lucide-react react-hook-form @hookform/resolvers zod next-themes recharts clsx tailwind-merge
-# Initialize Shadcn UI (choose components like button, card, input, dialog, form, table)
-npx shadcn-ui@latest init
-```
-
-Create `frontend/.env.local` to securely route API calls:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
-# Note: For production on Vercel, set this to https://api.multihat.dev/api/v1
-```
-
----
-
-## Step 2: Database Schema & Prisma ORM Config
+## Step 2: Database Schema & Prisma ORM
 
 ### 2.1 Prisma Initialization
-Initialize Prisma in the backend directory.
+
 ```bash
-cd ../backend
+# Run from: academy/backend/
 npx prisma init
 ```
 
-Create the Prisma database configuration inside `backend/prisma/schema.prisma`.
+### 2.2 Schema Definition
 
-Create `c:\GitHub\academy\backend\prisma\schema.prisma`:
+Create `backend/prisma/schema.prisma` — this schema matches the [Data Model Diagram](./diagrams/04-data-model.md) exactly:
+
 ```prisma
 datasource db {
   provider = "postgresql"
@@ -171,7 +272,7 @@ model Book {
   slug            String         @unique
   description     String         @db.Text
   price           Decimal        @db.Decimal(10, 2)
-  chapterMetadata Json           @map("chapter_metadata") // Array of chapters & lessons structure
+  chapterMetadata Json           @map("chapter_metadata")
   isPublished     Boolean        @default(false) @map("is_published")
   createdAt       DateTime       @default(now()) @map("created_at")
   updatedAt       DateTime       @updatedAt @map("updated_at")
@@ -206,7 +307,7 @@ model QuizQuestion {
   id            String   @id @default(uuid()) @db.Uuid
   bookId        String   @map("book_id") @db.Uuid
   prompt        String   @db.Text
-  options       Json     @map("options") // string[] representation
+  options       Json     // string[] array
   correctAnswer String   @map("correct_answer")
   sortOrder     Int      @map("sort_order")
 
@@ -219,7 +320,7 @@ model QuizAttempt {
   id             String       @id @default(uuid()) @db.Uuid
   userId         String       @map("user_id") @db.Uuid
   bookId         String       @map("book_id") @db.Uuid
-  selectedAnswers Json        @map("selected_answers") // Record<questionId, selectedOption>
+  selectedAnswers Json        @map("selected_answers")
   score          Int
   totalQuestions Int          @map("total_questions")
   result         QuizResult
@@ -266,30 +367,43 @@ model Coupon {
 }
 ```
 
-### 2.2 Environment Configuration (`.env`)
-In `backend/.env`:
+### 2.3 Environment Configuration
+
+Create `backend/.env`:
+
 ```env
 DATABASE_URL="postgresql://postgres:localpassword123@localhost:5432/academy_db?schema=public"
-JWT_SECRET="super-secret-jwt-key-change-in-production"
+JWT_ACCESS_SECRET="super-secret-access-key-change-in-production"
+JWT_REFRESH_SECRET="super-secret-refresh-key-change-in-production"
 PORT=5000
-
-# aamarPay Integration Sandbox
-AAMARPAY_STORE_ID="store_id_here"
-AAMARPAY_SIGNATURE_KEY="signature_key_here"
-AAMARPAY_INITIATE_URL="https://sandbox.aamarpay.com/jsonpost.php"
-
-# Resend Email Integration
+AAMARPAY_STORE_ID="aamarpaytest"
+AAMARPAY_SIGNATURE_KEY="dbb74894e82415a2f7ff0ec3a97e4183"
+AAMARPAY_BASE_URL="https://sandbox.aamarpay.com"
 RESEND_API_KEY="re_123456789"
 SENDER_EMAIL="academy@multihat.dev"
+FRONTEND_URL="http://localhost:3000"
+NODE_ENV="development"
 ```
 
-Initialize migration and generate Prisma client:
+Create `frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_GA_ID=
+```
+
+### 2.4 Run Migration & Generate Client
+
 ```bash
+# Run from: academy/backend/
 npx prisma migrate dev --name init
+npx prisma generate
 ```
 
-### 2.3 Database Seeding (Admin & Initial Book)
-Create `backend/prisma/seed.ts` to populate the database with a master admin account and initial product data.
+### 2.5 Database Seeding
+
+Create `backend/prisma/seed.ts`:
 
 ```typescript
 import { PrismaClient } from '@prisma/client';
@@ -298,81 +412,218 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  const hashedPassword = await bcrypt.hash('adminpassword123', 10);
-  
+  // Seed admin user
+  const hashedPassword = await bcrypt.hash('AdminSecure!2026', 12);
+
   const admin = await prisma.user.upsert({
     where: { email: 'admin@multihat.dev' },
     update: {},
     create: {
       email: 'admin@multihat.dev',
-      name: 'System Admin',
+      name: 'Sagar Biswas',
       hashedPassword,
       role: 'ADMIN',
     },
   });
 
-  console.log('Seed executed: Admin created', admin.email);
+  // Seed initial book
+  const book = await prisma.book.upsert({
+    where: { slug: 'google-dorks-complete-handbook' },
+    update: {},
+    create: {
+      title: 'Google Dorks: The Complete OSINT Handbook',
+      slug: 'google-dorks-complete-handbook',
+      description: 'Master Google Dorking for ethical OSINT research. Covers advanced operators, localized Bangladesh examples, and real-world case studies.',
+      price: 10.00,
+      isPublished: true,
+      chapterMetadata: [
+        { index: 1, title: 'Introduction to Google Dorks', isFree: true },
+        { index: 2, title: 'Basic Search Operators', isFree: true },
+        { index: 3, title: 'Advanced Operators & Filters', isFree: true },
+        { index: 4, title: 'OSINT Reconnaissance Techniques', isFree: false },
+        { index: 5, title: 'Bangladesh-Specific Dork Examples', isFree: false },
+      ],
+    },
+  });
+
+  // Seed quiz questions for the book
+  const questions = [
+    { prompt: 'Which Google operator restricts results to a specific website?', options: ['inurl:', 'site:', 'filetype:', 'intitle:'], correctAnswer: 'site:', sortOrder: 1 },
+    { prompt: 'What does the filetype: operator do?', options: ['Searches file names', 'Filters by file extension', 'Searches inside files', 'Lists all files'], correctAnswer: 'Filters by file extension', sortOrder: 2 },
+    { prompt: 'Which operator finds pages with a specific word in the title?', options: ['inurl:', 'intext:', 'intitle:', 'site:'], correctAnswer: 'intitle:', sortOrder: 3 },
+  ];
+
+  for (const q of questions) {
+    await prisma.quizQuestion.create({
+      data: { bookId: book.id, ...q },
+    });
+  }
+
+  console.log(`Seeded: admin=${admin.email}, book="${book.title}", questions=${questions.length}`);
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .catch((e) => { console.error(e); process.exit(1); })
+  .finally(async () => { await prisma.$disconnect(); });
 ```
-Add to `package.json`:
+
+Add to `backend/package.json`:
+
 ```json
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  }
+"prisma": {
+  "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+}
 ```
-Run `npx prisma db seed`.
+
+Run the seed:
+
+```bash
+# Run from: academy/backend/
+npx prisma db seed
+```
 
 ---
 
-## Step 3: Backend REST API Core Module Blueprints (NestJS 11)
+## Step 3: Backend Core Infrastructure
 
-### 3.1 Fast Module Scaffolding CLI Commands
-To avoid manual folder creation, run these NestJS CLI commands in the `backend` directory to instantly generate the foundational REST resources:
+### 3.1 Module Scaffolding (CLI)
+
+Generate all resource modules using the NestJS CLI:
 
 ```bash
-npx nest g resource users --no-spec
+# Run from: academy/backend/
+npx nest g module prisma --no-spec
+npx nest g service prisma --no-spec
 npx nest g resource auth --no-spec
+npx nest g resource users --no-spec
 npx nest g resource books --no-spec
+npx nest g resource coupons --no-spec
 npx nest g resource orders --no-spec
 npx nest g resource payments --no-spec
 npx nest g resource quizzes --no-spec
 npx nest g resource certificates --no-spec
+npx nest g module email --no-spec
+npx nest g service email --no-spec
 ```
-Select `REST API` and type `Y` to generate CRUD entry points when prompted.
 
-### 3.2 Security Configurations (`main.ts`)
-Set up Helmet, CORS, DTO validation pipelines, and global rate limiting.
+Select **REST API** and type **Y** for CRUD entry points when prompted.
 
-In `backend/src/main.ts`:
+### 3.2 PrismaService (Shared Database Access)
+
+Every module needs database access. Create a shared `PrismaService`:
+
+Create `backend/src/prisma/prisma.service.ts`:
+
+```typescript
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+@Injectable()
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  async onModuleInit() {
+    await this.$connect();
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
+}
+```
+
+Create `backend/src/prisma/prisma.module.ts`:
+
+```typescript
+import { Global, Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+
+@Global()
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+```
+
+> The `@Global()` decorator makes `PrismaService` available to all modules without explicit imports.
+
+### 3.3 AppModule Configuration
+
+Create `backend/src/app.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { PrismaModule } from './prisma/prisma.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { BooksModule } from './books/books.module';
+import { CouponsModule } from './coupons/coupons.module';
+import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
+import { QuizzesModule } from './quizzes/quizzes.module';
+import { CertificatesModule } from './certificates/certificates.module';
+import { EmailModule } from './email/email.module';
+
+@Module({
+  imports: [
+    // Load .env globally
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    // Rate limiting: 100 requests per 60 seconds per IP (global default)
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
+
+    // Core
+    PrismaModule,
+
+    // Feature modules
+    AuthModule,
+    UsersModule,
+    BooksModule,
+    CouponsModule,
+    OrdersModule,
+    PaymentsModule,
+    QuizzesModule,
+    CertificatesModule,
+    EmailModule,
+  ],
+  providers: [
+    // Apply throttler globally
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
+})
+export class AppModule {}
+```
+
+### 3.4 main.ts — Security, Validation, Swagger & API Prefix
+
+Create `backend/src/main.ts`:
+
 ```typescript
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
-  // Apply Security Headers
+  // ── Security Headers ──
   app.use(helmet());
 
-  // Strict CORS Config
+  // ── Strict CORS ──
+  const frontendUrl = configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
   app.enableCors({
-    origin: ['https://academy.multihat.dev', 'http://localhost:3000'],
+    origin: [frontendUrl, 'https://academy.multihat.dev'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // Global DTO Validation Pipe
+  // ── Global DTO Validation ──
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -381,191 +632,616 @@ async function bootstrap() {
     }),
   );
 
-  // Global API Prefixing
+  // ── Global API Prefix ──
   app.setGlobalPrefix('api/v1');
 
-  const port = process.env.PORT || 5000;
+  // ── Swagger / OpenAPI 3.0 Documentation ──
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('MultiHAT Academy API')
+    .setDescription('RESTful API for the MultiHAT Academy micro-credential platform')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document);
+
+  // ── Start Server ──
+  const port = configService.get<number>('PORT', 5000);
   await app.listen(port);
-  console.log(`Backend API running on port ${port}`);
+  console.log(`🚀 Academy API running on http://localhost:${port}`);
+  console.log(`📄 Swagger docs at http://localhost:${port}/api/docs`);
 }
 bootstrap();
 ```
 
----
+### 3.5 Response Envelope Interceptor
 
-### 3.3 Dynamic PDF Watermarking Engine
-This service streams a PDF and overlays dynamic, client-specific watermarks (e.g. email, timestamp) on each page. Watermarks are rendered transparently using low-level PDF stream modifications to make removal extremely difficult.
+Wraps all successful API responses in the consistent `{ data, message, statusCode }` envelope described in the CaseStudy:
 
-Create `backend/src/common/utils/pdf-watermarker.ts`:
+Create `backend/src/common/interceptors/response.interceptor.ts`:
+
 ```typescript
-import { Injectable } from '@nestjs/common';
-import * as PDFDocument from 'pdfkit';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+export interface ApiResponse<T> {
+  data: T;
+  message: string;
+  statusCode: number;
+}
 
 @Injectable()
-export class PdfWatermarkerService {
-  async watermarkPdf(sourcePath: string, destPath: string, userEmail: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // Simulate reading source PDF metadata or stream
-      // Using PDFKit, we read a pre-built PDF template or dynamic book data
-      const doc = new PDFDocument({ autoFirstPage: false });
-      const writeStream = fs.createWriteStream(destPath);
-      doc.pipe(writeStream);
+export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponse<T>> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResponse<T>> {
+    const statusCode = context.switchToHttp().getResponse().statusCode;
+    return next.handle().pipe(
+      map((data) => ({
+        data,
+        message: 'Success',
+        statusCode,
+      })),
+    );
+  }
+}
+```
 
-      // In real-world, we would parse the pages of `sourcePath` and append them while overlaying.
-      // Below is the layout strategy for generating watermarked pages:
-      const totalPages = 5; // Representational pages of chapters
-      
-      for (let i = 1; i <= totalPages; i++) {
-        doc.addPage();
-        
-        // Render content
-        doc.fontSize(20).text(`Chapter ${i}: Advanced Technical Insights`, 50, 50);
-        doc.fontSize(12).text(
-          `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Security researchers always verify inputs.`,
-          50, 100
-        );
+Register it globally in `main.ts` by adding after the validation pipe:
 
-        // Security Layer: Render Transparent Watermark diagonally
-        doc.save();
-        doc.fillColor('gray');
-        doc.fillOpacity(0.08); // Ultra-faint transparent layer
-        doc.fontSize(24);
-        
-        // Translate and rotate doc matrix to render a diagonal line
-        doc.translate(300, 400);
-        doc.rotate(-45);
-        doc.text(`EXCLUSIVELY LICENSED TO: ${userEmail}`, -200, 0, { align: 'center', width: 400 });
-        
-        // Secondary Watermark: Bottom Footer
-        doc.restore();
-        doc.save();
-        doc.fillColor('gray');
-        doc.fillOpacity(0.2);
-        doc.fontSize(8);
-        doc.text(`Licensed to ${userEmail} | Unique Ref ID: ${crypto.randomUUID()}`, 50, 750, { align: 'center' });
-        doc.restore();
-      }
+```typescript
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+// ... inside bootstrap():
+app.useGlobalInterceptors(new ResponseInterceptor());
+```
 
-      doc.end();
+### 3.6 Global Exception Filter
 
-      writeStream.on('finish', () => resolve());
-      writeStream.on('error', (err) => reject(err));
+Create `backend/src/common/filters/http-exception.filter.ts`:
+
+```typescript
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { Response } from 'express';
+
+@Catch()
+export class GlobalExceptionFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+
+    const status = exception instanceof HttpException
+      ? exception.getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const message = exception instanceof HttpException
+      ? exception.getResponse()
+      : 'Internal server error';
+
+    response.status(status).json({
+      data: null,
+      message: typeof message === 'string' ? message : (message as any).message || message,
+      statusCode: status,
     });
   }
 }
 ```
 
+Register in `main.ts`:
+
+```typescript
+import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
+// ... inside bootstrap():
+app.useGlobalFilters(new GlobalExceptionFilter());
+```
+
 ---
 
-### 3.4 Dynamic Certificate Engine
-Uses `pdf-lib` to overlay dynamic learner metadata (Name, Course, Date, Verifiable ID) onto a pre-designed base PDF certificate template.
+## Step 4: Authentication & Authorization
 
-Create `backend/src/common/utils/certificate-generator.ts`:
+### 4.1 Auth DTOs
+
+Create `backend/src/auth/dto/register.dto.ts`:
+
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import * as fs from 'fs';
-import * as path from 'path';
+import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
+
+export class RegisterDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @MinLength(8)
+  @MaxLength(128)
+  password: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
+  name: string;
+}
+```
+
+Create `backend/src/auth/dto/login.dto.ts`:
+
+```typescript
+import { IsEmail, IsString } from 'class-validator';
+
+export class LoginDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
+```
+
+### 4.2 JWT Strategy
+
+Create `backend/src/auth/strategies/jwt.strategy.ts`:
+
+```typescript
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
-export class CertificateGeneratorService {
-  async generateCertificate(
-    templatePath: string,
-    destPath: string,
-    holderName: string,
-    courseTitle: string,
-    certificateId: string
-  ): Promise<void> {
-    // Load pre-designed base certificate PDF (e.g. exported from Canva)
-    let basePdfBytes: Buffer;
-    if (fs.existsSync(templatePath)) {
-      basePdfBytes = fs.readFileSync(templatePath);
-    } else {
-      // Fallback: Create a blank template if base file not found
-      const blankDoc = await PDFDocument.create();
-      blankDoc.addPage([842, 595]); // Landscape A4 size
-      basePdfBytes = Buffer.from(await blankDoc.save());
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(
+    configService: ConfigService,
+    private prisma: PrismaService,
+  ) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
+    });
+  }
+
+  async validate(payload: { sub: string; email: string; role: string }) {
+    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user) throw new UnauthorizedException('User not found');
+    return { id: user.id, email: user.email, role: user.role, name: user.name };
+  }
+}
+```
+
+### 4.3 Role-Based Access Control (RBAC)
+
+Create `backend/src/common/decorators/roles.decorator.ts`:
+
+```typescript
+import { SetMetadata } from '@nestjs/common';
+import { Role } from '@prisma/client';
+
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
+```
+
+Create `backend/src/common/guards/roles.guard.ts`:
+
+```typescript
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { Role } from '@prisma/client';
+import { ROLES_KEY } from '../decorators/roles.decorator';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (!requiredRoles) return true;
+    const { user } = context.switchToHttp().getRequest();
+    return requiredRoles.includes(user.role);
+  }
+}
+```
+
+Create `backend/src/common/decorators/current-user.decorator.ts`:
+
+```typescript
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+export const CurrentUser = createParamDecorator(
+  (data: string | undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return data ? request.user?.[data] : request.user;
+  },
+);
+```
+
+### 4.4 Auth Service
+
+Create `backend/src/auth/auth.service.ts`:
+
+```typescript
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
+import { PrismaService } from '../prisma/prisma.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
+  ) {}
+
+  async register(dto: RegisterDto) {
+    const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (existing) throw new ConflictException('Email already registered');
+
+    const hashedPassword = await bcrypt.hash(dto.password, 12);
+    const user = await this.prisma.user.create({
+      data: { email: dto.email, name: dto.name, hashedPassword },
+    });
+
+    return this.generateTokens(user.id, user.email, user.role);
+  }
+
+  async login(dto: LoginDto) {
+    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    const passwordValid = await bcrypt.compare(dto.password, user.hashedPassword);
+    if (!passwordValid) throw new UnauthorizedException('Invalid credentials');
+
+    return this.generateTokens(user.id, user.email, user.role);
+  }
+
+  async refreshTokens(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      });
+      const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+      if (!user) throw new UnauthorizedException('User not found');
+      return this.generateTokens(user.id, user.email, user.role);
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  private generateTokens(userId: string, email: string, role: string) {
+    const payload = { sub: userId, email, role };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: '15m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: '7d',
+    });
+
+    return { accessToken, refreshToken, user: { id: userId, email, role } };
+  }
+}
+```
+
+### 4.5 Auth Controller
+
+Create `backend/src/auth/auth.controller.ts`:
+
+```typescript
+import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
+import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+
+@ApiTags('Auth')
+@Controller('auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}
+
+  @Post('register')
+  register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  @Throttle({ default: { ttl: 60000, limit: 10 } }) // 10 login attempts per minute
+  @Post('login')
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
+
+  @Post('refresh')
+  refresh(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshTokens(refreshToken);
+  }
+}
+```
+
+### 4.6 Auth Module
+
+Create `backend/src/auth/auth.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { JwtStrategy } from './strategies/jwt.strategy';
+
+@Module({
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({}), // Secrets provided dynamically in AuthService
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService],
+})
+export class AuthModule {}
+```
+
+> **Usage in other controllers:** Protect any route with `@UseGuards(AuthGuard('jwt'))`. For admin-only routes, add `@UseGuards(AuthGuard('jwt'), RolesGuard)` and `@Roles(Role.ADMIN)`. Access the authenticated user with `@CurrentUser() user`.
+
+---
+
+## Step 5: Backend Feature Modules
+
+> All modules below follow the same pattern: **DTO → Service → Controller → Module**. Each service injects `PrismaService` (globally available). Protected endpoints use `@UseGuards(AuthGuard('jwt'))` and admin endpoints add `@UseGuards(AuthGuard('jwt'), RolesGuard)` with `@Roles(Role.ADMIN)`.
+
+### 5.1 Users Module
+
+**Endpoints:** `GET /api/v1/users/me` · `PATCH /api/v1/users/me`
+
+Create `backend/src/users/users.service.ts`:
+
+```typescript
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class UsersService {
+  constructor(private prisma: PrismaService) {}
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, name: true, role: true, createdAt: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+
+  async updateProfile(userId: string, data: { name?: string }) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data,
+      select: { id: true, email: true, name: true, role: true },
+    });
+  }
+}
+```
+
+Create `backend/src/users/users.controller.ts`:
+
+```typescript
+import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { UsersService } from './users.service';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+
+@ApiTags('Users')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
+@Controller('users')
+export class UsersController {
+  constructor(private usersService: UsersService) {}
+
+  @Get('me')
+  getProfile(@CurrentUser('id') userId: string) {
+    return this.usersService.getProfile(userId);
+  }
+
+  @Patch('me')
+  updateProfile(@CurrentUser('id') userId: string, @Body() dto: { name?: string }) {
+    return this.usersService.updateProfile(userId, dto);
+  }
+}
+```
+
+### 5.2 Books Module (Public + Admin CRUD)
+
+**Endpoints:** `GET /api/v1/books` · `GET /api/v1/books/:slug` · `POST /api/v1/books` (admin) · `PATCH /api/v1/books/:id` (admin)
+
+Create `backend/src/books/books.service.ts`:
+
+```typescript
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class BooksService {
+  constructor(private prisma: PrismaService) {}
+
+  async findAll(page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [books, total] = await Promise.all([
+      this.prisma.book.findMany({
+        where: { isPublished: true },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.book.count({ where: { isPublished: true } }),
+    ]);
+    return { books, total, page, limit };
+  }
+
+  async findBySlug(slug: string) {
+    const book = await this.prisma.book.findUnique({ where: { slug } });
+    if (!book) throw new NotFoundException('Book not found');
+    return book;
+  }
+
+  // Admin: Create book
+  async create(data: { title: string; slug: string; description: string; price: number; chapterMetadata: any }) {
+    return this.prisma.book.create({ data });
+  }
+
+  // Admin: Update book
+  async update(id: string, data: Partial<{ title: string; description: string; price: number; isPublished: boolean; chapterMetadata: any }>) {
+    return this.prisma.book.update({ where: { id }, data });
+  }
+}
+```
+
+Create `backend/src/books/books.controller.ts`:
+
+```typescript
+import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { BooksService } from './books.service';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Role } from '@prisma/client';
+
+@ApiTags('Books')
+@Controller('books')
+export class BooksController {
+  constructor(private booksService: BooksService) {}
+
+  @Get()
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    return this.booksService.findAll(Number(page) || 1, Number(limit) || 20);
+  }
+
+  @Get(':slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.booksService.findBySlug(slug);
+  }
+
+  @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  create(@Body() dto: any) {
+    return this.booksService.create(dto);
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  update(@Param('id') id: string, @Body() dto: any) {
+    return this.booksService.update(id, dto);
+  }
+}
+```
+
+### 5.3 Orders Module (Purchase Flow)
+
+**Endpoints:** `POST /api/v1/orders` · `GET /api/v1/orders/my`
+
+This module implements the purchase flow from [Payment Flow Diagram](./diagrams/02-payment-flow.md): validates coupon → creates PENDING order → initiates aamarPay payment → returns redirect URL.
+
+Create `backend/src/orders/orders.service.ts`:
+
+```typescript
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { PaymentsService } from '../payments/payments.service';
+import { Decimal } from '@prisma/client/runtime/library';
+
+@Injectable()
+export class OrdersService {
+  constructor(
+    private prisma: PrismaService,
+    private paymentsService: PaymentsService,
+  ) {}
+
+  async createOrder(userId: string, bookId: string, couponCode?: string) {
+    // 1. Validate book exists
+    const book = await this.prisma.book.findUnique({ where: { id: bookId } });
+    if (!book || !book.isPublished) throw new NotFoundException('Book not found');
+
+    // 2. Check if already purchased
+    const existingOrder = await this.prisma.order.findFirst({
+      where: { userId, bookId, status: 'PAID' },
+    });
+    if (existingOrder) throw new BadRequestException('You already own this book');
+
+    // 3. Calculate discount
+    let discount = new Decimal(0);
+    let couponId: string | null = null;
+
+    if (couponCode) {
+      const coupon = await this.prisma.coupon.findUnique({ where: { code: couponCode } });
+      if (!coupon || !coupon.isActive) throw new BadRequestException('Invalid coupon');
+      if (new Date() < coupon.validFrom || new Date() > coupon.validUntil) throw new BadRequestException('Coupon expired');
+      if (coupon.usageCount >= coupon.usageLimit) throw new BadRequestException('Coupon usage limit reached');
+
+      discount = coupon.discountType === 'PERCENTAGE'
+        ? book.price.mul(coupon.discountValue).div(100)
+        : coupon.discountValue;
+      couponId = coupon.id;
     }
 
-    const pdfDoc = await PDFDocument.load(basePdfBytes);
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
+    const finalAmount = Decimal.max(book.price.minus(discount), new Decimal(0));
 
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica_Bold);
-    const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-    // Draw Certification Details
-    firstPage.drawText('CERTIFICATE OF ACCOMPLISHMENT', {
-      x: 180,
-      y: 450,
-      size: 28,
-      font: helveticaFont,
-      color: rgb(0.1, 0.1, 0.2),
+    // 4. Create order (PENDING)
+    const order = await this.prisma.order.create({
+      data: {
+        userId,
+        bookId,
+        couponId,
+        amount: finalAmount,
+        discountApplied: discount,
+        status: 'PENDING',
+        aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      },
     });
 
-    firstPage.drawText(`This credential is proudly presented to:`, {
-      x: 280,
-      y: 350,
-      size: 14,
-      font: regularFont,
-      color: rgb(0.3, 0.3, 0.3),
-    });
+    // 5. Get user info for payment
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
-    // Student Name
-    firstPage.drawText(holderName.toUpperCase(), {
-      x: 250,
-      y: 290,
-      size: 24,
-      font: helveticaFont,
-      color: rgb(0.04, 0.52, 0.89), // MultiHAT Brand Blue HSL Custom color
-    });
+    // 6. Initiate aamarPay payment
+    const payment = await this.paymentsService.initiatePayment(
+      order.aamarpayTranId!,
+      finalAmount.toString(),
+      user!.name,
+      user!.email,
+    );
 
-    // Course Title
-    firstPage.drawText(`for successfully mastering the course: ${courseTitle}`, {
-      x: 200,
-      y: 230,
-      size: 14,
-      font: regularFont,
-      color: rgb(0.3, 0.3, 0.3),
-    });
+    return { orderId: order.id, paymentUrl: payment.paymentUrl };
+  }
 
-    // Verification ID and Date
-    const issueDateStr = new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+  async getMyOrders(userId: string) {
+    return this.prisma.order.findMany({
+      where: { userId },
+      include: { book: { select: { title: true, slug: true } } },
+      orderBy: { createdAt: 'desc' },
     });
-
-    firstPage.drawText(`Issue Date: ${issueDateStr}`, {
-      x: 100,
-      y: 120,
-      size: 10,
-      font: regularFont,
-      color: rgb(0.5, 0.5, 0.5),
-    });
-
-    firstPage.drawText(`Verification URL: https://academy.multihat.dev/verify/${certificateId}`, {
-      x: 400,
-      y: 120,
-      size: 10,
-      font: regularFont,
-      color: rgb(0.5, 0.5, 0.5),
-    });
-
-    const pdfBytes = await pdfDoc.save();
-    fs.writeFileSync(destPath, pdfBytes);
   }
 }
 ```
 
----
+### 5.4 Payments Module (aamarPay IPN Webhook)
 
-### 3.5 aamarPay Signature Verification & IPN Controller
-Calculates secure checksum hashes for checkouts and implements a tamper-proof IPN receiver.
+**Endpoints:** `POST /api/v1/payments/ipn` (no auth — server-to-server webhook)
 
-Create `backend/src/payments/payment.service.ts`:
+This implements the IPN callback from [Payment Flow Diagram](./diagrams/02-payment-flow.md): verify signature → update order → trigger PDF generation → send email.
+
+Create `backend/src/payments/payments.service.ts`:
+
 ```typescript
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -573,72 +1249,464 @@ import * as crypto from 'crypto';
 import axios from 'axios';
 
 @Injectable()
-export class PaymentService {
+export class PaymentsService {
   constructor(private configService: ConfigService) {}
 
-  generateSignature(tranId: string, amount: string, currency: string = 'BDT'): string {
+  async initiatePayment(tranId: string, amount: string, customerName: string, customerEmail: string) {
     const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
     const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
+    const baseUrl = this.configService.get<string>('AAMARPAY_BASE_URL');
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
 
-    // aamarPay signature layout: md5(store_id + signature_key + tran_id + amount + currency)
-    const rawString = `${storeId}${signatureKey}${tranId}${amount}${currency}`;
-    return crypto.createHash('md5').update(rawString).digest('hex');
-  }
-
-  async initiatePayment(orderId: string, amount: string, customerName: string, customerEmail: string) {
-    const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
-    const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
-    const initiateUrl = this.configService.get<string>('AAMARPAY_INITIATE_URL');
-
-    const paymentPayload = {
+    const payload = {
       store_id: storeId,
       signature_key: signatureKey,
-      tran_id: orderId,
-      amount: amount,
+      tran_id: tranId,
+      amount,
       currency: 'BDT',
-      desc: 'MultiHAT Academy Technical E-Book Purchase',
+      desc: 'MultiHAT Academy E-Book Purchase',
       cus_name: customerName,
       cus_email: customerEmail,
-      cus_phone: '01700000000', // standard fallback phone if required
-      success_url: `https://academy.multihat.dev/payment/success?id=${orderId}`,
-      fail_url: `https://academy.multihat.dev/payment/fail?id=${orderId}`,
-      cancel_url: `https://academy.multihat.dev/payment/cancel?id=${orderId}`,
+      cus_phone: '01700000000',
+      success_url: `${frontendUrl}/payment/success?id=${tranId}`,
+      fail_url: `${frontendUrl}/payment/fail?id=${tranId}`,
+      cancel_url: `${frontendUrl}/payment/cancel?id=${tranId}`,
       type: 'json',
     };
 
     try {
-      const response = await axios.post(initiateUrl, paymentPayload);
-      if (response.data && response.data.payment_url) {
-        return { paymentUrl: response.data.payment_url };
-      }
-      throw new BadRequestException('aamarPay payment initiation failed.');
+      const response = await axios.post(`${baseUrl}/jsonpost.php`, payload);
+      if (response.data?.payment_url) return { paymentUrl: response.data.payment_url };
+      throw new BadRequestException('aamarPay initiation failed');
     } catch (error) {
-      throw new BadRequestException(`Payment connection error: ${error.message}`);
+      throw new BadRequestException(`Payment error: ${error.message}`);
     }
   }
 
   verifyIpnSignature(payload: any): boolean {
-    const { mer_txnid, amount, pay_status, store_amount, pg_txnid, signature } = payload;
     const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
     const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
-
-    // Reverse hash confirmation check
-    const rawString = `${storeId}${signatureKey}${mer_txnid}${amount}BDT`;
-    const computedSignature = crypto.createHash('md5').update(rawString).digest('hex');
-
-    return computedSignature === signature;
+    const raw = `${storeId}${signatureKey}${payload.mer_txnid}${payload.amount}BDT`;
+    const computed = crypto.createHash('md5').update(raw).digest('hex');
+    return computed === payload.signature;
   }
 }
 ```
 
+Create `backend/src/payments/payments.controller.ts`:
+
+```typescript
+import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
+import { PaymentsService } from './payments.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
+
+@ApiTags('Payments')
+@Controller('payments')
+export class PaymentsController {
+  constructor(
+    private paymentsService: PaymentsService,
+    private prisma: PrismaService,
+    private emailService: EmailService,
+  ) {}
+
+  @SkipThrottle()
+  @Post('ipn')
+  @HttpCode(200)
+  async handleIpn(@Body() payload: any) {
+    // 1. Verify signature
+    if (!this.paymentsService.verifyIpnSignature(payload)) {
+      return { status: 'INVALID_SIGNATURE' };
+    }
+
+    // 2. Idempotency: check if already processed
+    const order = await this.prisma.order.findUnique({
+      where: { aamarpayTranId: payload.mer_txnid },
+      include: { user: true, book: true },
+    });
+    if (!order || order.status === 'PAID') {
+      return { status: 'ALREADY_PROCESSED' };
+    }
+
+    // 3. Update order status
+    if (payload.pay_status === 'Successful') {
+      await this.prisma.order.update({
+        where: { id: order.id },
+        data: { status: 'PAID', gatewayResponse: payload },
+      });
+
+      // 4. Update coupon usage if applicable
+      if (order.couponId) {
+        await this.prisma.coupon.update({
+          where: { id: order.couponId },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
+
+      // 5. Send email with purchase receipt (PDF generation triggered separately)
+      await this.emailService.sendPurchaseReceipt(order.user.email, order.user.name, order.book.title);
+
+      return { status: 'SUCCESS' };
+    }
+
+    // Handle failed payment
+    await this.prisma.order.update({
+      where: { id: order.id },
+      data: { status: 'FAILED', gatewayResponse: payload },
+    });
+    return { status: 'FAILED' };
+  }
+}
+```
+
+### 5.5 Quizzes Module (Scoring Engine)
+
+**Endpoints:** `GET /api/v1/quizzes/:bookSlug/questions` · `POST /api/v1/quizzes/:bookSlug/submit`
+
+Implements the [Certificate Issuance Flow](./diagrams/07-certificate-issuance-flow.md): fetch questions → validate answers → score → pass/fail → trigger certificate generation on ≥70%.
+
+Create `backend/src/quizzes/quizzes.service.ts`:
+
+```typescript
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { CertificatesService } from '../certificates/certificates.service';
+
+@Injectable()
+export class QuizzesService {
+  constructor(
+    private prisma: PrismaService,
+    private certificatesService: CertificatesService,
+  ) {}
+
+  async getQuestions(bookSlug: string, userId: string) {
+    const book = await this.prisma.book.findUnique({ where: { slug: bookSlug } });
+    if (!book) throw new NotFoundException('Book not found');
+
+    // Verify user has purchased the book
+    const order = await this.prisma.order.findFirst({
+      where: { userId, bookId: book.id, status: 'PAID' },
+    });
+    if (!order) throw new ForbiddenException('Purchase required to take the quiz');
+
+    const questions = await this.prisma.quizQuestion.findMany({
+      where: { bookId: book.id },
+      select: { id: true, prompt: true, options: true, sortOrder: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+    return { bookTitle: book.title, questions };
+  }
+
+  async submitQuiz(bookSlug: string, userId: string, selectedAnswers: Record<string, string>) {
+    const book = await this.prisma.book.findUnique({ where: { slug: bookSlug } });
+    if (!book) throw new NotFoundException('Book not found');
+
+    const questions = await this.prisma.quizQuestion.findMany({ where: { bookId: book.id } });
+    const totalQuestions = questions.length;
+
+    // Score the quiz
+    let score = 0;
+    for (const q of questions) {
+      if (selectedAnswers[q.id] === q.correctAnswer) score++;
+    }
+
+    const result = score / totalQuestions >= 0.7 ? 'PASS' : 'FAIL';
+
+    // Record attempt
+    const attempt = await this.prisma.quizAttempt.create({
+      data: { userId, bookId: book.id, selectedAnswers, score, totalQuestions, result },
+    });
+
+    // Generate certificate on pass
+    let certId: string | undefined;
+    if (result === 'PASS') {
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      const cert = await this.certificatesService.issueCertificate(userId, attempt.id, user!.name, book.title);
+      certId = cert.certificateId;
+    }
+
+    return { score, total: totalQuestions, outcome: result, certId };
+  }
+}
+```
+
+### 5.6 Certificates Module (Generation & Verification)
+
+**Endpoints:** `GET /api/v1/certificates/my` · `GET /api/v1/certificates/verify/:certId` (public)
+
+Create `backend/src/certificates/certificates.service.ts`:
+
+```typescript
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class CertificatesService {
+  constructor(private prisma: PrismaService) {}
+
+  async issueCertificate(userId: string, quizAttemptId: string, holderName: string, courseTitle: string) {
+    return this.prisma.certificate.create({
+      data: { userId, quizAttemptId, holderName, courseTitle },
+    });
+  }
+
+  async getMyCertificates(userId: string) {
+    return this.prisma.certificate.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async verifyCertificate(certId: string) {
+    const cert = await this.prisma.certificate.findUnique({
+      where: { certificateId: certId },
+    });
+    if (!cert) throw new NotFoundException('Certificate not found');
+    return {
+      valid: cert.isValid,
+      holderName: cert.holderName,
+      courseTitle: cert.courseTitle,
+      issueDate: cert.issueDate,
+      certificateId: cert.certificateId,
+    };
+  }
+}
+```
+
+Create `backend/src/certificates/certificates.controller.ts`:
+
+```typescript
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CertificatesService } from './certificates.service';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+
+@ApiTags('Certificates')
+@Controller('certificates')
+export class CertificatesController {
+  constructor(private certificatesService: CertificatesService) {}
+
+  @Get('my')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  getMyCertificates(@CurrentUser('id') userId: string) {
+    return this.certificatesService.getMyCertificates(userId);
+  }
+
+  @Get('verify/:certId')  // Public — no auth required
+  verifyCertificate(@Param('certId') certId: string) {
+    return this.certificatesService.verifyCertificate(certId);
+  }
+}
+```
+
+### 5.7 Email Module (Resend Integration)
+
+Create `backend/src/email/email.service.ts`:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Resend } from 'resend';
+
+@Injectable()
+export class EmailService {
+  private resend: Resend;
+  private senderEmail: string;
+
+  constructor(private configService: ConfigService) {
+    this.resend = new Resend(this.configService.get<string>('RESEND_API_KEY'));
+    this.senderEmail = this.configService.get<string>('SENDER_EMAIL', 'academy@multihat.dev');
+  }
+
+  async sendPurchaseReceipt(to: string, name: string, bookTitle: string) {
+    await this.resend.emails.send({
+      from: this.senderEmail,
+      to,
+      subject: `Your purchase: ${bookTitle} — MultiHAT Academy`,
+      html: `<h2>Thank you, ${name}!</h2>
+        <p>Your purchase of <strong>${bookTitle}</strong> is confirmed.</p>
+        <p>Your watermarked PDF will be delivered to this email shortly.</p>
+        <p>— MultiHAT Academy</p>`,
+    });
+  }
+
+  async sendCertificateEmail(to: string, name: string, courseTitle: string, certId: string, pdfBuffer?: Buffer) {
+    const attachments = pdfBuffer
+      ? [{ filename: `certificate-${certId}.pdf`, content: pdfBuffer }]
+      : [];
+
+    await this.resend.emails.send({
+      from: this.senderEmail,
+      to,
+      subject: `🎓 Certificate Earned: ${courseTitle}`,
+      html: `<h2>Congratulations, ${name}!</h2>
+        <p>You've earned a certificate for <strong>${courseTitle}</strong>.</p>
+        <p>Verification URL: <a href="https://academy.multihat.dev/verify/${certId}">Verify Certificate</a></p>`,
+      attachments,
+    });
+  }
+}
+```
+
+Create `backend/src/email/email.module.ts`:
+
+```typescript
+import { Global, Module } from '@nestjs/common';
+import { EmailService } from './email.service';
+
+@Global()
+@Module({
+  providers: [EmailService],
+  exports: [EmailService],
+})
+export class EmailModule {}
+```
+
 ---
 
-## Step 4: Frontend Development (Next.js 14 Client App)
+## Step 6: Backend Utilities — PDF Engines
 
-### 4.1 Global Styles & HSL Palette Theme Configuration
-Update `frontend/src/app/globals.css` with a sleek, premium cybersecurity dark mode design system.
+Both utilities use **`pdf-lib`** for consistency (not PDFKit). This ensures a single library handles all PDF operations — loading existing templates and overlaying dynamic content.
 
-In `frontend/src/app/globals.css`:
+### 6.1 PDF Watermarking Engine
+
+Loads an existing source e-book PDF and overlays the buyer's email as a transparent watermark on every page. This implements the [Anti-Piracy strategy](./CaseStudy.md#37-anti-piracy--digital-rights-management) from the CaseStudy.
+
+Create `backend/src/common/utils/pdf-watermarker.ts`:
+
+```typescript
+import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import * as fs from 'fs';
+import { randomUUID } from 'crypto';
+
+export async function watermarkPdf(
+  sourcePath: string,
+  destPath: string,
+  userEmail: string,
+): Promise<void> {
+  const sourceBytes = fs.readFileSync(sourcePath);
+  const pdfDoc = await PDFDocument.load(sourceBytes);
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const pages = pdfDoc.getPages();
+  const refId = randomUUID().slice(0, 8);
+
+  for (const page of pages) {
+    const { width, height } = page.getSize();
+
+    // Diagonal watermark — ultra-faint (5% opacity)
+    page.drawText(`LICENSED TO: ${userEmail}`, {
+      x: width / 2 - 180,
+      y: height / 2,
+      size: 22,
+      font,
+      color: rgb(0.6, 0.6, 0.6),
+      opacity: 0.05,
+      rotate: degrees(-45),
+    });
+
+    // Footer watermark — slightly more visible (15% opacity)
+    page.drawText(`Licensed to ${userEmail} | Ref: ${refId}`, {
+      x: 40,
+      y: 20,
+      size: 7,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+      opacity: 0.15,
+    });
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  fs.writeFileSync(destPath, pdfBytes);
+}
+```
+
+### 6.2 Certificate PDF Generator
+
+Overlays learner metadata onto a pre-designed Canva certificate template. Implements the [Certificate Issuance Flow](./diagrams/07-certificate-issuance-flow.md).
+
+Create `backend/src/common/utils/certificate-generator.ts`:
+
+```typescript
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import * as fs from 'fs';
+import * as path from 'path';
+
+export async function generateCertificatePdf(
+  holderName: string,
+  courseTitle: string,
+  certificateId: string,
+  templateDir: string,
+  outputDir: string,
+): Promise<Buffer> {
+  const templatePath = path.join(templateDir, 'certificate-template.pdf');
+
+  let pdfDoc: PDFDocument;
+  if (fs.existsSync(templatePath)) {
+    const templateBytes = fs.readFileSync(templatePath);
+    pdfDoc = await PDFDocument.load(templateBytes);
+  } else {
+    // Fallback: create blank landscape A4
+    pdfDoc = await PDFDocument.create();
+    pdfDoc.addPage([842, 595]);
+  }
+
+  const page = pdfDoc.getPages()[0];
+  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  // Title
+  page.drawText('CERTIFICATE OF ACCOMPLISHMENT', {
+    x: 180, y: 450, size: 28, font: boldFont, color: rgb(0.1, 0.1, 0.2),
+  });
+
+  // Subtitle
+  page.drawText('This credential is proudly presented to:', {
+    x: 270, y: 370, size: 14, font: regularFont, color: rgb(0.3, 0.3, 0.3),
+  });
+
+  // Holder name
+  page.drawText(holderName.toUpperCase(), {
+    x: 250, y: 310, size: 24, font: boldFont, color: rgb(0.04, 0.52, 0.89),
+  });
+
+  // Course title
+  page.drawText(`for successfully completing: ${courseTitle}`, {
+    x: 200, y: 250, size: 14, font: regularFont, color: rgb(0.3, 0.3, 0.3),
+  });
+
+  // Date & verification
+  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  page.drawText(`Issue Date: ${dateStr}`, {
+    x: 100, y: 120, size: 10, font: regularFont, color: rgb(0.5, 0.5, 0.5),
+  });
+  page.drawText(`Verify: https://academy.multihat.dev/verify/${certificateId}`, {
+    x: 420, y: 120, size: 10, font: regularFont, color: rgb(0.5, 0.5, 0.5),
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  const outputPath = path.join(outputDir, `cert-${certificateId}.pdf`);
+
+  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+  fs.writeFileSync(outputPath, pdfBytes);
+
+  return Buffer.from(pdfBytes);
+}
+```
+
+> **Usage:** Place your Canva-designed template at `backend/templates/certificate-template.pdf`. Generated certificates are saved to `backend/generated/` (add `generated/` to `.gitignore`).
+
+---
+
+## Step 7: Frontend Architecture (Next.js 14)
+
+### 7.1 Global Styles & Theme System
+
+Create `frontend/src/app/globals.css`:
+
 ```css
 @tailwind base;
 @tailwind components;
@@ -652,9 +1720,7 @@ In `frontend/src/app/globals.css`:
     --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-    
-    /* Cyber Blue Premium HSL Accent Palette */
-    --primary: 201 96% 40%; 
+    --primary: 201 96% 40%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
@@ -699,7 +1765,7 @@ In `frontend/src/app/globals.css`:
   }
 }
 
-/* Micro-animations and cyber grid effect styling */
+/* Cybersecurity grid effect for hero sections */
 .cyber-grid {
   background-image: linear-gradient(rgba(18, 115, 233, 0.05) 1px, transparent 1px),
                     linear-gradient(90deg, rgba(18, 115, 233, 0.05) 1px, transparent 1px);
@@ -707,12 +1773,180 @@ In `frontend/src/app/globals.css`:
 }
 ```
 
----
+### 7.2 API Client (Centralized Axios Instance)
 
-### 4.2 Interactive Quiz Component
-A styled client module featuring immediate dynamic feedback and submitting JSON datasets to the NestJS API.
+Create `frontend/src/lib/api.ts`:
+
+```typescript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
+  headers: { 'Content-Type': 'application/json' },
+});
+
+// Inject auth token on every request
+api.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle 401 → auto-refresh or redirect to login
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/auth/login';
+    }
+    return Promise.reject(error);
+  },
+);
+
+export default api;
+```
+
+### 7.3 Auth Context Provider
+
+Create `frontend/src/lib/auth-context.tsx`:
+
+```tsx
+"use client";
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import api from './api';
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      api.get('/users/me')
+        .then((res) => setUser(res.data.data))
+        .catch(() => localStorage.removeItem('accessToken'))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const res = await api.post('/auth/login', { email, password });
+    localStorage.setItem('accessToken', res.data.data.accessToken);
+    localStorage.setItem('refreshToken', res.data.data.refreshToken);
+    setUser(res.data.data.user);
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    const res = await api.post('/auth/register', { name, email, password });
+    localStorage.setItem('accessToken', res.data.data.accessToken);
+    localStorage.setItem('refreshToken', res.data.data.refreshToken);
+    setUser(res.data.data.user);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  return context;
+};
+```
+
+### 7.4 Root Layout with Providers
+
+Create `frontend/src/app/layout.tsx`:
+
+```tsx
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { ThemeProvider } from 'next-themes';
+import { AuthProvider } from '@/lib/auth-context';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: { default: 'MultiHAT Academy', template: '%s | MultiHAT Academy' },
+  description: 'Premium technical e-books with verifiable certificates. Master Google Dorks, OSINT, and cybersecurity.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.multihat.dev'),
+  openGraph: {
+    siteName: 'MultiHAT Academy',
+    type: 'website',
+    locale: 'en_US',
+  },
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+### 7.5 Key Frontend Pages (Route Map)
+
+The following App Router pages must be implemented. Each maps to the [User Journey Diagram](./diagrams/03-user-journey.md):
+
+| Route | File | Auth | Purpose |
+|:------|:-----|:-----|:--------|
+| `/` | `app/page.tsx` | No | Landing page — hero, featured books, CTAs |
+| `/books` | `app/books/page.tsx` | No | Book catalog (SSG) — `GET /api/v1/books` |
+| `/books/[slug]` | `app/books/[slug]/page.tsx` | No | Book detail — free chapters (1–3) rendered, premium chapters blurred with CTA |
+| `/auth/login` | `app/auth/login/page.tsx` | No | Login form (React Hook Form + Zod) |
+| `/auth/register` | `app/auth/register/page.tsx` | No | Registration form |
+| `/dashboard` | `app/dashboard/page.tsx` | Yes | Purchased items, quiz scores, certificates |
+| `/checkout/[bookId]` | `app/checkout/[bookId]/page.tsx` | Yes | Coupon input, price display, "Pay with aamarPay" button |
+| `/payment/success` | `app/payment/success/page.tsx` | No | Post-payment confirmation page |
+| `/payment/fail` | `app/payment/fail/page.tsx` | No | Payment failure with retry link |
+| `/quiz/[bookSlug]` | `app/quiz/[bookSlug]/page.tsx` | Yes | Interactive quiz — uses QuizRenderer component |
+| `/verify/[certID]` | `app/verify/[certID]/page.tsx` | No | Public certificate verification (SSR) |
+
+### 7.6 Interactive Quiz Component
 
 Create `frontend/src/components/quiz/QuizRenderer.tsx`:
+
 ```tsx
 "use client";
 
@@ -720,93 +1954,55 @@ import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, RefreshCw, AlertTriangle } from 'lucide-react';
-import axios from 'axios';
+import api from '@/lib/api';
 
-interface Question {
-  id: string;
-  prompt: string;
-  options: string[];
-}
+interface Question { id: string; prompt: string; options: string[]; }
+interface QuizResult { score: number; total: number; outcome: 'PASS' | 'FAIL'; certId?: string; }
 
-interface QuizProps {
-  bookSlug: string;
-  questions: Question[];
-  token: string;
-}
-
-export default function QuizRenderer({ bookSlug, questions, token }: QuizProps) {
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
+export default function QuizRenderer({ bookSlug, questions }: { bookSlug: string; questions: Question[] }) {
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ score: number; total: number; outcome: 'PASS' | 'FAIL'; certId?: string } | null>(null);
+  const [result, setResult] = useState<QuizResult | null>(null);
 
-  const handleSelectOption = (questionId: string, option: string) => {
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [questionId]: option
-    }));
+  const handleSelect = (qId: string, option: string) => {
+    setAnswers((prev) => ({ ...prev, [qId]: option }));
   };
 
-  const handleSubmitQuiz = async () => {
-    if (Object.keys(selectedAnswers).length < questions.length) {
-      alert("Please answer all questions before submitting.");
+  const handleSubmit = async () => {
+    if (Object.keys(answers).length < questions.length) {
+      alert('Please answer all questions before submitting.');
       return;
     }
-
     setLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
-      const response = await axios.post(
-        `${apiUrl}/quizzes/${bookSlug}/submit`,
-        { selectedAnswers },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setResult(response.data);
-    } catch (error) {
-      alert("Submission error: Make sure all answers were processed.");
-    } finally {
-      setLoading(false);
-    }
+      const res = await api.post(`/quizzes/${bookSlug}/submit`, { selectedAnswers: answers });
+      setResult(res.data.data);
+    } catch { alert('Submission error. Please try again.'); }
+    finally { setLoading(false); }
   };
 
   if (result) {
     const isPass = result.outcome === 'PASS';
     return (
       <Card className={`border-2 ${isPass ? 'border-emerald-500' : 'border-rose-500'} max-w-xl mx-auto shadow-lg`}>
-        <CardHeader>
-          <div className="flex items-center justify-center p-3 rounded-full mx-auto bg-opacity-10 mb-2">
-            {isPass ? (
-              <ShieldCheck className="h-16 w-16 text-emerald-500 animate-bounce" />
-            ) : (
-              <AlertTriangle className="h-16 w-16 text-rose-500" />
-            )}
-          </div>
-          <CardTitle className="text-center text-2xl font-bold">
+        <CardHeader className="text-center">
+          {isPass
+            ? <ShieldCheck className="h-16 w-16 text-emerald-500 animate-bounce mx-auto" />
+            : <AlertTriangle className="h-16 w-16 text-rose-500 mx-auto" />}
+          <CardTitle className="text-2xl font-bold">
             {isPass ? 'Certification Earned!' : 'Quiz Attempt Failed'}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
-          <p className="text-lg">
-            Score: <strong className="text-2xl">{result.score}</strong> / {result.total} ({Math.round((result.score / result.total) * 100)}%)
-          </p>
+          <p className="text-lg">Score: <strong className="text-2xl">{result.score}</strong> / {result.total} ({Math.round((result.score / result.total) * 100)}%)</p>
           <p className="text-muted-foreground">
-            {isPass 
-              ? 'Excellent job! Your cryptographic, verifiable credential has been successfully minted and sent to your email.'
-              : 'You missed the 70% pass mark threshold. Please review the book materials and attempt the test again.'
-            }
+            {isPass ? 'Your verifiable credential has been minted and emailed to you.' : 'You need ≥70% to pass. Review the material and try again.'}
           </p>
         </CardContent>
         <CardFooter className="flex justify-center gap-4">
-          {isPass ? (
-            <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-              <a href={`/verify/${result.certId}`} target="_blank" rel="noopener noreferrer">
-                View Certificate
-              </a>
-            </Button>
-          ) : (
-            <Button onClick={() => setResult(null)} className="bg-rose-600 hover:bg-rose-700 flex gap-2">
-              <RefreshCw className="h-4 w-4" /> Try Again
-            </Button>
-          )}
+          {isPass
+            ? <Button asChild className="bg-emerald-600 hover:bg-emerald-700"><a href={`/verify/${result.certId}`}>View Certificate</a></Button>
+            : <Button onClick={() => setResult(null)} className="bg-rose-600 hover:bg-rose-700"><RefreshCw className="h-4 w-4 mr-2" /> Try Again</Button>}
         </CardFooter>
       </Card>
     );
@@ -816,34 +2012,19 @@ export default function QuizRenderer({ bookSlug, questions, token }: QuizProps) 
     <div className="max-w-2xl mx-auto space-y-6">
       {questions.map((q, idx) => (
         <Card key={q.id} className="shadow-md hover:shadow-lg transition-shadow">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              Question {idx + 1}: {q.prompt}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-3">
-            {q.options.map(option => {
-              const isSelected = selectedAnswers[q.id] === option;
-              return (
-                <button
-                  key={option}
-                  onClick={() => handleSelectOption(q.id, option)}
-                  className={`w-full text-left p-3 rounded-lg border-2 transition-all flex items-center justify-between ${
-                    isSelected 
-                      ? 'border-primary bg-primary/10 text-primary-foreground font-medium'
-                      : 'border-muted hover:border-gray-400 dark:hover:border-gray-600'
-                  }`}
-                >
-                  <span>{option}</span>
-                </button>
-              );
-            })}
+          <CardHeader><CardTitle className="text-lg">Q{idx + 1}: {q.prompt}</CardTitle></CardHeader>
+          <CardContent className="grid gap-3">
+            {q.options.map((opt) => (
+              <button key={opt} onClick={() => handleSelect(q.id, opt)}
+                className={`w-full text-left p-3 rounded-lg border-2 transition-all ${answers[q.id] === opt ? 'border-primary bg-primary/10 font-medium' : 'border-muted hover:border-gray-400'}`}>
+                {opt}
+              </button>
+            ))}
           </CardContent>
         </Card>
       ))}
-
       <div className="flex justify-end pt-4">
-        <Button onClick={handleSubmitQuiz} disabled={loading} className="w-48 text-md font-bold shadow">
+        <Button onClick={handleSubmit} disabled={loading} className="w-48 font-bold shadow">
           {loading ? 'Submitting...' : 'Submit Answers'}
         </Button>
       </div>
@@ -852,36 +2033,128 @@ export default function QuizRenderer({ bookSlug, questions, token }: QuizProps) 
 }
 ```
 
+### 7.7 SEO Configuration
+
+In each page, use Next.js 14 `metadata` export for per-page SEO:
+
+```typescript
+// Example: app/books/[slug]/page.tsx
+import type { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books/${params.slug}`);
+  const { data: book } = await res.json();
+  return {
+    title: book.title,
+    description: book.description,
+    openGraph: { title: book.title, description: book.description, type: 'article' },
+  };
+}
+```
+
+Add `frontend/src/app/robots.ts`:
+
+```typescript
+import type { MetadataRoute } from 'next';
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: { userAgent: '*', allow: '/', disallow: ['/dashboard', '/api/'] },
+    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
+  };
+}
+```
+
+Add `frontend/src/app/sitemap.ts`:
+
+```typescript
+import type { MetadataRoute } from 'next';
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books`);
+  const { data } = await res.json();
+  const bookUrls = data.books.map((b: any) => ({
+    url: `${process.env.NEXT_PUBLIC_SITE_URL}/books/${b.slug}`,
+    lastModified: b.updatedAt,
+  }));
+  return [
+    { url: process.env.NEXT_PUBLIC_SITE_URL!, lastModified: new Date() },
+    ...bookUrls,
+  ];
+}
+```
+
 ---
 
-## Step 5: Copilot & Antigravity Interactive Prompt Guide
+## Step 8: Testing Strategy
 
-This index outlines highly optimized prompts to use with **GitHub Copilot** (for inline styling and autocomplete) and **Google Antigravity** (for architectural and logic generation).
+### 8.1 Backend Testing (Jest)
 
-### Prompt 5.1: Create NestJS DTOs & Entity Mappings
-```
-Prompt:
-"Act as an elite NestJS developer. Create class-validator DTOs for a dynamic Book ordering process that accepts a nullable discount coupon code and validates user access tokens. Set up Order creation logic in the OrderService that performs transactional Prisma database updates, verifies product existence, calculates dynamic percentage/fixed discounts, and checks if coupon usage limit is exceeded, using PostgreSQL transactional safety."
+NestJS includes Jest by default. Write unit tests for services and e2e tests for controllers.
+
+**Example: Auth Service Unit Test**
+
+Create `backend/src/auth/auth.service.spec.ts`:
+
+```typescript
+import { Test, TestingModule } from '@nestjs/testing';
+import { AuthService } from './auth.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { ConflictException } from '@nestjs/common';
+
+describe('AuthService', () => {
+  let service: AuthService;
+  let prisma: PrismaService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        { provide: PrismaService, useValue: { user: { findUnique: jest.fn(), create: jest.fn() } } },
+        { provide: JwtService, useValue: { sign: jest.fn().mockReturnValue('mock-token') } },
+        { provide: ConfigService, useValue: { get: jest.fn().mockReturnValue('test-secret') } },
+      ],
+    }).compile();
+
+    service = module.get<AuthService>(AuthService);
+    prisma = module.get<PrismaService>(PrismaService);
+  });
+
+  it('should throw ConflictException if email exists', async () => {
+    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({ id: '1' } as any);
+    await expect(service.register({ email: 'test@test.com', password: 'password', name: 'Test' }))
+      .rejects.toThrow(ConflictException);
+  });
+});
 ```
 
-### Prompt 5.2: Create Next.js Server Components for Free Chapters
-```
-Prompt:
-"Act as a Next.js 14 engineer using App Router. Write a dynamic static-site generated (SSG) page under `/app/books/[slug]/page.tsx` that reads chapter structure from our NestJS REST API. If the chapter index is <= 3, render full markdown chapter content statically. If the index is > 3, render a blur filter effect and show a premium checkout CTA card redirecting to aamarPay."
+**Run tests:**
+
+```bash
+# Run from: academy/backend/
+npm run test           # Unit tests
+npm run test:e2e       # End-to-end tests
+npm run test:cov       # Coverage report
 ```
 
-### Prompt 5.3: aamarPay IPN Webhook Verification Controller
-```
-Prompt:
-"Act as a cybersecurity expert and NestJS engineer. Create a secure, tamper-proof controller endpoint for `/api/v1/payments/ipn`. It must parse standard aamarPay x-www-form-urlencoded POST datasets, verify the payload integrity by hashing computed store credentials, query the orders table using Prisma, implement database-level idempotency to prevent duplicate fulfillment operations, and dynamically call the PDF watermarking service on payment completion."
-```
+### 8.2 What to Test
+
+| Layer | What to Test | Priority |
+|:------|:------------|:---------|
+| **Auth** | Registration (duplicate email rejection), login (valid/invalid credentials), token refresh | High |
+| **Orders** | Coupon validation logic, duplicate purchase prevention, price calculation | High |
+| **Payments** | IPN signature verification, idempotency (double-processing), order status transitions | Critical |
+| **Quizzes** | Score calculation, pass/fail threshold (≥70%), certificate trigger on pass | High |
+| **Certificates** | Unique ID generation, verification endpoint returns correct data | Medium |
+| **Books** | Slug lookup, pagination, admin CRUD guards | Medium |
 
 ---
 
-## Step 6: Infrastructure & Production Deployment Specs
+## Step 9: Infrastructure & Deployment
 
-### 6.1 Nginx Server Configuration (on DigitalOcean Droplet)
-Create `/etc/nginx/sites-available/academy-backend` to handle secure routing and Cloudflare origin certificate proxy termination.
+### 9.1 Nginx Configuration (DigitalOcean Droplet)
+
+Create `/etc/nginx/sites-available/academy-backend`:
 
 ```nginx
 server {
@@ -894,15 +2167,22 @@ server {
     listen 443 ssl http2;
     server_name api.multihat.dev;
 
-    # Cloudflare Origin Certificates for strict TLS encryption
+    # Cloudflare Origin Certificate (NOT Let's Encrypt)
     ssl_certificate /etc/ssl/certs/multihat_origin.pem;
     ssl_certificate_key /etc/ssl/private/multihat_origin.key;
-    
+
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
 
-    # Reverse proxy NestJS REST Server
+    # Security headers (supplement Helmet.js)
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+
+    # Request size limit (for PDF uploads)
+    client_max_body_size 25M;
+
+    # Reverse proxy to NestJS
     location / {
         proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
@@ -916,12 +2196,18 @@ server {
     }
 }
 ```
-Run: `sudo ln -s /etc/nginx/sites-available/academy-backend /etc/nginx/sites-enabled/` and `sudo systemctl reload nginx`.
 
----
+Enable and reload:
 
-### 6.2 Backend PM2 Process File
-Create a standard PM2 file in `backend/ecosystem.config.js` to ensure server continuity.
+```bash
+sudo ln -s /etc/nginx/sites-available/academy-backend /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+### 9.2 PM2 Process Manager
+
+Create `backend/ecosystem.config.js`:
 
 ```javascript
 module.exports = {
@@ -929,7 +2215,7 @@ module.exports = {
     {
       name: 'academy-backend',
       script: 'dist/main.js',
-      instances: 1, // Single instance runs comfortably in a 1GB DO droplet config
+      instances: 1,        // Single instance for 1 GB RAM Droplet
       exec_mode: 'fork',
       watch: false,
       max_memory_restart: '800M',
@@ -942,17 +2228,26 @@ module.exports = {
 };
 ```
 
----
+**Production deploy commands on the Droplet:**
 
-### 6.3 CI/CD GitHub Actions Build Script (Hardened)
-Create `.github/workflows/deploy.yml` to orchestrate automatic testing and secure Droplet deployments.
+```bash
+cd /var/www/academy/backend
+npm run build
+pm2 start ecosystem.config.js --env production
+pm2 save
+pm2 startup   # Auto-start on reboot
+```
+
+### 9.3 CI/CD — GitHub Actions
+
+Create `.github/workflows/deploy.yml`:
 
 ```yaml
 name: MultiHAT Academy CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-test:
@@ -967,18 +2262,18 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      # Backend Checks
+      # Backend
       - name: Install Backend Deps
         run: cd backend && npm ci
-      - name: Generate Prisma Client (Test env)
+      - name: Generate Prisma Client
         run: cd backend && npx prisma generate
       - name: Backend Lint & Test
         run: cd backend && npm run lint && npm run test
 
-      # Frontend Checks
+      # Frontend
       - name: Install Frontend Deps
         run: cd frontend && npm ci
-      - name: Frontend Build check
+      - name: Frontend Build Check
         run: cd frontend && npm run build
 
   deploy-backend:
@@ -1000,14 +2295,111 @@ jobs:
             npm run build
             pm2 restart ecosystem.config.js --env production
 ```
-*(Frontend CI/CD is managed natively via Vercel GitHub integration).*
+
+> **Frontend CI/CD:** Managed natively by Vercel's GitHub integration — every push to `main` triggers automatic build and deploy.
+
+**Required GitHub Secrets:**
+
+| Secret | Value |
+|:-------|:------|
+| `DROPLET_IP` | Your DigitalOcean Droplet IPv4 address |
+| `SSH_PRIVATE_KEY` | Private SSH key with root access to the Droplet |
+
+### 9.4 Database Backup Strategy
+
+Set up automated daily PostgreSQL backups on the Droplet:
+
+```bash
+# Create backup script at /opt/scripts/pg-backup.sh
+#!/bin/bash
+BACKUP_DIR="/var/backups/postgresql"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+mkdir -p $BACKUP_DIR
+pg_dump -U postgres academy_db | gzip > "$BACKUP_DIR/academy_db_$TIMESTAMP.sql.gz"
+# Retain only last 14 days
+find $BACKUP_DIR -type f -mtime +14 -delete
+echo "Backup completed: academy_db_$TIMESTAMP.sql.gz"
+```
+
+```bash
+chmod +x /opt/scripts/pg-backup.sh
+# Add to crontab — daily at 3:00 AM
+crontab -e
+# Add line: 0 3 * * * /opt/scripts/pg-backup.sh >> /var/log/pg-backup.log 2>&1
+```
+
+### 9.5 Monitoring & Alerting
+
+| Tool | Setup | Purpose |
+|:-----|:------|:--------|
+| **DigitalOcean Monitoring** | Enable in Droplet settings → Monitoring tab | CPU, memory, disk, bandwidth alerts |
+| **PM2 Monitoring** | `pm2 monit` (built-in) | Real-time process metrics, restarts, logs |
+| **Sentry** (optional) | `npm install @sentry/nestjs` in backend | Error tracking with stack traces, 10K events/month free |
+| **Google Analytics 4** | Add `NEXT_PUBLIC_GA_ID` to frontend `.env.local` | Page views, conversion funnels, UTM campaign tracking |
+| **Uptime Check** | DigitalOcean Uptime → add `https://api.multihat.dev/api/v1/books` | Alerts on API downtime via email/Slack |
 
 ---
 
-## Step 7: Post-Deployment Verification & Handover Checkpoints
+## Step 10: Production Deployment Checklist
 
-Once deployed, execute these precise HTTP and functional operations to confirm target health:
+Execute these verification steps after deployment to confirm everything is production-ready:
 
-1. **Verify API Integrity**: Request `GET https://api.multihat.dev/api/v1/books` and ensure it responds with CORS headers allowlisting `academy.multihat.dev`.
-2. **Verify Cryptographic Hashing**: Inject a dummy payment record via Prisma Studio and trigger `/api/v1/payments/ipn` to ensure webhook signature calculations correctly trigger digital certificate PDF rendering.
-3. **Audit Watermarking Speeds**: Execute a purchase loop to confirm PDFKit finishes generating the dynamic e-book overlay stream within the 3-second response boundary required for Resend server hooks.
+### Security
+
+- [ ] `GET https://api.multihat.dev/api/v1/books` responds with CORS header `Access-Control-Allow-Origin: https://academy.multihat.dev`
+- [ ] Response headers include `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` (via Helmet)
+- [ ] `POST /api/v1/auth/login` returns 429 after 10 rapid attempts (throttler working)
+- [ ] API rejects requests from unauthorized origins (test with `curl -H "Origin: https://evil.com"`)
+- [ ] All `.env` files are excluded from Git (check `.gitignore`)
+- [ ] JWT secrets are unique, high-entropy, production-grade strings (not default values)
+- [ ] Cloudflare SSL/TLS mode is set to **Full (Strict)**
+- [ ] Nginx is only accepting connections from Cloudflare IPs (optional but recommended)
+
+### API Functionality
+
+- [ ] `POST /api/v1/auth/register` creates a new user and returns JWT tokens
+- [ ] `POST /api/v1/auth/login` authenticates and returns access + refresh tokens
+- [ ] `POST /api/v1/auth/refresh` issues new token pair from valid refresh token
+- [ ] `GET /api/v1/books` returns paginated published books
+- [ ] `GET /api/v1/books/:slug` returns book details with chapter metadata
+- [ ] `POST /api/v1/orders` creates PENDING order and returns aamarPay redirect URL
+- [ ] aamarPay IPN webhook (`POST /api/v1/payments/ipn`) correctly updates order to PAID
+- [ ] IPN handler is idempotent (sending same webhook twice does not duplicate processing)
+- [ ] `GET /api/v1/quizzes/:bookSlug/questions` returns questions for purchased book only
+- [ ] `POST /api/v1/quizzes/:bookSlug/submit` scores correctly and triggers certificate on ≥70%
+- [ ] `GET /api/v1/certificates/verify/:certId` returns valid certificate data (public, no auth)
+- [ ] Swagger docs accessible at `https://api.multihat.dev/api/docs`
+
+### PDF & Email
+
+- [ ] Watermarked PDF generates with buyer's email visible at 5% opacity on every page
+- [ ] Certificate PDF generates with correct name, course title, date, and verification URL
+- [ ] Resend delivers purchase receipt email within 30 seconds of payment confirmation
+- [ ] Certificate email includes PDF attachment and verification link
+
+### Frontend
+
+- [ ] `academy.multihat.dev` loads with HTTPS (Vercel auto-SSL)
+- [ ] Dark/light theme toggle works correctly
+- [ ] Free chapters (1–3) render fully; premium chapters show blurred preview with CTA
+- [ ] Login/register forms validate input (React Hook Form + Zod)
+- [ ] Dashboard shows purchased books, quiz scores, and certificates
+- [ ] Certificate verification page (`/verify/:certID`) works without login
+- [ ] Sitemap is accessible at `/sitemap.xml`
+- [ ] `robots.txt` disallows `/dashboard` and `/api/`
+
+### Infrastructure
+
+- [ ] PM2 status shows `academy-backend` as `online` (`pm2 status`)
+- [ ] Nginx config passes syntax check (`nginx -t`)
+- [ ] PostgreSQL daily backup cron is active (`crontab -l`)
+- [ ] DigitalOcean monitoring alerts are configured for CPU > 80%, Disk > 90%
+- [ ] GitHub Actions pipeline passes on push to `main`
+- [ ] Vercel deploys automatically from `main` branch
+
+---
+
+**Prepared by:** Sagar Biswas (MultiHAT)  
+**Contact:** [github.com/SagarBiswas-MultiHAT](https://github.com/SagarBiswas-MultiHAT)
+
+_Permission First, Always. Stay Ethical. Stay Curious._
