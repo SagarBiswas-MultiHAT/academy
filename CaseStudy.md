@@ -16,12 +16,24 @@ MultiHAT Academy is a full‑stack digital education platform that converts indi
 
 Sagar Biswas, a Computer Science & Engineering student at AIUB, Bangladesh, has spent years meticulously documenting his self‑learning in a collection of structured notebooks covering topics such as:
 
-- Google Dorks & OSINT
-- HTML & CSS
-- Python for Ethical Hacking
-- PHP & MySQL
-- NestJS Framework
-- DNS & Network Fundamentals
+- Cybersecurity:
+  - Choose Your Cybersecurity Path WISELY
+  - Google Dorks
+  - Foundations of Networking 
+  - DNS in Detail Handbook
+  - Bash Scripting
+  - Python for Ethical Hacking
+  
+- General Programming:
+  - C Programming Language
+  - DataTypes inCpp (Data Structures)
+  - Python for beginners
+
+- Web Dev: 
+  - HTML
+  - JavaScript in Details
+  - PHP for Beginners From Zero to Secure Web Applications
+  - NestJS Framework
 
 Initially shared on GitHub as free PDFs, these notebooks quickly gained organic traction. The quality was evident—professional formatting, real‑world examples, and a depth rarely found in free resources. However, they remained unmonetized and their potential as a full‑fledged learning platform was untapped.
 
