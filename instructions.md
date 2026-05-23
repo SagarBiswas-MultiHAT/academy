@@ -69,8 +69,12 @@ academy/
 │   └── package.json
 ├── .github/workflows/        # CI/CD pipeline
 │   └── deploy.yml
+├── .gitignore                # Root-level Git exclusions
 ├── diagrams/                 # 10 Mermaid architecture flow diagrams
 ├── docker-compose.yml        # Local PostgreSQL for development
+├── brandLogoDark.png         # Brand logo (dark theme) — pre-existing asset
+├── brandLogoLight.png        # Brand logo (light theme) — pre-existing asset
+├── og-image.png              # Open Graph social preview image — pre-existing asset
 ├── CaseStudy.md
 ├── FinalTechStack&Tools.md
 ├── README.md
@@ -211,6 +215,67 @@ npx -y shadcn-ui@latest init
 ```
 
 > **Note:** `next-seo` is used for Open Graph, Twitter Cards, and JSON-LD structured data as specified in the tech stack. `axios` is the HTTP client for all REST API calls to the NestJS backend.
+
+### 1.4 Brand Assets (Pre-existing)
+
+The following brand assets already exist in the repository root. Copy them to the frontend's `public/` directory so they are served as static files:
+
+```bash
+# Run from: academy/
+cp brandLogoDark.png frontend/public/brandLogoDark.png
+cp brandLogoLight.png frontend/public/brandLogoLight.png
+cp og-image.png frontend/public/og-image.png
+```
+
+| Asset | Usage |
+|:------|:------|
+| `brandLogoDark.png` | Site logo rendered in dark theme (Navbar, footer, certificate header) |
+| `brandLogoLight.png` | Site logo rendered in light theme |
+| `og-image.png` | Default Open Graph / Twitter Card preview image for social sharing |
+
+> **Frontend reference:** Use `<Image src="/brandLogoDark.png" ... />` in components. The OG image is set in `layout.tsx` metadata via `openGraph.images: [{ url: '/og-image.png' }]`.
+
+### 1.5 Root .gitignore
+
+Create `academy/.gitignore`:
+
+```gitignore
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+.next/
+out/
+
+# Generated files (runtime PDFs — certificates & watermarked e-books)
+backend/generated/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+postgres-data/
+```
+
+> **Critical:** The `.env` files contain secrets (JWT keys, aamarPay credentials, Resend API key). They must never be committed. The `backend/generated/` directory contains runtime-generated PDFs (watermarked e-books and certificates) that are ephemeral and user-specific.
 
 ---
 
@@ -2704,6 +2769,7 @@ export const metadata: Metadata = {
     siteName: 'MultiHAT Academy',
     type: 'website',
     locale: 'en_US',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'MultiHAT Academy' }],
   },
 };
 
