@@ -22,15 +22,20 @@ flowchart TB
 
     subgraph droplet["DigitalOcean Droplet\n1 vCPU · 1 GB RAM · 25 GB Disk"]
         nginx_proxy["Nginx\nReverse Proxy\nOrigin Certificate"]
-        pm2["PM2\nProcess Manager\nAuto-restart"]
-        nest_app["NestJS 11\nREST API\nSwagger at /api/docs"]
+        pm2["PM2\nProcess Manager\nAuto-restart · Clustering"]
+
+        subgraph nest_runtime["NestJS 11 Runtime"]
+            api["REST API\nSwagger at /api/docs"]
+            cron["@nestjs/schedule\nCron Jobs"]
+        end
+
         prisma_orm["Prisma ORM\n+ Prisma Studio"]
-        postgres[("PostgreSQL\nACID-compliant\nDaily Backups")]
+        postgres[("PostgreSQL\nACID-compliant\nDaily Backups\n11 tables")]
     end
 
     nginx_proxy --> pm2
-    pm2 --> nest_app
-    nest_app --> prisma_orm
+    pm2 --> nest_runtime
+    nest_runtime --> prisma_orm
     prisma_orm --> postgres
 
     subgraph external["External Services"]
@@ -39,8 +44,8 @@ flowchart TB
         ga4["📊 Google Analytics 4"]
     end
 
-    nest_app --> aamarpay
-    nest_app --> resend
+    api --> aamarpay
+    api --> resend
     nextjs --> ga4
 
     subgraph cicd["CI/CD Pipeline"]
@@ -50,5 +55,5 @@ flowchart TB
 
     github --> actions
     actions -->|"Deploy frontend"| vercel
-    actions -->|"Deploy backend"| droplet
+    actions -->|"Deploy backend\n(SSH + PM2 reload)"| droplet
 ```

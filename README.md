@@ -8,7 +8,7 @@
 
 ## Overview
 
-MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, offers interactive quizzes, and issues verifiable certificates of completion. Built by [Sagar Biswas (MultiHAT)](https://github.com/SagarBiswas-MultiHAT) as both a revenue-generating platform and a university course project.
+MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, offers paid web chapters and interactive quizzes, issues verifiable certificates of completion, and features a User Wallet ecosystem with Referral and Certification Showcase Rewards for organic growth. Built by [Sagar Biswas (MultiHAT)](https://github.com/SagarBiswas-MultiHAT) as both a revenue-generating platform and a university course project.
 
 ---
 
@@ -24,6 +24,7 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 | **Auth** | JWT + Passport.js | Stateless authentication |
 | **Email** | Resend | Transactional email delivery |
 | **PDFs** | PDFKit + pdf-lib | Watermarked e-books + certificates |
+| **Scheduling** | @nestjs/schedule | Cron jobs (showcase verification, referral checks) |
 | **Hosting** | Vercel + DigitalOcean Droplet | Frontend CDN + backend VPS |
 | **DNS/CDN** | Cloudflare (free plan) | DNS · DDoS protection · CDN |
 | **CI/CD** | GitHub Actions | Automated testing & deployment |
@@ -48,13 +49,17 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 ## Key Features
 
 - **📚 Premium E-books** — Watermarked PDFs with buyer's email embedded on every page
+- **📖 Free Previews** — First 3 chapters of each book available without login
+- **📖 Paid Web Chapters** — Premium gated web content purchasable individually or via Wallet
 - **📝 Interactive Quizzes** — Multiple-choice assessments per book
 - **🎓 Verifiable Certificates** — PDF certificates with public verification at `/verify/:certID`
+- **💰 User Wallet** — Cash-in only wallet for platform purchases; funded via aamarPay top-ups, referral credits, and showcase rewards
+- **🤝 Referral Program** — Earn ৳100/$0.80 per qualified referral (referred user must spend ≥ ৳500/$4)
+- **📣 Certification Showcase** — Earn Wallet credits by sharing certifications on LinkedIn, Twitter/X, Facebook, and Instagram (10-day verification)
 - **💳 Local Payments** — aamarPay integration (bKash, Nagad, Rocket, cards)
 - **🔒 Anti-Piracy** — Dynamic watermarks, UTM-tracked links, Google Alerts
 - **🌙 Dark Mode** — Full dark/light theme support
-- **📊 User Dashboard** — Purchase history, quiz scores, certificates
-- **📖 Free Previews** — First 3 chapters of each book available without login
+- **📊 User Dashboard** — Purchase history, quiz scores, certificates, wallet balance
 - **🏷️ Coupon System** — Percentage and fixed-amount discount codes
 - **📧 Email Delivery** — Automatic PDF and receipt delivery via Resend
 
@@ -75,7 +80,9 @@ academy/
     ├── 05-deployment-topology.md
     ├── 06-admin-workflow.md
     ├── 07-certificate-issuance-flow.md
-    └── 08-course-lesson-management.md
+    ├── 08-course-lesson-management.md
+    ├── 09-wallet-and-referral-flow.md
+    └── 10-showcase-verification-flow.md
 ```
 
 ---
@@ -84,9 +91,9 @@ academy/
 
 | Document | Description |
 |:---------|:------------|
-| [CaseStudy.md](./CaseStudy.md) | Full business case study: motivation, revenue model, technical architecture, security, marketing strategy, and risk mitigation |
+| [CaseStudy.md](./CaseStudy.md) | Full business case study: motivation, revenue model (6-tier products, Wallet, Referral, Showcase), technical architecture, security, marketing strategy, and risk mitigation |
 | [FinalTechStack&Tools.md](./FinalTechStack&Tools.md) | Complete inventory of every tool, library, and service with versions, roles, and costs |
-| [diagrams/](./diagrams/) | 8 Mermaid diagrams covering architecture, payment flow, user journey, data model, deployment, admin workflow, certificate issuance, and content management |
+| [diagrams/](./diagrams/) | 10 Mermaid diagrams covering architecture, payment flow, user journey, data model, deployment, admin workflow, certificate issuance, content management, wallet & referral flow, and showcase verification |
 
 ---
 
@@ -108,6 +115,13 @@ academy/
 | | `GET` | `/api/v1/certificates/verify/:certId` | No |
 | Users | `GET` | `/api/v1/users/me` | Yes |
 | | `PATCH` | `/api/v1/users/me` | Yes |
+| Wallet | `GET` | `/api/v1/wallet/balance` | Yes |
+| | `POST` | `/api/v1/wallet/topup` | Yes |
+| | `GET` | `/api/v1/wallet/transactions` | Yes |
+| Referrals | `GET` | `/api/v1/referrals/code` | Yes |
+| | `GET` | `/api/v1/referrals/stats` | Yes |
+| Showcases | `POST` | `/api/v1/showcases/submit` | Yes |
+| | `GET` | `/api/v1/showcases/my` | Yes |
 
 ---
 

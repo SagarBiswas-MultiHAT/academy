@@ -7,7 +7,7 @@
 **Payment Gateway:** aamarPay  
 **Primary Developer:** Sagar Biswas  
 **Cost Model:** Low fixed cost & pay‑as‑you‑grow  
-**Last Updated:** May 20, 2026
+**Last Updated:** May 23, 2026
 
 ---
 
@@ -45,6 +45,7 @@
 | **class‑transformer**| 0.5.x   | DTO serialization and transformation — controls which fields are exposed in API responses.              | Free |
 | **@nestjs/config**   | latest  | Environment variables and secrets management via `.env` files.                                          | Free |
 | **@nestjs/throttler** | latest | Rate limiting per route — prevents brute‑force attacks and API abuse.                                   | Free |
+| **@nestjs/schedule**  | latest | Cron‑based task scheduling — powers the 10‑day Certification Showcase verification window and referral threshold checks. | Free |
 | **Helmet**           | latest  | HTTP security headers middleware (CSP, HSTS, X‑Frame‑Options, etc.).                                   | Free |
 | **bcrypt**           | 5.x     | Secure password hashing with configurable salt rounds.                                                  | Free |
 
@@ -62,13 +63,17 @@
 
 | Table            | Purpose                                                              |
 | :--------------- | :------------------------------------------------------------------- |
-| `users`          | User accounts: email, hashed password, name, role, timestamps       |
-| `books`          | Product catalog: title, slug, description, price, chapter metadata   |
-| `orders`         | Purchase records: user, book, amount, status, aamarPay transaction ID |
-| `quiz_questions` | Multiple‑choice questions per book: prompt, options, correct answer  |
-| `quiz_attempts`  | User quiz submissions: answers, score, pass/fail, timestamps        |
-| `certificates`   | Issued credentials: unique cert ID, holder, course, issue date       |
-| `coupons`        | Discount codes: code, type (% / fixed), expiry, usage count / limit  |
+| `users`               | User accounts: email, hashed password, name, role, referral code, timestamps |
+| `books`               | Product catalog: title, slug, description, price, chapter metadata            |
+| `orders`              | Purchase records: user, book, amount, status, payment method (gateway/wallet), aamarPay transaction ID |
+| `quiz_questions`      | Multiple‑choice questions per book: prompt, options, correct answer           |
+| `quiz_attempts`       | User quiz submissions: answers, score, pass/fail, timestamps                  |
+| `certificates`        | Issued credentials: unique cert ID, holder, course, issue date                |
+| `coupons`             | Discount codes: code, type (% / fixed), expiry, usage count / limit           |
+| `wallets`             | User wallet: BDT balance, lifetime earned, lifetime spent (one‑to‑one with user) |
+| `wallet_transactions` | Wallet ledger: top‑ups, purchases, referral credits, showcase credits, timestamps |
+| `referrals`           | Referral tracking: referrer ID, referred user ID, status, cumulative spend, reward paid |
+| `social_showcases`    | Certification showcase: post URL, platform (LinkedIn/X/FB/IG), submit date, verify date, status, reward credited |
 
 ---
 
@@ -101,6 +106,13 @@
 |                | `GET`    | `/api/v1/certificates/verify/:certId`  | No (public)   |
 | **Users**      | `GET`    | `/api/v1/users/me`                      | Yes           |
 |                | `PATCH`  | `/api/v1/users/me`                      | Yes           |
+| **Wallet**     | `GET`    | `/api/v1/wallet/balance`                | Yes           |
+|                | `POST`   | `/api/v1/wallet/topup`                  | Yes           |
+|                | `GET`    | `/api/v1/wallet/transactions`           | Yes           |
+| **Referrals**  | `GET`    | `/api/v1/referrals/code`                | Yes           |
+|                | `GET`    | `/api/v1/referrals/stats`               | Yes           |
+| **Showcases**  | `POST`   | `/api/v1/showcases/submit`              | Yes           |
+|                | `GET`    | `/api/v1/showcases/my`                  | Yes           |
 
 ---
 
@@ -221,6 +233,12 @@
                               │  │  ├─────────┤ ├──────────┤ │  │
                               │  │  │ Quizzes │ │ Certs    │ │  │
                               │  │  │ Module  │ │ Module   │ │  │
+                              │  │  ├─────────┤ ├──────────┤ │  │
+                              │  │  │ Wallet  │ │Referrals │ │  │
+                              │  │  │ Module  │ │ Module   │ │  │
+                              │  │  ├─────────┤ ├──────────┤ │  │
+                              │  │  │Showcases│ │          │ │  │
+                              │  │  │ Module  │ │          │ │  │
                               │  │  └─────────┘ └──────────┘ │  │
                               │  └─────────────┬──────────────┘  │
                               │                │  Prisma ORM     │
@@ -228,7 +246,8 @@
                               │  │       PostgreSQL           │  │
                               │  │  (users, books, orders,    │  │
                               │  │   quizzes, certificates,   │  │
-                              │  │   coupons)                 │  │
+                              │  │   coupons, wallets,        │  │
+                              │  │   referrals, showcases)    │  │
                               │  └────────────────────────────┘  │
                               └──────────┬───────────┬───────────┘
                                          │           │
@@ -277,7 +296,8 @@
 | **Hosting**    | Vercel + DigitalOcean Droplet (existing) | Frontend CDN + backend VPS (1 vCPU · 1 GB · 25 GB) |
 | **CI/CD**      | GitHub Actions                 | Automated testing and deployment           |
 | **Security**   | Helmet, Throttler, bcrypt, Prisma | Defense‑in‑depth                         |
+| **Scheduling** | @nestjs/schedule                 | Cron jobs (showcase verification, referral checks) |
 
 ---
 
-This stack gives you complete ownership of every piece of your platform, aligns perfectly with your university course, and sets you up for long‑term growth with a production‑proven, type‑safe architecture. The combination of Next.js 14 + NestJS 11 + PostgreSQL + Prisma + REST API provides a robust foundation that scales from a student project to a profitable business. Build boldly!
+This stack gives you complete ownership of every piece of your platform, aligns perfectly with your university course, and sets you up for long‑term growth with a production‑proven, type‑safe architecture. The combination of Next.js 14 + NestJS 11 + PostgreSQL + Prisma + REST API provides a robust foundation that scales from a student project to a profitable business. The Wallet, Referral, and Certification Showcase systems create self‑sustaining growth loops that reduce customer acquisition costs over time. Build boldly!
