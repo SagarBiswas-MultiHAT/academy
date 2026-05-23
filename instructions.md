@@ -1,10 +1,10 @@
 # MultiHAT Academy — Full-Stack Build Instructions (A to Z)
 
-> **Version:** 4.0 — Production-Ready  
-> **Last Updated:** May 21, 2026  
+> **Version:** 5.0 — Production-Ready  
+> **Last Updated:** May 23, 2026  
 > **Author:** Sagar Biswas (MultiHAT)
 
-This document is the **master engineering guide** for building MultiHAT Academy (`academy.multihat.dev`) from scratch. Every section is aligned with [`CaseStudy.md`](./CaseStudy.md), [`FinalTechStack&Tools.md`](./FinalTechStack&Tools.md), and the [8 Mermaid architecture diagrams](./diagrams/). It is designed to be fed directly into **Google Antigravity** and **GitHub Copilot** as a step-by-step execution roadmap.
+This document is the **master engineering guide** for building MultiHAT Academy (`academy.multihat.dev`) from scratch. Every section is aligned with [`CaseStudy.md`](./CaseStudy.md), [`FinalTechStack&Tools.md`](./FinalTechStack&Tools.md), and the [10 Mermaid architecture diagrams](./diagrams/). It is designed to be fed directly into **Google Antigravity** and **GitHub Copilot** as a step-by-step execution roadmap.
 
 ---
 
@@ -16,6 +16,10 @@ This document is the **master engineering guide** for building MultiHAT Academy 
 - [Step 3: Backend Core Infrastructure](#step-3-backend-core-infrastructure)
 - [Step 4: Authentication & Authorization](#step-4-authentication--authorization)
 - [Step 5: Backend Feature Modules](#step-5-backend-feature-modules)
+  - [5.1 Users · 5.2 Books · 5.3 Orders · 5.4 Payments · 5.5 Quizzes · 5.6 Certificates · 5.7 Email](#step-5-backend-feature-modules)
+  - [5.8 Wallet Module](#58-wallet-module-balance-top-up-transactions)
+  - [5.9 Referrals Module](#59-referrals-module-tracking--reward-crediting)
+  - [5.10 Showcases Module](#510-showcases-module-certification-showcase--10-day-verification)
 - [Step 6: Backend Utilities — PDF Engines](#step-6-backend-utilities--pdf-engines)
 - [Step 7: Frontend Architecture](#step-7-frontend-architecture)
 - [Step 8: Testing Strategy](#step-8-testing-strategy)
@@ -38,10 +42,13 @@ academy/
 │   │   ├── users/            # User profile, PATCH /me
 │   │   ├── books/            # Product CRUD (admin + public)
 │   │   ├── coupons/          # Discount code management
-│   │   ├── orders/           # Purchase flow
+│   │   ├── orders/           # Purchase flow (gateway + wallet)
 │   │   ├── payments/         # aamarPay IPN webhook
 │   │   ├── quizzes/          # Quiz engine & scoring
 │   │   ├── certificates/     # Certificate generation & verification
+│   │   ├── wallet/           # Wallet balance, top-up, transactions
+│   │   ├── referrals/        # Referral tracking & reward crediting
+│   │   ├── showcases/        # Certification showcase & 10-day verification
 │   │   ├── email/            # Resend transactional email service
 │   │   ├── prisma/           # PrismaService (shared DB access)
 │   │   ├── app.module.ts
@@ -62,7 +69,7 @@ academy/
 │   └── package.json
 ├── .github/workflows/        # CI/CD pipeline
 │   └── deploy.yml
-├── diagrams/                 # 8 Mermaid architecture flow diagrams
+├── diagrams/                 # 10 Mermaid architecture flow diagrams
 ├── docker-compose.yml        # Local PostgreSQL for development
 ├── CaseStudy.md
 ├── FinalTechStack&Tools.md
@@ -89,6 +96,7 @@ academy/
 | `SENDER_EMAIL` | `academy@multihat.dev` | From address for outgoing emails |
 | `FRONTEND_URL` | `http://localhost:3000` | Frontend origin (CORS + redirect URLs) |
 | `NODE_ENV` | `development` | Environment flag |
+| `WALLET_MIN_TOPUP_BDT` | `50` | Minimum wallet top-up amount in BDT |
 
 ### Frontend (`frontend/.env.local`)
 
@@ -181,7 +189,7 @@ Install all backend dependencies:
 
 ```bash
 # Run from: academy/backend/
-npm install @prisma/client @nestjs/config @nestjs/jwt @nestjs/passport @nestjs/swagger @nestjs/throttler passport passport-jwt bcrypt class-validator class-transformer helmet pdf-lib axios resend swagger-ui-express
+npm install @prisma/client @nestjs/config @nestjs/jwt @nestjs/passport @nestjs/swagger @nestjs/throttler @nestjs/schedule passport passport-jwt bcrypt class-validator class-transformer helmet pdf-lib axios resend swagger-ui-express
 npm install --save-dev prisma @types/bcrypt @types/passport-jwt @types/node
 ```
 
@@ -241,6 +249,11 @@ enum OrderStatus {
   REFUNDED
 }
 
+enum PaymentMethod {
+  GATEWAY
+  WALLET
+}
+
 enum DiscountType {
   PERCENTAGE
   FIXED
@@ -251,17 +264,49 @@ enum QuizResult {
   FAIL
 }
 
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  CREDITED
+}
+
+enum ShowcasePlatform {
+  LINKEDIN
+  TWITTER
+  FACEBOOK
+  INSTAGRAM
+}
+
+enum ShowcaseStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum WalletTransactionType {
+  TOPUP
+  PURCHASE
+  REFERRAL_CREDIT
+  SHOWCASE_CREDIT
+}
+
 model User {
-  id              String        @id @default(uuid()) @db.Uuid
-  email           String        @unique
-  hashedPassword  String        @map("hashed_password")
+  id              String            @id @default(uuid()) @db.Uuid
+  email           String            @unique
+  hashedPassword  String            @map("hashed_password")
   name            String
-  role            Role          @default(USER)
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  role            Role              @default(USER)
+  referralCode    String            @unique @default(uuid()) @map("referral_code")
+  referredById    String?           @map("referred_by_id") @db.Uuid
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
   orders          Order[]
   quizAttempts    QuizAttempt[]
   certificates    Certificate[]
+  wallet          Wallet?
+  referralsMade   Referral[]        @relation("referrer")
+  referralReceived Referral?        @relation("referred")
+  socialShowcases SocialShowcase[]
 
   @@map("users")
 }
@@ -284,21 +329,22 @@ model Book {
 }
 
 model Order {
-  id               String      @id @default(uuid()) @db.Uuid
-  userId           String      @map("user_id") @db.Uuid
-  bookId           String      @map("book_id") @db.Uuid
-  couponId         String?     @map("coupon_id") @db.Uuid
-  amount           Decimal     @db.Decimal(10, 2)
-  discountApplied  Decimal     @default(0) @map("discount_applied") @db.Decimal(10, 2)
-  status           OrderStatus @default(PENDING)
-  aamarpayTranId   String?     @unique @map("aamarpay_tran_id")
-  gatewayResponse  Json?       @map("gateway_response")
-  createdAt        DateTime    @default(now()) @map("created_at")
-  updatedAt        DateTime    @updatedAt @map("updated_at")
+  id               String        @id @default(uuid()) @db.Uuid
+  userId           String        @map("user_id") @db.Uuid
+  bookId           String        @map("book_id") @db.Uuid
+  couponId         String?       @map("coupon_id") @db.Uuid
+  amount           Decimal       @db.Decimal(10, 2)
+  discountApplied  Decimal       @default(0) @map("discount_applied") @db.Decimal(10, 2)
+  status           OrderStatus   @default(PENDING)
+  paymentMethod    PaymentMethod @default(GATEWAY) @map("payment_method")
+  aamarpayTranId   String?       @unique @map("aamarpay_tran_id")
+  gatewayResponse  Json?         @map("gateway_response")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
 
-  user             User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  book             Book        @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  coupon           Coupon?     @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book             Book          @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  coupon           Coupon?       @relation(fields: [couponId], references: [id], onDelete: SetNull)
 
   @@map("orders")
 }
@@ -334,18 +380,19 @@ model QuizAttempt {
 }
 
 model Certificate {
-  id            String      @id @default(uuid()) @db.Uuid
-  userId        String      @map("user_id") @db.Uuid
-  quizAttemptId String      @unique @map("quiz_attempt_id") @db.Uuid
-  certificateId String      @unique @default(uuid()) @map("certificate_id")
-  holderName    String      @map("holder_name")
-  courseTitle   String      @map("course_title")
-  issueDate     DateTime    @default(now()) @map("issue_date") @db.Date
-  isValid       Boolean     @default(true) @map("is_valid")
-  createdAt     DateTime    @default(now()) @map("created_at")
+  id              String           @id @default(uuid()) @db.Uuid
+  userId          String           @map("user_id") @db.Uuid
+  quizAttemptId   String           @unique @map("quiz_attempt_id") @db.Uuid
+  certificateId   String           @unique @default(uuid()) @map("certificate_id")
+  holderName      String           @map("holder_name")
+  courseTitle      String           @map("course_title")
+  issueDate       DateTime         @default(now()) @map("issue_date") @db.Date
+  isValid         Boolean          @default(true) @map("is_valid")
+  createdAt       DateTime         @default(now()) @map("created_at")
 
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  quizAttempt   QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizAttempt     QuizAttempt      @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  socialShowcases SocialShowcase[]
 
   @@map("certificates")
 }
@@ -365,6 +412,73 @@ model Coupon {
 
   @@map("coupons")
 }
+
+// ─── NEW MODELS (Wallet Ecosystem) ───────────────────────────────────
+
+model Wallet {
+  id              String               @id @default(uuid()) @db.Uuid
+  userId          String               @unique @map("user_id") @db.Uuid
+  balanceBdt      Decimal              @default(0) @map("balance_bdt") @db.Decimal(10, 2)
+  lifetimeEarned  Decimal              @default(0) @map("lifetime_earned") @db.Decimal(10, 2)
+  lifetimeSpent   Decimal              @default(0) @map("lifetime_spent") @db.Decimal(10, 2)
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions    WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id            String                @id @default(uuid()) @db.Uuid
+  walletId      String                @map("wallet_id") @db.Uuid
+  type          WalletTransactionType
+  amount        Decimal               @db.Decimal(10, 2)
+  description   String
+  referenceId   String?               @map("reference_id") @db.Uuid
+  createdAt     DateTime              @default(now()) @map("created_at")
+
+  wallet        Wallet                @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@map("wallet_transactions")
+}
+
+model Referral {
+  id              String         @id @default(uuid()) @db.Uuid
+  referrerId      String         @map("referrer_id") @db.Uuid
+  referredUserId  String         @unique @map("referred_user_id") @db.Uuid
+  status          ReferralStatus @default(PENDING)
+  cumulativeSpend Decimal        @default(0) @map("cumulative_spend") @db.Decimal(10, 2)
+  rewardPaid      Boolean        @default(false) @map("reward_paid")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  qualifiedAt     DateTime?      @map("qualified_at")
+
+  referrer        User           @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredUser    User           @relation("referred", fields: [referredUserId], references: [id], onDelete: Cascade)
+
+  @@map("referrals")
+}
+
+model SocialShowcase {
+  id             String           @id @default(uuid()) @db.Uuid
+  userId         String           @map("user_id") @db.Uuid
+  certificateId  String           @map("certificate_id") @db.Uuid
+  platform       ShowcasePlatform
+  postUrl        String           @map("post_url")
+  status         ShowcaseStatus   @default(PENDING)
+  rewardAmount   Decimal          @map("reward_amount") @db.Decimal(10, 2)
+  submittedAt    DateTime         @default(now()) @map("submitted_at")
+  verifyAfter    DateTime         @map("verify_after")
+  verifiedAt     DateTime?        @map("verified_at")
+  createdAt      DateTime         @default(now()) @map("created_at")
+
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  certificate    Certificate      @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, certificateId, platform]) // One reward per platform per certification
+  @@map("social_showcases")
+}
 ```
 
 ### 2.3 Environment Configuration
@@ -383,6 +497,7 @@ RESEND_API_KEY="re_123456789"
 SENDER_EMAIL="academy@multihat.dev"
 FRONTEND_URL="http://localhost:3000"
 NODE_ENV="development"
+WALLET_MIN_TOPUP_BDT="50"
 ```
 
 Create `frontend/.env.local`:
@@ -424,6 +539,13 @@ async function main() {
       hashedPassword,
       role: 'ADMIN',
     },
+  });
+
+  // Create wallet for admin
+  await prisma.wallet.upsert({
+    where: { userId: admin.id },
+    update: {},
+    create: { userId: admin.id },
   });
 
   // Seed initial book
@@ -504,6 +626,9 @@ npx nest g resource quizzes --no-spec
 npx nest g resource certificates --no-spec
 npx nest g module email --no-spec
 npx nest g service email --no-spec
+npx nest g resource wallet --no-spec
+npx nest g resource referrals --no-spec
+npx nest g resource showcases --no-spec
 ```
 
 Select **REST API** and type **Y** for CRUD entry points when prompted.
@@ -554,6 +679,7 @@ Create `backend/src/app.module.ts`:
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
@@ -565,6 +691,9 @@ import { PaymentsModule } from './payments/payments.module';
 import { QuizzesModule } from './quizzes/quizzes.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { EmailModule } from './email/email.module';
+import { WalletModule } from './wallet/wallet.module';
+import { ReferralsModule } from './referrals/referrals.module';
+import { ShowcasesModule } from './showcases/showcases.module';
 
 @Module({
   imports: [
@@ -573,6 +702,9 @@ import { EmailModule } from './email/email.module';
 
     // Rate limiting: 100 requests per 60 seconds per IP (global default)
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
+
+    // Task scheduling (cron jobs for showcase verification & referral checks)
+    ScheduleModule.forRoot(),
 
     // Core
     PrismaModule,
@@ -587,6 +719,11 @@ import { EmailModule } from './email/email.module';
     QuizzesModule,
     CertificatesModule,
     EmailModule,
+
+    // Wallet ecosystem modules
+    WalletModule,
+    ReferralsModule,
+    ShowcasesModule,
   ],
   providers: [
     // Apply throttler globally
@@ -742,7 +879,7 @@ app.useGlobalFilters(new GlobalExceptionFilter());
 Create `backend/src/auth/dto/register.dto.ts`:
 
 ```typescript
-import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, IsOptional } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -757,6 +894,10 @@ export class RegisterDto {
   @MinLength(2)
   @MaxLength(100)
   name: string;
+
+  @IsString()
+  @IsOptional()
+  referralCode?: string; // Referral code from the referrer's link
 }
 ```
 
@@ -880,10 +1021,38 @@ export class AuthService {
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (existing) throw new ConflictException('Email already registered');
 
+    // Resolve referrer if referral code is provided
+    let referredById: string | undefined;
+    if (dto.referralCode) {
+      const referrer = await this.prisma.user.findUnique({
+        where: { referralCode: dto.referralCode },
+      });
+      if (referrer) referredById = referrer.id;
+      // Silently ignore invalid referral codes — don't block registration
+    }
+
     const hashedPassword = await bcrypt.hash(dto.password, 12);
     const user = await this.prisma.user.create({
-      data: { email: dto.email, name: dto.name, hashedPassword },
+      data: {
+        email: dto.email,
+        name: dto.name,
+        hashedPassword,
+        ...(referredById && { referredById }),
+      },
     });
+
+    // Create wallet for new user (balance starts at 0)
+    await this.prisma.wallet.create({ data: { userId: user.id } });
+
+    // Create referral tracking record if referred
+    if (referredById) {
+      await this.prisma.referral.create({
+        data: {
+          referrerId: referredById,
+          referredUserId: user.id,
+        },
+      });
+    }
 
     return this.generateTokens(user.id, user.email, user.role);
   }
@@ -1147,11 +1316,14 @@ export class BooksController {
 }
 ```
 
-### 5.3 Orders Module (Purchase Flow)
+### 5.3 Orders Module (Purchase Flow — Gateway + Wallet)
 
 **Endpoints:** `POST /api/v1/orders` · `GET /api/v1/orders/my`
 
-This module implements the purchase flow from [Payment Flow Diagram](./diagrams/02-payment-flow.md): validates coupon → creates PENDING order → initiates aamarPay payment → returns redirect URL.
+This module implements the dual-path purchase flow from [Payment Flow Diagram](./diagrams/02-payment-flow.md). The buyer selects a `paymentMethod` (`GATEWAY` or `WALLET`). Gateway-only products (Premium E-Book PDFs, Membership with PDF) reject wallet payments for anti-piracy traceability. Wallet payments debit the balance instantly and mark the order as PAID.
+
+> **Wallet-eligible products:** Paid Web Chapters, Certification Kit, Future Membership (without E-Book)  
+> **Gateway-only products:** Premium E-Book PDF, Future Membership (with E-Book)
 
 Create `backend/src/orders/orders.service.ts`:
 
@@ -1159,27 +1331,45 @@ Create `backend/src/orders/orders.service.ts`:
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsService } from '../payments/payments.service';
+import { WalletService } from '../wallet/wallet.service';
+import { ReferralsService } from '../referrals/referrals.service';
+import { EmailService } from '../email/email.service';
+import { PaymentMethod } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
+
+// Products that MUST use gateway (PDF traceability requires aamarPay paper trail)
+const GATEWAY_ONLY_SLUGS: string[] = [
+  // Add slugs for Premium E-Book PDFs and Membership-with-PDF products here.
+  // Example: 'google-dorks-complete-handbook-pdf', 'annual-membership-with-pdf'
+];
 
 @Injectable()
 export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private paymentsService: PaymentsService,
+    private walletService: WalletService,
+    private referralsService: ReferralsService,
+    private emailService: EmailService,
   ) {}
 
-  async createOrder(userId: string, bookId: string, couponCode?: string) {
+  async createOrder(userId: string, bookId: string, paymentMethod: PaymentMethod = 'GATEWAY', couponCode?: string) {
     // 1. Validate book exists
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!book || !book.isPublished) throw new NotFoundException('Book not found');
 
-    // 2. Check if already purchased
+    // 2. Enforce gateway-only restriction for PDF products
+    if (paymentMethod === 'WALLET' && GATEWAY_ONLY_SLUGS.includes(book.slug)) {
+      throw new BadRequestException('This product requires payment via aamarPay gateway (PDF anti-piracy policy)');
+    }
+
+    // 3. Check if already purchased
     const existingOrder = await this.prisma.order.findFirst({
       where: { userId, bookId, status: 'PAID' },
     });
     if (existingOrder) throw new BadRequestException('You already own this book');
 
-    // 3. Calculate discount
+    // 4. Calculate discount
     let discount = new Decimal(0);
     let couponId: string | null = null;
 
@@ -1197,7 +1387,42 @@ export class OrdersService {
 
     const finalAmount = Decimal.max(book.price.minus(discount), new Decimal(0));
 
-    // 4. Create order (PENDING)
+    // ─── PATH A: WALLET PAYMENT (instant fulfillment) ───
+    if (paymentMethod === 'WALLET') {
+      const order = await this.prisma.order.create({
+        data: {
+          userId,
+          bookId,
+          couponId,
+          amount: finalAmount,
+          discountApplied: discount,
+          status: 'PAID',
+          paymentMethod: 'WALLET',
+        },
+      });
+
+      // Debit wallet (throws if insufficient balance)
+      await this.walletService.debitForPurchase(userId, finalAmount, order.id);
+
+      // Update coupon usage
+      if (couponId) {
+        await this.prisma.coupon.update({
+          where: { id: couponId },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
+
+      // Update referral cumulative spend
+      await this.referralsService.updateCumulativeSpend(userId, finalAmount);
+
+      // Send purchase receipt
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      await this.emailService.sendPurchaseReceipt(user!.email, user!.name, book.title);
+
+      return { orderId: order.id, paymentMethod: 'WALLET', status: 'PAID' };
+    }
+
+    // ─── PATH B: GATEWAY PAYMENT (redirect to aamarPay) ───
     const order = await this.prisma.order.create({
       data: {
         userId,
@@ -1206,14 +1431,12 @@ export class OrdersService {
         amount: finalAmount,
         discountApplied: discount,
         status: 'PENDING',
+        paymentMethod: 'GATEWAY',
         aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       },
     });
 
-    // 5. Get user info for payment
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-
-    // 6. Initiate aamarPay payment
     const payment = await this.paymentsService.initiatePayment(
       order.aamarpayTranId!,
       finalAmount.toString(),
@@ -1221,7 +1444,7 @@ export class OrdersService {
       user!.email,
     );
 
-    return { orderId: order.id, paymentUrl: payment.paymentUrl };
+    return { orderId: order.id, paymentMethod: 'GATEWAY', paymentUrl: payment.paymentUrl };
   }
 
   async getMyOrders(userId: string) {
@@ -1302,6 +1525,9 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { PaymentsService } from './payments.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
+import { WalletService } from '../wallet/wallet.service';
+import { ReferralsService } from '../referrals/referrals.service';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -1310,6 +1536,8 @@ export class PaymentsController {
     private paymentsService: PaymentsService,
     private prisma: PrismaService,
     private emailService: EmailService,
+    private walletService: WalletService,
+    private referralsService: ReferralsService,
   ) {}
 
   @SkipThrottle()
@@ -1321,9 +1549,29 @@ export class PaymentsController {
       return { status: 'INVALID_SIGNATURE' };
     }
 
+    const tranId = payload.mer_txnid;
+
+    // ─── WALLET TOP-UP FLOW ───
+    // Top-up transactions use the "TOPUP-" prefix (see WalletService.initiateTopUp)
+    if (tranId.startsWith('TOPUP-')) {
+      if (payload.pay_status === 'Successful') {
+        const amount = new Decimal(payload.amount);
+        // Find user by email from the IPN payload
+        const user = await this.prisma.user.findUnique({
+          where: { email: payload.cus_email },
+        });
+        if (user) {
+          await this.walletService.creditTopUp(user.id, amount, tranId);
+        }
+        return { status: 'TOPUP_SUCCESS' };
+      }
+      return { status: 'TOPUP_FAILED' };
+    }
+
+    // ─── PURCHASE ORDER FLOW ───
     // 2. Idempotency: check if already processed
     const order = await this.prisma.order.findUnique({
-      where: { aamarpayTranId: payload.mer_txnid },
+      where: { aamarpayTranId: tranId },
       include: { user: true, book: true },
     });
     if (!order || order.status === 'PAID') {
@@ -1345,7 +1593,10 @@ export class PaymentsController {
         });
       }
 
-      // 5. Send email with purchase receipt (PDF generation triggered separately)
+      // 5. Update referral cumulative spend
+      await this.referralsService.updateCumulativeSpend(order.userId, order.amount);
+
+      // 6. Send email with purchase receipt (PDF generation triggered separately)
       await this.emailService.sendPurchaseReceipt(order.user.email, order.user.name, order.book.title);
 
       return { status: 'SUCCESS' };
@@ -1564,6 +1815,552 @@ import { EmailService } from './email.service';
   exports: [EmailService],
 })
 export class EmailModule {}
+```
+
+---
+
+### 5.8 Wallet Module (Balance, Top-up, Transactions)
+
+**Endpoints:** `GET /api/v1/wallet/balance` · `POST /api/v1/wallet/topup` · `GET /api/v1/wallet/transactions`
+
+This module implements the [Wallet & Referral Flow Diagram](./diagrams/09-wallet-and-referral-flow.md). The Wallet is a cash-in-only internal balance. Users can top up via aamarPay and spend on wallet-eligible products. Wallet balance cannot be withdrawn.
+
+Create `backend/src/wallet/wallet.service.ts`:
+
+```typescript
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../prisma/prisma.service';
+import { PaymentsService } from '../payments/payments.service';
+import { Decimal } from '@prisma/client/runtime/library';
+
+@Injectable()
+export class WalletService {
+  constructor(
+    private prisma: PrismaService,
+    private paymentsService: PaymentsService,
+    private configService: ConfigService,
+  ) {}
+
+  async getBalance(userId: string) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+    return {
+      balanceBdt: wallet.balanceBdt,
+      lifetimeEarned: wallet.lifetimeEarned,
+      lifetimeSpent: wallet.lifetimeSpent,
+    };
+  }
+
+  async initiateTopUp(userId: string, amountBdt: number) {
+    const minTopUp = Number(this.configService.get('WALLET_MIN_TOPUP_BDT', '50'));
+    if (amountBdt < minTopUp) {
+      throw new BadRequestException(`Minimum top-up is ৳${minTopUp}`);
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const tranId = `TOPUP-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    // Initiate aamarPay payment for wallet top-up
+    const payment = await this.paymentsService.initiatePayment(
+      tranId,
+      amountBdt.toString(),
+      user.name,
+      user.email,
+    );
+
+    return { tranId, paymentUrl: payment.paymentUrl };
+  }
+
+  /**
+   * Called by IPN handler when a wallet top-up payment is confirmed.
+   * Credits the wallet and records the transaction.
+   */
+  async creditTopUp(userId: string, amount: Decimal, tranId: string) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+
+    await this.prisma.$transaction([
+      this.prisma.wallet.update({
+        where: { userId },
+        data: {
+          balanceBdt: { increment: amount },
+          lifetimeEarned: { increment: amount },
+        },
+      }),
+      this.prisma.walletTransaction.create({
+        data: {
+          walletId: wallet.id,
+          type: 'TOPUP',
+          amount,
+          description: `Wallet top-up via aamarPay (${tranId})`,
+        },
+      }),
+    ]);
+  }
+
+  /**
+   * Debit wallet for a purchase. Called by OrdersService for wallet-eligible products.
+   */
+  async debitForPurchase(userId: string, amount: Decimal, orderId: string) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+    if (wallet.balanceBdt.lessThan(amount)) {
+      throw new BadRequestException('Insufficient wallet balance');
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.wallet.update({
+        where: { userId },
+        data: {
+          balanceBdt: { decrement: amount },
+          lifetimeSpent: { increment: amount },
+        },
+      }),
+      this.prisma.walletTransaction.create({
+        data: {
+          walletId: wallet.id,
+          type: 'PURCHASE',
+          amount,
+          description: `Purchase (Order: ${orderId})`,
+          referenceId: orderId,
+        },
+      }),
+    ]);
+  }
+
+  /**
+   * Credit wallet for referral or showcase rewards.
+   */
+  async creditReward(userId: string, amount: Decimal, type: 'REFERRAL_CREDIT' | 'SHOWCASE_CREDIT', description: string, referenceId?: string) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+
+    await this.prisma.$transaction([
+      this.prisma.wallet.update({
+        where: { userId },
+        data: {
+          balanceBdt: { increment: amount },
+          lifetimeEarned: { increment: amount },
+        },
+      }),
+      this.prisma.walletTransaction.create({
+        data: {
+          walletId: wallet.id,
+          type,
+          amount,
+          description,
+          ...(referenceId && { referenceId }),
+        },
+      }),
+    ]);
+  }
+
+  async getTransactions(userId: string, page = 1, limit = 20) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+
+    const skip = (page - 1) * limit;
+    const [transactions, total] = await Promise.all([
+      this.prisma.walletTransaction.findMany({
+        where: { walletId: wallet.id },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.walletTransaction.count({ where: { walletId: wallet.id } }),
+    ]);
+    return { transactions, total, page, limit };
+  }
+}
+```
+
+Create `backend/src/wallet/wallet.controller.ts`:
+
+```typescript
+import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { WalletService } from './wallet.service';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+
+@ApiTags('Wallet')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
+@Controller('wallet')
+export class WalletController {
+  constructor(private walletService: WalletService) {}
+
+  @Get('balance')
+  getBalance(@CurrentUser('id') userId: string) {
+    return this.walletService.getBalance(userId);
+  }
+
+  @Post('topup')
+  initiateTopUp(@CurrentUser('id') userId: string, @Body('amountBdt') amountBdt: number) {
+    return this.walletService.initiateTopUp(userId, amountBdt);
+  }
+
+  @Get('transactions')
+  getTransactions(
+    @CurrentUser('id') userId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.walletService.getTransactions(userId, Number(page) || 1, Number(limit) || 20);
+  }
+}
+```
+
+Create `backend/src/wallet/wallet.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { WalletService } from './wallet.service';
+import { WalletController } from './wallet.controller';
+import { PaymentsModule } from '../payments/payments.module';
+
+@Module({
+  imports: [PaymentsModule],
+  controllers: [WalletController],
+  providers: [WalletService],
+  exports: [WalletService], // Exported for use by OrdersModule, ReferralsModule, ShowcasesModule
+})
+export class WalletModule {}
+```
+
+### 5.9 Referrals Module (Tracking & Reward Crediting)
+
+**Endpoints:** `GET /api/v1/referrals/code` · `GET /api/v1/referrals/stats`
+
+This module implements the referral lifecycle from [Wallet & Referral Flow Diagram](./diagrams/09-wallet-and-referral-flow.md). The referral reward (৳100 / $0.80) is credited when the referred user's cumulative spend reaches ≥ ৳500.
+
+Create `backend/src/referrals/referrals.service.ts`:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { WalletService } from '../wallet/wallet.service';
+import { Decimal } from '@prisma/client/runtime/library';
+
+const REFERRAL_REWARD_BDT = new Decimal(100);
+const REFERRAL_THRESHOLD_BDT = new Decimal(500);
+
+@Injectable()
+export class ReferralsService {
+  constructor(
+    private prisma: PrismaService,
+    private walletService: WalletService,
+  ) {}
+
+  async getReferralCode(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { referralCode: true },
+    });
+    return {
+      referralCode: user?.referralCode,
+      referralLink: `https://academy.multihat.dev/ref/${user?.referralCode}`,
+    };
+  }
+
+  async getReferralStats(userId: string) {
+    const referrals = await this.prisma.referral.findMany({
+      where: { referrerId: userId },
+      select: { status: true, cumulativeSpend: true, rewardPaid: true, createdAt: true },
+    });
+
+    return {
+      total: referrals.length,
+      pending: referrals.filter((r) => r.status === 'PENDING').length,
+      qualified: referrals.filter((r) => r.status === 'QUALIFIED').length,
+      credited: referrals.filter((r) => r.status === 'CREDITED').length,
+      totalEarned: referrals.filter((r) => r.rewardPaid).length * 100, // ৳100 per credited referral
+    };
+  }
+
+  /**
+   * Called after every successful order to update cumulative spend for the referred user.
+   * If the threshold is met, credits the referrer's wallet.
+   */
+  async updateCumulativeSpend(referredUserId: string, orderAmount: Decimal) {
+    const referral = await this.prisma.referral.findUnique({
+      where: { referredUserId },
+    });
+    if (!referral || referral.status === 'CREDITED') return; // No referral or already paid
+
+    const newSpend = referral.cumulativeSpend.add(orderAmount);
+
+    if (newSpend.greaterThanOrEqualTo(REFERRAL_THRESHOLD_BDT) && !referral.rewardPaid) {
+      // Threshold met — credit referrer's wallet
+      await this.prisma.referral.update({
+        where: { id: referral.id },
+        data: {
+          cumulativeSpend: newSpend,
+          status: 'CREDITED',
+          rewardPaid: true,
+          qualifiedAt: new Date(),
+        },
+      });
+
+      await this.walletService.creditReward(
+        referral.referrerId,
+        REFERRAL_REWARD_BDT,
+        'REFERRAL_CREDIT',
+        `Referral reward: referred user met ৳500 spending threshold`,
+        referral.id,
+      );
+    } else {
+      // Update spend but don't credit yet
+      await this.prisma.referral.update({
+        where: { id: referral.id },
+        data: { cumulativeSpend: newSpend },
+      });
+    }
+  }
+}
+```
+
+Create `backend/src/referrals/referrals.controller.ts`:
+
+```typescript
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ReferralsService } from './referrals.service';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+
+@ApiTags('Referrals')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
+@Controller('referrals')
+export class ReferralsController {
+  constructor(private referralsService: ReferralsService) {}
+
+  @Get('code')
+  getReferralCode(@CurrentUser('id') userId: string) {
+    return this.referralsService.getReferralCode(userId);
+  }
+
+  @Get('stats')
+  getReferralStats(@CurrentUser('id') userId: string) {
+    return this.referralsService.getReferralStats(userId);
+  }
+}
+```
+
+Create `backend/src/referrals/referrals.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ReferralsService } from './referrals.service';
+import { ReferralsController } from './referrals.controller';
+import { WalletModule } from '../wallet/wallet.module';
+
+@Module({
+  imports: [WalletModule],
+  controllers: [ReferralsController],
+  providers: [ReferralsService],
+  exports: [ReferralsService], // Exported for use by OrdersModule (to update cumulative spend)
+})
+export class ReferralsModule {}
+```
+
+### 5.10 Showcases Module (Certification Showcase & 10-Day Verification)
+
+**Endpoints:** `POST /api/v1/showcases/submit` · `GET /api/v1/showcases/my`
+
+This module implements the [Showcase Verification Flow Diagram](./diagrams/10-showcase-verification-flow.md). Users submit social media post URLs after sharing their certificate. A cron job verifies the post is still live after 10 days and credits the wallet.
+
+Create `backend/src/showcases/showcases.service.ts`:
+
+```typescript
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { PrismaService } from '../prisma/prisma.service';
+import { WalletService } from '../wallet/wallet.service';
+import { EmailService } from '../email/email.service';
+import { ShowcasePlatform } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
+import axios from 'axios';
+
+// Reward amounts per platform (in BDT)
+const PLATFORM_REWARDS: Record<ShowcasePlatform, number> = {
+  LINKEDIN: 30,
+  TWITTER: 30,
+  FACEBOOK: 20,
+  INSTAGRAM: 20,
+};
+
+@Injectable()
+export class ShowcasesService {
+  constructor(
+    private prisma: PrismaService,
+    private walletService: WalletService,
+    private emailService: EmailService,
+  ) {}
+
+  async submitShowcase(userId: string, certificateId: string, platform: ShowcasePlatform, postUrl: string) {
+    // Verify certificate belongs to user
+    const cert = await this.prisma.certificate.findUnique({
+      where: { certificateId },
+    });
+    if (!cert || cert.userId !== userId) {
+      throw new NotFoundException('Certificate not found');
+    }
+
+    // Check for duplicate submission (one reward per platform per cert)
+    const existing = await this.prisma.socialShowcase.findUnique({
+      where: { userId_certificateId_platform: { userId, certificateId: cert.id, platform } },
+    });
+    if (existing) throw new BadRequestException('You already submitted a post for this platform and certificate');
+
+    const rewardAmount = PLATFORM_REWARDS[platform];
+    const verifyAfter = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000); // 10 days from now
+
+    return this.prisma.socialShowcase.create({
+      data: {
+        userId,
+        certificateId: cert.id,
+        platform,
+        postUrl,
+        rewardAmount,
+        verifyAfter,
+      },
+    });
+  }
+
+  async getMyShowcases(userId: string) {
+    return this.prisma.socialShowcase.findMany({
+      where: { userId },
+      include: { certificate: { select: { certificateId: true, courseTitle: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  /**
+   * Cron job: runs daily at midnight to verify pending showcases past their 10-day window.
+   * For each qualifying showcase, attempts to check if the post URL is still accessible.
+   * On success → credits wallet. On failure → marks as rejected.
+   */
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async verifyPendingShowcases() {
+    const pendingShowcases = await this.prisma.socialShowcase.findMany({
+      where: {
+        status: 'PENDING',
+        verifyAfter: { lte: new Date() },
+      },
+      include: { user: true, certificate: true },
+    });
+
+    for (const showcase of pendingShowcases) {
+      try {
+        // Attempt to reach the post URL (HEAD request)
+        const response = await axios.head(showcase.postUrl, { timeout: 10000 });
+        const isLive = response.status >= 200 && response.status < 400;
+
+        if (isLive) {
+          // Post is still live — credit wallet
+          await this.prisma.socialShowcase.update({
+            where: { id: showcase.id },
+            data: { status: 'VERIFIED', verifiedAt: new Date() },
+          });
+
+          await this.walletService.creditReward(
+            showcase.userId,
+            new Decimal(showcase.rewardAmount),
+            'SHOWCASE_CREDIT',
+            `Showcase reward: ${showcase.platform} post verified`,
+            showcase.id,
+          );
+
+          // Notify user
+          await this.emailService.sendShowcaseRewardEmail(
+            showcase.user.email,
+            showcase.user.name,
+            showcase.platform,
+            Number(showcase.rewardAmount),
+          );
+        } else {
+          throw new Error('Post not accessible');
+        }
+      } catch {
+        // Post is not accessible — reject
+        await this.prisma.socialShowcase.update({
+          where: { id: showcase.id },
+          data: { status: 'REJECTED', verifiedAt: new Date() },
+        });
+      }
+    }
+  }
+}
+```
+
+Create `backend/src/showcases/showcases.controller.ts`:
+
+```typescript
+import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ShowcasesService } from './showcases.service';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { ShowcasePlatform } from '@prisma/client';
+
+@ApiTags('Showcases')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
+@Controller('showcases')
+export class ShowcasesController {
+  constructor(private showcasesService: ShowcasesService) {}
+
+  @Post('submit')
+  submitShowcase(
+    @CurrentUser('id') userId: string,
+    @Body() dto: { certificateId: string; platform: ShowcasePlatform; postUrl: string },
+  ) {
+    return this.showcasesService.submitShowcase(userId, dto.certificateId, dto.platform, dto.postUrl);
+  }
+
+  @Get('my')
+  getMyShowcases(@CurrentUser('id') userId: string) {
+    return this.showcasesService.getMyShowcases(userId);
+  }
+}
+```
+
+Create `backend/src/showcases/showcases.module.ts`:
+
+```typescript
+import { Module } from '@nestjs/common';
+import { ShowcasesService } from './showcases.service';
+import { ShowcasesController } from './showcases.controller';
+import { WalletModule } from '../wallet/wallet.module';
+
+@Module({
+  imports: [WalletModule],
+  controllers: [ShowcasesController],
+  providers: [ShowcasesService],
+})
+export class ShowcasesModule {}
+```
+
+Add the showcase reward email method to `EmailService` (in `backend/src/email/email.service.ts`):
+
+```typescript
+  // Add this method to the EmailService class:
+  async sendShowcaseRewardEmail(to: string, name: string, platform: string, rewardBdt: number) {
+    await this.resend.emails.send({
+      from: this.senderEmail,
+      to,
+      subject: `💰 Showcase Reward Credited — MultiHAT Academy`,
+      html: `<h2>Great news, ${name}!</h2>
+        <p>Your <strong>${platform}</strong> showcase post has been verified and is still live after 10 days.</p>
+        <p><strong>৳${rewardBdt}</strong> has been credited to your Wallet.</p>
+        <p>Keep sharing your achievements! — MultiHAT Academy</p>`,
+    });
+  }
 ```
 
 ---
@@ -1933,15 +2730,19 @@ The following App Router pages must be implemented. Each maps to the [User Journ
 |:------|:-----|:-----|:--------|
 | `/` | `app/page.tsx` | No | Landing page — hero, featured books, CTAs |
 | `/books` | `app/books/page.tsx` | No | Book catalog (SSG) — `GET /api/v1/books` |
-| `/books/[slug]` | `app/books/[slug]/page.tsx` | No | Book detail — free chapters (1–3) rendered, premium chapters blurred with CTA |
+| `/books/[slug]` | `app/books/[slug]/page.tsx` | No | Book detail — free chapters (1–3) rendered, paid chapters blurred with CTA |
 | `/auth/login` | `app/auth/login/page.tsx` | No | Login form (React Hook Form + Zod) |
-| `/auth/register` | `app/auth/register/page.tsx` | No | Registration form |
-| `/dashboard` | `app/dashboard/page.tsx` | Yes | Purchased items, quiz scores, certificates |
-| `/checkout/[bookId]` | `app/checkout/[bookId]/page.tsx` | Yes | Coupon input, price display, "Pay with aamarPay" button |
-| `/payment/success` | `app/payment/success/page.tsx` | No | Post-payment confirmation page |
+| `/auth/register` | `app/auth/register/page.tsx` | No | Registration form (accepts optional `?ref=CODE` for referrals) |
+| `/dashboard` | `app/dashboard/page.tsx` | Yes | Purchased items, quiz scores, certificates, wallet balance, referral stats |
+| `/dashboard/wallet` | `app/dashboard/wallet/page.tsx` | Yes | Wallet balance, top-up form, transaction history |
+| `/dashboard/referrals` | `app/dashboard/referrals/page.tsx` | Yes | Referral code/link, referral stats (pending, qualified, credited) |
+| `/dashboard/showcase` | `app/dashboard/showcase/page.tsx` | Yes | Submit social media post URLs, view submission statuses |
+| `/checkout/[bookId]` | `app/checkout/[bookId]/page.tsx` | Yes | Coupon input, price display, payment method selection (Gateway or Wallet) |
+| `/payment/success` | `app/payment/success/page.tsx` | No | Post-payment confirmation page (purchase or wallet top-up) |
 | `/payment/fail` | `app/payment/fail/page.tsx` | No | Payment failure with retry link |
 | `/quiz/[bookSlug]` | `app/quiz/[bookSlug]/page.tsx` | Yes | Interactive quiz — uses QuizRenderer component |
 | `/verify/[certID]` | `app/verify/[certID]/page.tsx` | No | Public certificate verification (SSR) |
+| `/ref/[code]` | `app/ref/[code]/page.tsx` | No | Referral landing page — redirects to `/auth/register?ref=CODE` |
 
 ### 7.6 Interactive Quiz Component
 
@@ -2141,12 +2942,16 @@ npm run test:cov       # Coverage report
 
 | Layer | What to Test | Priority |
 |:------|:------------|:---------|
-| **Auth** | Registration (duplicate email rejection), login (valid/invalid credentials), token refresh | High |
-| **Orders** | Coupon validation logic, duplicate purchase prevention, price calculation | High |
-| **Payments** | IPN signature verification, idempotency (double-processing), order status transitions | Critical |
+| **Auth** | Registration (duplicate email, referral code linking, wallet creation), login, token refresh | High |
+| **Orders** | Coupon validation, duplicate purchase prevention, price calculation, wallet vs gateway routing | High |
+| **Payments** | IPN signature verification, idempotency (double-processing), order status transitions, wallet top-up crediting | Critical |
 | **Quizzes** | Score calculation, pass/fail threshold (≥70%), certificate trigger on pass | High |
 | **Certificates** | Unique ID generation, verification endpoint returns correct data | Medium |
 | **Books** | Slug lookup, pagination, admin CRUD guards | Medium |
+| **Wallet** | Balance retrieval, top-up minimum enforcement, debit insufficient balance rejection, transaction logging | High |
+| **Referrals** | Referral code generation, cumulative spend tracking, threshold-based reward crediting, double-credit prevention | High |
+| **Showcases** | Duplicate submission rejection (same cert + platform), reward amount correctness per platform, 10-day verification window | High |
+| **Cron Jobs** | Showcase verification cron fires correctly, credits wallet on live post, rejects on dead post | Medium |
 
 ---
 
@@ -2357,12 +3162,14 @@ Execute these verification steps after deployment to confirm everything is produ
 
 ### API Functionality
 
-- [ ] `POST /api/v1/auth/register` creates a new user and returns JWT tokens
+- [ ] `POST /api/v1/auth/register` creates a new user, wallet, and returns JWT tokens
+- [ ] `POST /api/v1/auth/register` with valid `referralCode` links the referral and creates tracking record
 - [ ] `POST /api/v1/auth/login` authenticates and returns access + refresh tokens
 - [ ] `POST /api/v1/auth/refresh` issues new token pair from valid refresh token
 - [ ] `GET /api/v1/books` returns paginated published books
 - [ ] `GET /api/v1/books/:slug` returns book details with chapter metadata
-- [ ] `POST /api/v1/orders` creates PENDING order and returns aamarPay redirect URL
+- [ ] `POST /api/v1/orders` creates PENDING order and returns aamarPay redirect URL (gateway) or debits Wallet (wallet-eligible)
+- [ ] `POST /api/v1/orders` rejects Wallet payment for gateway-only products (Premium E-Book PDF, Membership with PDF)
 - [ ] aamarPay IPN webhook (`POST /api/v1/payments/ipn`) correctly updates order to PAID
 - [ ] IPN handler is idempotent (sending same webhook twice does not duplicate processing)
 - [ ] `GET /api/v1/quizzes/:bookSlug/questions` returns questions for purchased book only
@@ -2370,20 +3177,47 @@ Execute these verification steps after deployment to confirm everything is produ
 - [ ] `GET /api/v1/certificates/verify/:certId` returns valid certificate data (public, no auth)
 - [ ] Swagger docs accessible at `https://api.multihat.dev/api/docs`
 
+### Wallet & Referrals
+
+- [ ] `GET /api/v1/wallet/balance` returns correct BDT balance, lifetime earned, lifetime spent
+- [ ] `POST /api/v1/wallet/topup` enforces minimum ৳50 top-up and returns aamarPay URL
+- [ ] Wallet top-up IPN correctly credits wallet balance and logs transaction
+- [ ] `GET /api/v1/wallet/transactions` returns paginated transaction history
+- [ ] `GET /api/v1/referrals/code` returns user's unique referral code and link
+- [ ] `GET /api/v1/referrals/stats` returns correct pending/qualified/credited counts
+- [ ] Referral reward (৳100) is credited only when referred user spends ≥ ৳500 cumulative
+- [ ] Referral reward is not double-credited (idempotent)
+
+### Certification Showcase
+
+- [ ] `POST /api/v1/showcases/submit` accepts valid post URL and sets `verify_after` = now + 10 days
+- [ ] Duplicate submission (same cert + same platform) is rejected with 400
+- [ ] `GET /api/v1/showcases/my` returns all submissions with statuses
+- [ ] Cron job (`@nestjs/schedule`) runs daily and processes pending showcases past their 10-day window
+- [ ] Verified showcase credits correct amount (৳30 LinkedIn/X, ৳20 FB/IG) to user's wallet
+- [ ] Rejected showcase sets status to REJECTED and does not credit wallet
+- [ ] Showcase reward email is sent on successful verification
+
 ### PDF & Email
 
 - [ ] Watermarked PDF generates with buyer's email visible at 5% opacity on every page
 - [ ] Certificate PDF generates with correct name, course title, date, and verification URL
 - [ ] Resend delivers purchase receipt email within 30 seconds of payment confirmation
 - [ ] Certificate email includes PDF attachment and verification link
+- [ ] Showcase reward email is delivered on successful verification
 
 ### Frontend
 
 - [ ] `academy.multihat.dev` loads with HTTPS (Vercel auto-SSL)
 - [ ] Dark/light theme toggle works correctly
-- [ ] Free chapters (1–3) render fully; premium chapters show blurred preview with CTA
+- [ ] Free chapters (1–3) render fully; paid chapters show blurred preview with CTA
 - [ ] Login/register forms validate input (React Hook Form + Zod)
-- [ ] Dashboard shows purchased books, quiz scores, and certificates
+- [ ] Registration via referral link (`/ref/CODE`) pre-fills referral code
+- [ ] Dashboard shows purchased books, quiz scores, certificates, and wallet balance
+- [ ] Wallet page shows balance, top-up form, and transaction history
+- [ ] Referrals page shows referral link and stats
+- [ ] Showcase page allows submitting social media post URLs
+- [ ] Checkout page offers Wallet payment option for eligible products
 - [ ] Certificate verification page (`/verify/:certID`) works without login
 - [ ] Sitemap is accessible at `/sitemap.xml`
 - [ ] `robots.txt` disallows `/dashboard` and `/api/`
