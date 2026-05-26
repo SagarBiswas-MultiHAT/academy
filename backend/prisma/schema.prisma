@@ -1,0 +1,251 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  GATEWAY
+  WALLET
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum QuizResult {
+  PASS
+  FAIL
+}
+
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  CREDITED
+}
+
+enum ShowcasePlatform {
+  LINKEDIN
+  TWITTER
+  FACEBOOK
+  INSTAGRAM
+}
+
+enum ShowcaseStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum WalletTransactionType {
+  TOPUP
+  PURCHASE
+  REFERRAL_CREDIT
+  SHOWCASE_CREDIT
+}
+
+model User {
+  id               String           @id @default(uuid()) @db.Uuid
+  email            String           @unique
+  hashedPassword   String           @map("hashed_password")
+  name             String
+  role             Role             @default(USER)
+  referralCode     String           @unique @default(uuid()) @map("referral_code")
+  referredById     String?          @map("referred_by_id") @db.Uuid
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  orders           Order[]
+  quizAttempts     QuizAttempt[]
+  certificates     Certificate[]
+  wallet           Wallet?
+  referralsMade    Referral[]       @relation("referrer")
+  referralReceived Referral?        @relation("referred")
+  socialShowcases  SocialShowcase[]
+
+  @@map("users")
+}
+
+model Book {
+  id              String         @id @default(uuid()) @db.Uuid
+  title           String
+  slug            String         @unique
+  description     String         @db.Text
+  price           Decimal        @db.Decimal(10, 2)
+  chapterMetadata Json           @map("chapter_metadata")
+  isPublished     Boolean        @default(false) @map("is_published")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  orders          Order[]
+  quizQuestions   QuizQuestion[]
+  quizAttempts    QuizAttempt[]
+
+  @@map("books")
+}
+
+model Order {
+  id              String        @id @default(uuid()) @db.Uuid
+  userId          String        @map("user_id") @db.Uuid
+  bookId          String        @map("book_id") @db.Uuid
+  couponId        String?       @map("coupon_id") @db.Uuid
+  amount          Decimal       @db.Decimal(10, 2)
+  discountApplied Decimal       @default(0) @map("discount_applied") @db.Decimal(10, 2)
+  status          OrderStatus   @default(PENDING)
+  paymentMethod   PaymentMethod @default(GATEWAY) @map("payment_method")
+  aamarpayTranId  String?       @unique @map("aamarpay_tran_id")
+  gatewayResponse Json?         @map("gateway_response")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book   Book    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  coupon Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)
+
+  @@map("orders")
+}
+
+model QuizQuestion {
+  id            String @id @default(uuid()) @db.Uuid
+  bookId        String @map("book_id") @db.Uuid
+  prompt        String @db.Text
+  options       Json // string[] array
+  correctAnswer String @map("correct_answer")
+  sortOrder     Int    @map("sort_order")
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_questions")
+}
+
+model QuizAttempt {
+  id              String     @id @default(uuid()) @db.Uuid
+  userId          String     @map("user_id") @db.Uuid
+  bookId          String     @map("book_id") @db.Uuid
+  selectedAnswers Json       @map("selected_answers")
+  score           Int
+  totalQuestions  Int        @map("total_questions")
+  result          QuizResult
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book        Book         @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  certificate Certificate?
+
+  @@map("quiz_attempts")
+}
+
+model Certificate {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  quizAttemptId String   @unique @map("quiz_attempt_id") @db.Uuid
+  certificateId String   @unique @default(uuid()) @map("certificate_id")
+  holderName    String   @map("holder_name")
+  courseTitle   String   @map("course_title")
+  issueDate     DateTime @default(now()) @map("issue_date") @db.Date
+  isValid       Boolean  @default(true) @map("is_valid")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizAttempt     QuizAttempt      @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  socialShowcases SocialShowcase[]
+
+  @@map("certificates")
+}
+
+model Coupon {
+  id            String       @id @default(uuid()) @db.Uuid
+  code          String       @unique
+  discountType  DiscountType @map("discount_type")
+  discountValue Decimal      @map("discount_value") @db.Decimal(10, 2)
+  validFrom     DateTime     @map("valid_from")
+  validUntil    DateTime     @map("valid_until")
+  usageLimit    Int          @map("usage_limit")
+  usageCount    Int          @default(0) @map("usage_count")
+  isActive      Boolean      @default(true) @map("is_active")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  orders        Order[]
+
+  @@map("coupons")
+}
+
+// ─── NEW MODELS (Wallet Ecosystem) ───────────────────────────────────
+
+model Wallet {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @unique @map("user_id") @db.Uuid
+  balanceBdt     Decimal  @default(0) @map("balance_bdt") @db.Decimal(10, 2)
+  lifetimeEarned Decimal  @default(0) @map("lifetime_earned") @db.Decimal(10, 2)
+  lifetimeSpent  Decimal  @default(0) @map("lifetime_spent") @db.Decimal(10, 2)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id          String                @id @default(uuid()) @db.Uuid
+  walletId    String                @map("wallet_id") @db.Uuid
+  type        WalletTransactionType
+  amount      Decimal               @db.Decimal(10, 2)
+  description String
+  referenceId String?               @map("reference_id") @db.Uuid
+  createdAt   DateTime              @default(now()) @map("created_at")
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@map("wallet_transactions")
+}
+
+model Referral {
+  id              String         @id @default(uuid()) @db.Uuid
+  referrerId      String         @map("referrer_id") @db.Uuid
+  referredUserId  String         @unique @map("referred_user_id") @db.Uuid
+  status          ReferralStatus @default(PENDING)
+  cumulativeSpend Decimal        @default(0) @map("cumulative_spend") @db.Decimal(10, 2)
+  rewardPaid      Boolean        @default(false) @map("reward_paid")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  qualifiedAt     DateTime?      @map("qualified_at")
+
+  referrer     User @relation("referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredUser User @relation("referred", fields: [referredUserId], references: [id], onDelete: Cascade)
+
+  @@map("referrals")
+}
+
+model SocialShowcase {
+  id            String           @id @default(uuid()) @db.Uuid
+  userId        String           @map("user_id") @db.Uuid
+  certificateId String           @map("certificate_id") @db.Uuid
+  platform      ShowcasePlatform
+  postUrl       String           @map("post_url")
+  status        ShowcaseStatus   @default(PENDING)
+  rewardAmount  Decimal          @map("reward_amount") @db.Decimal(10, 2)
+  submittedAt   DateTime         @default(now()) @map("submitted_at")
+  verifyAfter   DateTime         @map("verify_after")
+  verifiedAt    DateTime?        @map("verified_at")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  certificate Certificate @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, certificateId, platform]) // One reward per platform per certification
+  @@map("social_showcases")
+}

@@ -1,0 +1,51 @@
+name: MultiHAT Academy CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # Backend
+      - name: Install Backend Deps
+        run: cd backend && npm ci
+      - name: Generate Prisma Client
+        run: cd backend && npx prisma generate
+      - name: Backend Lint & Test
+        run: cd backend && npm run lint && npm run test
+
+      # Frontend
+      - name: Install Frontend Deps
+        run: cd frontend && npm ci
+      - name: Frontend Build Check
+        run: cd frontend && npm run build
+
+  deploy-backend:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Deploy to DigitalOcean
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/academy/backend
+            git pull origin main
+            npm install --production
+            npx prisma generate
+            npx prisma migrate deploy
+            npm run build
+            pm2 restart ecosystem.config.js --env production
