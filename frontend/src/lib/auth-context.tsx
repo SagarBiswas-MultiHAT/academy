@@ -20,6 +20,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const setAuthCookie = (token: string | null) => {
+  if (typeof document === 'undefined') return;
+  if (token) {
+    document.cookie = `accessToken=${token}; path=/; max-age=604800; SameSite=Lax`;
+    return;
+  }
+  document.cookie = 'accessToken=; path=/; max-age=0';
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,11 +36,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
+      setAuthCookie(token);
       api.get('/users/me')
         .then((res) => setUser(res.data.data))
-        .catch(() => localStorage.removeItem('accessToken'))
+        .catch(() => {
+          localStorage.removeItem('accessToken');
+          setAuthCookie(null);
+        })
         .finally(() => setLoading(false));
     } else {
+      setAuthCookie(null);
       setLoading(false);
     }
   }, []);
@@ -45,6 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await api.post('/auth/login', { email, password });
     localStorage.setItem('accessToken', res.data.data.accessToken);
     localStorage.setItem('refreshToken', res.data.data.refreshToken);
+    setAuthCookie(res.data.data.accessToken);
     try {
       await hydrateProfile();
     } catch {
@@ -56,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await api.post('/auth/register', { name, email, password, referralCode });
     localStorage.setItem('accessToken', res.data.data.accessToken);
     localStorage.setItem('refreshToken', res.data.data.refreshToken);
+    setAuthCookie(res.data.data.accessToken);
     try {
       await hydrateProfile();
     } catch {
@@ -66,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    setAuthCookie(null);
     setUser(null);
   };
 

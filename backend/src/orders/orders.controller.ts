@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { PaymentMethod } from '@prisma/client';
+import { PaymentMethod, Role } from '@prisma/client';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -23,5 +25,12 @@ export class OrdersController {
   @Get('my')
   getMyOrders(@CurrentUser('id') userId: string) {
     return this.ordersService.getMyOrders(userId);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  getAllOrders(@Query('page') page?: string, @Query('limit') limit?: string) {
+    return this.ordersService.getAllOrders(Number(page) || 1, Number(limit) || 50);
   }
 }

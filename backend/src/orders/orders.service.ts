@@ -124,4 +124,21 @@ export class OrdersService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  async getAllOrders(page = 1, limit = 50) {
+    const skip = (page - 1) * limit;
+    const [orders, total] = await Promise.all([
+      this.prisma.order.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: { select: { id: true, email: true, name: true, role: true } },
+          book: { select: { id: true, title: true, slug: true } },
+        },
+      }),
+      this.prisma.order.count(),
+    ]);
+    return { orders, total, page, limit };
+  }
 }

@@ -1,8 +1,12 @@
-import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Body, UseGuards, Param, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Role } from '@prisma/client';
+import { UpdateUserRoleDto } from './dto/update-role.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -19,5 +23,19 @@ export class UsersController {
   @Patch('me')
   updateProfile(@CurrentUser('id') userId: string, @Body() dto: { name?: string }) {
     return this.usersService.updateProfile(userId, dto);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  getAllUsers(@Query('page') page?: string, @Query('limit') limit?: string) {
+    return this.usersService.getAllUsers(Number(page) || 1, Number(limit) || 50);
+  }
+
+  @Patch(':id/role')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  updateRole(@Param('id') id: string, @Body() dto: UpdateUserRoleDto) {
+    return this.usersService.updateRole(id, dto.role);
   }
 }
