@@ -9,7 +9,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space
 
 export const metadata: Metadata = {
   title: { default: 'MultiHAT Academy', template: '%s | MultiHAT Academy' },
-  description: 'Premium technical e-books with verifiable certificates. Master Google Dorks, OSINT, and cybersecurity.',
+  description: 'Premium e-books with verifiable certificates. Cybersecurity, programming, agriculture, and more.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.multihat.dev'),
   openGraph: {
     siteName: 'MultiHAT Academy',

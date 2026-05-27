@@ -76,7 +76,7 @@ function RegisterContent() {
             Create account
           </div>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
-            Build your cybersecurity track record
+            Build your verified learning track record
           </h1>
           <p className="text-muted-foreground">
             Join MultiHAT Academy to access premium learning, verified certificates, and wallet rewards.

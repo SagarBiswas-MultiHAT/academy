@@ -146,6 +146,11 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
+            {user.role === "ADMIN" && (
+              <Button asChild variant="outline" className="border-emerald-500/50 text-emerald-600 dark:text-emerald-400">
+                <Link href="/admin">Admin console</Link>
+              </Button>
+            )}
             <Button asChild variant="outline">
               <Link href="/dashboard/wallet">Manage wallet</Link>
             </Button>

@@ -92,7 +92,7 @@ export default function BooksPage() {
           <div className="space-y-2">
             <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">Book catalog</h1>
             <p className="text-muted-foreground">
-              Practical cybersecurity books with free previews and certificate ready quizzes.
+              Browse e-books across cybersecurity, programming, and more — with free previews and certificate-ready quizzes.
             </p>
           </div>
           <div className="relative w-full md:max-w-sm">

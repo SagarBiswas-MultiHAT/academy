@@ -88,10 +88,10 @@ export default function Home() {
           <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div className="space-y-6">
               <Badge variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.2em]">
-                Premium cybersecurity library
+                Premium e-book library
               </Badge>
               <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl font-[family-name:var(--font-space-grotesk)]">
-                Learn OSINT and cybersecurity with verified credentials.
+                Master real-world skills with verified credentials.
               </h1>
               <p className="text-lg text-muted-foreground">
                 MultiHAT Academy delivers focused e-books, practical quizzes, and certificates that can be verified anywhere.
@@ -136,7 +136,7 @@ export default function Home() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {[
-                  "OSINT focused e-books with free previews",
+                  "Focused e-books across cybersecurity, programming, and more",
                   "Completion quizzes and instant results",
                   "Wallet and referral rewards for consistent learning",
                 ].map((item) => (

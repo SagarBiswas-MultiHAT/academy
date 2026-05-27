@@ -45,7 +45,7 @@ export default function SiteHeader() {
             <p className="text-base font-semibold tracking-tight">
               MultiHAT Academy
             </p>
-            <p className="text-xs text-muted-foreground hidden sm:block">Cybersecurity e-books</p>
+            <p className="text-xs text-muted-foreground hidden sm:block">Learn. Certify. Showcase.</p>
           </div>
         </Link>
 
@@ -68,6 +68,11 @@ export default function SiteHeader() {
           <ThemeToggle />
           {user ? (
             <>
+              {user.role === "ADMIN" && (
+                <Button asChild variant="outline" className="hidden sm:inline-flex border-emerald-500/50 text-emerald-600 dark:text-emerald-400">
+                  <Link href="/admin">Admin console</Link>
+                </Button>
+              )}
               <Button asChild variant="outline" size="icon" className="sm:hidden">
                 <Link href="/dashboard" aria-label="Open dashboard">
                   <LayoutDashboard className="size-4" />

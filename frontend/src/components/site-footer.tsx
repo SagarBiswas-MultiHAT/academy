@@ -37,7 +37,7 @@ export default function SiteFooter() {
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              Premium cybersecurity books, verified certificates, and a community built for practical security work.
+              Premium e-books across cybersecurity, programming, and more — with verified certificates and a community built for practical learning.
             </p>
           </div>
 
@@ -73,7 +73,7 @@ export default function SiteFooter() {
 
         <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>Copyright 2026 MultiHAT Academy. All rights reserved.</p>
-          <p>Built for ethical OSINT and cybersecurity learning.</p>
+          <p>Built for learners who want real skills and verified proof.</p>
         </div>
       </div>
     </footer>
