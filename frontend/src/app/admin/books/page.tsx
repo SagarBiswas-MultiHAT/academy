@@ -122,7 +122,7 @@ export default function AdminBooksPage() {
         chapterMetadata: defaultChapterJson,
       })
       await loadBooks()
-    } catch (err) {
+    } catch {
       setCreateError("Unable to create book. Check fields and chapter JSON.")
     } finally {
       setCreating(false)
