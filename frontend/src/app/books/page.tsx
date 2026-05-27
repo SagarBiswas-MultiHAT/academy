@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type ChapterMeta = {
@@ -119,30 +120,52 @@ export default function BooksPage() {
             {displayBooks.map((book, index) => (
               <Card key={book?.id ?? index} className="h-full">
                 <CardHeader>
-                  <CardTitle>{book ? book.title : "Loading"}</CardTitle>
-                  <CardDescription className="line-clamp-3">
-                    {book ? book.description : "Fetching the latest book details."}
-                  </CardDescription>
+                  {book ? (
+                    <>
+                      <CardTitle>{book.title}</CardTitle>
+                      <CardDescription className="line-clamp-3">
+                        {book.description}
+                      </CardDescription>
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <BookOpen className="size-4" />
-                    {book?.chapterMetadata?.length ?? 0} chapters
-                  </div>
-                  <Badge>{book ? formatPrice(book.price) : "BDT --"}</Badge>
+                  {book ? (
+                    <>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <BookOpen className="size-4" />
+                        {book.chapterMetadata?.length ?? 0} chapters
+                      </div>
+                      <Badge>{formatPrice(book.price)}</Badge>
+                    </>
+                  ) : (
+                    <>
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-5 w-16" />
+                    </>
+                  )}
                 </CardContent>
                 <CardFooter className="justify-between">
-                  <Button asChild variant="secondary" size="sm">
-                    <Link href="/auth/login">Start learning</Link>
-                  </Button>
                   {book ? (
-                    <Button asChild size="sm">
-                      <Link href={`/books/${book.slug}`}>View details</Link>
-                    </Button>
+                    <>
+                      <Button asChild variant="secondary" size="sm">
+                        <Link href="/auth/login">Start learning</Link>
+                      </Button>
+                      <Button asChild size="sm">
+                        <Link href={`/books/${book.slug}`}>View details</Link>
+                      </Button>
+                    </>
                   ) : (
-                    <Button size="sm" disabled>
-                      Loading
-                    </Button>
+                    <>
+                      <Skeleton className="h-8 w-24" />
+                      <Skeleton className="h-8 w-24" />
+                    </>
                   )}
                 </CardFooter>
               </Card>

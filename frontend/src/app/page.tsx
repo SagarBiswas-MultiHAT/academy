@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type ChapterMeta = {
@@ -184,30 +185,52 @@ export default function Home() {
               {featuredBooks.map((book, index) => (
                 <Card key={book?.id ?? index} className="h-full">
                   <CardHeader>
-                    <CardTitle className="text-lg">{book ? book.title : "Loading title"}</CardTitle>
-                    <CardDescription className="line-clamp-3">
-                      {book ? book.description : "Loading description"}
-                    </CardDescription>
+                    {book ? (
+                      <>
+                        <CardTitle className="text-lg">{book.title}</CardTitle>
+                        <CardDescription className="line-clamp-3">
+                          {book.description}
+                        </CardDescription>
+                      </>
+                    ) : (
+                      <div className="space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-2/3" />
+                      </div>
+                    )}
                   </CardHeader>
                   <CardContent className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <BookOpen className="size-4" />
-                      {book?.chapterMetadata?.length ?? 0} chapters
-                    </div>
-                    <Badge>{book ? formatPrice(book.price) : "BDT --"}</Badge>
+                    {book ? (
+                      <>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <BookOpen className="size-4" />
+                          {book.chapterMetadata?.length ?? 0} chapters
+                        </div>
+                        <Badge>{formatPrice(book.price)}</Badge>
+                      </>
+                    ) : (
+                      <>
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-5 w-16" />
+                      </>
+                    )}
                   </CardContent>
                   <CardFooter className="justify-between">
-                    <Button asChild size="sm" variant="secondary">
-                      <Link href="/books">View catalog</Link>
-                    </Button>
                     {book ? (
-                      <Button asChild size="sm">
-                        <Link href={`/books/${book.slug}`}>See details</Link>
-                      </Button>
+                      <>
+                        <Button asChild size="sm" variant="secondary">
+                          <Link href="/books">View catalog</Link>
+                        </Button>
+                        <Button asChild size="sm">
+                          <Link href={`/books/${book.slug}`}>See details</Link>
+                        </Button>
+                      </>
                     ) : (
-                      <Button size="sm" disabled>
-                        Loading
-                      </Button>
+                      <>
+                        <Skeleton className="h-8 w-24" />
+                        <Skeleton className="h-8 w-24" />
+                      </>
                     )}
                   </CardFooter>
                 </Card>

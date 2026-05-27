@@ -87,28 +87,28 @@ academy/
 
 ### Backend (`backend/.env`)
 
-| Variable | Example Value | Purpose |
-|:---------|:-------------|:--------|
-| `DATABASE_URL` | `postgresql://postgres:localpassword123@localhost:5432/academy_db?schema=public` | Prisma database connection |
-| `JWT_ACCESS_SECRET` | `change-me-access-secret-256bit` | Signs short-lived access tokens (15 min) |
-| `JWT_REFRESH_SECRET` | `change-me-refresh-secret-256bit` | Signs long-lived refresh tokens (7 days) |
-| `PORT` | `5000` | NestJS server listen port |
-| `AAMARPAY_STORE_ID` | `aamarpaytest` | aamarPay merchant store ID |
-| `AAMARPAY_SIGNATURE_KEY` | `dbb74894e82415a2f7ff0ec3a97e4183` | aamarPay signature key for hash verification |
-| `AAMARPAY_BASE_URL` | `https://sandbox.aamarpay.com` | aamarPay base URL (sandbox or live) |
-| `RESEND_API_KEY` | `re_123456789` | Resend API key for transactional email |
-| `SENDER_EMAIL` | `academy@multihat.dev` | From address for outgoing emails |
-| `FRONTEND_URL` | `http://localhost:3000` | Frontend origin (CORS + redirect URLs) |
-| `NODE_ENV` | `development` | Environment flag |
-| `WALLET_MIN_TOPUP_BDT` | `50` | Minimum wallet top-up amount in BDT |
+| Variable                 | Example Value                                                                    | Purpose                                      |
+| :----------------------- | :------------------------------------------------------------------------------- | :------------------------------------------- |
+| `DATABASE_URL`           | `postgresql://postgres:localpassword123@localhost:5432/academy_db?schema=public` | Prisma database connection                   |
+| `JWT_ACCESS_SECRET`      | `change-me-access-secret-256bit`                                                 | Signs short-lived access tokens (15 min)     |
+| `JWT_REFRESH_SECRET`     | `change-me-refresh-secret-256bit`                                                | Signs long-lived refresh tokens (7 days)     |
+| `PORT`                   | `5000`                                                                           | NestJS server listen port                    |
+| `AAMARPAY_STORE_ID`      | `aamarpaytest`                                                                   | aamarPay merchant store ID                   |
+| `AAMARPAY_SIGNATURE_KEY` | `dbb74894e82415a2f7ff0ec3a97e4183`                                               | aamarPay signature key for hash verification |
+| `AAMARPAY_BASE_URL`      | `https://sandbox.aamarpay.com`                                                   | aamarPay base URL (sandbox or live)          |
+| `RESEND_API_KEY`         | `re_123456789`                                                                   | Resend API key for transactional email       |
+| `SENDER_EMAIL`           | `academy@multihat.dev`                                                           | From address for outgoing emails             |
+| `FRONTEND_URL`           | `http://localhost:3000`                                                          | Frontend origin (CORS + redirect URLs)       |
+| `NODE_ENV`               | `development`                                                                    | Environment flag                             |
+| `WALLET_MIN_TOPUP_BDT`   | `50`                                                                             | Minimum wallet top-up amount in BDT          |
 
 ### Frontend (`frontend/.env.local`)
 
-| Variable | Example Value | Purpose |
-|:---------|:-------------|:--------|
-| `NEXT_PUBLIC_API_URL` | `http://localhost:5000/api/v1` | Backend API base URL |
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | Public site URL (for SEO/OG tags) |
-| `NEXT_PUBLIC_GA_ID` | `G-XXXXXXXXXX` | Google Analytics 4 measurement ID |
+| Variable               | Example Value                  | Purpose                           |
+| :--------------------- | :----------------------------- | :-------------------------------- |
+| `NEXT_PUBLIC_API_URL`  | `http://localhost:5000/api/v1` | Backend API base URL              |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000`        | Public site URL (for SEO/OG tags) |
+| `NEXT_PUBLIC_GA_ID`    | `G-XXXXXXXXXX`                 | Google Analytics 4 measurement ID |
 
 > **Production:** On Vercel, set `NEXT_PUBLIC_API_URL=https://api.multihat.dev/api/v1` and `NEXT_PUBLIC_SITE_URL=https://academy.multihat.dev`.
 
@@ -120,13 +120,13 @@ academy/
 
 Ensure the following are installed on your development machine:
 
-| Tool | Version | Purpose |
-|:-----|:--------|:--------|
-| Node.js | 20 LTS | Runtime for both NestJS and Next.js |
-| npm | 10.x | Package manager |
-| Docker Desktop | Latest | Local PostgreSQL via Docker Compose |
-| Git | Latest | Version control |
-| VS Code | Latest | Editor (with TypeScript, Prisma, Tailwind extensions) |
+| Tool           | Version | Purpose                                               |
+| :------------- | :------ | :---------------------------------------------------- |
+| Node.js        | 20 LTS  | Runtime for both NestJS and Next.js                   |
+| npm            | 10.x    | Package manager                                       |
+| Docker Desktop | Latest  | Local PostgreSQL via Docker Compose                   |
+| Git            | Latest  | Version control                                       |
+| VS Code        | Latest  | Editor (with TypeScript, Prisma, Tailwind extensions) |
 
 ### 0.2 Cloudflare DNS Configuration
 
@@ -227,11 +227,11 @@ cp brandLogoLight.png frontend/public/brandLogoLight.png
 cp og-image.png frontend/public/og-image.png
 ```
 
-| Asset | Usage |
-|:------|:------|
-| `brandLogoDark.png` | Site logo rendered in dark theme (Navbar, footer, certificate header) |
-| `brandLogoLight.png` | Site logo rendered in light theme |
-| `og-image.png` | Default Open Graph / Twitter Card preview image for social sharing |
+| Asset                | Usage                                                                 |
+| :------------------- | :-------------------------------------------------------------------- |
+| `brandLogoDark.png`  | Site logo rendered in dark theme (Navbar, footer, certificate header) |
+| `brandLogoLight.png` | Site logo rendered in light theme                                     |
+| `og-image.png`       | Default Open Graph / Twitter Card preview image for social sharing    |
 
 > **Frontend reference:** Use `<Image src="/brandLogoDark.png" ... />` in components. The OG image is set in `layout.tsx` metadata via `openGraph.images: [{ url: '/og-image.png' }]`.
 
@@ -287,6 +287,8 @@ postgres-data/
 # Run from: academy/backend/
 npx prisma init
 ```
+
+> Note: Pin Prisma to v6 because Prisma 7 removed `datasource.url` from `schema.prisma`. Install with `npm install prisma@6 @prisma/client@6`.
 
 ### 2.2 Schema Definition
 
@@ -573,6 +575,8 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_GA_ID=
 ```
 
+> Note: The backend listens on port 5000 (from `backend/.env`). Use `http://localhost:5000/api` for Swagger. If any local docs mention `localhost:3001`, update them to `localhost:5000`.
+
 ### 2.4 Run Migration & Generate Client
 
 ```bash
@@ -586,23 +590,23 @@ npx prisma generate
 Create `backend/prisma/seed.ts`:
 
 ```typescript
-import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Seed admin user
-  const hashedPassword = await bcrypt.hash('AdminSecure!2026', 12);
+  const hashedPassword = await bcrypt.hash("AdminSecure!2026", 12);
 
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@multihat.dev' },
+    where: { email: "admin@multihat.dev" },
     update: {},
     create: {
-      email: 'admin@multihat.dev',
-      name: 'Sagar Biswas',
+      email: "admin@multihat.dev",
+      name: "Sagar Biswas",
       hashedPassword,
-      role: 'ADMIN',
+      role: "ADMIN",
     },
   });
 
@@ -615,29 +619,50 @@ async function main() {
 
   // Seed initial book
   const book = await prisma.book.upsert({
-    where: { slug: 'google-dorks-complete-handbook' },
+    where: { slug: "google-dorks-complete-handbook" },
     update: {},
     create: {
-      title: 'Google Dorks: The Complete OSINT Handbook',
-      slug: 'google-dorks-complete-handbook',
-      description: 'Master Google Dorking for ethical OSINT research. Covers advanced operators, localized Bangladesh examples, and real-world case studies.',
-      price: 10.00,
+      title: "Google Dorks: The Complete OSINT Handbook",
+      slug: "google-dorks-complete-handbook",
+      description:
+        "Master Google Dorking for ethical OSINT research. Covers advanced operators, localized Bangladesh examples, and real-world case studies.",
+      price: 10.0,
       isPublished: true,
       chapterMetadata: [
-        { index: 1, title: 'Introduction to Google Dorks', isFree: true },
-        { index: 2, title: 'Basic Search Operators', isFree: true },
-        { index: 3, title: 'Advanced Operators & Filters', isFree: true },
-        { index: 4, title: 'OSINT Reconnaissance Techniques', isFree: false },
-        { index: 5, title: 'Bangladesh-Specific Dork Examples', isFree: false },
+        { index: 1, title: "Introduction to Google Dorks", isFree: true },
+        { index: 2, title: "Basic Search Operators", isFree: true },
+        { index: 3, title: "Advanced Operators & Filters", isFree: true },
+        { index: 4, title: "OSINT Reconnaissance Techniques", isFree: false },
+        { index: 5, title: "Bangladesh-Specific Dork Examples", isFree: false },
       ],
     },
   });
 
   // Seed quiz questions for the book
   const questions = [
-    { prompt: 'Which Google operator restricts results to a specific website?', options: ['inurl:', 'site:', 'filetype:', 'intitle:'], correctAnswer: 'site:', sortOrder: 1 },
-    { prompt: 'What does the filetype: operator do?', options: ['Searches file names', 'Filters by file extension', 'Searches inside files', 'Lists all files'], correctAnswer: 'Filters by file extension', sortOrder: 2 },
-    { prompt: 'Which operator finds pages with a specific word in the title?', options: ['inurl:', 'intext:', 'intitle:', 'site:'], correctAnswer: 'intitle:', sortOrder: 3 },
+    {
+      prompt: "Which Google operator restricts results to a specific website?",
+      options: ["inurl:", "site:", "filetype:", "intitle:"],
+      correctAnswer: "site:",
+      sortOrder: 1,
+    },
+    {
+      prompt: "What does the filetype: operator do?",
+      options: [
+        "Searches file names",
+        "Filters by file extension",
+        "Searches inside files",
+        "Lists all files",
+      ],
+      correctAnswer: "Filters by file extension",
+      sortOrder: 2,
+    },
+    {
+      prompt: "Which operator finds pages with a specific word in the title?",
+      options: ["inurl:", "intext:", "intitle:", "site:"],
+      correctAnswer: "intitle:",
+      sortOrder: 3,
+    },
   ];
 
   for (const q of questions) {
@@ -646,12 +671,19 @@ async function main() {
     });
   }
 
-  console.log(`Seeded: admin=${admin.email}, book="${book.title}", questions=${questions.length}`);
+  console.log(
+    `Seeded: admin=${admin.email}, book="${book.title}", questions=${questions.length}`,
+  );
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
-  .finally(async () => { await prisma.$disconnect(); });
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
 ```
 
 Add to `backend/package.json`:
@@ -705,11 +737,14 @@ Every module needs database access. Create a shared `PrismaService`:
 Create `backend/src/prisma/prisma.service.ts`:
 
 ```typescript
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   async onModuleInit() {
     await this.$connect();
   }
@@ -723,8 +758,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 Create `backend/src/prisma/prisma.module.ts`:
 
 ```typescript
-import { Global, Module } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { Global, Module } from "@nestjs/common";
+import { PrismaService } from "./prisma.service";
 
 @Global()
 @Module({
@@ -741,24 +776,24 @@ export class PrismaModule {}
 Create `backend/src/app.module.ts`:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { ScheduleModule } from '@nestjs/schedule';
-import { APP_GUARD } from '@nestjs/core';
-import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { BooksModule } from './books/books.module';
-import { CouponsModule } from './coupons/coupons.module';
-import { OrdersModule } from './orders/orders.module';
-import { PaymentsModule } from './payments/payments.module';
-import { QuizzesModule } from './quizzes/quizzes.module';
-import { CertificatesModule } from './certificates/certificates.module';
-import { EmailModule } from './email/email.module';
-import { WalletModule } from './wallet/wallet.module';
-import { ReferralsModule } from './referrals/referrals.module';
-import { ShowcasesModule } from './showcases/showcases.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { ScheduleModule } from "@nestjs/schedule";
+import { APP_GUARD } from "@nestjs/core";
+import { PrismaModule } from "./prisma/prisma.module";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { BooksModule } from "./books/books.module";
+import { CouponsModule } from "./coupons/coupons.module";
+import { OrdersModule } from "./orders/orders.module";
+import { PaymentsModule } from "./payments/payments.module";
+import { QuizzesModule } from "./quizzes/quizzes.module";
+import { CertificatesModule } from "./certificates/certificates.module";
+import { EmailModule } from "./email/email.module";
+import { WalletModule } from "./wallet/wallet.module";
+import { ReferralsModule } from "./referrals/referrals.module";
+import { ShowcasesModule } from "./showcases/showcases.module";
 
 @Module({
   imports: [
@@ -803,12 +838,12 @@ export class AppModule {}
 Create `backend/src/main.ts`:
 
 ```typescript
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
-import { AppModule } from './app.module';
-import helmet from 'helmet';
+import { NestFactory } from "@nestjs/core";
+import { ValidationPipe } from "@nestjs/common";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { ConfigService } from "@nestjs/config";
+import { AppModule } from "./app.module";
+import helmet from "helmet";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -818,10 +853,13 @@ async function bootstrap() {
   app.use(helmet());
 
   // ── Strict CORS ──
-  const frontendUrl = configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
+  const frontendUrl = configService.get<string>(
+    "FRONTEND_URL",
+    "http://localhost:3000",
+  );
   app.enableCors({
-    origin: [frontendUrl, 'https://academy.multihat.dev'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: [frontendUrl, "https://academy.multihat.dev"],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
   });
 
@@ -835,20 +873,22 @@ async function bootstrap() {
   );
 
   // ── Global API Prefix ──
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix("api/v1");
 
   // ── Swagger / OpenAPI 3.0 Documentation ──
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('MultiHAT Academy API')
-    .setDescription('RESTful API for the MultiHAT Academy micro-credential platform')
-    .setVersion('1.0')
+    .setTitle("MultiHAT Academy API")
+    .setDescription(
+      "RESTful API for the MultiHAT Academy micro-credential platform",
+    )
+    .setVersion("1.0")
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup("api/docs", app, document);
 
   // ── Start Server ──
-  const port = configService.get<number>('PORT', 5000);
+  const port = configService.get<number>("PORT", 5000);
   await app.listen(port);
   console.log(`🚀 Academy API running on http://localhost:${port}`);
   console.log(`📄 Swagger docs at http://localhost:${port}/api/docs`);
@@ -863,9 +903,14 @@ Wraps all successful API responses in the consistent `{ data, message, statusCod
 Create `backend/src/common/interceptors/response.interceptor.ts`:
 
 ```typescript
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from "@nestjs/common";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 export interface ApiResponse<T> {
   data: T;
@@ -874,13 +919,19 @@ export interface ApiResponse<T> {
 }
 
 @Injectable()
-export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponse<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResponse<T>> {
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ApiResponse<T>
+> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<ApiResponse<T>> {
     const statusCode = context.switchToHttp().getResponse().statusCode;
     return next.handle().pipe(
       map((data) => ({
         data,
-        message: 'Success',
+        message: "Success",
         statusCode,
       })),
     );
@@ -891,7 +942,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponse<T>
 Register it globally in `main.ts` by adding after the validation pipe:
 
 ```typescript
-import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { ResponseInterceptor } from "./common/interceptors/response.interceptor";
 // ... inside bootstrap():
 app.useGlobalInterceptors(new ResponseInterceptor());
 ```
@@ -901,8 +952,14 @@ app.useGlobalInterceptors(new ResponseInterceptor());
 Create `backend/src/common/filters/http-exception.filter.ts`:
 
 ```typescript
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
-import { Response } from 'express';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from "@nestjs/common";
+import { Response } from "express";
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -910,17 +967,22 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const status = exception instanceof HttpException
-      ? exception.getStatus()
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = exception instanceof HttpException
-      ? exception.getResponse()
-      : 'Internal server error';
+    const message =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : "Internal server error";
 
     response.status(status).json({
       data: null,
-      message: typeof message === 'string' ? message : (message as any).message || message,
+      message:
+        typeof message === "string"
+          ? message
+          : (message as any).message || message,
       statusCode: status,
     });
   }
@@ -930,7 +992,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 Register in `main.ts`:
 
 ```typescript
-import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
+import { GlobalExceptionFilter } from "./common/filters/http-exception.filter";
 // ... inside bootstrap():
 app.useGlobalFilters(new GlobalExceptionFilter());
 ```
@@ -944,7 +1006,13 @@ app.useGlobalFilters(new GlobalExceptionFilter());
 Create `backend/src/auth/dto/register.dto.ts`:
 
 ```typescript
-import { IsEmail, IsString, MinLength, MaxLength, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  MinLength,
+  MaxLength,
+  IsOptional,
+} from "class-validator";
 
 export class RegisterDto {
   @IsEmail()
@@ -969,7 +1037,7 @@ export class RegisterDto {
 Create `backend/src/auth/dto/login.dto.ts`:
 
 ```typescript
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString } from "class-validator";
 
 export class LoginDto {
   @IsEmail()
@@ -985,11 +1053,11 @@ export class LoginDto {
 Create `backend/src/auth/strategies/jwt.strategy.ts`:
 
 ```typescript
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { ExtractJwt, Strategy } from "passport-jwt";
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -1000,13 +1068,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
+      secretOrKey: configService.get<string>("JWT_ACCESS_SECRET"),
     });
   }
 
   async validate(payload: { sub: string; email: string; role: string }) {
-    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
-    if (!user) throw new UnauthorizedException('User not found');
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+    if (!user) throw new UnauthorizedException("User not found");
     return { id: user.id, email: user.email, role: user.role, name: user.name };
   }
 }
@@ -1017,20 +1087,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 Create `backend/src/common/decorators/roles.decorator.ts`:
 
 ```typescript
-import { SetMetadata } from '@nestjs/common';
-import { Role } from '@prisma/client';
+import { SetMetadata } from "@nestjs/common";
+import { Role } from "@prisma/client";
 
-export const ROLES_KEY = 'roles';
+export const ROLES_KEY = "roles";
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
 ```
 
 Create `backend/src/common/guards/roles.guard.ts`:
 
 ```typescript
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Role } from '@prisma/client';
-import { ROLES_KEY } from '../decorators/roles.decorator';
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Role } from "@prisma/client";
+import { ROLES_KEY } from "../decorators/roles.decorator";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -1051,7 +1121,7 @@ export class RolesGuard implements CanActivate {
 Create `backend/src/common/decorators/current-user.decorator.ts`:
 
 ```typescript
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 export const CurrentUser = createParamDecorator(
   (data: string | undefined, ctx: ExecutionContext) => {
@@ -1066,13 +1136,17 @@ export const CurrentUser = createParamDecorator(
 Create `backend/src/auth/auth.service.ts`:
 
 ```typescript
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
-import { PrismaService } from '../prisma/prisma.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import * as bcrypt from "bcrypt";
+import { PrismaService } from "../prisma/prisma.service";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
 
 @Injectable()
 export class AuthService {
@@ -1083,8 +1157,10 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
-    if (existing) throw new ConflictException('Email already registered');
+    const existing = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existing) throw new ConflictException("Email already registered");
 
     // Resolve referrer if referral code is provided
     let referredById: string | undefined;
@@ -1123,11 +1199,16 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (!user) throw new UnauthorizedException("Invalid credentials");
 
-    const passwordValid = await bcrypt.compare(dto.password, user.hashedPassword);
-    if (!passwordValid) throw new UnauthorizedException('Invalid credentials');
+    const passwordValid = await bcrypt.compare(
+      dto.password,
+      user.hashedPassword,
+    );
+    if (!passwordValid) throw new UnauthorizedException("Invalid credentials");
 
     return this.generateTokens(user.id, user.email, user.role);
   }
@@ -1135,13 +1216,15 @@ export class AuthService {
   async refreshTokens(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
       });
-      const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
-      if (!user) throw new UnauthorizedException('User not found');
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.sub },
+      });
+      if (!user) throw new UnauthorizedException("User not found");
       return this.generateTokens(user.id, user.email, user.role);
     } catch {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new UnauthorizedException("Invalid refresh token");
     }
   }
 
@@ -1149,13 +1232,13 @@ export class AuthService {
     const payload = { sub: userId, email, role };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: '15m',
+      secret: this.configService.get<string>("JWT_ACCESS_SECRET"),
+      expiresIn: "15m",
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: '7d',
+      secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+      expiresIn: "7d",
     });
 
     return { accessToken, refreshToken, user: { id: userId, email, role } };
@@ -1168,31 +1251,31 @@ export class AuthService {
 Create `backend/src/auth/auth.controller.ts`:
 
 ```typescript
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
+import { Controller, Post, Body } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { Throttle } from "@nestjs/throttler";
+import { AuthService } from "./auth.service";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
 
-@ApiTags('Auth')
-@Controller('auth')
+@ApiTags("Auth")
+@Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('register')
+  @Post("register")
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
   @Throttle({ default: { ttl: 60000, limit: 10 } }) // 10 login attempts per minute
-  @Post('login')
+  @Post("login")
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
-  @Post('refresh')
-  refresh(@Body('refreshToken') refreshToken: string) {
+  @Post("refresh")
+  refresh(@Body("refreshToken") refreshToken: string) {
     return this.authService.refreshTokens(refreshToken);
   }
 }
@@ -1203,16 +1286,16 @@ export class AuthController {
 Create `backend/src/auth/auth.module.ts`:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies/jwt.strategy';
+import { Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { AuthService } from "./auth.service";
+import { AuthController } from "./auth.controller";
+import { JwtStrategy } from "./strategies/jwt.strategy";
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.register({}), // Secrets provided dynamically in AuthService
   ],
   controllers: [AuthController],
@@ -1230,6 +1313,8 @@ export class AuthModule {}
 
 > All modules below follow the same pattern: **DTO → Service → Controller → Module**. Each service injects `PrismaService` (globally available). Protected endpoints use `@UseGuards(AuthGuard('jwt'))` and admin endpoints add `@UseGuards(AuthGuard('jwt'), RolesGuard)` with `@Roles(Role.ADMIN)`.
 
+> Note: `WalletModule`, `PaymentsModule`, and `ReferralsModule` have circular imports. Wrap cross-module imports with `forwardRef()` in those module definitions.
+
 ### 5.1 Users Module
 
 **Endpoints:** `GET /api/v1/users/me` · `PATCH /api/v1/users/me`
@@ -1237,8 +1322,8 @@ export class AuthModule {}
 Create `backend/src/users/users.service.ts`:
 
 ```typescript
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class UsersService {
@@ -1247,9 +1332,15 @@ export class UsersService {
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, name: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+      },
     });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException("User not found");
     return user;
   }
 
@@ -1266,26 +1357,29 @@ export class UsersService {
 Create `backend/src/users/users.controller.ts`:
 
 ```typescript
-import { Controller, Get, Patch, Body, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { UsersService } from './users.service';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Controller, Get, Patch, Body, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { UsersService } from "./users.service";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
 
-@ApiTags('Users')
+@ApiTags("Users")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
-@Controller('users')
+@UseGuards(AuthGuard("jwt"))
+@Controller("users")
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Get('me')
-  getProfile(@CurrentUser('id') userId: string) {
+  @Get("me")
+  getProfile(@CurrentUser("id") userId: string) {
     return this.usersService.getProfile(userId);
   }
 
-  @Patch('me')
-  updateProfile(@CurrentUser('id') userId: string, @Body() dto: { name?: string }) {
+  @Patch("me")
+  updateProfile(
+    @CurrentUser("id") userId: string,
+    @Body() dto: { name?: string },
+  ) {
     return this.usersService.updateProfile(userId, dto);
   }
 }
@@ -1298,8 +1392,8 @@ export class UsersController {
 Create `backend/src/books/books.service.ts`:
 
 ```typescript
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class BooksService {
@@ -1312,7 +1406,7 @@ export class BooksService {
         where: { isPublished: true },
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       }),
       this.prisma.book.count({ where: { isPublished: true } }),
     ]);
@@ -1321,17 +1415,32 @@ export class BooksService {
 
   async findBySlug(slug: string) {
     const book = await this.prisma.book.findUnique({ where: { slug } });
-    if (!book) throw new NotFoundException('Book not found');
+    if (!book) throw new NotFoundException("Book not found");
     return book;
   }
 
   // Admin: Create book
-  async create(data: { title: string; slug: string; description: string; price: number; chapterMetadata: any }) {
+  async create(data: {
+    title: string;
+    slug: string;
+    description: string;
+    price: number;
+    chapterMetadata: any;
+  }) {
     return this.prisma.book.create({ data });
   }
 
   // Admin: Update book
-  async update(id: string, data: Partial<{ title: string; description: string; price: number; isPublished: boolean; chapterMetadata: any }>) {
+  async update(
+    id: string,
+    data: Partial<{
+      title: string;
+      description: string;
+      price: number;
+      isPublished: boolean;
+      chapterMetadata: any;
+    }>,
+  ) {
     return this.prisma.book.update({ where: { id }, data });
   }
 }
@@ -1340,42 +1449,51 @@ export class BooksService {
 Create `backend/src/books/books.controller.ts`:
 
 ```typescript
-import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { BooksService } from './books.service';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Role } from '@prisma/client';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Param,
+  Body,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { BooksService } from "./books.service";
+import { Roles } from "../common/decorators/roles.decorator";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { Role } from "@prisma/client";
 
-@ApiTags('Books')
-@Controller('books')
+@ApiTags("Books")
+@Controller("books")
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
   @Get()
-  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+  findAll(@Query("page") page?: string, @Query("limit") limit?: string) {
     return this.booksService.findAll(Number(page) || 1, Number(limit) || 20);
   }
 
-  @Get(':slug')
-  findBySlug(@Param('slug') slug: string) {
+  @Get(":slug")
+  findBySlug(@Param("slug") slug: string) {
     return this.booksService.findBySlug(slug);
   }
 
   @Post()
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
   @Roles(Role.ADMIN)
   create(@Body() dto: any) {
     return this.booksService.create(dto);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard("jwt"), RolesGuard)
   @Roles(Role.ADMIN)
-  update(@Param('id') id: string, @Body() dto: any) {
+  update(@Param("id") id: string, @Body() dto: any) {
     return this.booksService.update(id, dto);
   }
 }
@@ -1393,14 +1511,18 @@ This module implements the dual-path purchase flow from [Payment Flow Diagram](.
 Create `backend/src/orders/orders.service.ts`:
 
 ```typescript
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { PaymentsService } from '../payments/payments.service';
-import { WalletService } from '../wallet/wallet.service';
-import { ReferralsService } from '../referrals/referrals.service';
-import { EmailService } from '../email/email.service';
-import { PaymentMethod } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { PaymentsService } from "../payments/payments.service";
+import { WalletService } from "../wallet/wallet.service";
+import { ReferralsService } from "../referrals/referrals.service";
+import { EmailService } from "../email/email.service";
+import { PaymentMethod } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 
 // Products that MUST use gateway (PDF traceability requires aamarPay paper trail)
 const GATEWAY_ONLY_SLUGS: string[] = [
@@ -1418,42 +1540,57 @@ export class OrdersService {
     private emailService: EmailService,
   ) {}
 
-  async createOrder(userId: string, bookId: string, paymentMethod: PaymentMethod = 'GATEWAY', couponCode?: string) {
+  async createOrder(
+    userId: string,
+    bookId: string,
+    paymentMethod: PaymentMethod = "GATEWAY",
+    couponCode?: string,
+  ) {
     // 1. Validate book exists
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
-    if (!book || !book.isPublished) throw new NotFoundException('Book not found');
+    if (!book || !book.isPublished)
+      throw new NotFoundException("Book not found");
 
     // 2. Enforce gateway-only restriction for PDF products
-    if (paymentMethod === 'WALLET' && GATEWAY_ONLY_SLUGS.includes(book.slug)) {
-      throw new BadRequestException('This product requires payment via aamarPay gateway (PDF anti-piracy policy)');
+    if (paymentMethod === "WALLET" && GATEWAY_ONLY_SLUGS.includes(book.slug)) {
+      throw new BadRequestException(
+        "This product requires payment via aamarPay gateway (PDF anti-piracy policy)",
+      );
     }
 
     // 3. Check if already purchased
     const existingOrder = await this.prisma.order.findFirst({
-      where: { userId, bookId, status: 'PAID' },
+      where: { userId, bookId, status: "PAID" },
     });
-    if (existingOrder) throw new BadRequestException('You already own this book');
+    if (existingOrder)
+      throw new BadRequestException("You already own this book");
 
     // 4. Calculate discount
     let discount = new Decimal(0);
     let couponId: string | null = null;
 
     if (couponCode) {
-      const coupon = await this.prisma.coupon.findUnique({ where: { code: couponCode } });
-      if (!coupon || !coupon.isActive) throw new BadRequestException('Invalid coupon');
-      if (new Date() < coupon.validFrom || new Date() > coupon.validUntil) throw new BadRequestException('Coupon expired');
-      if (coupon.usageCount >= coupon.usageLimit) throw new BadRequestException('Coupon usage limit reached');
+      const coupon = await this.prisma.coupon.findUnique({
+        where: { code: couponCode },
+      });
+      if (!coupon || !coupon.isActive)
+        throw new BadRequestException("Invalid coupon");
+      if (new Date() < coupon.validFrom || new Date() > coupon.validUntil)
+        throw new BadRequestException("Coupon expired");
+      if (coupon.usageCount >= coupon.usageLimit)
+        throw new BadRequestException("Coupon usage limit reached");
 
-      discount = coupon.discountType === 'PERCENTAGE'
-        ? book.price.mul(coupon.discountValue).div(100)
-        : coupon.discountValue;
+      discount =
+        coupon.discountType === "PERCENTAGE"
+          ? book.price.mul(coupon.discountValue).div(100)
+          : coupon.discountValue;
       couponId = coupon.id;
     }
 
     const finalAmount = Decimal.max(book.price.minus(discount), new Decimal(0));
 
     // ─── PATH A: WALLET PAYMENT (instant fulfillment) ───
-    if (paymentMethod === 'WALLET') {
+    if (paymentMethod === "WALLET") {
       const order = await this.prisma.order.create({
         data: {
           userId,
@@ -1461,8 +1598,8 @@ export class OrdersService {
           couponId,
           amount: finalAmount,
           discountApplied: discount,
-          status: 'PAID',
-          paymentMethod: 'WALLET',
+          status: "PAID",
+          paymentMethod: "WALLET",
         },
       });
 
@@ -1482,9 +1619,13 @@ export class OrdersService {
 
       // Send purchase receipt
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
-      await this.emailService.sendPurchaseReceipt(user!.email, user!.name, book.title);
+      await this.emailService.sendPurchaseReceipt(
+        user!.email,
+        user!.name,
+        book.title,
+      );
 
-      return { orderId: order.id, paymentMethod: 'WALLET', status: 'PAID' };
+      return { orderId: order.id, paymentMethod: "WALLET", status: "PAID" };
     }
 
     // ─── PATH B: GATEWAY PAYMENT (redirect to aamarPay) ───
@@ -1495,8 +1636,8 @@ export class OrdersService {
         couponId,
         amount: finalAmount,
         discountApplied: discount,
-        status: 'PENDING',
-        paymentMethod: 'GATEWAY',
+        status: "PENDING",
+        paymentMethod: "GATEWAY",
         aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       },
     });
@@ -1509,14 +1650,18 @@ export class OrdersService {
       user!.email,
     );
 
-    return { orderId: order.id, paymentMethod: 'GATEWAY', paymentUrl: payment.paymentUrl };
+    return {
+      orderId: order.id,
+      paymentMethod: "GATEWAY",
+      paymentUrl: payment.paymentUrl,
+    };
   }
 
   async getMyOrders(userId: string) {
     return this.prisma.order.findMany({
       where: { userId },
       include: { book: { select: { title: true, slug: true } } },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 }
@@ -1531,51 +1676,61 @@ This implements the IPN callback from [Payment Flow Diagram](./diagrams/02-payme
 Create `backend/src/payments/payments.service.ts`:
 
 ```typescript
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as crypto from 'crypto';
-import axios from 'axios';
+import { Injectable, BadRequestException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import * as crypto from "crypto";
+import axios from "axios";
 
 @Injectable()
 export class PaymentsService {
   constructor(private configService: ConfigService) {}
 
-  async initiatePayment(tranId: string, amount: string, customerName: string, customerEmail: string) {
-    const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
-    const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
-    const baseUrl = this.configService.get<string>('AAMARPAY_BASE_URL');
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+  async initiatePayment(
+    tranId: string,
+    amount: string,
+    customerName: string,
+    customerEmail: string,
+  ) {
+    const storeId = this.configService.get<string>("AAMARPAY_STORE_ID");
+    const signatureKey = this.configService.get<string>(
+      "AAMARPAY_SIGNATURE_KEY",
+    );
+    const baseUrl = this.configService.get<string>("AAMARPAY_BASE_URL");
+    const frontendUrl = this.configService.get<string>("FRONTEND_URL");
 
     const payload = {
       store_id: storeId,
       signature_key: signatureKey,
       tran_id: tranId,
       amount,
-      currency: 'BDT',
-      desc: 'MultiHAT Academy E-Book Purchase',
+      currency: "BDT",
+      desc: "MultiHAT Academy E-Book Purchase",
       cus_name: customerName,
       cus_email: customerEmail,
-      cus_phone: '01700000000',
+      cus_phone: "01700000000",
       success_url: `${frontendUrl}/payment/success?id=${tranId}`,
       fail_url: `${frontendUrl}/payment/fail?id=${tranId}`,
       cancel_url: `${frontendUrl}/payment/cancel?id=${tranId}`,
-      type: 'json',
+      type: "json",
     };
 
     try {
       const response = await axios.post(`${baseUrl}/jsonpost.php`, payload);
-      if (response.data?.payment_url) return { paymentUrl: response.data.payment_url };
-      throw new BadRequestException('aamarPay initiation failed');
+      if (response.data?.payment_url)
+        return { paymentUrl: response.data.payment_url };
+      throw new BadRequestException("aamarPay initiation failed");
     } catch (error) {
       throw new BadRequestException(`Payment error: ${error.message}`);
     }
   }
 
   verifyIpnSignature(payload: any): boolean {
-    const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
-    const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
+    const storeId = this.configService.get<string>("AAMARPAY_STORE_ID");
+    const signatureKey = this.configService.get<string>(
+      "AAMARPAY_SIGNATURE_KEY",
+    );
     const raw = `${storeId}${signatureKey}${payload.mer_txnid}${payload.amount}BDT`;
-    const computed = crypto.createHash('md5').update(raw).digest('hex');
+    const computed = crypto.createHash("md5").update(raw).digest("hex");
     return computed === payload.signature;
   }
 }
@@ -1584,18 +1739,18 @@ export class PaymentsService {
 Create `backend/src/payments/payments.controller.ts`:
 
 ```typescript
-import { Controller, Post, Body, HttpCode } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { SkipThrottle } from '@nestjs/throttler';
-import { PaymentsService } from './payments.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { EmailService } from '../email/email.service';
-import { WalletService } from '../wallet/wallet.service';
-import { ReferralsService } from '../referrals/referrals.service';
-import { Decimal } from '@prisma/client/runtime/library';
+import { Controller, Post, Body, HttpCode } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { SkipThrottle } from "@nestjs/throttler";
+import { PaymentsService } from "./payments.service";
+import { PrismaService } from "../prisma/prisma.service";
+import { EmailService } from "../email/email.service";
+import { WalletService } from "../wallet/wallet.service";
+import { ReferralsService } from "../referrals/referrals.service";
+import { Decimal } from "@prisma/client/runtime/library";
 
-@ApiTags('Payments')
-@Controller('payments')
+@ApiTags("Payments")
+@Controller("payments")
 export class PaymentsController {
   constructor(
     private paymentsService: PaymentsService,
@@ -1606,20 +1761,20 @@ export class PaymentsController {
   ) {}
 
   @SkipThrottle()
-  @Post('ipn')
+  @Post("ipn")
   @HttpCode(200)
   async handleIpn(@Body() payload: any) {
     // 1. Verify signature
     if (!this.paymentsService.verifyIpnSignature(payload)) {
-      return { status: 'INVALID_SIGNATURE' };
+      return { status: "INVALID_SIGNATURE" };
     }
 
     const tranId = payload.mer_txnid;
 
     // ─── WALLET TOP-UP FLOW ───
     // Top-up transactions use the "TOPUP-" prefix (see WalletService.initiateTopUp)
-    if (tranId.startsWith('TOPUP-')) {
-      if (payload.pay_status === 'Successful') {
+    if (tranId.startsWith("TOPUP-")) {
+      if (payload.pay_status === "Successful") {
         const amount = new Decimal(payload.amount);
         // Find user by email from the IPN payload
         const user = await this.prisma.user.findUnique({
@@ -1628,9 +1783,9 @@ export class PaymentsController {
         if (user) {
           await this.walletService.creditTopUp(user.id, amount, tranId);
         }
-        return { status: 'TOPUP_SUCCESS' };
+        return { status: "TOPUP_SUCCESS" };
       }
-      return { status: 'TOPUP_FAILED' };
+      return { status: "TOPUP_FAILED" };
     }
 
     // ─── PURCHASE ORDER FLOW ───
@@ -1639,15 +1794,15 @@ export class PaymentsController {
       where: { aamarpayTranId: tranId },
       include: { user: true, book: true },
     });
-    if (!order || order.status === 'PAID') {
-      return { status: 'ALREADY_PROCESSED' };
+    if (!order || order.status === "PAID") {
+      return { status: "ALREADY_PROCESSED" };
     }
 
     // 3. Update order status
-    if (payload.pay_status === 'Successful') {
+    if (payload.pay_status === "Successful") {
       await this.prisma.order.update({
         where: { id: order.id },
-        data: { status: 'PAID', gatewayResponse: payload },
+        data: { status: "PAID", gatewayResponse: payload },
       });
 
       // 4. Update coupon usage if applicable
@@ -1659,20 +1814,27 @@ export class PaymentsController {
       }
 
       // 5. Update referral cumulative spend
-      await this.referralsService.updateCumulativeSpend(order.userId, order.amount);
+      await this.referralsService.updateCumulativeSpend(
+        order.userId,
+        order.amount,
+      );
 
       // 6. Send email with purchase receipt (PDF generation triggered separately)
-      await this.emailService.sendPurchaseReceipt(order.user.email, order.user.name, order.book.title);
+      await this.emailService.sendPurchaseReceipt(
+        order.user.email,
+        order.user.name,
+        order.book.title,
+      );
 
-      return { status: 'SUCCESS' };
+      return { status: "SUCCESS" };
     }
 
     // Handle failed payment
     await this.prisma.order.update({
       where: { id: order.id },
-      data: { status: 'FAILED', gatewayResponse: payload },
+      data: { status: "FAILED", gatewayResponse: payload },
     });
-    return { status: 'FAILED' };
+    return { status: "FAILED" };
   }
 }
 ```
@@ -1686,9 +1848,13 @@ Implements the [Certificate Issuance Flow](./diagrams/07-certificate-issuance-fl
 Create `backend/src/quizzes/quizzes.service.ts`:
 
 ```typescript
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CertificatesService } from '../certificates/certificates.service';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { CertificatesService } from "../certificates/certificates.service";
 
 @Injectable()
 export class QuizzesService {
@@ -1698,28 +1864,39 @@ export class QuizzesService {
   ) {}
 
   async getQuestions(bookSlug: string, userId: string) {
-    const book = await this.prisma.book.findUnique({ where: { slug: bookSlug } });
-    if (!book) throw new NotFoundException('Book not found');
+    const book = await this.prisma.book.findUnique({
+      where: { slug: bookSlug },
+    });
+    if (!book) throw new NotFoundException("Book not found");
 
     // Verify user has purchased the book
     const order = await this.prisma.order.findFirst({
-      where: { userId, bookId: book.id, status: 'PAID' },
+      where: { userId, bookId: book.id, status: "PAID" },
     });
-    if (!order) throw new ForbiddenException('Purchase required to take the quiz');
+    if (!order)
+      throw new ForbiddenException("Purchase required to take the quiz");
 
     const questions = await this.prisma.quizQuestion.findMany({
       where: { bookId: book.id },
       select: { id: true, prompt: true, options: true, sortOrder: true },
-      orderBy: { sortOrder: 'asc' },
+      orderBy: { sortOrder: "asc" },
     });
     return { bookTitle: book.title, questions };
   }
 
-  async submitQuiz(bookSlug: string, userId: string, selectedAnswers: Record<string, string>) {
-    const book = await this.prisma.book.findUnique({ where: { slug: bookSlug } });
-    if (!book) throw new NotFoundException('Book not found');
+  async submitQuiz(
+    bookSlug: string,
+    userId: string,
+    selectedAnswers: Record<string, string>,
+  ) {
+    const book = await this.prisma.book.findUnique({
+      where: { slug: bookSlug },
+    });
+    if (!book) throw new NotFoundException("Book not found");
 
-    const questions = await this.prisma.quizQuestion.findMany({ where: { bookId: book.id } });
+    const questions = await this.prisma.quizQuestion.findMany({
+      where: { bookId: book.id },
+    });
     const totalQuestions = questions.length;
 
     // Score the quiz
@@ -1728,18 +1905,30 @@ export class QuizzesService {
       if (selectedAnswers[q.id] === q.correctAnswer) score++;
     }
 
-    const result = score / totalQuestions >= 0.7 ? 'PASS' : 'FAIL';
+    const result = score / totalQuestions >= 0.7 ? "PASS" : "FAIL";
 
     // Record attempt
     const attempt = await this.prisma.quizAttempt.create({
-      data: { userId, bookId: book.id, selectedAnswers, score, totalQuestions, result },
+      data: {
+        userId,
+        bookId: book.id,
+        selectedAnswers,
+        score,
+        totalQuestions,
+        result,
+      },
     });
 
     // Generate certificate on pass
     let certId: string | undefined;
-    if (result === 'PASS') {
+    if (result === "PASS") {
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
-      const cert = await this.certificatesService.issueCertificate(userId, attempt.id, user!.name, book.title);
+      const cert = await this.certificatesService.issueCertificate(
+        userId,
+        attempt.id,
+        user!.name,
+        book.title,
+      );
       certId = cert.certificateId;
     }
 
@@ -1755,14 +1944,19 @@ export class QuizzesService {
 Create `backend/src/certificates/certificates.service.ts`:
 
 ```typescript
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class CertificatesService {
   constructor(private prisma: PrismaService) {}
 
-  async issueCertificate(userId: string, quizAttemptId: string, holderName: string, courseTitle: string) {
+  async issueCertificate(
+    userId: string,
+    quizAttemptId: string,
+    holderName: string,
+    courseTitle: string,
+  ) {
     return this.prisma.certificate.create({
       data: { userId, quizAttemptId, holderName, courseTitle },
     });
@@ -1771,7 +1965,7 @@ export class CertificatesService {
   async getMyCertificates(userId: string) {
     return this.prisma.certificate.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -1779,7 +1973,7 @@ export class CertificatesService {
     const cert = await this.prisma.certificate.findUnique({
       where: { certificateId: certId },
     });
-    if (!cert) throw new NotFoundException('Certificate not found');
+    if (!cert) throw new NotFoundException("Certificate not found");
     return {
       valid: cert.isValid,
       holderName: cert.holderName,
@@ -1794,26 +1988,26 @@ export class CertificatesService {
 Create `backend/src/certificates/certificates.controller.ts`:
 
 ```typescript
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { CertificatesService } from './certificates.service';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Controller, Get, Param, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { CertificatesService } from "./certificates.service";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
 
-@ApiTags('Certificates')
-@Controller('certificates')
+@ApiTags("Certificates")
+@Controller("certificates")
 export class CertificatesController {
   constructor(private certificatesService: CertificatesService) {}
 
-  @Get('my')
+  @Get("my")
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  getMyCertificates(@CurrentUser('id') userId: string) {
+  @UseGuards(AuthGuard("jwt"))
+  getMyCertificates(@CurrentUser("id") userId: string) {
     return this.certificatesService.getMyCertificates(userId);
   }
 
-  @Get('verify/:certId')  // Public — no auth required
-  verifyCertificate(@Param('certId') certId: string) {
+  @Get("verify/:certId") // Public — no auth required
+  verifyCertificate(@Param("certId") certId: string) {
     return this.certificatesService.verifyCertificate(certId);
   }
 }
@@ -1824,9 +2018,9 @@ export class CertificatesController {
 Create `backend/src/email/email.service.ts`:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Resend } from "resend";
 
 @Injectable()
 export class EmailService {
@@ -1834,8 +2028,11 @@ export class EmailService {
   private senderEmail: string;
 
   constructor(private configService: ConfigService) {
-    this.resend = new Resend(this.configService.get<string>('RESEND_API_KEY'));
-    this.senderEmail = this.configService.get<string>('SENDER_EMAIL', 'academy@multihat.dev');
+    this.resend = new Resend(this.configService.get<string>("RESEND_API_KEY"));
+    this.senderEmail = this.configService.get<string>(
+      "SENDER_EMAIL",
+      "academy@multihat.dev",
+    );
   }
 
   async sendPurchaseReceipt(to: string, name: string, bookTitle: string) {
@@ -1850,7 +2047,13 @@ export class EmailService {
     });
   }
 
-  async sendCertificateEmail(to: string, name: string, courseTitle: string, certId: string, pdfBuffer?: Buffer) {
+  async sendCertificateEmail(
+    to: string,
+    name: string,
+    courseTitle: string,
+    certId: string,
+    pdfBuffer?: Buffer,
+  ) {
     const attachments = pdfBuffer
       ? [{ filename: `certificate-${certId}.pdf`, content: pdfBuffer }]
       : [];
@@ -1871,8 +2074,8 @@ export class EmailService {
 Create `backend/src/email/email.module.ts`:
 
 ```typescript
-import { Global, Module } from '@nestjs/common';
-import { EmailService } from './email.service';
+import { Global, Module } from "@nestjs/common";
+import { EmailService } from "./email.service";
 
 @Global()
 @Module({
@@ -1893,11 +2096,15 @@ This module implements the [Wallet & Referral Flow Diagram](./diagrams/09-wallet
 Create `backend/src/wallet/wallet.service.ts`:
 
 ```typescript
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
-import { PaymentsService } from '../payments/payments.service';
-import { Decimal } from '@prisma/client/runtime/library';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "../prisma/prisma.service";
+import { PaymentsService } from "../payments/payments.service";
+import { Decimal } from "@prisma/client/runtime/library";
 
 @Injectable()
 export class WalletService {
@@ -1909,7 +2116,7 @@ export class WalletService {
 
   async getBalance(userId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
+    if (!wallet) throw new NotFoundException("Wallet not found");
     return {
       balanceBdt: wallet.balanceBdt,
       lifetimeEarned: wallet.lifetimeEarned,
@@ -1918,13 +2125,15 @@ export class WalletService {
   }
 
   async initiateTopUp(userId: string, amountBdt: number) {
-    const minTopUp = Number(this.configService.get('WALLET_MIN_TOPUP_BDT', '50'));
+    const minTopUp = Number(
+      this.configService.get("WALLET_MIN_TOPUP_BDT", "50"),
+    );
     if (amountBdt < minTopUp) {
       throw new BadRequestException(`Minimum top-up is ৳${minTopUp}`);
     }
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException("User not found");
 
     const tranId = `TOPUP-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -1945,7 +2154,7 @@ export class WalletService {
    */
   async creditTopUp(userId: string, amount: Decimal, tranId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
+    if (!wallet) throw new NotFoundException("Wallet not found");
 
     await this.prisma.$transaction([
       this.prisma.wallet.update({
@@ -1958,7 +2167,7 @@ export class WalletService {
       this.prisma.walletTransaction.create({
         data: {
           walletId: wallet.id,
-          type: 'TOPUP',
+          type: "TOPUP",
           amount,
           description: `Wallet top-up via aamarPay (${tranId})`,
         },
@@ -1971,9 +2180,9 @@ export class WalletService {
    */
   async debitForPurchase(userId: string, amount: Decimal, orderId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
+    if (!wallet) throw new NotFoundException("Wallet not found");
     if (wallet.balanceBdt.lessThan(amount)) {
-      throw new BadRequestException('Insufficient wallet balance');
+      throw new BadRequestException("Insufficient wallet balance");
     }
 
     await this.prisma.$transaction([
@@ -1987,7 +2196,7 @@ export class WalletService {
       this.prisma.walletTransaction.create({
         data: {
           walletId: wallet.id,
-          type: 'PURCHASE',
+          type: "PURCHASE",
           amount,
           description: `Purchase (Order: ${orderId})`,
           referenceId: orderId,
@@ -1999,9 +2208,15 @@ export class WalletService {
   /**
    * Credit wallet for referral or showcase rewards.
    */
-  async creditReward(userId: string, amount: Decimal, type: 'REFERRAL_CREDIT' | 'SHOWCASE_CREDIT', description: string, referenceId?: string) {
+  async creditReward(
+    userId: string,
+    amount: Decimal,
+    type: "REFERRAL_CREDIT" | "SHOWCASE_CREDIT",
+    description: string,
+    referenceId?: string,
+  ) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
+    if (!wallet) throw new NotFoundException("Wallet not found");
 
     await this.prisma.$transaction([
       this.prisma.wallet.update({
@@ -2025,13 +2240,13 @@ export class WalletService {
 
   async getTransactions(userId: string, page = 1, limit = 20) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
-    if (!wallet) throw new NotFoundException('Wallet not found');
+    if (!wallet) throw new NotFoundException("Wallet not found");
 
     const skip = (page - 1) * limit;
     const [transactions, total] = await Promise.all([
       this.prisma.walletTransaction.findMany({
         where: { walletId: wallet.id },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
@@ -2045,36 +2260,43 @@ export class WalletService {
 Create `backend/src/wallet/wallet.controller.ts`:
 
 ```typescript
-import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { WalletService } from './wallet.service';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Controller, Get, Post, Body, Query, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { WalletService } from "./wallet.service";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
 
-@ApiTags('Wallet')
+@ApiTags("Wallet")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
-@Controller('wallet')
+@UseGuards(AuthGuard("jwt"))
+@Controller("wallet")
 export class WalletController {
   constructor(private walletService: WalletService) {}
 
-  @Get('balance')
-  getBalance(@CurrentUser('id') userId: string) {
+  @Get("balance")
+  getBalance(@CurrentUser("id") userId: string) {
     return this.walletService.getBalance(userId);
   }
 
-  @Post('topup')
-  initiateTopUp(@CurrentUser('id') userId: string, @Body('amountBdt') amountBdt: number) {
+  @Post("topup")
+  initiateTopUp(
+    @CurrentUser("id") userId: string,
+    @Body("amountBdt") amountBdt: number,
+  ) {
     return this.walletService.initiateTopUp(userId, amountBdt);
   }
 
-  @Get('transactions')
+  @Get("transactions")
   getTransactions(
-    @CurrentUser('id') userId: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @CurrentUser("id") userId: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
   ) {
-    return this.walletService.getTransactions(userId, Number(page) || 1, Number(limit) || 20);
+    return this.walletService.getTransactions(
+      userId,
+      Number(page) || 1,
+      Number(limit) || 20,
+    );
   }
 }
 ```
@@ -2082,10 +2304,10 @@ export class WalletController {
 Create `backend/src/wallet/wallet.module.ts`:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { WalletService } from './wallet.service';
-import { WalletController } from './wallet.controller';
-import { PaymentsModule } from '../payments/payments.module';
+import { Module } from "@nestjs/common";
+import { WalletService } from "./wallet.service";
+import { WalletController } from "./wallet.controller";
+import { PaymentsModule } from "../payments/payments.module";
 
 @Module({
   imports: [PaymentsModule],
@@ -2105,10 +2327,10 @@ This module implements the referral lifecycle from [Wallet & Referral Flow Diagr
 Create `backend/src/referrals/referrals.service.ts`:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { WalletService } from '../wallet/wallet.service';
-import { Decimal } from '@prisma/client/runtime/library';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { WalletService } from "../wallet/wallet.service";
+import { Decimal } from "@prisma/client/runtime/library";
 
 const REFERRAL_REWARD_BDT = new Decimal(100);
 const REFERRAL_THRESHOLD_BDT = new Decimal(500);
@@ -2134,14 +2356,19 @@ export class ReferralsService {
   async getReferralStats(userId: string) {
     const referrals = await this.prisma.referral.findMany({
       where: { referrerId: userId },
-      select: { status: true, cumulativeSpend: true, rewardPaid: true, createdAt: true },
+      select: {
+        status: true,
+        cumulativeSpend: true,
+        rewardPaid: true,
+        createdAt: true,
+      },
     });
 
     return {
       total: referrals.length,
-      pending: referrals.filter((r) => r.status === 'PENDING').length,
-      qualified: referrals.filter((r) => r.status === 'QUALIFIED').length,
-      credited: referrals.filter((r) => r.status === 'CREDITED').length,
+      pending: referrals.filter((r) => r.status === "PENDING").length,
+      qualified: referrals.filter((r) => r.status === "QUALIFIED").length,
+      credited: referrals.filter((r) => r.status === "CREDITED").length,
       totalEarned: referrals.filter((r) => r.rewardPaid).length * 100, // ৳100 per credited referral
     };
   }
@@ -2154,17 +2381,20 @@ export class ReferralsService {
     const referral = await this.prisma.referral.findUnique({
       where: { referredUserId },
     });
-    if (!referral || referral.status === 'CREDITED') return; // No referral or already paid
+    if (!referral || referral.status === "CREDITED") return; // No referral or already paid
 
     const newSpend = referral.cumulativeSpend.add(orderAmount);
 
-    if (newSpend.greaterThanOrEqualTo(REFERRAL_THRESHOLD_BDT) && !referral.rewardPaid) {
+    if (
+      newSpend.greaterThanOrEqualTo(REFERRAL_THRESHOLD_BDT) &&
+      !referral.rewardPaid
+    ) {
       // Threshold met — credit referrer's wallet
       await this.prisma.referral.update({
         where: { id: referral.id },
         data: {
           cumulativeSpend: newSpend,
-          status: 'CREDITED',
+          status: "CREDITED",
           rewardPaid: true,
           qualifiedAt: new Date(),
         },
@@ -2173,7 +2403,7 @@ export class ReferralsService {
       await this.walletService.creditReward(
         referral.referrerId,
         REFERRAL_REWARD_BDT,
-        'REFERRAL_CREDIT',
+        "REFERRAL_CREDIT",
         `Referral reward: referred user met ৳500 spending threshold`,
         referral.id,
       );
@@ -2191,26 +2421,26 @@ export class ReferralsService {
 Create `backend/src/referrals/referrals.controller.ts`:
 
 ```typescript
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { ReferralsService } from './referrals.service';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { ReferralsService } from "./referrals.service";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
 
-@ApiTags('Referrals')
+@ApiTags("Referrals")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
-@Controller('referrals')
+@UseGuards(AuthGuard("jwt"))
+@Controller("referrals")
 export class ReferralsController {
   constructor(private referralsService: ReferralsService) {}
 
-  @Get('code')
-  getReferralCode(@CurrentUser('id') userId: string) {
+  @Get("code")
+  getReferralCode(@CurrentUser("id") userId: string) {
     return this.referralsService.getReferralCode(userId);
   }
 
-  @Get('stats')
-  getReferralStats(@CurrentUser('id') userId: string) {
+  @Get("stats")
+  getReferralStats(@CurrentUser("id") userId: string) {
     return this.referralsService.getReferralStats(userId);
   }
 }
@@ -2219,10 +2449,10 @@ export class ReferralsController {
 Create `backend/src/referrals/referrals.module.ts`:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ReferralsService } from './referrals.service';
-import { ReferralsController } from './referrals.controller';
-import { WalletModule } from '../wallet/wallet.module';
+import { Module } from "@nestjs/common";
+import { ReferralsService } from "./referrals.service";
+import { ReferralsController } from "./referrals.controller";
+import { WalletModule } from "../wallet/wallet.module";
 
 @Module({
   imports: [WalletModule],
@@ -2242,14 +2472,18 @@ This module implements the [Showcase Verification Flow Diagram](./diagrams/10-sh
 Create `backend/src/showcases/showcases.service.ts`:
 
 ```typescript
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { PrismaService } from '../prisma/prisma.service';
-import { WalletService } from '../wallet/wallet.service';
-import { EmailService } from '../email/email.service';
-import { ShowcasePlatform } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
-import axios from 'axios';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { PrismaService } from "../prisma/prisma.service";
+import { WalletService } from "../wallet/wallet.service";
+import { EmailService } from "../email/email.service";
+import { ShowcasePlatform } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
+import axios from "axios";
 
 // Reward amounts per platform (in BDT)
 const PLATFORM_REWARDS: Record<ShowcasePlatform, number> = {
@@ -2267,20 +2501,34 @@ export class ShowcasesService {
     private emailService: EmailService,
   ) {}
 
-  async submitShowcase(userId: string, certificateId: string, platform: ShowcasePlatform, postUrl: string) {
+  async submitShowcase(
+    userId: string,
+    certificateId: string,
+    platform: ShowcasePlatform,
+    postUrl: string,
+  ) {
     // Verify certificate belongs to user
     const cert = await this.prisma.certificate.findUnique({
       where: { certificateId },
     });
     if (!cert || cert.userId !== userId) {
-      throw new NotFoundException('Certificate not found');
+      throw new NotFoundException("Certificate not found");
     }
 
     // Check for duplicate submission (one reward per platform per cert)
     const existing = await this.prisma.socialShowcase.findUnique({
-      where: { userId_certificateId_platform: { userId, certificateId: cert.id, platform } },
+      where: {
+        userId_certificateId_platform: {
+          userId,
+          certificateId: cert.id,
+          platform,
+        },
+      },
     });
-    if (existing) throw new BadRequestException('You already submitted a post for this platform and certificate');
+    if (existing)
+      throw new BadRequestException(
+        "You already submitted a post for this platform and certificate",
+      );
 
     const rewardAmount = PLATFORM_REWARDS[platform];
     const verifyAfter = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000); // 10 days from now
@@ -2300,8 +2548,10 @@ export class ShowcasesService {
   async getMyShowcases(userId: string) {
     return this.prisma.socialShowcase.findMany({
       where: { userId },
-      include: { certificate: { select: { certificateId: true, courseTitle: true } } },
-      orderBy: { createdAt: 'desc' },
+      include: {
+        certificate: { select: { certificateId: true, courseTitle: true } },
+      },
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -2314,7 +2564,7 @@ export class ShowcasesService {
   async verifyPendingShowcases() {
     const pendingShowcases = await this.prisma.socialShowcase.findMany({
       where: {
-        status: 'PENDING',
+        status: "PENDING",
         verifyAfter: { lte: new Date() },
       },
       include: { user: true, certificate: true },
@@ -2330,13 +2580,13 @@ export class ShowcasesService {
           // Post is still live — credit wallet
           await this.prisma.socialShowcase.update({
             where: { id: showcase.id },
-            data: { status: 'VERIFIED', verifiedAt: new Date() },
+            data: { status: "VERIFIED", verifiedAt: new Date() },
           });
 
           await this.walletService.creditReward(
             showcase.userId,
             new Decimal(showcase.rewardAmount),
-            'SHOWCASE_CREDIT',
+            "SHOWCASE_CREDIT",
             `Showcase reward: ${showcase.platform} post verified`,
             showcase.id,
           );
@@ -2349,13 +2599,13 @@ export class ShowcasesService {
             Number(showcase.rewardAmount),
           );
         } else {
-          throw new Error('Post not accessible');
+          throw new Error("Post not accessible");
         }
       } catch {
         // Post is not accessible — reject
         await this.prisma.socialShowcase.update({
           where: { id: showcase.id },
-          data: { status: 'REJECTED', verifiedAt: new Date() },
+          data: { status: "REJECTED", verifiedAt: new Date() },
         });
       }
     }
@@ -2366,30 +2616,36 @@ export class ShowcasesService {
 Create `backend/src/showcases/showcases.controller.ts`:
 
 ```typescript
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { ShowcasesService } from './showcases.service';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { ShowcasePlatform } from '@prisma/client';
+import { Controller, Post, Get, Body, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { ShowcasesService } from "./showcases.service";
+import { CurrentUser } from "../common/decorators/current-user.decorator";
+import { ShowcasePlatform } from "@prisma/client";
 
-@ApiTags('Showcases')
+@ApiTags("Showcases")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
-@Controller('showcases')
+@UseGuards(AuthGuard("jwt"))
+@Controller("showcases")
 export class ShowcasesController {
   constructor(private showcasesService: ShowcasesService) {}
 
-  @Post('submit')
+  @Post("submit")
   submitShowcase(
-    @CurrentUser('id') userId: string,
-    @Body() dto: { certificateId: string; platform: ShowcasePlatform; postUrl: string },
+    @CurrentUser("id") userId: string,
+    @Body()
+    dto: { certificateId: string; platform: ShowcasePlatform; postUrl: string },
   ) {
-    return this.showcasesService.submitShowcase(userId, dto.certificateId, dto.platform, dto.postUrl);
+    return this.showcasesService.submitShowcase(
+      userId,
+      dto.certificateId,
+      dto.platform,
+      dto.postUrl,
+    );
   }
 
-  @Get('my')
-  getMyShowcases(@CurrentUser('id') userId: string) {
+  @Get("my")
+  getMyShowcases(@CurrentUser("id") userId: string) {
     return this.showcasesService.getMyShowcases(userId);
   }
 }
@@ -2398,10 +2654,10 @@ export class ShowcasesController {
 Create `backend/src/showcases/showcases.module.ts`:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ShowcasesService } from './showcases.service';
-import { ShowcasesController } from './showcases.controller';
-import { WalletModule } from '../wallet/wallet.module';
+import { Module } from "@nestjs/common";
+import { ShowcasesService } from "./showcases.service";
+import { ShowcasesController } from "./showcases.controller";
+import { WalletModule } from "../wallet/wallet.module";
 
 @Module({
   imports: [WalletModule],
@@ -2441,9 +2697,9 @@ Loads an existing source e-book PDF and overlays the buyer's email as a transpar
 Create `backend/src/common/utils/pdf-watermarker.ts`:
 
 ```typescript
-import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
-import * as fs from 'fs';
-import { randomUUID } from 'crypto';
+import { PDFDocument, rgb, StandardFonts, degrees } from "pdf-lib";
+import * as fs from "fs";
+import { randomUUID } from "crypto";
 
 export async function watermarkPdf(
   sourcePath: string,
@@ -2493,9 +2749,9 @@ Overlays learner metadata onto a pre-designed Canva certificate template. Implem
 Create `backend/src/common/utils/certificate-generator.ts`:
 
 ```typescript
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import * as fs from 'fs';
-import * as path from 'path';
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import * as fs from "fs";
+import * as path from "path";
 
 export async function generateCertificatePdf(
   holderName: string,
@@ -2504,7 +2760,7 @@ export async function generateCertificatePdf(
   templateDir: string,
   outputDir: string,
 ): Promise<Buffer> {
-  const templatePath = path.join(templateDir, 'certificate-template.pdf');
+  const templatePath = path.join(templateDir, "certificate-template.pdf");
 
   let pdfDoc: PDFDocument;
   if (fs.existsSync(templatePath)) {
@@ -2521,33 +2777,64 @@ export async function generateCertificatePdf(
   const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
   // Title
-  page.drawText('CERTIFICATE OF ACCOMPLISHMENT', {
-    x: 180, y: 450, size: 28, font: boldFont, color: rgb(0.1, 0.1, 0.2),
+  page.drawText("CERTIFICATE OF ACCOMPLISHMENT", {
+    x: 180,
+    y: 450,
+    size: 28,
+    font: boldFont,
+    color: rgb(0.1, 0.1, 0.2),
   });
 
   // Subtitle
-  page.drawText('This credential is proudly presented to:', {
-    x: 270, y: 370, size: 14, font: regularFont, color: rgb(0.3, 0.3, 0.3),
+  page.drawText("This credential is proudly presented to:", {
+    x: 270,
+    y: 370,
+    size: 14,
+    font: regularFont,
+    color: rgb(0.3, 0.3, 0.3),
   });
 
   // Holder name
   page.drawText(holderName.toUpperCase(), {
-    x: 250, y: 310, size: 24, font: boldFont, color: rgb(0.04, 0.52, 0.89),
+    x: 250,
+    y: 310,
+    size: 24,
+    font: boldFont,
+    color: rgb(0.04, 0.52, 0.89),
   });
 
   // Course title
   page.drawText(`for successfully completing: ${courseTitle}`, {
-    x: 200, y: 250, size: 14, font: regularFont, color: rgb(0.3, 0.3, 0.3),
+    x: 200,
+    y: 250,
+    size: 14,
+    font: regularFont,
+    color: rgb(0.3, 0.3, 0.3),
   });
 
   // Date & verification
-  const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const dateStr = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
   page.drawText(`Issue Date: ${dateStr}`, {
-    x: 100, y: 120, size: 10, font: regularFont, color: rgb(0.5, 0.5, 0.5),
+    x: 100,
+    y: 120,
+    size: 10,
+    font: regularFont,
+    color: rgb(0.5, 0.5, 0.5),
   });
-  page.drawText(`Verify: https://academy.multihat.dev/verify/${certificateId}`, {
-    x: 420, y: 120, size: 10, font: regularFont, color: rgb(0.5, 0.5, 0.5),
-  });
+  page.drawText(
+    `Verify: https://academy.multihat.dev/verify/${certificateId}`,
+    {
+      x: 420,
+      y: 120,
+      size: 10,
+      font: regularFont,
+      color: rgb(0.5, 0.5, 0.5),
+    },
+  );
 
   const pdfBytes = await pdfDoc.save();
   const outputPath = path.join(outputDir, `cert-${certificateId}.pdf`);
@@ -2629,8 +2916,9 @@ Create `frontend/src/app/globals.css`:
 
 /* Cybersecurity grid effect for hero sections */
 .cyber-grid {
-  background-image: linear-gradient(rgba(18, 115, 233, 0.05) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(18, 115, 233, 0.05) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(18, 115, 233, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 115, 233, 0.05) 1px, transparent 1px);
   background-size: 30px 30px;
 }
 ```
@@ -2640,17 +2928,17 @@ Create `frontend/src/app/globals.css`:
 Create `frontend/src/lib/api.ts`:
 
 ```typescript
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1",
+  headers: { "Content-Type": "application/json" },
 });
 
 // Inject auth token on every request
 api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("accessToken");
     if (token) config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -2660,9 +2948,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken');
-      window.location.href = '/auth/login';
+    if (error.response?.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+      window.location.href = "/auth/login";
     }
     return Promise.reject(error);
   },
@@ -2678,8 +2966,14 @@ Create `frontend/src/lib/auth-context.tsx`:
 ```tsx
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import api from './api';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import api from "./api";
 
 interface User {
   id: string;
@@ -2703,11 +2997,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     if (token) {
-      api.get('/users/me')
+      api
+        .get("/users/me")
         .then((res) => setUser(res.data.data))
-        .catch(() => localStorage.removeItem('accessToken'))
+        .catch(() => localStorage.removeItem("accessToken"))
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -2715,22 +3010,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await api.post('/auth/login', { email, password });
-    localStorage.setItem('accessToken', res.data.data.accessToken);
-    localStorage.setItem('refreshToken', res.data.data.refreshToken);
+    const res = await api.post("/auth/login", { email, password });
+    localStorage.setItem("accessToken", res.data.data.accessToken);
+    localStorage.setItem("refreshToken", res.data.data.refreshToken);
     setUser(res.data.data.user);
   };
 
   const register = async (name: string, email: string, password: string) => {
-    const res = await api.post('/auth/register', { name, email, password });
-    localStorage.setItem('accessToken', res.data.data.accessToken);
-    localStorage.setItem('refreshToken', res.data.data.refreshToken);
+    const res = await api.post("/auth/register", { name, email, password });
+    localStorage.setItem("accessToken", res.data.data.accessToken);
+    localStorage.setItem("refreshToken", res.data.data.refreshToken);
     setUser(res.data.data.user);
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     setUser(null);
   };
 
@@ -2743,7 +3038,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
 ```
@@ -2753,34 +3048,46 @@ export const useAuth = () => {
 Create `frontend/src/app/layout.tsx`:
 
 ```tsx
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from 'next-themes';
-import { AuthProvider } from '@/lib/auth-context';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/lib/auth-context";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: 'MultiHAT Academy', template: '%s | MultiHAT Academy' },
-  description: 'Premium technical e-books with verifiable certificates. Master Google Dorks, OSINT, and cybersecurity.',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.multihat.dev'),
+  title: { default: "MultiHAT Academy", template: "%s | MultiHAT Academy" },
+  description:
+    "Premium technical e-books with verifiable certificates. Master Google Dorks, OSINT, and cybersecurity.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://academy.multihat.dev",
+  ),
   openGraph: {
-    siteName: 'MultiHAT Academy',
-    type: 'website',
-    locale: 'en_US',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'MultiHAT Academy' }],
+    siteName: "MultiHAT Academy",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "MultiHAT Academy",
+      },
+    ],
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
+          <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>
@@ -2792,23 +3099,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 The following App Router pages must be implemented. Each maps to the [User Journey Diagram](./diagrams/03-user-journey.md):
 
-| Route | File | Auth | Purpose |
-|:------|:-----|:-----|:--------|
-| `/` | `app/page.tsx` | No | Landing page — hero, featured books, CTAs |
-| `/books` | `app/books/page.tsx` | No | Book catalog (SSG) — `GET /api/v1/books` |
-| `/books/[slug]` | `app/books/[slug]/page.tsx` | No | Book detail — free chapters (1–3) rendered, paid chapters blurred with CTA |
-| `/auth/login` | `app/auth/login/page.tsx` | No | Login form (React Hook Form + Zod) |
-| `/auth/register` | `app/auth/register/page.tsx` | No | Registration form (accepts optional `?ref=CODE` for referrals) |
-| `/dashboard` | `app/dashboard/page.tsx` | Yes | Purchased items, quiz scores, certificates, wallet balance, referral stats |
-| `/dashboard/wallet` | `app/dashboard/wallet/page.tsx` | Yes | Wallet balance, top-up form, transaction history |
-| `/dashboard/referrals` | `app/dashboard/referrals/page.tsx` | Yes | Referral code/link, referral stats (pending, qualified, credited) |
-| `/dashboard/showcase` | `app/dashboard/showcase/page.tsx` | Yes | Submit social media post URLs, view submission statuses |
-| `/checkout/[bookId]` | `app/checkout/[bookId]/page.tsx` | Yes | Coupon input, price display, payment method selection (Gateway or Wallet) |
-| `/payment/success` | `app/payment/success/page.tsx` | No | Post-payment confirmation page (purchase or wallet top-up) |
-| `/payment/fail` | `app/payment/fail/page.tsx` | No | Payment failure with retry link |
-| `/quiz/[bookSlug]` | `app/quiz/[bookSlug]/page.tsx` | Yes | Interactive quiz — uses QuizRenderer component |
-| `/verify/[certID]` | `app/verify/[certID]/page.tsx` | No | Public certificate verification (SSR) |
-| `/ref/[code]` | `app/ref/[code]/page.tsx` | No | Referral landing page — redirects to `/auth/register?ref=CODE` |
+| Route                  | File                               | Auth | Purpose                                                                    |
+| :--------------------- | :--------------------------------- | :--- | :------------------------------------------------------------------------- |
+| `/`                    | `app/page.tsx`                     | No   | Landing page — hero, featured books, CTAs                                  |
+| `/books`               | `app/books/page.tsx`               | No   | Book catalog (SSG) — `GET /api/v1/books`                                   |
+| `/books/[slug]`        | `app/books/[slug]/page.tsx`        | No   | Book detail — free chapters (1–3) rendered, paid chapters blurred with CTA |
+| `/auth/login`          | `app/auth/login/page.tsx`          | No   | Login form (React Hook Form + Zod)                                         |
+| `/auth/register`       | `app/auth/register/page.tsx`       | No   | Registration form (accepts optional `?ref=CODE` for referrals)             |
+| `/dashboard`           | `app/dashboard/page.tsx`           | Yes  | Purchased items, quiz scores, certificates, wallet balance, referral stats |
+| `/dashboard/wallet`    | `app/dashboard/wallet/page.tsx`    | Yes  | Wallet balance, top-up form, transaction history                           |
+| `/dashboard/referrals` | `app/dashboard/referrals/page.tsx` | Yes  | Referral code/link, referral stats (pending, qualified, credited)          |
+| `/dashboard/showcase`  | `app/dashboard/showcase/page.tsx`  | Yes  | Submit social media post URLs, view submission statuses                    |
+| `/checkout/[bookId]`   | `app/checkout/[bookId]/page.tsx`   | Yes  | Coupon input, price display, payment method selection (Gateway or Wallet)  |
+| `/payment/success`     | `app/payment/success/page.tsx`     | No   | Post-payment confirmation page (purchase or wallet top-up)                 |
+| `/payment/fail`        | `app/payment/fail/page.tsx`        | No   | Payment failure with retry link                                            |
+| `/quiz/[bookSlug]`     | `app/quiz/[bookSlug]/page.tsx`     | Yes  | Interactive quiz — uses QuizRenderer component                             |
+| `/verify/[certID]`     | `app/verify/[certID]/page.tsx`     | No   | Public certificate verification (SSR)                                      |
+| `/ref/[code]`          | `app/ref/[code]/page.tsx`          | No   | Referral landing page — redirects to `/auth/register?ref=CODE`             |
 
 ### 7.6 Interactive Quiz Component
 
@@ -2817,16 +3124,37 @@ Create `frontend/src/components/quiz/QuizRenderer.tsx`:
 ```tsx
 "use client";
 
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ShieldCheck, RefreshCw, AlertTriangle } from 'lucide-react';
-import api from '@/lib/api';
+import React, { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ShieldCheck, RefreshCw, AlertTriangle } from "lucide-react";
+import api from "@/lib/api";
 
-interface Question { id: string; prompt: string; options: string[]; }
-interface QuizResult { score: number; total: number; outcome: 'PASS' | 'FAIL'; certId?: string; }
+interface Question {
+  id: string;
+  prompt: string;
+  options: string[];
+}
+interface QuizResult {
+  score: number;
+  total: number;
+  outcome: "PASS" | "FAIL";
+  certId?: string;
+}
 
-export default function QuizRenderer({ bookSlug, questions }: { bookSlug: string; questions: Question[] }) {
+export default function QuizRenderer({
+  bookSlug,
+  questions,
+}: {
+  bookSlug: string;
+  questions: Question[];
+}) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
@@ -2837,39 +3165,62 @@ export default function QuizRenderer({ bookSlug, questions }: { bookSlug: string
 
   const handleSubmit = async () => {
     if (Object.keys(answers).length < questions.length) {
-      alert('Please answer all questions before submitting.');
+      alert("Please answer all questions before submitting.");
       return;
     }
     setLoading(true);
     try {
-      const res = await api.post(`/quizzes/${bookSlug}/submit`, { selectedAnswers: answers });
+      const res = await api.post(`/quizzes/${bookSlug}/submit`, {
+        selectedAnswers: answers,
+      });
       setResult(res.data.data);
-    } catch { alert('Submission error. Please try again.'); }
-    finally { setLoading(false); }
+    } catch {
+      alert("Submission error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (result) {
-    const isPass = result.outcome === 'PASS';
+    const isPass = result.outcome === "PASS";
     return (
-      <Card className={`border-2 ${isPass ? 'border-emerald-500' : 'border-rose-500'} max-w-xl mx-auto shadow-lg`}>
+      <Card
+        className={`border-2 ${isPass ? "border-emerald-500" : "border-rose-500"} max-w-xl mx-auto shadow-lg`}
+      >
         <CardHeader className="text-center">
-          {isPass
-            ? <ShieldCheck className="h-16 w-16 text-emerald-500 animate-bounce mx-auto" />
-            : <AlertTriangle className="h-16 w-16 text-rose-500 mx-auto" />}
+          {isPass ? (
+            <ShieldCheck className="h-16 w-16 text-emerald-500 animate-bounce mx-auto" />
+          ) : (
+            <AlertTriangle className="h-16 w-16 text-rose-500 mx-auto" />
+          )}
           <CardTitle className="text-2xl font-bold">
-            {isPass ? 'Certification Earned!' : 'Quiz Attempt Failed'}
+            {isPass ? "Certification Earned!" : "Quiz Attempt Failed"}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
-          <p className="text-lg">Score: <strong className="text-2xl">{result.score}</strong> / {result.total} ({Math.round((result.score / result.total) * 100)}%)</p>
+          <p className="text-lg">
+            Score: <strong className="text-2xl">{result.score}</strong> /{" "}
+            {result.total} ({Math.round((result.score / result.total) * 100)}%)
+          </p>
           <p className="text-muted-foreground">
-            {isPass ? 'Your verifiable credential has been minted and emailed to you.' : 'You need ≥70% to pass. Review the material and try again.'}
+            {isPass
+              ? "Your verifiable credential has been minted and emailed to you."
+              : "You need ≥70% to pass. Review the material and try again."}
           </p>
         </CardContent>
         <CardFooter className="flex justify-center gap-4">
-          {isPass
-            ? <Button asChild className="bg-emerald-600 hover:bg-emerald-700"><a href={`/verify/${result.certId}`}>View Certificate</a></Button>
-            : <Button onClick={() => setResult(null)} className="bg-rose-600 hover:bg-rose-700"><RefreshCw className="h-4 w-4 mr-2" /> Try Again</Button>}
+          {isPass ? (
+            <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
+              <a href={`/verify/${result.certId}`}>View Certificate</a>
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setResult(null)}
+              className="bg-rose-600 hover:bg-rose-700"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" /> Try Again
+            </Button>
+          )}
         </CardFooter>
       </Card>
     );
@@ -2878,12 +3229,22 @@ export default function QuizRenderer({ bookSlug, questions }: { bookSlug: string
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {questions.map((q, idx) => (
-        <Card key={q.id} className="shadow-md hover:shadow-lg transition-shadow">
-          <CardHeader><CardTitle className="text-lg">Q{idx + 1}: {q.prompt}</CardTitle></CardHeader>
+        <Card
+          key={q.id}
+          className="shadow-md hover:shadow-lg transition-shadow"
+        >
+          <CardHeader>
+            <CardTitle className="text-lg">
+              Q{idx + 1}: {q.prompt}
+            </CardTitle>
+          </CardHeader>
           <CardContent className="grid gap-3">
             {q.options.map((opt) => (
-              <button key={opt} onClick={() => handleSelect(q.id, opt)}
-                className={`w-full text-left p-3 rounded-lg border-2 transition-all ${answers[q.id] === opt ? 'border-primary bg-primary/10 font-medium' : 'border-muted hover:border-gray-400'}`}>
+              <button
+                key={opt}
+                onClick={() => handleSelect(q.id, opt)}
+                className={`w-full text-left p-3 rounded-lg border-2 transition-all ${answers[q.id] === opt ? "border-primary bg-primary/10 font-medium" : "border-muted hover:border-gray-400"}`}
+              >
                 {opt}
               </button>
             ))}
@@ -2891,8 +3252,12 @@ export default function QuizRenderer({ bookSlug, questions }: { bookSlug: string
         </Card>
       ))}
       <div className="flex justify-end pt-4">
-        <Button onClick={handleSubmit} disabled={loading} className="w-48 font-bold shadow">
-          {loading ? 'Submitting...' : 'Submit Answers'}
+        <Button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-48 font-bold shadow"
+        >
+          {loading ? "Submitting..." : "Submit Answers"}
         </Button>
       </div>
     </div>
@@ -2906,15 +3271,25 @@ In each page, use Next.js 14 `metadata` export for per-page SEO:
 
 ```typescript
 // Example: app/books/[slug]/page.tsx
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books/${params.slug}`);
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/books/${params.slug}`,
+  );
   const { data: book } = await res.json();
   return {
     title: book.title,
     description: book.description,
-    openGraph: { title: book.title, description: book.description, type: 'article' },
+    openGraph: {
+      title: book.title,
+      description: book.description,
+      type: "article",
+    },
   };
 }
 ```
@@ -2922,10 +3297,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 Add `frontend/src/app/robots.ts`:
 
 ```typescript
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: '*', allow: '/', disallow: ['/dashboard', '/api/'] },
+    rules: { userAgent: "*", allow: "/", disallow: ["/dashboard", "/api/"] },
     sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
   };
 }
@@ -2934,7 +3309,7 @@ export default function robots(): MetadataRoute.Robots {
 Add `frontend/src/app/sitemap.ts`:
 
 ```typescript
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/books`);
   const { data } = await res.json();
@@ -2962,14 +3337,14 @@ NestJS includes Jest by default. Write unit tests for services and e2e tests for
 Create `backend/src/auth/auth.service.spec.ts`:
 
 ```typescript
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { ConflictException } from '@nestjs/common';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthService } from "./auth.service";
+import { PrismaService } from "../prisma/prisma.service";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { ConflictException } from "@nestjs/common";
 
-describe('AuthService', () => {
+describe("AuthService", () => {
   let service: AuthService;
   let prisma: PrismaService;
 
@@ -2977,9 +3352,18 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: PrismaService, useValue: { user: { findUnique: jest.fn(), create: jest.fn() } } },
-        { provide: JwtService, useValue: { sign: jest.fn().mockReturnValue('mock-token') } },
-        { provide: ConfigService, useValue: { get: jest.fn().mockReturnValue('test-secret') } },
+        {
+          provide: PrismaService,
+          useValue: { user: { findUnique: jest.fn(), create: jest.fn() } },
+        },
+        {
+          provide: JwtService,
+          useValue: { sign: jest.fn().mockReturnValue("mock-token") },
+        },
+        {
+          provide: ConfigService,
+          useValue: { get: jest.fn().mockReturnValue("test-secret") },
+        },
       ],
     }).compile();
 
@@ -2987,10 +3371,15 @@ describe('AuthService', () => {
     prisma = module.get<PrismaService>(PrismaService);
   });
 
-  it('should throw ConflictException if email exists', async () => {
-    jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({ id: '1' } as any);
-    await expect(service.register({ email: 'test@test.com', password: 'password', name: 'Test' }))
-      .rejects.toThrow(ConflictException);
+  it("should throw ConflictException if email exists", async () => {
+    jest.spyOn(prisma.user, "findUnique").mockResolvedValue({ id: "1" } as any);
+    await expect(
+      service.register({
+        email: "test@test.com",
+        password: "password",
+        name: "Test",
+      }),
+    ).rejects.toThrow(ConflictException);
   });
 });
 ```
@@ -3006,18 +3395,18 @@ npm run test:cov       # Coverage report
 
 ### 8.2 What to Test
 
-| Layer | What to Test | Priority |
-|:------|:------------|:---------|
-| **Auth** | Registration (duplicate email, referral code linking, wallet creation), login, token refresh | High |
-| **Orders** | Coupon validation, duplicate purchase prevention, price calculation, wallet vs gateway routing | High |
-| **Payments** | IPN signature verification, idempotency (double-processing), order status transitions, wallet top-up crediting | Critical |
-| **Quizzes** | Score calculation, pass/fail threshold (≥70%), certificate trigger on pass | High |
-| **Certificates** | Unique ID generation, verification endpoint returns correct data | Medium |
-| **Books** | Slug lookup, pagination, admin CRUD guards | Medium |
-| **Wallet** | Balance retrieval, top-up minimum enforcement, debit insufficient balance rejection, transaction logging | High |
-| **Referrals** | Referral code generation, cumulative spend tracking, threshold-based reward crediting, double-credit prevention | High |
-| **Showcases** | Duplicate submission rejection (same cert + platform), reward amount correctness per platform, 10-day verification window | High |
-| **Cron Jobs** | Showcase verification cron fires correctly, credits wallet on live post, rejects on dead post | Medium |
+| Layer            | What to Test                                                                                                              | Priority |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------ | :------- |
+| **Auth**         | Registration (duplicate email, referral code linking, wallet creation), login, token refresh                              | High     |
+| **Orders**       | Coupon validation, duplicate purchase prevention, price calculation, wallet vs gateway routing                            | High     |
+| **Payments**     | IPN signature verification, idempotency (double-processing), order status transitions, wallet top-up crediting            | Critical |
+| **Quizzes**      | Score calculation, pass/fail threshold (≥70%), certificate trigger on pass                                                | High     |
+| **Certificates** | Unique ID generation, verification endpoint returns correct data                                                          | Medium   |
+| **Books**        | Slug lookup, pagination, admin CRUD guards                                                                                | Medium   |
+| **Wallet**       | Balance retrieval, top-up minimum enforcement, debit insufficient balance rejection, transaction logging                  | High     |
+| **Referrals**    | Referral code generation, cumulative spend tracking, threshold-based reward crediting, double-credit prevention           | High     |
+| **Showcases**    | Duplicate submission rejection (same cert + platform), reward amount correctness per platform, 10-day verification window | High     |
+| **Cron Jobs**    | Showcase verification cron fires correctly, credits wallet on live post, rejects on dead post                             | Medium   |
 
 ---
 
@@ -3084,14 +3473,14 @@ Create `backend/ecosystem.config.js`:
 module.exports = {
   apps: [
     {
-      name: 'academy-backend',
-      script: 'dist/main.js',
-      instances: 1,        // Single instance for 1 GB RAM Droplet
-      exec_mode: 'fork',
+      name: "academy-backend",
+      script: "dist/main.js",
+      instances: 1, // Single instance for 1 GB RAM Droplet
+      exec_mode: "fork",
       watch: false,
-      max_memory_restart: '800M',
+      max_memory_restart: "800M",
       env: {
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
         PORT: 5000,
       },
     },
@@ -3130,8 +3519,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       # Backend
       - name: Install Backend Deps
@@ -3171,9 +3560,9 @@ jobs:
 
 **Required GitHub Secrets:**
 
-| Secret | Value |
-|:-------|:------|
-| `DROPLET_IP` | Your DigitalOcean Droplet IPv4 address |
+| Secret            | Value                                           |
+| :---------------- | :---------------------------------------------- |
+| `DROPLET_IP`      | Your DigitalOcean Droplet IPv4 address          |
 | `SSH_PRIVATE_KEY` | Private SSH key with root access to the Droplet |
 
 ### 9.4 Database Backup Strategy
@@ -3201,13 +3590,13 @@ crontab -e
 
 ### 9.5 Monitoring & Alerting
 
-| Tool | Setup | Purpose |
-|:-----|:------|:--------|
-| **DigitalOcean Monitoring** | Enable in Droplet settings → Monitoring tab | CPU, memory, disk, bandwidth alerts |
-| **PM2 Monitoring** | `pm2 monit` (built-in) | Real-time process metrics, restarts, logs |
-| **Sentry** (optional) | `npm install @sentry/nestjs` in backend | Error tracking with stack traces, 10K events/month free |
-| **Google Analytics 4** | Add `NEXT_PUBLIC_GA_ID` to frontend `.env.local` | Page views, conversion funnels, UTM campaign tracking |
-| **Uptime Check** | DigitalOcean Uptime → add `https://api.multihat.dev/api/v1/books` | Alerts on API downtime via email/Slack |
+| Tool                        | Setup                                                             | Purpose                                                 |
+| :-------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------ |
+| **DigitalOcean Monitoring** | Enable in Droplet settings → Monitoring tab                       | CPU, memory, disk, bandwidth alerts                     |
+| **PM2 Monitoring**          | `pm2 monit` (built-in)                                            | Real-time process metrics, restarts, logs               |
+| **Sentry** (optional)       | `npm install @sentry/nestjs` in backend                           | Error tracking with stack traces, 10K events/month free |
+| **Google Analytics 4**      | Add `NEXT_PUBLIC_GA_ID` to frontend `.env.local`                  | Page views, conversion funnels, UTM campaign tracking   |
+| **Uptime Check**            | DigitalOcean Uptime → add `https://api.multihat.dev/api/v1/books` | Alerts on API downtime via email/Slack                  |
 
 ---
 
@@ -3231,6 +3620,7 @@ Execute these verification steps after deployment to confirm everything is produ
 - [ ] `POST /api/v1/auth/register` creates a new user, wallet, and returns JWT tokens
 - [ ] `POST /api/v1/auth/register` with valid `referralCode` links the referral and creates tracking record
 - [ ] `POST /api/v1/auth/login` authenticates and returns access + refresh tokens
+- [ ] Seeded admin login works for local smoke test: `admin@multihat.dev` / `AdminSecure!2026` (change in production)
 - [ ] `POST /api/v1/auth/refresh` issues new token pair from valid refresh token
 - [ ] `GET /api/v1/books` returns paginated published books
 - [ ] `GET /api/v1/books/:slug` returns book details with chapter metadata

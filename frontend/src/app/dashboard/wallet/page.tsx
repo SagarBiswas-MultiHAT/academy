@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type WalletBalance = {
@@ -184,23 +185,35 @@ export default function WalletPage() {
                   <CardDescription>Your available wallet funds.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-semibold">
-                    {balance ? formatCurrency(balance.balanceBdt) : "BDT --"}
-                  </div>
-                  <div className="mt-4 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em]">Lifetime earned</p>
-                      <p className="text-base font-medium text-foreground">
-                        {balance ? formatCurrency(balance.lifetimeEarned) : "BDT --"}
-                      </p>
+                  {loading ? (
+                    <div className="space-y-3">
+                      <Skeleton className="h-8 w-32" />
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.15em]">Lifetime spent</p>
-                      <p className="text-base font-medium text-foreground">
-                        {balance ? formatCurrency(balance.lifetimeSpent) : "BDT --"}
-                      </p>
-                    </div>
-                  </div>
+                  ) : (
+                    <>
+                      <div className="text-3xl font-semibold">
+                        {balance ? formatCurrency(balance.balanceBdt) : "BDT --"}
+                      </div>
+                      <div className="mt-4 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.15em]">Lifetime earned</p>
+                          <p className="text-base font-medium text-foreground">
+                            {balance ? formatCurrency(balance.lifetimeEarned) : "BDT --"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.15em]">Lifetime spent</p>
+                          <p className="text-base font-medium text-foreground">
+                            {balance ? formatCurrency(balance.lifetimeSpent) : "BDT --"}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -247,7 +260,14 @@ export default function WalletPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {loading ? (
-                  <p className="text-sm text-muted-foreground">Loading transactions...</p>
+                  <div className="space-y-3">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={`tx-skeleton-${index}`} className="space-y-2">
+                        <Skeleton className="h-4 w-48" />
+                        <Skeleton className="h-3 w-28" />
+                      </div>
+                    ))}
+                  </div>
                 ) : transactions.length ? (
                   transactions.slice(0, 8).map((item) => (
                     <div key={item.id} className="flex items-center justify-between text-sm">

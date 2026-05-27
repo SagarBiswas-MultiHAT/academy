@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type Wallet = {
@@ -173,15 +174,25 @@ export default function DashboardPage() {
                 <CardDescription>Available for purchases and top-ups.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-semibold">
-                  {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Lifetime earned {wallet ? formatCurrency(wallet.lifetimeEarned) : "BDT --"}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Lifetime spent {wallet ? formatCurrency(wallet.lifetimeSpent) : "BDT --"}
-                </p>
+                {loading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-8 w-32" />
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-4 w-40" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-3xl font-semibold">
+                      {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
+                    </div>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Lifetime earned {wallet ? formatCurrency(wallet.lifetimeEarned) : "BDT --"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Lifetime spent {wallet ? formatCurrency(wallet.lifetimeSpent) : "BDT --"}
+                    </p>
+                  </>
+                )}
               </CardContent>
               <CardFooter>
                 <Button asChild variant="secondary">
@@ -199,7 +210,14 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {loading ? (
-                  <p className="text-sm text-muted-foreground">Loading purchases...</p>
+                  <div className="space-y-3">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div key={`order-skeleton-${index}`} className="space-y-2">
+                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    ))}
+                  </div>
                 ) : paidOrders.length ? (
                   paidOrders.slice(0, 3).map((order) => (
                     <div key={order.id} className="flex items-center justify-between text-sm">
@@ -232,7 +250,14 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {loading ? (
-                  <p className="text-sm text-muted-foreground">Loading certificates...</p>
+                  <div className="space-y-3">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div key={`cert-skeleton-${index}`} className="space-y-2">
+                        <Skeleton className="h-4 w-44" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    ))}
+                  </div>
                 ) : certificates.length ? (
                   certificates.slice(0, 3).map((cert) => (
                     <div key={cert.certificateId} className="space-y-1 text-sm">

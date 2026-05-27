@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type Book = {
@@ -140,6 +141,11 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
               <CardTitle>Loading checkout</CardTitle>
               <CardDescription>Preparing your order.</CardDescription>
             </CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-5 w-2/3" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </CardContent>
           </Card>
         </main>
         <SiteFooter />

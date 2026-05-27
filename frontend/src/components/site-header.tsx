@@ -21,7 +21,7 @@ export default function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <Link href="/" className="flex items-center gap-3">
           <div className="relative h-9 w-9">
             <Image
@@ -41,11 +41,11 @@ export default function SiteHeader() {
               priority
             />
           </div>
-          <div className="leading-tight">
+          <div className="leading-tight min-w-0">
             <p className="text-base font-semibold tracking-tight">
               MultiHAT Academy
             </p>
-            <p className="text-xs text-muted-foreground">Cybersecurity e-books</p>
+            <p className="text-xs text-muted-foreground hidden sm:block">Cybersecurity e-books</p>
           </div>
         </Link>
 

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type Certificate = {
@@ -206,6 +207,7 @@ export default function ShowcasePage() {
                     id="certificate"
                     value={certificateId}
                     onChange={(event) => setCertificateId(event.target.value)}
+                    disabled={loading || certificates.length === 0}
                     className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm shadow-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
                   >
                     {certificates.map((cert) => (
@@ -221,6 +223,7 @@ export default function ShowcasePage() {
                     id="platform"
                     value={platform}
                     onChange={(event) => setPlatform(event.target.value)}
+                    disabled={loading}
                     className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm shadow-sm shadow-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
                   >
                     {platforms.map((item) => (
@@ -238,6 +241,7 @@ export default function ShowcasePage() {
                     placeholder="https://"
                     value={postUrl}
                     onChange={(event) => setPostUrl(event.target.value)}
+                    disabled={loading}
                   />
                 </div>
                 {formError && (
@@ -248,7 +252,7 @@ export default function ShowcasePage() {
               </CardContent>
               <CardFooter className="justify-between">
                 <Badge variant="secondary">Verification after 10 days</Badge>
-                <Button onClick={handleSubmit} disabled={submitting}>
+                <Button onClick={handleSubmit} disabled={submitting || loading || certificates.length === 0}>
                   {submitting ? "Submitting..." : "Submit post"}
                 </Button>
               </CardFooter>
@@ -263,7 +267,14 @@ export default function ShowcasePage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {loading ? (
-                  <p className="text-sm text-muted-foreground">Loading submissions...</p>
+                  <div className="space-y-3">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={`showcase-skeleton-${index}`} className="space-y-2">
+                        <Skeleton className="h-4 w-44" />
+                        <Skeleton className="h-3 w-32" />
+                      </div>
+                    ))}
+                  </div>
                 ) : showcases.length ? (
                   showcases.slice(0, 6).map((item) => {
                     const meta = statusMeta[item.status] ?? statusMeta.PENDING;

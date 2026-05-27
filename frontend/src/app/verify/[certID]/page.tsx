@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type VerificationResult = {
@@ -76,6 +77,11 @@ export default function VerifyPage({ params }: { params: { certID: string } }) {
               <CardTitle>Checking certificate</CardTitle>
               <CardDescription>Validating the certificate record.</CardDescription>
             </CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-5 w-2/3" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-1/2" />
+            </CardContent>
           </Card>
         ) : error || !result ? (
           <Card>

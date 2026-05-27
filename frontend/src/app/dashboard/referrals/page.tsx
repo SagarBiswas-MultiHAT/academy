@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type ReferralCode = {
@@ -162,15 +163,27 @@ export default function ReferralsPage() {
                   <CardDescription>Share this link to earn BDT rewards.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Input value={shareLink || ""} readOnly />
-                  <div className="flex flex-wrap gap-3">
-                    <Button onClick={handleCopy} disabled={!shareLink}>
-                      {copied ? "Copied" : "Copy link"}
-                    </Button>
-                    <Badge variant="secondary">
-                      Code: {code?.referralCode ?? "Generating"}
-                    </Badge>
-                  </div>
+                  {loading ? (
+                    <div className="space-y-3">
+                      <Skeleton className="h-10 w-full" />
+                      <div className="flex flex-wrap gap-3">
+                        <Skeleton className="h-8 w-24" />
+                        <Skeleton className="h-6 w-28" />
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <Input value={shareLink || ""} readOnly />
+                      <div className="flex flex-wrap gap-3">
+                        <Button onClick={handleCopy} disabled={!shareLink}>
+                          {copied ? "Copied" : "Copy link"}
+                        </Button>
+                        <Badge variant="secondary">
+                          Code: {code?.referralCode ?? "Generating"}
+                        </Badge>
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -198,7 +211,14 @@ export default function ReferralsPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {loading ? (
-                  <p className="text-sm text-muted-foreground">Loading stats...</p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={`ref-skeleton-${index}`} className="space-y-2">
+                        <Skeleton className="h-3 w-24" />
+                        <Skeleton className="h-6 w-16" />
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>

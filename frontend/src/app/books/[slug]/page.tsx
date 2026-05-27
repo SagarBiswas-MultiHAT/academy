@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 
 type ChapterMeta = {
@@ -78,6 +79,8 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
     };
   }, [book]);
 
+  const isLoading = loading && !book;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -95,16 +98,27 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
             <section className="space-y-6">
               <div className="space-y-3">
                 <Badge variant="secondary">OSINT Handbook</Badge>
-                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
-                  {loading ? "Loading book" : book?.title}
-                </h1>
-                <p className="text-muted-foreground">
-                  {loading ? "Preparing book details." : book?.description}
-                </p>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <BookOpen className="size-4" />
-                  {book?.chapterMetadata?.length ?? 0} chapters
-                </div>
+                {isLoading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-8 w-4/5" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                ) : (
+                  <>
+                    <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
+                      {book?.title}
+                    </h1>
+                    <p className="text-muted-foreground">
+                      {book?.description}
+                    </p>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <BookOpen className="size-4" />
+                      {book?.chapterMetadata?.length ?? 0} chapters
+                    </div>
+                  </>
+                )}
               </div>
 
               <Separator />
@@ -115,14 +129,23 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                   <Badge variant="success">Preview available</Badge>
                 </div>
                 <div className="grid gap-3">
-                  {freeChapters.map((chapter) => (
-                    <Card key={chapter.index} size="sm">
-                      <CardContent className="flex items-center justify-between">
-                        <p className="text-sm">Chapter {chapter.index}</p>
-                        <p className="text-sm font-medium">{chapter.title}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
+                  {isLoading
+                    ? Array.from({ length: 3 }).map((_, index) => (
+                        <Card key={`free-skeleton-${index}`} size="sm">
+                          <CardContent className="flex items-center justify-between">
+                            <Skeleton className="h-4 w-20" />
+                            <Skeleton className="h-4 w-40" />
+                          </CardContent>
+                        </Card>
+                      ))
+                    : freeChapters.map((chapter) => (
+                        <Card key={chapter.index} size="sm">
+                          <CardContent className="flex items-center justify-between">
+                            <p className="text-sm">Chapter {chapter.index}</p>
+                            <p className="text-sm font-medium">{chapter.title}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
                   {freeChapters.length === 0 && !loading && (
                     <p className="text-sm text-muted-foreground">No free preview chapters available.</p>
                   )}
@@ -138,14 +161,23 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                 </div>
                 <div className="relative">
                   <div className="grid gap-3 blur-sm">
-                    {paidChapters.map((chapter) => (
-                      <Card key={chapter.index} size="sm">
-                        <CardContent className="flex items-center justify-between">
-                          <p className="text-sm">Chapter {chapter.index}</p>
-                          <p className="text-sm font-medium">{chapter.title}</p>
-                        </CardContent>
-                      </Card>
-                    ))}
+                    {isLoading
+                      ? Array.from({ length: 3 }).map((_, index) => (
+                          <Card key={`paid-skeleton-${index}`} size="sm">
+                            <CardContent className="flex items-center justify-between">
+                              <Skeleton className="h-4 w-20" />
+                              <Skeleton className="h-4 w-40" />
+                            </CardContent>
+                          </Card>
+                        ))
+                      : paidChapters.map((chapter) => (
+                          <Card key={chapter.index} size="sm">
+                            <CardContent className="flex items-center justify-between">
+                              <p className="text-sm">Chapter {chapter.index}</p>
+                              <p className="text-sm font-medium">{chapter.title}</p>
+                            </CardContent>
+                          </Card>
+                        ))}
                     {paidChapters.length === 0 && !loading && (
                       <Card size="sm">
                         <CardContent className="text-sm text-muted-foreground">
@@ -170,17 +202,27 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                   <CardDescription>Includes certificate and quiz access.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="text-3xl font-semibold">
-                    {book ? formatPrice(book.price) : "BDT --"}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ShieldCheck className="size-4 text-primary" />
-                    Verified certificate included
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Lock className="size-4 text-primary" />
-                    Lifetime access after purchase
-                  </div>
+                  {isLoading ? (
+                    <div className="space-y-3">
+                      <Skeleton className="h-8 w-32" />
+                      <Skeleton className="h-4 w-44" />
+                      <Skeleton className="h-4 w-48" />
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-3xl font-semibold">
+                        {book ? formatPrice(book.price) : "BDT --"}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <ShieldCheck className="size-4 text-primary" />
+                        Verified certificate included
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Lock className="size-4 text-primary" />
+                        Lifetime access after purchase
+                      </div>
+                    </>
+                  )}
                 </CardContent>
                 <CardFooter className="flex flex-col gap-3">
                   {book ? (
@@ -188,9 +230,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                       <Link href={`/checkout/${book.id}`}>Unlock full book</Link>
                     </Button>
                   ) : (
-                    <Button size="lg" className="w-full" disabled>
-                      Loading
-                    </Button>
+                    <Skeleton className="h-10 w-full" />
                   )}
                   {!user && (
                     <Button asChild variant="outline" className="w-full">
