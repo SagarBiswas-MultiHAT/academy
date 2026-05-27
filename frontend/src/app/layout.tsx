@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Manrope, Space_Grotesk } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import { AuthProvider } from '@/lib/auth-context';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const manrope = Manrope({ subsets: ['latin'] });
+const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
 
 export const metadata: Metadata = {
   title: { default: 'MultiHAT Academy', template: '%s | MultiHAT Academy' },
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${manrope.className} ${spaceGrotesk.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AuthProvider>
             {children}

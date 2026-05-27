@@ -14,7 +14,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, referralCode?: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -36,18 +36,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const hydrateProfile = async () => {
+    const res = await api.get('/users/me');
+    setUser(res.data.data);
+  };
+
   const login = async (email: string, password: string) => {
     const res = await api.post('/auth/login', { email, password });
     localStorage.setItem('accessToken', res.data.data.accessToken);
     localStorage.setItem('refreshToken', res.data.data.refreshToken);
-    setUser(res.data.data.user);
+    try {
+      await hydrateProfile();
+    } catch {
+      setUser(res.data.data.user);
+    }
   };
 
-  const register = async (name: string, email: string, password: string) => {
-    const res = await api.post('/auth/register', { name, email, password });
+  const register = async (name: string, email: string, password: string, referralCode?: string) => {
+    const res = await api.post('/auth/register', { name, email, password, referralCode });
     localStorage.setItem('accessToken', res.data.data.accessToken);
     localStorage.setItem('refreshToken', res.data.data.refreshToken);
-    setUser(res.data.data.user);
+    try {
+      await hydrateProfile();
+    } catch {
+      setUser(res.data.data.user);
+    }
   };
 
   const logout = () => {
