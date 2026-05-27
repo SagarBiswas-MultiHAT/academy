@@ -1,9 +1,14 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 
 import { Separator } from "@/components/ui/separator"
+import { useAuth } from "@/lib/auth-context"
 
 export default function SiteFooter() {
+  const { user } = useAuth()
+
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-6 py-10">
@@ -45,11 +50,21 @@ export default function SiteFooter() {
           </div>
 
           <div className="space-y-2 text-sm">
-            <p className="font-semibold">Access</p>
+            <p className="font-semibold">{user ? "Account" : "Access"}</p>
             <div className="flex flex-col gap-2 text-muted-foreground">
-              <Link href="/auth/login" className="hover:text-foreground">Sign in</Link>
-              <Link href="/auth/register" className="hover:text-foreground">Create account</Link>
-              <Link href="/dashboard/wallet" className="hover:text-foreground">Wallet</Link>
+              {user ? (
+                <>
+                  <Link href="/dashboard" className="hover:text-foreground">My dashboard</Link>
+                  <Link href="/dashboard/wallet" className="hover:text-foreground">Wallet</Link>
+                  <Link href="/dashboard/referrals" className="hover:text-foreground">Referrals</Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/login" className="hover:text-foreground">Sign in</Link>
+                  <Link href="/auth/register" className="hover:text-foreground">Create account</Link>
+                  <Link href="/dashboard/wallet" className="hover:text-foreground">Wallet</Link>
+                </>
+              )}
             </div>
           </div>
         </div>
