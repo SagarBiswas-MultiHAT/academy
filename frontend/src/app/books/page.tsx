@@ -157,7 +157,7 @@ export default function BooksPage() {
                   {book ? (
                     <>
                       <Button asChild variant="secondary" size="sm">
-                        <Link href="/auth/login">Start learning</Link>
+                        <Link href={`/books/${book.slug}`}>Start learning</Link>
                       </Button>
                       <Button asChild size="sm">
                         <Link href={`/books/${book.slug}`}>View details</Link>
