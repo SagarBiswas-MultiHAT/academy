@@ -171,7 +171,7 @@ export default function ChapterReaderPage({
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto max-w-3xl px-6 py-8">
+      <main className="mx-auto max-w-7xl px-6 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 animate-fade-in-up">
           <Link href="/books" className="hover:text-foreground transition-colors">Books</Link>
