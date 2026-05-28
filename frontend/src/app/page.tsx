@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, BadgeCheck, BookOpen, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, ShieldCheck, Sparkles, Zap, Award, Globe } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import AuroraBackground from "@/components/aurora-background";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -81,23 +82,27 @@ export default function Home() {
       <SiteHeader />
 
       <main>
+        {/* ═══ Hero Section ═══ */}
         <section className="relative overflow-hidden">
-          <div className="absolute inset-0 -z-10 cyber-grid opacity-40" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/25 via-transparent to-transparent" />
+          <AuroraBackground />
+          <div className="absolute inset-0 -z-10 cyber-grid opacity-30" />
 
-          <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div className="space-y-6">
-              <Badge variant="secondary" className="px-3 py-1 text-xs uppercase tracking-[0.2em]">
+          <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-28">
+            <div className="space-y-6 animate-fade-in-up">
+              <Badge variant="holographic" className="px-3 py-1 text-xs uppercase tracking-[0.2em]">
+                <Sparkles className="mr-1.5 size-3" />
                 Premium e-book library
               </Badge>
               <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl font-[family-name:var(--font-space-grotesk)]">
-                Master real-world skills with verified credentials.
+                <span className="gradient-text">Master real-world skills</span>
+                <br />
+                <span className="text-foreground">with verified credentials.</span>
               </h1>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-muted-foreground max-w-xl">
                 MultiHAT Academy delivers focused e-books, practical quizzes, and certificates that can be verified anywhere.
                 Build a track record you can share with employers and clients.
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 animate-fade-in-up delay-200">
                 <Button asChild size="lg">
                   <Link href="/books">
                     Explore books <ArrowRight className="ml-2 size-4" />
@@ -113,43 +118,54 @@ export default function Home() {
                   </Button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+              <div className="flex flex-wrap gap-6 text-sm text-muted-foreground animate-fade-in-up delay-300">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="size-4 text-primary" />
+                  <div className="flex items-center justify-center size-6 rounded-full bg-primary/10 dark:bg-primary/15">
+                    <ShieldCheck className="size-3.5 text-primary" />
+                  </div>
                   Certificate verification
                 </div>
                 <div className="flex items-center gap-2">
-                  <BadgeCheck className="size-4 text-primary" />
+                  <div className="flex items-center justify-center size-6 rounded-full bg-primary/10 dark:bg-primary/15">
+                    <BadgeCheck className="size-3.5 text-primary" />
+                  </div>
                   Practical quizzes
                 </div>
                 <div className="flex items-center gap-2">
-                  <Sparkles className="size-4 text-primary" />
+                  <div className="flex items-center justify-center size-6 rounded-full bg-primary/10 dark:bg-primary/15">
+                    <Sparkles className="size-3.5 text-primary" />
+                  </div>
                   Premium content
                 </div>
               </div>
             </div>
 
-            <Card className="border border-primary/20 bg-gradient-to-br from-background via-background to-primary/10 shadow-xl">
+            <Card className="border-0 gradient-border hover-lift animate-fade-in-up delay-300 bg-gradient-to-br from-background via-background to-primary/5 dark:from-card dark:via-card dark:to-[rgba(var(--glow-primary),0.05)]">
               <CardHeader>
-                <CardTitle className="text-lg">What you get</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Zap className="size-4 text-primary" />
+                  What you get
+                </CardTitle>
                 <CardDescription>Everything you need to certify your learning.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {[
-                  "Focused e-books across cybersecurity, programming, and more",
-                  "Completion quizzes and instant results",
-                  "Wallet and referral rewards for consistent learning",
+                  { text: "Focused e-books across cybersecurity, programming, and more", icon: BookOpen },
+                  { text: "Completion quizzes and instant results", icon: Award },
+                  { text: "Wallet and referral rewards for consistent learning", icon: Globe },
                 ].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <div className="mt-1 h-2 w-2 rounded-full bg-primary" />
-                    <p className="text-sm text-muted-foreground">{item}</p>
+                  <div key={item.text} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex items-center justify-center size-5 rounded-full bg-primary/10 dark:bg-primary/15 shrink-0">
+                      <item.icon className="size-3 text-primary" />
+                    </div>
+                    <p className="text-sm text-muted-foreground">{item.text}</p>
                   </div>
                 ))}
               </CardContent>
               <CardFooter className="justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Starting from</p>
-                  <p className="text-lg font-semibold">BDT 10.00</p>
+                  <p className="text-lg font-semibold gradient-text-static">BDT 10.00</p>
                 </div>
                 <Button asChild variant="secondary">
                   <Link href="/books">Browse catalog</Link>
@@ -159,8 +175,9 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ═══ Featured Books ═══ */}
         <section className="mx-auto max-w-6xl px-6 py-14">
-          <div className="flex items-center justify-between gap-6">
+          <div className="flex items-center justify-between gap-6 animate-fade-in-up">
             <div>
               <h2 className="text-2xl font-semibold font-[family-name:var(--font-space-grotesk)]">
                 Featured books
@@ -183,7 +200,7 @@ export default function Home() {
           ) : (
             <div className="grid gap-6 md:grid-cols-3">
               {featuredBooks.map((book, index) => (
-                <Card key={book?.id ?? index} className="h-full">
+                <Card key={book?.id ?? index} className={`h-full hover-lift animate-fade-in-up delay-${(index + 1) * 100}`}>
                   <CardHeader>
                     {book ? (
                       <>
@@ -239,28 +256,34 @@ export default function Home() {
           )}
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 pb-16">
+        {/* ═══ Features Section ═══ */}
+        <section className="mx-auto max-w-6xl px-6 pb-20">
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
                 title: "Verified certificates",
                 description: "Share proof of completion with a public verification link.",
                 icon: ShieldCheck,
+                glowClass: "dark:hover:shadow-[0_0_30px_rgba(var(--glow-primary),0.08)]",
               },
               {
                 title: "Built for practice",
                 description: "Focused quizzes validate learning and reveal gaps fast.",
                 icon: Sparkles,
+                glowClass: "dark:hover:shadow-[0_0_30px_rgba(var(--glow-accent),0.08)]",
               },
               {
                 title: "Career focused",
                 description: "Showcase your progress with purchase history and results.",
                 icon: BadgeCheck,
+                glowClass: "dark:hover:shadow-[0_0_30px_rgba(var(--glow-success),0.08)]",
               },
-            ].map((feature) => (
-              <Card key={feature.title} className="bg-muted/30">
+            ].map((feature, index) => (
+              <Card key={feature.title} className={`hover-lift animate-fade-in-up delay-${(index + 1) * 100} ${feature.glowClass}`}>
                 <CardHeader>
-                  <feature.icon className="size-6 text-primary" />
+                  <div className="mb-2 flex items-center justify-center size-10 rounded-xl bg-primary/10 dark:bg-primary/10">
+                    <feature.icon className="size-5 text-primary" />
+                  </div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
                   <CardDescription>{feature.description}</CardDescription>
                 </CardHeader>

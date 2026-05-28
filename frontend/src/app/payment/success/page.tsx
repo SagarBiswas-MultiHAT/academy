@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Award } from "lucide-react";
 
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
@@ -18,16 +18,22 @@ export default function PaymentSuccessPage() {
       <SiteHeader />
 
       <main className="mx-auto max-w-4xl px-6 py-16">
-        <Card className="border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <CheckCircle2 className="size-6 text-primary" /> Payment successful
+        <Card className="gradient-border animate-scale-in dark:animate-glow-pulse text-center">
+          <CardHeader className="items-center">
+            <div className="mb-3 flex items-center justify-center size-16 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 animate-scale-in">
+              <CheckCircle2 className="size-8 text-emerald-500" />
+            </div>
+            <CardTitle className="text-2xl">
+              <span className="gradient-text">Payment successful!</span>
             </CardTitle>
-            <CardDescription>Your payment has been confirmed.</CardDescription>
+            <CardDescription>Your payment has been confirmed. The book is now available in your dashboard.</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-3">
+          <CardContent className="flex flex-wrap justify-center gap-3">
             <Button asChild>
-              <Link href="/dashboard">Go to dashboard</Link>
+              <Link href="/dashboard">
+                <Award className="mr-2 size-4" />
+                Go to dashboard
+              </Link>
             </Button>
             <Button asChild variant="outline">
               <Link href="/books">Continue browsing</Link>

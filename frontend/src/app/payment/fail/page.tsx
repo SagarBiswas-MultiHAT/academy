@@ -18,14 +18,15 @@ export default function PaymentFailPage() {
       <SiteHeader />
 
       <main className="mx-auto max-w-4xl px-6 py-16">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
-              <AlertTriangle className="size-6 text-amber-500" /> Payment failed
-            </CardTitle>
-            <CardDescription>Your payment did not complete. Please try again.</CardDescription>
+        <Card className="animate-scale-in text-center">
+          <CardHeader className="items-center">
+            <div className="mb-3 flex items-center justify-center size-16 rounded-full bg-amber-500/10 dark:bg-amber-500/15 animate-scale-in">
+              <AlertTriangle className="size-8 text-amber-500" />
+            </div>
+            <CardTitle className="text-2xl">Payment failed</CardTitle>
+            <CardDescription>Your payment did not complete. Please try again or use a different method.</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-3">
+          <CardContent className="flex flex-wrap justify-center gap-3">
             <Button asChild>
               <Link href="/books">Return to catalog</Link>
             </Button>

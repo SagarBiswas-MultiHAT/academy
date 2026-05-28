@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Award, CreditCard, PackageCheck } from "lucide-react";
+import { Award, CreditCard, PackageCheck, TrendingUp, ArrowRight } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -116,7 +116,7 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
         <main className="mx-auto max-w-6xl px-6 py-12">
-          <Card>
+          <Card className="gradient-border">
             <CardHeader>
               <CardTitle>Sign in to view your dashboard</CardTitle>
               <CardDescription>Access purchases, wallet balance, and certificates.</CardDescription>
@@ -138,16 +138,18 @@ export default function DashboardPage() {
       <SiteHeader />
 
       <main className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between animate-fade-in-up">
           <div>
-            <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">Dashboard</h1>
+            <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">
+              <span className="gradient-text">Dashboard</span>
+            </h1>
             <p className="text-muted-foreground">
               Welcome back{user.name ? `, ${user.name}` : ""}. Track your learning progress and rewards.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             {user.role === "ADMIN" && (
-              <Button asChild variant="outline" className="border-emerald-500/50 text-emerald-600 dark:text-emerald-400">
+              <Button asChild variant="outline" className="border-emerald-500/30 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400/20 dark:hover:border-emerald-400/40 dark:hover:shadow-[0_0_12px_rgba(52,211,153,0.1)]">
                 <Link href="/admin">Admin console</Link>
               </Button>
             )}
@@ -171,10 +173,14 @@ export default function DashboardPage() {
           </Card>
         ) : (
           <div className="grid gap-6 lg:grid-cols-3">
-            <Card className="border-primary/20">
+            {/* Wallet Balance */}
+            <Card className="hover-lift animate-fade-in-up border-t-2 border-t-primary/40 dark:border-t-[rgba(var(--glow-primary),0.4)]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <CreditCard className="size-5 text-primary" /> Wallet balance
+                  <div className="flex items-center justify-center size-8 rounded-lg bg-primary/10">
+                    <CreditCard className="size-4 text-primary" />
+                  </div>
+                  Wallet balance
                 </CardTitle>
                 <CardDescription>Available for purchases and top-ups.</CardDescription>
               </CardHeader>
@@ -187,14 +193,15 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="text-3xl font-semibold">
+                    <div className="text-3xl font-semibold gradient-text-static">
                       {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
                     </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Lifetime earned {wallet ? formatCurrency(wallet.lifetimeEarned) : "BDT --"}
-                    </p>
+                    <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                      <TrendingUp className="size-3.5 text-emerald-500" />
+                      Earned {wallet ? formatCurrency(wallet.lifetimeEarned) : "BDT --"}
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      Lifetime spent {wallet ? formatCurrency(wallet.lifetimeSpent) : "BDT --"}
+                      Spent {wallet ? formatCurrency(wallet.lifetimeSpent) : "BDT --"}
                     </p>
                   </>
                 )}
@@ -206,10 +213,14 @@ export default function DashboardPage() {
               </CardFooter>
             </Card>
 
-            <Card>
+            {/* Purchased Items */}
+            <Card className="hover-lift animate-fade-in-up delay-100 border-t-2 border-t-violet-500/30 dark:border-t-violet-400/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <PackageCheck className="size-5 text-primary" /> Purchased items
+                  <div className="flex items-center justify-center size-8 rounded-lg bg-violet-500/10">
+                    <PackageCheck className="size-4 text-violet-500 dark:text-violet-400" />
+                  </div>
+                  Purchased items
                 </CardTitle>
                 <CardDescription>Books you already own.</CardDescription>
               </CardHeader>
@@ -232,7 +243,7 @@ export default function DashboardPage() {
                           {new Date(order.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <Badge variant="secondary">Owned</Badge>
+                      <Badge variant="success">Owned</Badge>
                     </div>
                   ))
                 ) : (
@@ -241,15 +252,21 @@ export default function DashboardPage() {
               </CardContent>
               <CardFooter>
                 <Button asChild variant="outline">
-                  <Link href="/books">Find a new book</Link>
+                  <Link href="/books">
+                    Find a new book <ArrowRight className="ml-1.5 size-3.5" />
+                  </Link>
                 </Button>
               </CardFooter>
             </Card>
 
-            <Card>
+            {/* Certificates */}
+            <Card className="hover-lift animate-fade-in-up delay-200 border-t-2 border-t-emerald-500/30 dark:border-t-emerald-400/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Award className="size-5 text-primary" /> Certificates
+                  <div className="flex items-center justify-center size-8 rounded-lg bg-emerald-500/10">
+                    <Award className="size-4 text-emerald-500 dark:text-emerald-400" />
+                  </div>
+                  Certificates
                 </CardTitle>
                 <CardDescription>Your latest verified credentials.</CardDescription>
               </CardHeader>

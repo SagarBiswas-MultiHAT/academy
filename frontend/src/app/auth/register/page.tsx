@@ -7,9 +7,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Gift, Users } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
+import AuroraBackground from "@/components/aurora-background";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Button } from "@/components/ui/button";
@@ -70,24 +71,37 @@ function RegisterContent() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1fr_1fr] lg:items-center">
-        <section className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary">
+      <main className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1fr_1fr] lg:items-center">
+        <AuroraBackground />
+
+        <section className="space-y-6 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary backdrop-blur-sm dark:border-[rgba(var(--glow-primary),0.2)] dark:bg-[rgba(var(--glow-primary),0.08)]">
+            <Sparkles className="size-3" />
             Create account
           </div>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
-            Build your verified learning track record
+            <span className="gradient-text">Build your verified</span> learning track record
           </h1>
           <p className="text-muted-foreground">
             Join MultiHAT Academy to access premium learning, verified certificates, and wallet rewards.
           </p>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <Sparkles className="size-4 text-primary" />
-            Referral rewards apply automatically when a code is present.
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center size-7 rounded-lg bg-primary/10 dark:bg-primary/10">
+                <Gift className="size-3.5 text-primary" />
+              </div>
+              Referral rewards apply automatically when a code is present.
+            </div>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center size-7 rounded-lg bg-primary/10 dark:bg-primary/10">
+                <Users className="size-3.5 text-primary" />
+              </div>
+              Join thousands of learners building verified credentials.
+            </div>
           </div>
         </section>
 
-        <Card className="border-border/70 bg-muted/20">
+        <Card className="gradient-border animate-fade-in-up delay-200">
           <CardHeader>
             <CardTitle className="text-2xl">Create account</CardTitle>
             <CardDescription>Get started with your name, email, and password.</CardDescription>
@@ -120,11 +134,11 @@ function RegisterContent() {
 
               <div className="space-y-2">
                 <Label htmlFor="referralCode">Referral code (optional)</Label>
-                <Input id="referralCode" placeholder="MULTIHAT-REF" {...register("referralCode")} />
+                <Input id="referralCode" placeholder="MULTIHAT-REF" {...register("referralCode")} className={referralFromQuery ? "border-primary/30 dark:border-[rgba(var(--glow-primary),0.3)]" : ""} />
               </div>
 
               {formError && (
-                <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive backdrop-blur-sm">
                   {formError}
                 </div>
               )}

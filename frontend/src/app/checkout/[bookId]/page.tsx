@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { CreditCard, ShieldCheck, Wallet } from "lucide-react";
+import { CreditCard, ShieldCheck, Wallet, Crown } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -183,9 +183,11 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
       <SiteHeader />
 
       <main className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between animate-fade-in-up">
           <div>
-            <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">Checkout</h1>
+            <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">
+              <span className="gradient-text">Checkout</span>
+            </h1>
             <p className="text-muted-foreground">Confirm your purchase and select payment method.</p>
           </div>
           <Button asChild variant="outline">
@@ -196,9 +198,12 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
         <Separator className="my-6" />
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="border-primary/20">
+          <Card className="gradient-border animate-fade-in-up">
             <CardHeader>
-              <CardTitle className="text-xl">Order summary</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Crown className="size-5 text-primary" />
+                Order summary
+              </CardTitle>
               <CardDescription>Review your selection.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -208,7 +213,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Price</span>
-                <span className="text-lg font-semibold">{formatCurrency(book.price)}</span>
+                <span className="text-xl font-semibold gradient-text-static">{formatCurrency(book.price)}</span>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="coupon">Coupon code</Label>
@@ -220,7 +225,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 />
               </div>
               {checkoutError && (
-                <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive backdrop-blur-sm">
                   {checkoutError}
                 </div>
               )}
@@ -231,39 +236,51 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
             </CardFooter>
           </Card>
 
-          <Card>
+          <Card className="animate-fade-in-up delay-200">
             <CardHeader>
-              <CardTitle className="text-xl">Payment method</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <CreditCard className="size-5 text-primary" />
+                Payment method
+              </CardTitle>
               <CardDescription>Choose how you want to pay.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <Button
+                <button
                   type="button"
-                  variant={paymentMethod === "GATEWAY" ? "default" : "outline"}
-                  className="justify-start gap-2"
                   onClick={() => setPaymentMethod("GATEWAY")}
+                  className={`flex items-center gap-2 rounded-lg border p-3 text-sm transition-all duration-200 ${
+                    paymentMethod === "GATEWAY"
+                      ? "border-primary/50 bg-primary/10 font-medium dark:border-[rgba(var(--glow-primary),0.4)] dark:bg-[rgba(var(--glow-primary),0.08)] dark:shadow-[0_0_10px_rgba(var(--glow-primary),0.08)]"
+                      : "border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.15] dark:hover:border-white/[0.12]"
+                  }`}
                 >
                   <CreditCard className="size-4" /> aamarPay gateway
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  variant={paymentMethod === "WALLET" ? "default" : "outline"}
-                  className="justify-start gap-2"
                   onClick={() => setPaymentMethod("WALLET")}
+                  className={`flex items-center gap-2 rounded-lg border p-3 text-sm transition-all duration-200 ${
+                    paymentMethod === "WALLET"
+                      ? "border-primary/50 bg-primary/10 font-medium dark:border-[rgba(var(--glow-primary),0.4)] dark:bg-[rgba(var(--glow-primary),0.08)] dark:shadow-[0_0_10px_rgba(var(--glow-primary),0.08)]"
+                      : "border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.15] dark:hover:border-white/[0.12]"
+                  }`}
                 >
                   <Wallet className="size-4" /> Wallet balance
-                </Button>
+                </button>
               </div>
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="size-4 text-primary" /> Secure payment processing
+                  <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
+                    <ShieldCheck className="size-3.5 text-primary" />
+                  </div>
+                  Secure payment processing
                 </div>
                 <div>
                   Wallet balance: {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
                 </div>
                 {walletInsufficient && (
-                  <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
+                  <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
                     Wallet balance is lower than the book price. Top up or use gateway.
                   </div>
                 )}

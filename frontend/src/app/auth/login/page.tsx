@@ -7,9 +7,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Lock, Fingerprint } from "lucide-react";
 
 import { useAuth } from "@/lib/auth-context";
+import AuroraBackground from "@/components/aurora-background";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Button } from "@/components/ui/button";
@@ -57,24 +58,37 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1fr_1fr] lg:items-center">
-        <section className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary">
+      <main className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1fr_1fr] lg:items-center">
+        <AuroraBackground />
+
+        <section className="space-y-6 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary backdrop-blur-sm dark:border-[rgba(var(--glow-primary),0.2)] dark:bg-[rgba(var(--glow-primary),0.08)]">
+            <Lock className="size-3" />
             Secure access
           </div>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
-            Welcome back to MultiHAT Academy
+            <span className="gradient-text">Welcome back</span> to MultiHAT Academy
           </h1>
           <p className="text-muted-foreground">
             Sign in to access your purchases, quizzes, wallet balance, and certificates.
           </p>
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <ShieldCheck className="size-4 text-primary" />
-            Token based access with automatic session refresh.
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center size-7 rounded-lg bg-primary/10 dark:bg-primary/10">
+                <ShieldCheck className="size-3.5 text-primary" />
+              </div>
+              Token based access with automatic session refresh.
+            </div>
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center size-7 rounded-lg bg-primary/10 dark:bg-primary/10">
+                <Fingerprint className="size-3.5 text-primary" />
+              </div>
+              End-to-end encrypted credentials.
+            </div>
           </div>
         </section>
 
-        <Card className="border-border/70 bg-muted/20">
+        <Card className="gradient-border animate-fade-in-up delay-200">
           <CardHeader>
             <CardTitle className="text-2xl">Sign in</CardTitle>
             <CardDescription>Use your email and password to continue.</CardDescription>
@@ -98,7 +112,7 @@ export default function LoginPage() {
               </div>
 
               {formError && (
-                <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive backdrop-blur-sm">
                   {formError}
                 </div>
               )}

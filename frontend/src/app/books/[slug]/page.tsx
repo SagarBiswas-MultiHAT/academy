@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Lock, ShieldCheck } from "lucide-react";
+import { BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -95,9 +95,12 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
           </Card>
         ) : (
           <div className="grid gap-10 lg:grid-cols-[1.4fr_0.6fr]">
-            <section className="space-y-6">
+            <section className="space-y-6 animate-fade-in-up">
               <div className="space-y-3">
-                <Badge variant="secondary">OSINT Handbook</Badge>
+                <Badge variant="holographic">
+                  <BookOpen className="mr-1 size-3" />
+                  E-Book
+                </Badge>
                 {isLoading ? (
                   <div className="space-y-3">
                     <Skeleton className="h-8 w-4/5" />
@@ -108,7 +111,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                 ) : (
                   <>
                     <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
-                      {book?.title}
+                      <span className="gradient-text">{book?.title}</span>
                     </h1>
                     <p className="text-muted-foreground">
                       {book?.description}
@@ -139,9 +142,9 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                         </Card>
                       ))
                     : freeChapters.map((chapter) => (
-                        <Card key={chapter.index} size="sm">
+                        <Card key={chapter.index} size="sm" className="hover-lift border-l-2 border-l-primary/40 dark:border-l-[rgba(var(--glow-primary),0.4)]">
                           <CardContent className="flex items-center justify-between">
-                            <p className="text-sm">Chapter {chapter.index}</p>
+                            <p className="text-sm text-muted-foreground">Chapter {chapter.index}</p>
                             <p className="text-sm font-medium">{chapter.title}</p>
                           </CardContent>
                         </Card>
@@ -157,7 +160,10 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold">Premium chapters</h2>
-                  <Badge variant="warning">Locked</Badge>
+                  <Badge variant="warning">
+                    <Lock className="mr-1 size-3" />
+                    Locked
+                  </Badge>
                 </div>
                 <div className="relative">
                   <div className="grid gap-3 blur-sm">
@@ -187,7 +193,8 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     )}
                   </div>
                   <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="rounded-full border border-primary/30 bg-background/90 px-4 py-2 text-sm font-medium shadow-lg">
+                    <div className="rounded-full border border-primary/20 bg-background/90 backdrop-blur-md px-4 py-2 text-sm font-medium shadow-lg dark:bg-card/90 dark:border-[rgba(var(--glow-primary),0.2)] dark:shadow-[0_0_20px_rgba(var(--glow-primary),0.1)]">
+                      <Lock className="inline mr-1.5 size-3.5" />
                       Unlock to reveal full chapters
                     </div>
                   </div>
@@ -195,10 +202,13 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
               </div>
             </section>
 
-            <aside className="space-y-6">
-              <Card className="border border-primary/20">
+            <aside className="space-y-6 animate-fade-in-up delay-200">
+              <Card className="gradient-border dark:animate-glow-pulse">
                 <CardHeader>
-                  <CardTitle className="text-xl">Get full access</CardTitle>
+                  <CardTitle className="text-xl flex items-center gap-2">
+                    <Crown className="size-5 text-primary" />
+                    Get full access
+                  </CardTitle>
                   <CardDescription>Includes certificate and quiz access.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -210,16 +220,26 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     </div>
                   ) : (
                     <>
-                      <div className="text-3xl font-semibold">
+                      <div className="text-3xl font-semibold gradient-text-static">
                         {book ? formatPrice(book.price) : "BDT --"}
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <ShieldCheck className="size-4 text-primary" />
+                        <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
+                          <ShieldCheck className="size-3.5 text-primary" />
+                        </div>
                         Verified certificate included
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Lock className="size-4 text-primary" />
+                        <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
+                          <Lock className="size-3.5 text-primary" />
+                        </div>
                         Lifetime access after purchase
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
+                          <Sparkles className="size-3.5 text-primary" />
+                        </div>
+                        Quiz + certification flow
                       </div>
                     </>
                   )}

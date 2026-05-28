@@ -88,9 +88,11 @@ export default function BooksPage() {
       <SiteHeader />
 
       <main className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between animate-fade-in-up">
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">Book catalog</h1>
+            <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">
+              <span className="gradient-text">Book catalog</span>
+            </h1>
             <p className="text-muted-foreground">
               Browse e-books across cybersecurity, programming, and more — with free previews and certificate-ready quizzes.
             </p>
@@ -118,7 +120,7 @@ export default function BooksPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {displayBooks.map((book, index) => (
-              <Card key={book?.id ?? index} className="h-full">
+              <Card key={book?.id ?? index} className={`h-full hover-lift animate-fade-in-up`} style={{ animationDelay: `${index * 80}ms` }}>
                 <CardHeader>
                   {book ? (
                     <>

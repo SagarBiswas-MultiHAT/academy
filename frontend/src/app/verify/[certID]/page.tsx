@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BadgeCheck, ShieldAlert } from "lucide-react";
+import { BadgeCheck, ShieldAlert, ShieldCheck } from "lucide-react";
 
 import api from "@/lib/api";
+import AuroraBackground from "@/components/aurora-background";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -60,19 +61,24 @@ export default function VerifyPage({ params }: { params: { certID: string } }) {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto max-w-4xl px-6 py-12">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-primary">
+      <main className="relative mx-auto max-w-4xl px-6 py-12">
+        <AuroraBackground />
+
+        <div className="space-y-3 animate-fade-in-up">
+          <Badge variant="holographic">
+            <ShieldCheck className="mr-1 size-3" />
             Certificate verification
-          </div>
-          <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">Verify a certificate</h1>
+          </Badge>
+          <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">
+            <span className="gradient-text">Verify a certificate</span>
+          </h1>
           <p className="text-muted-foreground">Confirm authenticity of MultiHAT Academy credentials.</p>
         </div>
 
         <Separator className="my-6" />
 
         {loading ? (
-          <Card>
+          <Card className="animate-fade-in-up delay-200">
             <CardHeader>
               <CardTitle>Checking certificate</CardTitle>
               <CardDescription>Validating the certificate record.</CardDescription>
@@ -84,7 +90,7 @@ export default function VerifyPage({ params }: { params: { certID: string } }) {
             </CardContent>
           </Card>
         ) : error || !result ? (
-          <Card>
+          <Card className="animate-fade-in-up delay-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShieldAlert className="size-5 text-amber-500" /> Verification failed
@@ -98,30 +104,33 @@ export default function VerifyPage({ params }: { params: { certID: string } }) {
             </CardContent>
           </Card>
         ) : (
-          <Card className="border-primary/20">
+          <Card className="gradient-border animate-fade-in-up delay-200 dark:animate-glow-pulse">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BadgeCheck className="size-5 text-primary" /> Certificate valid
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <div className="flex items-center justify-center size-8 rounded-full bg-emerald-500/10">
+                  <BadgeCheck className="size-5 text-emerald-500" />
+                </div>
+                Certificate valid
               </CardTitle>
               <CardDescription>Confirmed by MultiHAT Academy.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Holder</p>
-                <p className="text-lg font-semibold">{result.holderName}</p>
+                <p className="text-lg font-semibold gradient-text-static">{result.holderName}</p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Course</p>
                 <p className="text-lg font-semibold">{result.courseTitle}</p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div>
+                <div className="rounded-lg bg-muted/30 dark:bg-white/[0.03] p-3 border border-foreground/[0.04] dark:border-white/[0.04]">
                   <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Issued</p>
                   <p className="text-sm font-medium">
                     {new Date(result.issueDate).toLocaleDateString()}
                   </p>
                 </div>
-                <div>
+                <div className="rounded-lg bg-muted/30 dark:bg-white/[0.03] p-3 border border-foreground/[0.04] dark:border-white/[0.04]">
                   <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Certificate ID</p>
                   <p className="text-sm font-medium break-all">{result.certificateId}</p>
                 </div>

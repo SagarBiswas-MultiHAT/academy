@@ -10,7 +10,20 @@ export default function SiteFooter() {
   const { user } = useAuth()
 
   return (
-    <footer className="border-t border-border/60 bg-background">
+    <footer className="relative border-t border-foreground/[0.05] dark:border-white/[0.05]">
+      {/* Top gradient glow line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--glow-primary),0.15)] to-transparent" />
+
+      {/* Subtle aurora gradient in background */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className="absolute bottom-0 left-1/4 h-1/2 w-1/2 opacity-30 dark:opacity-20"
+          style={{
+            background: "radial-gradient(ellipse at center, var(--aurora-1) 0%, transparent 70%)",
+          }}
+        />
+      </div>
+
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div className="space-y-3">
@@ -44,8 +57,8 @@ export default function SiteFooter() {
           <div className="space-y-2 text-sm">
             <p className="font-semibold">Explore</p>
             <div className="flex flex-col gap-2 text-muted-foreground">
-              <Link href="/books" className="hover:text-foreground">Books</Link>
-              <Link href="/dashboard" className="hover:text-foreground">Dashboard</Link>
+              <Link href="/books" className="transition-colors duration-200 hover:text-foreground">Books</Link>
+              <Link href="/dashboard" className="transition-colors duration-200 hover:text-foreground">Dashboard</Link>
             </div>
           </div>
 
@@ -54,15 +67,15 @@ export default function SiteFooter() {
             <div className="flex flex-col gap-2 text-muted-foreground">
               {user ? (
                 <>
-                  <Link href="/dashboard" className="hover:text-foreground">My dashboard</Link>
-                  <Link href="/dashboard/wallet" className="hover:text-foreground">Wallet</Link>
-                  <Link href="/dashboard/referrals" className="hover:text-foreground">Referrals</Link>
+                  <Link href="/dashboard" className="transition-colors duration-200 hover:text-foreground">My dashboard</Link>
+                  <Link href="/dashboard/wallet" className="transition-colors duration-200 hover:text-foreground">Wallet</Link>
+                  <Link href="/dashboard/referrals" className="transition-colors duration-200 hover:text-foreground">Referrals</Link>
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" className="hover:text-foreground">Sign in</Link>
-                  <Link href="/auth/register" className="hover:text-foreground">Create account</Link>
-                  <Link href="/dashboard/wallet" className="hover:text-foreground">Wallet</Link>
+                  <Link href="/auth/login" className="transition-colors duration-200 hover:text-foreground">Sign in</Link>
+                  <Link href="/auth/register" className="transition-colors duration-200 hover:text-foreground">Create account</Link>
+                  <Link href="/dashboard/wallet" className="transition-colors duration-200 hover:text-foreground">Wallet</Link>
                 </>
               )}
             </div>
@@ -73,7 +86,10 @@ export default function SiteFooter() {
 
         <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>Copyright 2026 MultiHAT Academy. All rights reserved.</p>
-          <p>Built for learners who want real skills and verified proof.</p>
+          <p className="inline-flex items-center gap-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Built for learners who want real skills and verified proof.
+          </p>
         </div>
       </div>
     </footer>
