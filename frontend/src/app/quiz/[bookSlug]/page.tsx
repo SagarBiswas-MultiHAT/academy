@@ -71,7 +71,7 @@ export default function QuizPage({ params }: { params: { bookSlug: string } }) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
-        <main className="mx-auto max-w-6xl px-6 py-12">
+        <main className="mx-auto max-w-7xl px-6 py-12">
           <Card><CardHeader><CardTitle>Loading quiz</CardTitle><CardDescription>Preparing your assessment.</CardDescription></CardHeader></Card>
         </main>
         <SiteFooter />
@@ -83,7 +83,7 @@ export default function QuizPage({ params }: { params: { bookSlug: string } }) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
-        <main className="mx-auto max-w-6xl px-6 py-12">
+        <main className="mx-auto max-w-7xl px-6 py-12">
           <Card className="gradient-border"><CardHeader><CardTitle>Sign in to take the quiz</CardTitle><CardDescription>Access quizzes after purchasing the book.</CardDescription></CardHeader>
             <CardContent><Button asChild><Link href="/auth/login">Sign in</Link></Button></CardContent>
           </Card>
@@ -97,7 +97,7 @@ export default function QuizPage({ params }: { params: { bookSlug: string } }) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
-        <main className="mx-auto max-w-6xl px-6 py-12">
+        <main className="mx-auto max-w-7xl px-6 py-12">
           <Card><CardHeader><CardTitle className="flex items-center gap-2"><AlertTriangle className="size-5 text-amber-500" /> Quiz access unavailable</CardTitle><CardDescription>{error}</CardDescription></CardHeader>
             <CardContent className="flex flex-wrap gap-3">
               <Button asChild><Link href="/books">Browse books</Link></Button>
@@ -114,7 +114,7 @@ export default function QuizPage({ params }: { params: { bookSlug: string } }) {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-7xl px-6 py-12">
         <div className="space-y-2 animate-fade-in-up">
           <Badge variant="holographic">
             <Award className="mr-1 size-3" />

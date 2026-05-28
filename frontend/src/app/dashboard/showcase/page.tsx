@@ -132,7 +132,7 @@ export default function ShowcasePage() {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
-        <main className="mx-auto max-w-6xl px-6 py-12">
+        <main className="mx-auto max-w-7xl px-6 py-12">
           <Card>
             <CardHeader>
               <CardTitle>Loading showcases</CardTitle>
@@ -149,7 +149,7 @@ export default function ShowcasePage() {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
-        <main className="mx-auto max-w-6xl px-6 py-12">
+        <main className="mx-auto max-w-7xl px-6 py-12">
           <Card className="gradient-border">
             <CardHeader>
               <CardTitle>Sign in to submit showcases</CardTitle>
@@ -171,7 +171,7 @@ export default function ShowcasePage() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between animate-fade-in-up">
           <div>
             <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">

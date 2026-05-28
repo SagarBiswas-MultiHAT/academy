@@ -24,7 +24,7 @@ export default async function AdminLayout({
         {/* Emerald gradient glow line at bottom */}
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <p className="text-sm font-semibold flex items-center gap-2">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -49,7 +49,7 @@ export default async function AdminLayout({
         </div>
       </div>
 
-      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
         {children}
       </main>
 

@@ -71,7 +71,7 @@ function RegisterContent() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="relative mx-auto grid max-w-6xl gap-10 px-6 py-16 lg:grid-cols-[1fr_1fr] lg:items-center">
+      <main className="relative mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1fr_1fr] lg:items-center">
         <AuroraBackground />
 
         <section className="space-y-6 animate-fade-in-up">

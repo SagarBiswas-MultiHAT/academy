@@ -24,7 +24,7 @@ export default function SiteFooter() {
         />
       </div>
 
-      <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mx-auto max-w-7xl px-6 py-10">
         <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div className="space-y-3">
             <div className="flex items-center gap-3">

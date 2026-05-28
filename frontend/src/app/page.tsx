@@ -87,7 +87,7 @@ export default function Home() {
           <AuroraBackground />
           <div className="absolute inset-0 -z-10 cyber-grid opacity-30" />
 
-          <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-28">
+          <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-28">
             <div className="space-y-6 animate-fade-in-up">
               <Badge variant="holographic" className="px-3 py-1 text-xs uppercase tracking-[0.2em]">
                 <Sparkles className="mr-1.5 size-3" />
@@ -176,7 +176,7 @@ export default function Home() {
         </section>
 
         {/* ═══ Featured Books ═══ */}
-        <section className="mx-auto max-w-6xl px-6 py-14">
+        <section className="mx-auto max-w-7xl px-6 py-14">
           <div className="flex items-center justify-between gap-6 animate-fade-in-up">
             <div>
               <h2 className="text-2xl font-semibold font-[family-name:var(--font-space-grotesk)]">
@@ -257,7 +257,7 @@ export default function Home() {
         </section>
 
         {/* ═══ Features Section ═══ */}
-        <section className="mx-auto max-w-6xl px-6 pb-20">
+        <section className="mx-auto max-w-7xl px-6 pb-20">
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {

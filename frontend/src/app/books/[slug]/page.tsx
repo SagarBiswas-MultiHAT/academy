@@ -85,7 +85,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-7xl px-6 py-12">
         {error ? (
           <Card>
             <CardHeader>

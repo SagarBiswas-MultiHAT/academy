@@ -30,7 +30,7 @@ export default function SiteHeader() {
       {/* Gradient glow line at bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[rgba(var(--glow-primary),0.2)] to-transparent" />
 
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <Link href="/" className="group flex items-center gap-3">
           <div className="relative h-9 w-9 transition-transform duration-300 group-hover:scale-105">
             {/* Subtle glow behind logo */}

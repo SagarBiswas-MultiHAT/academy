@@ -87,7 +87,7 @@ export default function BooksPage() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between animate-fade-in-up">
           <div className="space-y-2">
             <h1 className="text-3xl font-semibold font-[family-name:var(--font-space-grotesk)]">
