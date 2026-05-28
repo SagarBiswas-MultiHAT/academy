@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { BooksService } from './books.service';
@@ -14,6 +14,18 @@ export class BooksController {
   @Get()
   findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
     return this.booksService.findAll(Number(page) || 1, Number(limit) || 20);
+  }
+
+  // IMPORTANT: This specific route must be declared BEFORE the generic :slug route
+  // so NestJS doesn't swallow "slug/chapters/index" as a single :slug param.
+  @Get(':slug/chapters/:index')
+  async getChapterContent(
+    @Param('slug') slug: string,
+    @Param('index') index: string,
+    @Req() req: any,
+  ) {
+    const userId = req?.user?.sub ?? undefined;
+    return this.booksService.getChapterContent(slug, Number(index), userId);
   }
 
   @Get(':slug')

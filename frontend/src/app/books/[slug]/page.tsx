@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide-react";
+import { ArrowRight, BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -142,12 +142,17 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                         </Card>
                       ))
                     : freeChapters.map((chapter) => (
-                        <Card key={chapter.index} size="sm" className="hover-lift border-l-2 border-l-primary/40 dark:border-l-[rgba(var(--glow-primary),0.4)]">
-                          <CardContent className="flex items-center justify-between">
-                            <p className="text-sm text-muted-foreground">Chapter {chapter.index}</p>
-                            <p className="text-sm font-medium">{chapter.title}</p>
-                          </CardContent>
-                        </Card>
+                        <Link key={chapter.index} href={`/books/${params.slug}/read/${chapter.index}`}>
+                          <Card size="sm" className="hover-lift cursor-pointer border-l-2 border-l-primary/40 dark:border-l-[rgba(var(--glow-primary),0.4)] transition-all hover:border-l-primary">
+                            <CardContent className="flex items-center justify-between">
+                              <p className="text-sm text-muted-foreground">Chapter {chapter.index}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-medium">{chapter.title}</p>
+                                <ArrowRight className="size-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
                       ))}
                   {freeChapters.length === 0 && !loading && (
                     <p className="text-sm text-muted-foreground">No free preview chapters available.</p>
