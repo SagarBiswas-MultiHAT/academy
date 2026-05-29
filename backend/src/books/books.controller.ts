@@ -28,7 +28,7 @@ export class BooksController {
     @Param('index') index: string,
     @Req() req: any,
   ) {
-    const userId = req?.user?.sub ?? undefined;
+    const userId = req?.user?.id ?? undefined;
     return this.booksService.getChapterContent(slug, Number(index), userId);
   }
 
@@ -59,9 +59,11 @@ export class BooksController {
     return res.sendFile(fullPath);
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':slug')
-  findBySlug(@Param('slug') slug: string) {
-    return this.booksService.findBySlug(slug);
+  findBySlug(@Param('slug') slug: string, @Req() req: any) {
+    const userId = req?.user?.id ?? undefined;
+    return this.booksService.findBySlug(slug, userId);
   }
 
   @Post()

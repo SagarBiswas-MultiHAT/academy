@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Receipt } from "lucide-react"
 
 import api from "@/lib/api"
+import { formatUsdFromBdt } from "@/lib/currency"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -92,7 +93,7 @@ export default function AdminOrdersPage() {
                           <p className="font-medium">{order.user.name ?? "User"}</p>
                           <p className="text-xs text-muted-foreground">{order.user.email}</p>
                         </td>
-                        <td className="px-3 py-3">BDT {order.amount}</td>
+                        <td className="px-3 py-3">{formatUsdFromBdt(order.amount)}</td>
                         <td className="px-3 py-3">
                           <Badge variant={order.status === "PAID" ? "success" : "secondary"}>
                             {order.status}

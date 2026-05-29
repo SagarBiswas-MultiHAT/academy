@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { BookOpen, Pencil, PlusCircle } from "lucide-react"
 
 import api from "@/lib/api"
+import { bdtToUsdAmount, formatUsdFromBdt, usdToBdtAmount } from "@/lib/currency"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -109,7 +110,7 @@ export default function AdminBooksPage() {
         title: createForm.title,
         slug: createForm.slug,
         description: createForm.description,
-        price: Number(createForm.price),
+        price: usdToBdtAmount(Number(createForm.price)),
         isPublished: createForm.isPublished,
         chapterMetadata,
       })
@@ -135,7 +136,7 @@ export default function AdminBooksPage() {
       title: book.title,
       slug: book.slug,
       description: book.description,
-      price: String(book.price),
+      price: bdtToUsdAmount(book.price).toFixed(2),
       isPublished: book.isPublished,
       chapterMetadata: JSON.stringify(book.chapterMetadata ?? [], null, 2),
     })
@@ -151,7 +152,7 @@ export default function AdminBooksPage() {
         title: editForm.title,
         slug: editForm.slug,
         description: editForm.description,
-        price: Number(editForm.price),
+        price: usdToBdtAmount(Number(editForm.price)),
         isPublished: editForm.isPublished,
         chapterMetadata,
       })
@@ -225,7 +226,7 @@ export default function AdminBooksPage() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="price">Price (BDT)</Label>
+                <Label htmlFor="price">Price (USD)</Label>
                 <Input
                   id="price"
                   type="number"
@@ -338,7 +339,7 @@ export default function AdminBooksPage() {
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="edit-price">Price (BDT)</Label>
+                    <Label htmlFor="edit-price">Price (USD)</Label>
                     <Input
                       id="edit-price"
                       type="number"
@@ -423,7 +424,7 @@ export default function AdminBooksPage() {
                     <Badge variant={book.isPublished ? "success" : "secondary"}>
                       {book.isPublished ? "Published" : "Draft"}
                     </Badge>
-                    <Badge variant="secondary">BDT {book.price}</Badge>
+                    <Badge variant="secondary">{formatUsdFromBdt(book.price)}</Badge>
                     <Badge variant="outline">
                       Chapters {book.chapterMetadata?.length ?? 0}
                     </Badge>

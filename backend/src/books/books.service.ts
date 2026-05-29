@@ -287,10 +287,27 @@ export class BooksService {
     return { books: books.map((book) => this.withComputedFlags(book)), total, page, limit };
   }
 
-  async findBySlug(slug: string) {
+  async findBySlug(slug: string, userId?: string) {
     const book = await this.prisma.book.findUnique({ where: { slug } });
     if (!book) throw new NotFoundException('Book not found');
-    return this.withComputedFlags(book);
+    
+    let isOwned = false;
+    let ownsPdf = false;
+    if (userId) {
+      const orders = await this.prisma.order.findMany({
+        where: { userId, bookId: book.id, status: 'PAID' },
+      });
+      if (orders.length > 0) {
+        isOwned = true;
+        ownsPdf = orders.some(o => o.includesPdf || (o.paymentMethod === 'GATEWAY' && Boolean(o.aamarpayTranId?.endsWith('-PDF'))));
+      }
+    }
+
+    return {
+      ...this.withComputedFlags(book),
+      isOwned,
+      ownsPdf,
+    };
   }
 
   /**

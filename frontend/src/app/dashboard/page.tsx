@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Award, CreditCard, PackageCheck, TrendingUp, ArrowRight } from "lucide-react";
+import { Award, CreditCard, PackageCheck, TrendingUp, ArrowRight, Users } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { formatUsdFromBdt } from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -43,10 +44,12 @@ type Certificate = {
   issueDate: string;
 };
 
-const formatCurrency = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
+type ReferralStats = {
+  total: number;
+  pending: number;
+  qualified: number;
+  credited: number;
+  totalEarned: number;
 };
 
 export default function DashboardPage() {
@@ -54,6 +57,7 @@ export default function DashboardPage() {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [referrals, setReferrals] = useState<ReferralStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloadingOrderId, setDownloadingOrderId] = useState<string | null>(null);
@@ -71,12 +75,14 @@ export default function DashboardPage() {
       api.get("/wallet/balance"),
       api.get("/orders/my"),
       api.get("/certificates/my"),
+      api.get("/referrals/stats"),
     ])
-      .then(([walletRes, ordersRes, certRes]) => {
+      .then(([walletRes, ordersRes, certRes, refRes]) => {
         if (!active) return;
         setWallet(walletRes.data.data as Wallet);
         setOrders(ordersRes.data.data as Order[]);
         setCertificates(certRes.data.data as Certificate[]);
+        setReferrals(refRes.data.data as ReferralStats);
       })
       .catch(() => {
         if (!active) return;
@@ -193,7 +199,7 @@ export default function DashboardPage() {
             </CardHeader>
           </Card>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {/* Wallet Balance */}
             <Card className="hover-lift animate-fade-in-up border-t-2 border-t-primary/40 dark:border-t-[rgba(var(--glow-primary),0.4)]">
               <CardHeader>
@@ -215,14 +221,14 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     <div className="text-3xl font-semibold gradient-text-static">
-                      {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
+                      {wallet ? formatUsdFromBdt(wallet.balanceBdt) : "$ --"}
                     </div>
                     <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
                       <TrendingUp className="size-3.5 text-emerald-500" />
-                      Earned {wallet ? formatCurrency(wallet.lifetimeEarned) : "BDT --"}
+                      Earned {wallet ? formatUsdFromBdt(wallet.lifetimeEarned) : "$ --"}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Spent {wallet ? formatCurrency(wallet.lifetimeSpent) : "BDT --"}
+                      Spent {wallet ? formatUsdFromBdt(wallet.lifetimeSpent) : "$ --"}
                     </p>
                   </>
                 )}
@@ -257,10 +263,18 @@ export default function DashboardPage() {
                   </div>
                 ) : paidOrders.length ? (
                   paidOrders.slice(0, 3).map((order) => (
-                    <div key={order.id} className="space-y-2 rounded-lg border border-border/40 p-3 text-sm">
-                      <div className="flex items-center justify-between gap-3">
+                    <div
+                      key={order.id}
+                      className="group relative space-y-2 rounded-lg border border-border/40 p-3 text-sm transition-all hover:bg-muted/50 hover:border-primary/50 hover:shadow-md active:scale-[0.98]"
+                    >
+                      <Link
+                        href={`/books/${order.book.slug}`}
+                        className="absolute inset-0 z-0 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                        aria-label={`View ${order.book.title}`}
+                      />
+                      <div className="relative z-10 flex items-center justify-between gap-3 pointer-events-none">
                         <div>
-                          <p className="font-medium">{order.book.title}</p>
+                          <p className="font-medium group-hover:text-primary transition-colors">{order.book.title}</p>
                           <p className="text-xs text-muted-foreground">
                             {new Date(order.createdAt).toLocaleDateString()}
                           </p>
@@ -268,16 +282,18 @@ export default function DashboardPage() {
                         <Badge variant="success">Owned</Badge>
                       </div>
                       {order.canDownloadPdf && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="w-full"
-                          onClick={() => handlePdfDownload(order)}
-                          disabled={downloadingOrderId === order.id}
-                        >
-                          {downloadingOrderId === order.id ? "Preparing PDF..." : "Download PDF"}
-                        </Button>
+                        <div className="relative z-10">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => handlePdfDownload(order)}
+                            disabled={downloadingOrderId === order.id}
+                          >
+                            {downloadingOrderId === order.id ? "Preparing PDF..." : "Download PDF"}
+                          </Button>
+                        </div>
                       )}
                     </div>
                   ))
@@ -337,6 +353,46 @@ export default function DashboardPage() {
               <CardFooter>
                 <Button asChild variant="secondary">
                   <Link href="/books">Earn a certificate</Link>
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* Referrals */}
+            <Card className="hover-lift animate-fade-in-up delay-300 border-t-2 border-t-blue-500/30 dark:border-t-blue-400/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="flex items-center justify-center size-8 rounded-lg bg-blue-500/10">
+                    <Users className="size-4 text-blue-500 dark:text-blue-400" />
+                  </div>
+                  Referrals
+                </CardTitle>
+                <CardDescription>Invite friends and earn rewards.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-8 w-32" />
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-4 w-40" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-3xl font-semibold gradient-text-static">
+                      {referrals ? formatUsdFromBdt(referrals.totalEarned) : "$ --"}
+                    </div>
+                    <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="size-3.5 text-blue-500" />
+                      {referrals?.total || 0} Total Invites
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {referrals?.credited || 0} Successful conversions
+                    </p>
+                  </>
+                )}
+              </CardContent>
+              <CardFooter>
+                <Button asChild variant="secondary">
+                  <Link href="/dashboard/referrals">View referral hub</Link>
                 </Button>
               </CardFooter>
             </Card>

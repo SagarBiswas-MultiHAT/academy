@@ -28,6 +28,7 @@ type Coupon = {
   usageLimit: number
   usageCount: number
   isActive: boolean
+  includesPdf?: boolean
 }
 
 export default function AdminCouponsPage() {
@@ -45,6 +46,7 @@ export default function AdminCouponsPage() {
     validUntil: "",
     usageLimit: "",
     isActive: true,
+    includesPdf: false,
   })
 
   const loadCoupons = async () => {
@@ -76,6 +78,7 @@ export default function AdminCouponsPage() {
         validUntil: new Date(form.validUntil).toISOString(),
         usageLimit: Number(form.usageLimit),
         isActive: form.isActive,
+        includesPdf: form.includesPdf,
       })
       setForm({
         code: "",
@@ -85,6 +88,7 @@ export default function AdminCouponsPage() {
         validUntil: "",
         usageLimit: "",
         isActive: true,
+        includesPdf: false,
       })
       await loadCoupons()
     } catch {
@@ -201,17 +205,31 @@ export default function AdminCouponsPage() {
               }
             />
           </div>
-          <div className="flex items-center gap-2">
-            <input
-              id="active"
-              type="checkbox"
-              className="h-4 w-4 rounded border-border"
-              checked={form.isActive}
-              onChange={(event) =>
-                setForm((prev) => ({ ...prev, isActive: event.target.checked }))
-              }
-            />
-            <Label htmlFor="active">Active</Label>
+          <div className="flex items-center gap-6 md:col-span-2 pt-2">
+            <div className="flex items-center gap-2">
+              <input
+                id="active"
+                type="checkbox"
+                className="h-4 w-4 rounded border-border"
+                checked={form.isActive}
+                onChange={(event) =>
+                  setForm((prev) => ({ ...prev, isActive: event.target.checked }))
+                }
+              />
+              <Label htmlFor="active">Active</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                id="includesPdf"
+                type="checkbox"
+                className="h-4 w-4 rounded border-border"
+                checked={form.includesPdf}
+                onChange={(event) =>
+                  setForm((prev) => ({ ...prev, includesPdf: event.target.checked }))
+                }
+              />
+              <Label htmlFor="includesPdf">Includes printable PDF add-on</Label>
+            </div>
           </div>
         </CardContent>
         {formError && (
@@ -247,9 +265,14 @@ export default function AdminCouponsPage() {
               {coupon ? (
                 <div>
                   <p className="text-sm font-semibold">{coupon.code}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {coupon.discountType} {coupon.discountValue} - used {coupon.usageCount}/
                     {coupon.usageLimit}
+                    {coupon.includesPdf && (
+                      <span className="ml-2 inline-flex items-center text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 rounded text-[10px]">
+                        + PDF Included
+                      </span>
+                    )}
                   </p>
                 </div>
               ) : (

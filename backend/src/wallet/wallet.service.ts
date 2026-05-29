@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsService } from '../payments/payments.service';
 import { Decimal } from '@prisma/client/runtime/library';
 import { Prisma } from '@prisma/client';
+import { formatUsdFromBdt } from '../common/utils/currency';
 
 @Injectable()
 export class WalletService {
@@ -26,7 +27,7 @@ export class WalletService {
   async initiateTopUp(userId: string, amountBdt: number) {
     const minTopUp = Number(this.configService.get('WALLET_MIN_TOPUP_BDT', '50'));
     if (amountBdt < minTopUp) {
-      throw new BadRequestException(`Minimum top-up is ৳${minTopUp}`);
+      throw new BadRequestException(`Minimum top-up is ${formatUsdFromBdt(minTopUp)}`);
     }
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });

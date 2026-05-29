@@ -30,7 +30,7 @@ async function main() {
     where: { slug: 'google-dorks-complete-handbook' },
     update: {
       description: 'Master Google Dorking for ethical OSINT research. 8 in-depth chapters covering essential operators, advanced search techniques, special tools, power combinations, real-world applications, defensive strategies, and legal guidelines — with localized Bangladesh examples and appendices.',
-      price: 10.00,
+      price: 612.39,
       chapterMetadata: [
         { index: 1, title: 'Introduction to Google Dorks', isFree: true },
         { index: 2, title: 'The 10 Essential Operators', isFree: true },
@@ -51,7 +51,7 @@ async function main() {
       title: 'Google Dorks: The Complete OSINT Handbook',
       slug: 'google-dorks-complete-handbook',
       description: 'Master Google Dorking for ethical OSINT research. 8 in-depth chapters covering essential operators, advanced search techniques, special tools, power combinations, real-world applications, defensive strategies, and legal guidelines — with localized Bangladesh examples and appendices.',
-      price: 10.00,
+      price: 612.39,
       isPublished: true,
       chapterMetadata: [
         { index: 1, title: 'Introduction to Google Dorks', isFree: true },

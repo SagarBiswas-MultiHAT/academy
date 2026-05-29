@@ -6,6 +6,7 @@ import { ArrowRight, BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { formatUsd, formatUsdFromBdt, GOOGLE_DORKS_PRINTABLE_ADDON_USD } from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -36,12 +37,12 @@ type Book = {
   chapterMetadata: ChapterMeta[];
   hasPremiumPdf?: boolean;
   requiresGatewayPayment?: boolean;
+  isOwned?: boolean;
+  ownsPdf?: boolean;
 };
 
 const formatPrice = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "$0.00";
-  return `$${amount.toFixed(2)}`;
+  return formatUsdFromBdt(value);
 };
 
 export default function BookDetailPage({ params }: { params: { slug: string } }) {
@@ -119,7 +120,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                       {book?.description}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {book?.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: $5</Badge>}
+                      {book?.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: {formatUsd(GOOGLE_DORKS_PRINTABLE_ADDON_USD)}</Badge>}
                     </div>
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
                       <BookOpen className="size-4" />
@@ -170,13 +171,13 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold">Premium chapters</h2>
-                  <Badge variant="warning">
-                    <Lock className="mr-1 size-3" />
-                    Locked
+                  <Badge variant={book?.isOwned ? "success" : "warning"}>
+                    {book?.isOwned ? <BookOpen className="mr-1 size-3" /> : <Lock className="mr-1 size-3" />}
+                    {book?.isOwned ? "Unlocked" : "Locked"}
                   </Badge>
                 </div>
                 <div className="relative">
-                  <div className="grid gap-3 blur-sm">
+                  <div className={`grid gap-3 ${!book?.isOwned ? "blur-sm" : ""}`}>
                     {isLoading
                       ? Array.from({ length: 3 }).map((_, index) => (
                           <Card key={`paid-skeleton-${index}`} size="sm">
@@ -187,12 +188,26 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                           </Card>
                         ))
                       : paidChapters.map((chapter) => (
-                          <Card key={chapter.index} size="sm">
-                            <CardContent className="flex items-center justify-between">
-                              <p className="text-sm">Chapter {chapter.index}</p>
-                              <p className="text-sm font-medium">{chapter.title}</p>
-                            </CardContent>
-                          </Card>
+                          book?.isOwned ? (
+                            <Link key={chapter.index} href={`/books/${params.slug}/read/${chapter.index}`}>
+                              <Card size="sm" className="hover-lift cursor-pointer border-l-2 border-l-primary/40 dark:border-l-[rgba(var(--glow-primary),0.4)] transition-all hover:border-l-primary">
+                                <CardContent className="flex items-center justify-between">
+                                  <p className="text-sm text-muted-foreground">Chapter {chapter.index}</p>
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-sm font-medium">{chapter.title}</p>
+                                    <ArrowRight className="size-3.5 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Link>
+                          ) : (
+                            <Card key={chapter.index} size="sm">
+                              <CardContent className="flex items-center justify-between">
+                                <p className="text-sm">Chapter {chapter.index}</p>
+                                <p className="text-sm font-medium">{chapter.title}</p>
+                              </CardContent>
+                            </Card>
+                          )
                         ))}
                     {paidChapters.length === 0 && !loading && (
                       <Card size="sm">
@@ -202,25 +217,39 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                       </Card>
                     )}
                   </div>
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="rounded-full border border-primary/20 bg-background/90 backdrop-blur-md px-4 py-2 text-sm font-medium shadow-lg dark:bg-card/90 dark:border-[rgba(var(--glow-primary),0.2)] dark:shadow-[0_0_20px_rgba(var(--glow-primary),0.1)]">
-                      <Lock className="inline mr-1.5 size-3.5" />
-                      Unlock to reveal full chapters
+                  {!book?.isOwned && (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <div className="rounded-full border border-primary/20 bg-background/90 backdrop-blur-md px-4 py-2 text-sm font-medium shadow-lg dark:bg-card/90 dark:border-[rgba(var(--glow-primary),0.2)] dark:shadow-[0_0_20px_rgba(var(--glow-primary),0.1)]">
+                        <Lock className="inline mr-1.5 size-3.5" />
+                        Unlock to reveal full chapters
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </section>
 
             <aside className="space-y-6 animate-fade-in-up delay-200">
-              <Card className="gradient-border dark:animate-glow-pulse">
+              <Card className={`gradient-border dark:animate-glow-pulse ${book?.isOwned ? 'border-primary/50 dark:border-[rgba(var(--glow-primary),0.5)]' : ''}`}>
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center gap-2">
-                    <Crown className="size-5 text-primary" />
-                    Get full access
+                    {book?.isOwned ? (
+                      <>
+                        <ShieldCheck className="size-5 text-primary" />
+                        You own this book
+                      </>
+                    ) : (
+                      <>
+                        <Crown className="size-5 text-primary" />
+                        Get full access
+                      </>
+                    )}
                   </CardTitle>
                   <CardDescription>
-                    Includes certificate, quiz access, and the $10 web edition. Printable PDF is available separately as a $5 add-on.
+                    {book?.isOwned 
+                      ? "You have full access to all chapters and features."
+                      : `Includes certificate, quiz access, and the ${formatPrice(book?.price ?? 0)} web edition. Printable PDF is available separately as a ${formatUsd(GOOGLE_DORKS_PRINTABLE_ADDON_USD)} add-on.`
+                    }
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -232,9 +261,11 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     </div>
                   ) : (
                     <>
-                      <div className="text-3xl font-semibold gradient-text-static">
-                        {book ? formatPrice(book.price) : "$--"}
-                      </div>
+                      {!book?.isOwned && (
+                        <div className="text-3xl font-semibold gradient-text-static">
+                          {book ? formatPrice(book.price) : "$ --"}
+                        </div>
+                      )}
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
                           <ShieldCheck className="size-3.5 text-primary" />
@@ -243,9 +274,9 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
-                          <Lock className="size-3.5 text-primary" />
+                          {book?.isOwned ? <BookOpen className="size-3.5 text-primary" /> : <Lock className="size-3.5 text-primary" />}
                         </div>
-                        Lifetime access after purchase
+                        Lifetime access {book?.isOwned ? "granted" : "after purchase"}
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
@@ -253,12 +284,20 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                         </div>
                         Quiz + certification flow
                       </div>
-                      {book?.hasPremiumPdf && (
+                      {book?.hasPremiumPdf && !book?.isOwned && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
                             <BookOpen className="size-3.5 text-primary" />
                           </div>
-                          Printable PDF add-on available separately for $5
+                          Printable PDF add-on available separately for {formatUsd(GOOGLE_DORKS_PRINTABLE_ADDON_USD)}
+                        </div>
+                      )}
+                      {book?.hasPremiumPdf && book?.isOwned && book?.ownsPdf && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
+                            <BookOpen className="size-3.5 text-primary" />
+                          </div>
+                          Printable PDF included
                         </div>
                       )}
                     </>
@@ -266,9 +305,15 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                 </CardContent>
                 <CardFooter className="flex flex-col gap-3">
                   {book ? (
-                    <Button asChild size="lg" className="w-full">
-                      <Link href={`/checkout/${book.id}`}>Unlock full book</Link>
-                    </Button>
+                    book.isOwned ? (
+                      <Button asChild size="lg" className="w-full">
+                        <Link href={`/books/${book.slug}/read/1`}>Start Reading</Link>
+                      </Button>
+                    ) : (
+                      <Button asChild size="lg" className="w-full">
+                        <Link href={`/checkout/${book.id}`}>Unlock full book</Link>
+                      </Button>
+                    )
                   ) : (
                     <Skeleton className="h-10 w-full" />
                   )}
@@ -279,6 +324,30 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                   )}
                 </CardFooter>
               </Card>
+
+              {book?.isOwned && book?.hasPremiumPdf && !book?.ownsPdf && (
+                <Card className="border-primary/20 bg-primary/5 animate-fade-in-up delay-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <BookOpen className="size-4 text-primary" />
+                      Printable PDF Add-on
+                    </CardTitle>
+                    <CardDescription>
+                      Upgrade your access with a high-quality, printable PDF version of the handbook for offline reading.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-semibold text-primary">
+                      {formatUsd(GOOGLE_DORKS_PRINTABLE_ADDON_USD)}
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button asChild className="w-full">
+                      <Link href={`/checkout/${book.id}?addon=pdf`}>Unlock Printable PDF</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              )}
             </aside>
           </div>
         )}

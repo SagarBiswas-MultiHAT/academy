@@ -6,6 +6,7 @@ import { CheckCircle2, Clock, Globe, Send, XCircle, Award } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { formatUsdFromBdt } from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -50,12 +51,6 @@ const platforms = [
   { value: "FACEBOOK", label: "Facebook" },
   { value: "INSTAGRAM", label: "Instagram" },
 ];
-
-const formatCurrency = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
-};
 
 export default function ShowcasePage() {
   const { user, loading: authLoading } = useAuth();
@@ -311,7 +306,7 @@ export default function ShowcasePage() {
               <CardFooter>
                 <Badge variant="success">
                   <Award className="mr-1 size-3" />
-                  Potential rewards: {formatCurrency(
+                  Potential rewards: {formatUsdFromBdt(
                     showcases.reduce((sum, item) => sum + Number(item.rewardAmount), 0)
                   )}
                 </Badge>

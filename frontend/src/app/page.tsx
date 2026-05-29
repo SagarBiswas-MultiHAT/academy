@@ -6,6 +6,7 @@ import { ArrowRight, BadgeCheck, BookOpen, ShieldCheck, Sparkles, Zap, Award, Gl
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { formatUsd, formatUsdFromBdt, GOOGLE_DORKS_BASE_PRICE_USD } from "@/lib/currency";
 import AuroraBackground from "@/components/aurora-background";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
@@ -38,9 +39,7 @@ type Book = {
 };
 
 const formatPrice = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
+  return formatUsdFromBdt(value);
 };
 
 export default function Home() {
@@ -165,7 +164,7 @@ export default function Home() {
               <CardFooter className="justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Starting from</p>
-                  <p className="text-lg font-semibold gradient-text-static">$10.00</p>
+                  <p className="text-lg font-semibold gradient-text-static">{formatUsd(GOOGLE_DORKS_BASE_PRICE_USD)}</p>
                 </div>
                 <Button asChild variant="secondary">
                   <Link href="/books">Browse catalog</Link>

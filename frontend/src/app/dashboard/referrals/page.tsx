@@ -6,6 +6,7 @@ import { Link2, Share2, Users, Copy, Check, ArrowRight } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { formatUsdFromBdt } from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +35,9 @@ type ReferralStats = {
   credited: number;
   totalEarned: number;
 };
+
+const REFERRAL_THRESHOLD_BDT = 500;
+const REFERRAL_REWARD_BDT = 100;
 
 export default function ReferralsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -166,7 +170,7 @@ export default function ReferralsPage() {
                     </div>
                     Your referral link
                   </CardTitle>
-                  <CardDescription>Share this link to earn BDT rewards.</CardDescription>
+                  <CardDescription>Share this link to earn USD rewards.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {loading ? (
@@ -212,8 +216,8 @@ export default function ReferralsPage() {
                 <CardContent className="space-y-4">
                   {[
                     { step: "1", text: "Share your referral link." },
-                    { step: "2", text: "Referred users spend at least BDT 500." },
-                    { step: "3", text: "You earn BDT 100 per credited referral." },
+                    { step: "2", text: `Referred users spend at least ${formatUsdFromBdt(REFERRAL_THRESHOLD_BDT)}.` },
+                    { step: "3", text: `You earn ${formatUsdFromBdt(REFERRAL_REWARD_BDT)} per credited referral.` },
                   ].map((item) => (
                     <div key={item.step} className="flex items-center gap-3 text-sm text-muted-foreground">
                       <div className="flex items-center justify-center size-7 rounded-full bg-primary/10 text-primary text-xs font-semibold shrink-0 dark:bg-[rgba(var(--glow-primary),0.1)]">
@@ -264,7 +268,7 @@ export default function ReferralsPage() {
                 )}
               </CardContent>
               <CardFooter className="justify-between">
-                <Badge variant="success">Earned: BDT {stats?.totalEarned ?? 0}</Badge>
+                <Badge variant="success">Earned: {formatUsdFromBdt(stats?.totalEarned ?? 0)}</Badge>
                 <Button asChild variant="outline" size="sm">
                   <Link href="/dashboard/wallet">
                     View wallet <ArrowRight className="ml-1 size-3.5" />

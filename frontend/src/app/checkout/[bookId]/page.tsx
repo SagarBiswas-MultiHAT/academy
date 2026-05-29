@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { CreditCard, ShieldCheck, Wallet, Crown } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import {
+  bdtToUsdAmount,
+  formatUsdFromBdt,
+  GOOGLE_DORKS_PRINTABLE_ADDON_USD,
+  usdToBdtAmount,
+} from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -38,19 +44,11 @@ type WalletBalance = {
   balanceBdt: number | string;
 };
 
-const formatCurrency = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
-};
-
 const formatBookPrice = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "$0.00";
-  return `$${amount.toFixed(2)}`;
+  return formatUsdFromBdt(value);
 };
 
-export default function CheckoutPage({ params }: { params: { bookId: string } }) {
+function CheckoutContent({ params }: { params: { bookId: string } }) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
@@ -60,8 +58,12 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const addon = searchParams?.get("addon");
+
   const [processing, setProcessing] = useState(false);
-  const [includePrintablePdf, setIncludePrintablePdf] = useState(false);
+  const [includePrintablePdf, setIncludePrintablePdf] = useState(addon === "pdf");
+  const [alreadyOwnsBook, setAlreadyOwnsBook] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -102,7 +104,22 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
       .get("/wallet/balance")
       .then((res) => setWallet(res.data.data as WalletBalance))
       .catch(() => setWallet(null));
-  }, [user]);
+
+    api
+      .get("/orders/my")
+      .then((res) => {
+        const orders = res.data.data as { book: { id: string }, status: string }[];
+        const hasPaid = orders.some(o => o.book.id === params.bookId && o.status === "PAID");
+        setAlreadyOwnsBook(hasPaid);
+      })
+      .catch(() => setAlreadyOwnsBook(false));
+  }, [user, params.bookId]);
+
+  useEffect(() => {
+    if (alreadyOwnsBook) {
+      setIncludePrintablePdf(true);
+    }
+  }, [alreadyOwnsBook]);
 
   useEffect(() => {
     if (book?.hasPremiumPdf && includePrintablePdf) {
@@ -112,9 +129,10 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
 
   const numericPrice = useMemo(() => {
     if (!book) return 0;
+    if (alreadyOwnsBook) return 0;
     const price = typeof book.price === "string" ? Number(book.price) : book.price;
     return Number.isFinite(price) ? price : 0;
-  }, [book]);
+  }, [book, alreadyOwnsBook]);
 
   const handleCheckout = async () => {
     if (!user) {
@@ -194,12 +212,12 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
     );
   }
 
-  const walletBalance = wallet ? Number(wallet.balanceBdt) : 0;
+  const walletBalanceUsd = wallet ? bdtToUsdAmount(wallet.balanceBdt) : 0;
   const gatewayOnly = Boolean(book.hasPremiumPdf && includePrintablePdf);
   const selectedPaymentMethod = gatewayOnly ? "GATEWAY" : paymentMethod;
-  const addOnPrice = book.hasPremiumPdf ? 5 : 0;
-  const totalPrice = numericPrice + (includePrintablePdf && book.hasPremiumPdf ? addOnPrice : 0);
-  const walletInsufficient = selectedPaymentMethod === "WALLET" && walletBalance < totalPrice;
+  const addOnPriceBdt = book.hasPremiumPdf ? usdToBdtAmount(GOOGLE_DORKS_PRINTABLE_ADDON_USD) : 0;
+  const totalPriceBdt = numericPrice + (includePrintablePdf && book.hasPremiumPdf ? addOnPriceBdt : 0);
+  const walletInsufficient = selectedPaymentMethod === "WALLET" && walletBalanceUsd < bdtToUsdAmount(totalPriceBdt);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -235,14 +253,21 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 <p className="text-sm text-muted-foreground">{book.description}</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {book.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: $5</Badge>}
+                {book.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: {formatBookPrice(addOnPriceBdt)}</Badge>}
                 {gatewayOnly && <Badge variant="warning">Gateway only for PDF add-on</Badge>}
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Package price</span>
-                <span className="text-xl font-semibold gradient-text-static">{formatBookPrice(book.price)}</span>
+                {alreadyOwnsBook ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm line-through text-muted-foreground">{formatBookPrice(book.price)}</span>
+                    <span className="text-xl font-semibold text-emerald-500 dark:text-emerald-400">Owned</span>
+                  </div>
+                ) : (
+                  <span className="text-xl font-semibold gradient-text-static">{formatBookPrice(book.price)}</span>
+                )}
               </div>
-              {book.hasPremiumPdf && (
+              {book.hasPremiumPdf && !alreadyOwnsBook && (
                 <label className="flex items-start gap-3 rounded-lg border border-border/60 bg-muted/30 px-3 py-3 text-sm">
                   <input
                     type="checkbox"
@@ -252,7 +277,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                   />
                   <span className="space-y-1">
                     <span className="block font-medium">Add printable PDF</span>
-                    <span className="block text-muted-foreground">Include the licensed buyer PDF for an additional $5.00.</span>
+                    <span className="block text-muted-foreground">Include the licensed buyer PDF for an additional {formatBookPrice(addOnPriceBdt)}.</span>
                   </span>
                 </label>
               )}
@@ -260,17 +285,21 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 <div className="space-y-2 rounded-lg border border-border/60 bg-background/60 p-3 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Web package</span>
-                    <span className="font-medium">{formatBookPrice(book.price)}</span>
+                    {alreadyOwnsBook ? (
+                      <span className="font-medium text-emerald-500 dark:text-emerald-400">Owned</span>
+                    ) : (
+                      <span className="font-medium">{formatBookPrice(book.price)}</span>
+                    )}
                   </div>
                   {includePrintablePdf && (
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Printable PDF add-on</span>
-                      <span className="font-medium">$5.00</span>
+                      <span className="font-medium">{formatBookPrice(addOnPriceBdt)}</span>
                     </div>
                   )}
                   <div className="flex items-center justify-between border-t border-border/60 pt-2">
                     <span className="font-medium">Total</span>
-                    <span className="text-base font-semibold">{formatBookPrice(totalPrice)}</span>
+                    <span className="text-base font-semibold">{formatBookPrice(totalPriceBdt)}</span>
                   </div>
                 </div>
               )}
@@ -339,7 +368,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                   Secure payment processing
                 </div>
                 <div>
-                  Wallet balance: {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
+                  Wallet balance: {wallet ? formatUsdFromBdt(wallet.balanceBdt) : "$ --"}
                 </div>
                 {gatewayOnly && (
                   <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
@@ -373,5 +402,13 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
 
       <SiteFooter />
     </div>
+  );
+}
+
+export default function CheckoutPage({ params }: { params: { bookId: string } }) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background text-foreground" />}>
+      <CheckoutContent params={params} />
+    </Suspense>
   );
 }

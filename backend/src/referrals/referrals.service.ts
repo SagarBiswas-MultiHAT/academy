@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet/wallet.service';
 import { Decimal } from '@prisma/client/runtime/library';
+import { formatUsdFromBdt } from '../common/utils/currency';
 
 const REFERRAL_REWARD_BDT = new Decimal(100);
 const REFERRAL_THRESHOLD_BDT = new Decimal(500);
@@ -67,7 +68,7 @@ export class ReferralsService {
         referral.referrerId,
         REFERRAL_REWARD_BDT,
         'REFERRAL_CREDIT',
-        `Referral reward: referred user met ৳500 spending threshold`,
+        `Referral reward: referred user met ${formatUsdFromBdt(REFERRAL_THRESHOLD_BDT.toNumber())} spending threshold`,
         referral.id,
       );
     } else {

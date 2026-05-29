@@ -109,6 +109,7 @@ model Order {
   paymentMethod   PaymentMethod @default(GATEWAY) @map("payment_method")
   aamarpayTranId  String?       @unique @map("aamarpay_tran_id")
   gatewayResponse Json?         @map("gateway_response")
+  includesPdf     Boolean       @default(false) @map("includes_pdf")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
@@ -177,6 +178,7 @@ model Coupon {
   usageLimit    Int          @map("usage_limit")
   usageCount    Int          @default(0) @map("usage_count")
   isActive      Boolean      @default(true) @map("is_active")
+  includesPdf   Boolean      @default(false) @map("includes_pdf")
   createdAt     DateTime     @default(now()) @map("created_at")
   orders        Order[]
 

@@ -6,6 +6,7 @@ import { ArrowUpRight, History, Wallet, TrendingUp, TrendingDown } from "lucide-
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { BDT_TO_USD_RATE, formatUsdFromBdt, usdToBdtAmount } from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -36,12 +37,6 @@ type WalletTransaction = {
   description: string;
   createdAt: string;
   referenceId?: string | null;
-};
-
-const formatCurrency = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
 };
 
 const txTypeColors: Record<string, string> = {
@@ -173,15 +168,21 @@ export default function WalletPage() {
 
   const handleTopUp = async () => {
     setTopUpError(null);
-    const amount = Number(topUpAmount);
-    if (!Number.isFinite(amount) || amount <= 0) {
+    const amountUsd = Number(topUpAmount);
+    if (!Number.isFinite(amountUsd) || amountUsd <= 0) {
       setTopUpError("Enter a valid top-up amount.");
+      return;
+    }
+
+    const amountBdt = usdToBdtAmount(amountUsd);
+    if (!Number.isFinite(amountBdt) || amountBdt <= 0) {
+      setTopUpError("Unable to convert the entered amount. Please try again.");
       return;
     }
 
     setTopUpLoading(true);
     try {
-      const res = await api.post("/wallet/topup", { amountBdt: amount });
+      const res = await api.post("/wallet/topup", { amountBdt });
       const payload = res.data.data as { paymentUrl: string };
       if (payload.paymentUrl) {
         window.location.href = payload.paymentUrl;
@@ -286,7 +287,7 @@ export default function WalletPage() {
                   ) : (
                     <>
                       <div className="text-3xl font-semibold gradient-text-static">
-                        {balance ? formatCurrency(balance.balanceBdt) : "BDT --"}
+                        {balance ? formatUsdFromBdt(balance.balanceBdt) : "$ --"}
                       </div>
                       <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                         <div className="rounded-lg bg-emerald-500/5 dark:bg-emerald-500/5 p-3 border border-emerald-500/10">
@@ -295,7 +296,7 @@ export default function WalletPage() {
                             Lifetime earned
                           </p>
                           <p className="text-base font-medium text-foreground">
-                            {balance ? formatCurrency(balance.lifetimeEarned) : "BDT --"}
+                            {balance ? formatUsdFromBdt(balance.lifetimeEarned) : "$ --"}
                           </p>
                         </div>
                         <div className="rounded-lg bg-rose-500/5 dark:bg-rose-500/5 p-3 border border-rose-500/10">
@@ -304,7 +305,7 @@ export default function WalletPage() {
                             Lifetime spent
                           </p>
                           <p className="text-base font-medium text-foreground">
-                            {balance ? formatCurrency(balance.lifetimeSpent) : "BDT --"}
+                            {balance ? formatUsdFromBdt(balance.lifetimeSpent) : "$ --"}
                           </p>
                         </div>
                       </div>
@@ -326,15 +327,18 @@ export default function WalletPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="amount">Top-up amount (BDT)</Label>
+                    <Label htmlFor="amount">Top-up amount (USD)</Label>
                     <Input
                       id="amount"
                       type="number"
                       min="0"
                       value={topUpAmount}
                       onChange={(event) => setTopUpAmount(event.target.value)}
-                      placeholder="500"
+                      placeholder="10.00"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Converted using live rate: 1 BDT = {"$"}{BDT_TO_USD_RATE.toFixed(6)}.
+                    </p>
                   </div>
                   {topUpError && (
                     <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive backdrop-blur-sm">
@@ -384,7 +388,7 @@ export default function WalletPage() {
                           </span>
                         </p>
                       </div>
-                      <Badge variant="secondary">{formatCurrency(item.amount)}</Badge>
+                      <Badge variant="secondary">{formatUsdFromBdt(item.amount)}</Badge>
                     </div>
                   ))
                 ) : (

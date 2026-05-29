@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BookOpen, Search } from "lucide-react";
 
 import api from "@/lib/api";
+import { formatUsdFromBdt } from "@/lib/currency";
 import SiteFooter from "@/components/site-footer";
 import SiteHeader from "@/components/site-header";
 import { Badge } from "@/components/ui/badge";
@@ -37,9 +38,7 @@ type Book = {
 };
 
 const formatPrice = (value: number | string) => {
-  const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "$0.00";
-  return `$${amount.toFixed(2)}`;
+  return formatUsdFromBdt(value);
 };
 
 export default function BooksPage() {

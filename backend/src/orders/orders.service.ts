@@ -12,6 +12,9 @@ import {
   getPremiumPdfShortRef,
   isPremiumPdfProduct,
 } from '../common/utils/premium-pdf';
+import { usdToBdt } from '../common/utils/currency';
+
+const PRINTABLE_PDF_ADDON_USD = 10;
 
 @Injectable()
 export class OrdersService {
@@ -33,7 +36,7 @@ export class OrdersService {
 
   private enrichOrder(order: any) {
     const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
-    const canDownloadPdf = Boolean(premiumPdfProduct) && order.status === 'PAID' && order.paymentMethod === 'GATEWAY' && Boolean(order.aamarpayTranId?.endsWith('-PDF'));
+    const canDownloadPdf = Boolean(premiumPdfProduct) && order.status === 'PAID' && (order.includesPdf || (order.paymentMethod === 'GATEWAY' && Boolean(order.aamarpayTranId?.endsWith('-PDF'))));
 
     return {
       ...order,
@@ -56,20 +59,20 @@ export class OrdersService {
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!book || !book.isPublished) throw new NotFoundException('Book not found');
 
-    // 2. Enforce gateway-only restriction only when the printable PDF add-on is selected
-    if (paymentMethod === 'WALLET' && includePrintablePdf) {
-      throw new BadRequestException('Printable PDF add-on requires payment via aamarPay gateway');
-    }
-
-    // 3. Check if already purchased
-    const existingOrder = await this.prisma.order.findFirst({
+    // 2. Check existing orders for book and PDF ownership
+    const existingOrders = await this.prisma.order.findMany({
       where: { userId, bookId, status: 'PAID' },
     });
-    if (existingOrder) throw new BadRequestException('You already own this book');
+    
+    const alreadyOwnsBook = existingOrders.length > 0;
+    const alreadyOwnsPdf = existingOrders.some(
+      o => o.includesPdf || (o.paymentMethod === 'GATEWAY' && Boolean(o.aamarpayTranId?.endsWith('-PDF')))
+    );
 
-    // 4. Calculate discount
-    let discount = new Decimal(0);
+    // 3. Load coupon
     let couponId: string | null = null;
+    let isPdfIncludedViaCoupon = false;
+    let couponRef = null;
 
     if (couponCode) {
       const coupon = await this.prisma.coupon.findUnique({ where: { code: couponCode } });
@@ -77,13 +80,42 @@ export class OrdersService {
       if (new Date() < coupon.validFrom || new Date() > coupon.validUntil) throw new BadRequestException('Coupon expired');
       if (coupon.usageCount >= coupon.usageLimit) throw new BadRequestException('Coupon usage limit reached');
 
-      discount = coupon.discountType === 'PERCENTAGE'
-        ? book.price.mul(coupon.discountValue).div(100)
-        : coupon.discountValue;
+      couponRef = coupon;
       couponId = coupon.id;
+      isPdfIncludedViaCoupon = coupon.includesPdf;
     }
 
-    const finalAmount = Decimal.max(book.price.minus(discount), new Decimal(0));
+    const includePremiumPdfAddon = (includePrintablePdf && isPremiumPdfProduct(book.slug)) || isPdfIncludedViaCoupon;
+
+    // 4. Check valid purchase intents
+    if (alreadyOwnsBook) {
+      if (!includePremiumPdfAddon) {
+        throw new BadRequestException('You already own this book');
+      }
+      if (alreadyOwnsPdf) {
+        throw new BadRequestException('You already own this book and its PDF');
+      }
+    }
+
+    // 5. Enforce gateway-only restriction only when the printable PDF add-on is selected AND not covered by a coupon
+    if (paymentMethod === 'WALLET' && includePremiumPdfAddon && !isPdfIncludedViaCoupon) {
+      throw new BadRequestException('Printable PDF add-on requires payment via aamarPay gateway');
+    }
+
+    const bookPriceToCharge = alreadyOwnsBook ? new Decimal(0) : book.price;
+    
+    let actualDiscount = new Decimal(0);
+    if (couponRef) {
+      actualDiscount = couponRef.discountType === 'PERCENTAGE'
+        ? bookPriceToCharge.mul(couponRef.discountValue).div(100)
+        : couponRef.discountValue;
+    }
+
+    const discountedBookAmount = Decimal.max(bookPriceToCharge.minus(actualDiscount), new Decimal(0));
+    const printablePdfAddonAmount = (includePremiumPdfAddon && !isPdfIncludedViaCoupon)
+      ? new Decimal(usdToBdt(PRINTABLE_PDF_ADDON_USD))
+      : new Decimal(0);
+    const finalAmount = discountedBookAmount.plus(printablePdfAddonAmount);
 
     // ─── PATH A: WALLET PAYMENT (instant fulfillment) ───
     if (paymentMethod === 'WALLET') {
@@ -93,9 +125,10 @@ export class OrdersService {
           bookId,
           couponId,
           amount: finalAmount,
-          discountApplied: discount,
+          discountApplied: actualDiscount,
           status: 'PAID',
           paymentMethod: 'WALLET',
+          includesPdf: includePremiumPdfAddon,
         },
       });
 
@@ -127,10 +160,11 @@ export class OrdersService {
         bookId,
         couponId,
         amount: finalAmount,
-        discountApplied: discount,
+        discountApplied: actualDiscount,
         status: 'PENDING',
         paymentMethod: 'GATEWAY',
-        aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${includePrintablePdf ? '-PDF' : ''}`,
+        aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${includePremiumPdfAddon ? '-PDF' : ''}`,
+        includesPdf: includePremiumPdfAddon,
       },
     });
 
@@ -190,7 +224,11 @@ export class OrdersService {
       throw new ForbiddenException('This order does not include a downloadable PDF');
     }
 
-    if (order.status !== 'PAID' || order.paymentMethod !== 'GATEWAY' || !order.aamarpayTranId?.endsWith('-PDF')) {
+    if (order.status !== 'PAID') {
+      throw new ForbiddenException('Order is not paid');
+    }
+
+    if (!order.includesPdf && !(order.paymentMethod === 'GATEWAY' && order.aamarpayTranId?.endsWith('-PDF'))) {
       throw new ForbiddenException('The PDF is only available after gateway payment is confirmed');
     }
 

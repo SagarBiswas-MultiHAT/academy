@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import { Resend } from 'resend';
+import { formatUsdFromBdt } from '../common/utils/currency';
 
 @Injectable()
 export class EmailService {
@@ -64,13 +65,14 @@ export class EmailService {
 	}
 
 	async sendShowcaseRewardEmail(to: string, name: string, platform: string, rewardBdt: number) {
+		const rewardUsd = formatUsdFromBdt(rewardBdt);
 		await this.resend.emails.send({
 			from: this.senderEmail,
 			to,
 			subject: `💰 Showcase Reward Credited — MultiHAT Academy`,
 			html: `<h2>Great news, ${name}!</h2>
 				<p>Your <strong>${platform}</strong> showcase post has been verified and is still live after 10 days.</p>
-				<p><strong>৳${rewardBdt}</strong> has been credited to your Wallet.</p>
+				<p><strong>${rewardUsd}</strong> has been credited to your Wallet.</p>
 				<p>Keep sharing your achievements! — MultiHAT Academy</p>`,
 		});
 	}

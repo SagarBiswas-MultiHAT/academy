@@ -17,6 +17,7 @@ export class CouponsService {
         validUntil: new Date(createCouponDto.validUntil),
         usageLimit: createCouponDto.usageLimit,
         isActive: createCouponDto.isActive ?? true,
+        includesPdf: createCouponDto.includesPdf ?? false,
       },
     });
   }
@@ -44,6 +45,7 @@ export class CouponsService {
         ...(updateCouponDto.validUntil && { validUntil: new Date(updateCouponDto.validUntil) }),
         ...(updateCouponDto.usageLimit !== undefined && { usageLimit: updateCouponDto.usageLimit }),
         ...(updateCouponDto.isActive !== undefined && { isActive: updateCouponDto.isActive }),
+        ...(updateCouponDto.includesPdf !== undefined && { includesPdf: updateCouponDto.includesPdf }),
       },
     });
   }
