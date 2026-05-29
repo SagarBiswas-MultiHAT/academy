@@ -12,7 +12,9 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   // ── Security Headers ──
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+  }));
 
   // ── Strict CORS ──
   const frontendUrl = configService.get<string>('FRONTEND_URL', 'http://localhost:3000');

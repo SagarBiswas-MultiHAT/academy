@@ -31,7 +31,7 @@ type ChapterData = {
 };
 
 // Custom renderers to ensure proper styling regardless of tailwind prose config
-const markdownComponents: Components = {
+const getMarkdownComponents = (bookSlug: string): Components => ({
   h1: ({ children }) => (
     <h2 className="text-2xl font-bold mt-10 mb-4 font-[family-name:var(--font-space-grotesk)] tracking-tight text-foreground border-b border-border/40 pb-2">
       {children}
@@ -122,7 +122,17 @@ const markdownComponents: Components = {
       {children}
     </a>
   ),
-};
+  img: ({ src, alt, ...props }) => {
+    let resolvedSrc = src;
+    if (src && src.startsWith("media/")) {
+      resolvedSrc = `${api.defaults.baseURL}/books/${bookSlug}/${src}`;
+    }
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={resolvedSrc} alt={alt} className="my-6 rounded-xl border border-border/40 shadow-sm max-w-full" {...props} />
+    );
+  },
+});
 
 export default function ChapterReaderPage({
   params,
@@ -239,7 +249,7 @@ export default function ChapterReaderPage({
             <div className="space-y-0">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                components={markdownComponents}
+                components={getMarkdownComponents(data.bookSlug)}
               >
                 {data.content}
               </ReactMarkdown>

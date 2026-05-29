@@ -1,4 +1,6 @@
-import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards, Req, Res, NotFoundException } from '@nestjs/common';
+import * as path from 'path';
+import * as fs from 'fs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { BooksService } from './books.service';
@@ -26,6 +28,33 @@ export class BooksController {
   ) {
     const userId = req?.user?.sub ?? undefined;
     return this.booksService.getChapterContent(slug, Number(index), userId);
+  }
+
+  @Get(':slug/media/*')
+  getMedia(
+    @Param('slug') slug: string,
+    @Req() req: any,
+    @Res() res: any,
+  ) {
+    const bookDir = path.resolve(process.cwd(), '..', 'books', 'Google_Dorks_Complete_Handbook');
+    
+    let mediaPath = req.params[0] || req.params['*'];
+    if (!mediaPath) {
+      const match = req.url.match(/\/media\/(.+)$/);
+      if (match) mediaPath = match[1];
+    }
+    if (mediaPath) mediaPath = mediaPath.split('?')[0];
+    
+    if (!mediaPath) {
+      return res.status(404).json({ message: 'Media path not provided' });
+    }
+    
+    const fullPath = path.join(bookDir, 'media', mediaPath);
+    if (!fs.existsSync(fullPath)) {
+      return res.status(404).json({ message: 'Media file not found' });
+    }
+    
+    return res.sendFile(fullPath);
   }
 
   @Get(':slug')

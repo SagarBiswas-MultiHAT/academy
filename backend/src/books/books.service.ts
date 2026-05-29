@@ -351,6 +351,14 @@ export class BooksService {
     content = content.replace(/\\'/g, "'");                              // escaped apostrophes
     content = content.replace(/\\"/g, '"');                              // escaped quotes
     content = content.replace(/^\\\s*$/gm, '');                         // lone backslash lines
+    
+    // ── Resolve relative image links to the API ──
+    const apiUrl = process.env.API_URL || 'http://localhost:5000/api/v1';
+    content = content.replace(/!\[([^\]]*)\]\((media\/[^\)]+)\)/g, `![$1](${apiUrl}/books/${book.slug}/$2)`);
+    
+    // ── Add a new line (extra spacing) before section/chapter numbers ──
+    content = content.replace(/^(#{1,6}\s+\d+\.\d+.*)$/gm, '&nbsp;\n\n$1');
+    
     content = content.replace(/\n{3,}/g, '\n\n');                       // collapse excess blank lines
 
     return {
