@@ -1,5 +1,6 @@
 "use client";
 
+import api from "@/lib/api";
 import Link from "next/link";
 import { Suspense, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
@@ -28,6 +29,7 @@ function PaymentSuccessContent() {
     if (!isWalletTopUp || typeof window === "undefined") return;
 
     window.localStorage.setItem(TOP_UP_FLAG, tranId);
+    api.post("/wallet/topup/confirm", { tranId }).catch(() => undefined);
   }, [isWalletTopUp, tranId]);
 
   return (

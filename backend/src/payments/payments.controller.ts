@@ -37,13 +37,12 @@ export class PaymentsController {
     // Top-up transactions use the "TOPUP-" prefix (see WalletService.initiateTopUp)
     if (tranId.startsWith('TOPUP-')) {
       if (payload.pay_status === 'Successful') {
-        const amount = new Decimal(payload.amount);
         // Find user by email from the IPN payload
         const user = await this.prisma.user.findUnique({
           where: { email: payload.cus_email },
         });
         if (user) {
-          await this.walletService.creditTopUp(user.id, amount, tranId);
+          await this.walletService.confirmTopUp(user.id, tranId);
         }
         return { status: 'TOPUP_SUCCESS' };
       }

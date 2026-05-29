@@ -52,6 +52,20 @@ export class WalletService {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
     if (!wallet) throw new NotFoundException('Wallet not found');
 
+    const topUpDescription = `Wallet top-up via aamarPay (${tranId})`;
+
+    const existingTopUp = await this.prisma.walletTransaction.findFirst({
+      where: {
+        walletId: wallet.id,
+        type: 'TOPUP',
+        description: topUpDescription,
+      },
+    });
+
+    if (existingTopUp) {
+      return;
+    }
+
     await this.prisma.$transaction([
       this.prisma.wallet.update({
         where: { userId },
@@ -65,10 +79,49 @@ export class WalletService {
           walletId: wallet.id,
           type: 'TOPUP',
           amount,
-          description: `Wallet top-up via aamarPay (${tranId})`,
+          description: topUpDescription,
         },
       }),
     ]);
+  }
+
+  async confirmTopUp(userId: string, tranId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+
+    const topUpDescription = `Wallet top-up via aamarPay (${tranId})`;
+
+    const existingTopUp = await this.prisma.walletTransaction.findFirst({
+      where: {
+        walletId: wallet.id,
+        type: 'TOPUP',
+        description: topUpDescription,
+      },
+    });
+
+    if (existingTopUp) {
+      return { status: 'ALREADY_CONFIRMED' };
+    }
+
+    const transaction = await this.paymentsService.searchTransaction(tranId);
+    const payStatus = String(transaction?.pay_status || '').toLowerCase();
+    const statusCode = String(transaction?.status_code || '');
+    const customerEmail = String(transaction?.cus_email || '').toLowerCase();
+    const amount = String(transaction?.amount || transaction?.amount_bdt || '').trim();
+
+    if (customerEmail && customerEmail !== user.email.toLowerCase()) {
+      throw new BadRequestException('Transaction email does not match the current user');
+    }
+
+    if (!amount || !(payStatus === 'successful' || statusCode === '2')) {
+      throw new BadRequestException('Transaction is not confirmed yet');
+    }
+
+    await this.creditTopUp(userId, new Decimal(amount), tranId);
+    return { status: 'CONFIRMED' };
   }
 
   /**

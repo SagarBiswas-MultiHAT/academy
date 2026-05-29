@@ -21,6 +21,11 @@ export class WalletController {
     return this.walletService.initiateTopUp(userId, amountBdt);
   }
 
+  @Post('topup/confirm')
+  confirmTopUp(@CurrentUser('id') userId: string, @Body('tranId') tranId: string) {
+    return this.walletService.confirmTopUp(userId, tranId);
+  }
+
   @Get('transactions')
   getTransactions(
     @CurrentUser('id') userId: string,

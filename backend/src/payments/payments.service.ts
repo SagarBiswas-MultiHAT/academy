@@ -38,6 +38,23 @@ export class PaymentsService {
     }
   }
 
+  async searchTransaction(requestId: string) {
+    const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
+    const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
+    const baseUrl = this.configService.get<string>('AAMARPAY_BASE_URL');
+
+    const response = await axios.get(`${baseUrl}/api/v1/trxcheck/request.php`, {
+      params: {
+        request_id: requestId,
+        store_id: storeId,
+        signature_key: signatureKey,
+        type: 'json',
+      },
+    });
+
+    return response.data;
+  }
+
   verifyIpnSignature(payload: any): boolean {
     const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
     const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
