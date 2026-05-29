@@ -120,7 +120,6 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {book?.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: $5</Badge>}
-                      {book?.requiresGatewayPayment && <Badge variant="warning">Gateway payment required</Badge>}
                     </div>
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
                       <BookOpen className="size-4" />

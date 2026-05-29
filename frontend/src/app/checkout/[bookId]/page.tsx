@@ -105,10 +105,10 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
   }, [user]);
 
   useEffect(() => {
-    if (book?.requiresGatewayPayment) {
+    if (book?.hasPremiumPdf && includePrintablePdf) {
       setPaymentMethod("GATEWAY");
     }
-  }, [book?.requiresGatewayPayment]);
+  }, [book?.hasPremiumPdf, includePrintablePdf]);
 
   const numericPrice = useMemo(() => {
     if (!book) return 0;
@@ -128,7 +128,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
     try {
       const res = await api.post("/orders", {
         bookId: book.id,
-        paymentMethod: book.requiresGatewayPayment ? "GATEWAY" : paymentMethod,
+        paymentMethod: selectedPaymentMethod,
         couponCode: couponCode || undefined,
         includePrintablePdf,
       });
@@ -195,7 +195,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
   }
 
   const walletBalance = wallet ? Number(wallet.balanceBdt) : 0;
-  const gatewayOnly = Boolean(book.requiresGatewayPayment);
+  const gatewayOnly = Boolean(book.hasPremiumPdf && includePrintablePdf);
   const selectedPaymentMethod = gatewayOnly ? "GATEWAY" : paymentMethod;
   const addOnPrice = book.hasPremiumPdf ? 5 : 0;
   const totalPrice = numericPrice + (includePrintablePdf && book.hasPremiumPdf ? addOnPrice : 0);
@@ -236,7 +236,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
               </div>
               <div className="flex flex-wrap gap-2">
                 {book.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: $5</Badge>}
-                {gatewayOnly && <Badge variant="warning">Gateway only</Badge>}
+                {gatewayOnly && <Badge variant="warning">Gateway only for PDF add-on</Badge>}
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Package price</span>
@@ -343,7 +343,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 </div>
                 {gatewayOnly && (
                   <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
-                    Wallet checkout is disabled for this gateway-only package. Gateway payment keeps the add-on traceable and unlocks the dashboard PDF button when selected.
+                    Wallet checkout is disabled while the printable PDF add-on is selected. Gateway payment keeps the add-on traceable and unlocks the dashboard PDF button.
                   </div>
                 )}
                 {walletInsufficient && (

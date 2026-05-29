@@ -63,6 +63,21 @@ export default function WalletPage() {
   const [topUpError, setTopUpError] = useState<string | null>(null);
   const [topUpLoading, setTopUpLoading] = useState(false);
 
+  const confirmPendingTopUp = async () => {
+    if (typeof window === "undefined") return false;
+
+    const pendingTranId = window.localStorage.getItem(TOP_UP_FLAG);
+    if (!pendingTranId) return false;
+
+    try {
+      const response = await api.post("/wallet/topup/confirm", { tranId: pendingTranId });
+      const status = String(response.data?.data?.status || "").toUpperCase();
+      return status === "CONFIRMED" || status === "ALREADY_CONFIRMED";
+    } catch {
+      return false;
+    }
+  };
+
   const loadWalletData = async () => {
     const [balanceRes, transactionsRes] = await Promise.all([
       api.get("/wallet/balance"),
@@ -85,25 +100,27 @@ export default function WalletPage() {
     let active = true;
     setError(null);
     setLoading(true);
-    loadWalletData()
-      .then((currentBalance) => {
+    (async () => {
+      try {
+        const confirmed = await confirmPendingTopUp();
+        const currentBalance = await loadWalletData();
+
         if (!active) return;
 
         const hasPendingTopUp = typeof window !== "undefined" && Boolean(window.localStorage.getItem(TOP_UP_FLAG));
         const balanceAmount = Number(currentBalance.balanceBdt);
 
-        if (hasPendingTopUp && Number.isFinite(balanceAmount) && balanceAmount > 0) {
+        if ((confirmed || hasPendingTopUp) && Number.isFinite(balanceAmount) && balanceAmount > 0) {
           window.localStorage.removeItem(TOP_UP_FLAG);
         }
-      })
-      .catch(() => {
+      } catch {
         if (!active) return;
         setError("Unable to load wallet data right now.");
-      })
-      .finally(() => {
+      } finally {
         if (!active) return;
         setLoading(false);
-      });
+      }
+    })();
 
     return () => {
       active = false;
@@ -114,14 +131,27 @@ export default function WalletPage() {
     if (!user) return;
 
     const refreshOnFocus = () => {
-      loadWalletData().catch(() => undefined);
+      confirmPendingTopUp()
+        .then((confirmed) => {
+          if (confirmed) {
+            window.localStorage.removeItem(TOP_UP_FLAG);
+          }
+          return loadWalletData();
+        })
+        .catch(() => undefined);
     };
 
     const refreshInterval = window.setInterval(() => {
       const hasPendingTopUp = window.localStorage.getItem(TOP_UP_FLAG);
       if (!hasPendingTopUp) return;
 
-      loadWalletData()
+      confirmPendingTopUp()
+        .then((confirmed) => {
+          if (confirmed) {
+            window.localStorage.removeItem(TOP_UP_FLAG);
+          }
+          return loadWalletData();
+        })
         .then((currentBalance) => {
           const balanceAmount = Number(currentBalance.balanceBdt);
           if (Number.isFinite(balanceAmount) && balanceAmount > 0) {

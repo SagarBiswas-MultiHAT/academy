@@ -201,13 +201,14 @@ model Wallet {
 }
 
 model WalletTransaction {
-  id          String                @id @default(uuid()) @db.Uuid
-  walletId    String                @map("wallet_id") @db.Uuid
-  type        WalletTransactionType
-  amount      Decimal               @db.Decimal(10, 2)
-  description String
-  referenceId String?               @map("reference_id") @db.Uuid
-  createdAt   DateTime              @default(now()) @map("created_at")
+  id            String                @id @default(uuid()) @db.Uuid
+  walletId      String                @map("wallet_id") @db.Uuid
+  gatewayTranId String?               @unique @map("gateway_tran_id")
+  type          WalletTransactionType
+  amount        Decimal               @db.Decimal(10, 2)
+  description   String
+  referenceId   String?               @map("reference_id") @db.Uuid
+  createdAt     DateTime              @default(now()) @map("created_at")
 
   wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
 

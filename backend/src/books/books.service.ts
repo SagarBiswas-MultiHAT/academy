@@ -266,11 +266,10 @@ export class BooksService {
   constructor(private prisma: PrismaService) {}
 
   private withComputedFlags<T extends { slug: string }>(book: T) {
-    const premiumPdfProduct = getPremiumPdfProductBySlug(book.slug);
     return {
       ...book,
       hasPremiumPdf: isPremiumPdfProduct(book.slug),
-      requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
+      requiresGatewayPayment: false,
     };
   }
 

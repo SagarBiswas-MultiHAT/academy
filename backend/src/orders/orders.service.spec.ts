@@ -83,7 +83,26 @@ describe('OrdersService premium PDF flow', () => {
     mockedIsPremiumPdfProduct.mockImplementation((slug: string) => slug === 'google-dorks-complete-handbook');
   });
 
-  it('rejects wallet checkout for the premium PDF book', async () => {
+  it('allows wallet checkout for the web package', async () => {
+    const { service, prisma } = createService();
+    prisma.book.findUnique.mockResolvedValue({
+      id: 'book-1',
+      slug: 'google-dorks-complete-handbook',
+      isPublished: true,
+      price: new Decimal(1200),
+    });
+    prisma.order.findFirst.mockResolvedValue(null);
+    prisma.order.create.mockResolvedValue({ id: 'order-1' });
+    prisma.user.findUnique.mockResolvedValue({ id: 'user-1', email: 'buyer@example.com', name: 'Buyer' });
+
+    await expect(service.createOrder('user-1', 'book-1', 'WALLET', undefined, false)).resolves.toEqual({
+      orderId: 'order-1',
+      paymentMethod: 'WALLET',
+      status: 'PAID',
+    });
+  });
+
+  it('rejects wallet checkout when the printable PDF add-on is selected', async () => {
     const { service, prisma } = createService();
     prisma.book.findUnique.mockResolvedValue({
       id: 'book-1',
@@ -92,7 +111,7 @@ describe('OrdersService premium PDF flow', () => {
       price: new Decimal(1200),
     });
 
-    await expect(service.createOrder('user-1', 'book-1', 'WALLET')).rejects.toBeInstanceOf(BadRequestException);
+    await expect(service.createOrder('user-1', 'book-1', 'WALLET', undefined, true)).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it('returns a downloadable PDF path for a paid gateway order', async () => {

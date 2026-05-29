@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsService } from '../payments/payments.service';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class WalletService {
@@ -54,35 +55,32 @@ export class WalletService {
 
     const topUpDescription = `Wallet top-up via aamarPay (${tranId})`;
 
-    const existingTopUp = await this.prisma.walletTransaction.findFirst({
-      where: {
-        walletId: wallet.id,
-        type: 'TOPUP',
-        description: topUpDescription,
-      },
-    });
+    try {
+      await this.prisma.$transaction([
+        this.prisma.wallet.update({
+          where: { userId },
+          data: {
+            balanceBdt: { increment: amount },
+            lifetimeEarned: { increment: amount },
+          },
+        }),
+        this.prisma.walletTransaction.create({
+          data: {
+            walletId: wallet.id,
+            gatewayTranId: tranId,
+            type: 'TOPUP',
+            amount,
+            description: topUpDescription,
+          },
+        }),
+      ]);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        return;
+      }
 
-    if (existingTopUp) {
-      return;
+      throw error;
     }
-
-    await this.prisma.$transaction([
-      this.prisma.wallet.update({
-        where: { userId },
-        data: {
-          balanceBdt: { increment: amount },
-          lifetimeEarned: { increment: amount },
-        },
-      }),
-      this.prisma.walletTransaction.create({
-        data: {
-          walletId: wallet.id,
-          type: 'TOPUP',
-          amount,
-          description: topUpDescription,
-        },
-      }),
-    ]);
   }
 
   async confirmTopUp(userId: string, tranId: string) {
@@ -98,7 +96,7 @@ export class WalletService {
       where: {
         walletId: wallet.id,
         type: 'TOPUP',
-        description: topUpDescription,
+        gatewayTranId: tranId,
       },
     });
 

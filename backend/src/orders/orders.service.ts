@@ -24,11 +24,10 @@ export class OrdersService {
   ) {}
 
   private enrichBook(book: { slug: string }) {
-    const premiumPdfProduct = getPremiumPdfProductBySlug(book.slug);
     return {
       ...book,
       hasPremiumPdf: isPremiumPdfProduct(book.slug),
-      requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
+      requiresGatewayPayment: false,
     };
   }
 
@@ -57,9 +56,9 @@ export class OrdersService {
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!book || !book.isPublished) throw new NotFoundException('Book not found');
 
-    // 2. Enforce gateway-only restriction for PDF products
-    if (paymentMethod === 'WALLET' && isPremiumPdfProduct(book.slug)) {
-      throw new BadRequestException('This product requires payment via aamarPay gateway (PDF anti-piracy policy)');
+    // 2. Enforce gateway-only restriction only when the printable PDF add-on is selected
+    if (paymentMethod === 'WALLET' && includePrintablePdf) {
+      throw new BadRequestException('Printable PDF add-on requires payment via aamarPay gateway');
     }
 
     // 3. Check if already purchased
