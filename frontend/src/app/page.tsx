@@ -165,7 +165,7 @@ export default function Home() {
               <CardFooter className="justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Starting from</p>
-                  <p className="text-lg font-semibold gradient-text-static">BDT 10.00</p>
+                  <p className="text-lg font-semibold gradient-text-static">$10.00</p>
                 </div>
                 <Button asChild variant="secondary">
                   <Link href="/books">Browse catalog</Link>

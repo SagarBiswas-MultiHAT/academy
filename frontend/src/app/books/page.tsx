@@ -38,8 +38,8 @@ type Book = {
 
 const formatPrice = (value: number | string) => {
   const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
+  if (!Number.isFinite(amount)) return "$0.00";
+  return `$${amount.toFixed(2)}`;
 };
 
 export default function BooksPage() {

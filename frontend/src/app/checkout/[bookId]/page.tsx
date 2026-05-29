@@ -44,6 +44,12 @@ const formatCurrency = (value: number | string) => {
   return `BDT ${amount.toFixed(2)}`;
 };
 
+const formatBookPrice = (value: number | string) => {
+  const amount = typeof value === "string" ? Number(value) : value;
+  if (!Number.isFinite(amount)) return "$0.00";
+  return `$${amount.toFixed(2)}`;
+};
+
 export default function CheckoutPage({ params }: { params: { bookId: string } }) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -55,6 +61,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
   const [error, setError] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [includePrintablePdf, setIncludePrintablePdf] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -123,6 +130,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
         bookId: book.id,
         paymentMethod: book.requiresGatewayPayment ? "GATEWAY" : paymentMethod,
         couponCode: couponCode || undefined,
+        includePrintablePdf,
       });
 
       const payload = res.data.data as { paymentUrl?: string; status?: string };
@@ -189,7 +197,9 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
   const walletBalance = wallet ? Number(wallet.balanceBdt) : 0;
   const gatewayOnly = Boolean(book.requiresGatewayPayment);
   const selectedPaymentMethod = gatewayOnly ? "GATEWAY" : paymentMethod;
-  const walletInsufficient = selectedPaymentMethod === "WALLET" && walletBalance < numericPrice;
+  const addOnPrice = book.hasPremiumPdf ? 5 : 0;
+  const totalPrice = numericPrice + (includePrintablePdf && book.hasPremiumPdf ? addOnPrice : 0);
+  const walletInsufficient = selectedPaymentMethod === "WALLET" && walletBalance < totalPrice;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -225,13 +235,45 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 <p className="text-sm text-muted-foreground">{book.description}</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {book.hasPremiumPdf && <Badge variant="secondary">Printable PDF included</Badge>}
+                {book.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: $5</Badge>}
                 {gatewayOnly && <Badge variant="warning">Gateway only</Badge>}
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Price</span>
-                <span className="text-xl font-semibold gradient-text-static">{formatCurrency(book.price)}</span>
+                <span className="text-sm text-muted-foreground">Package price</span>
+                <span className="text-xl font-semibold gradient-text-static">{formatBookPrice(book.price)}</span>
               </div>
+              {book.hasPremiumPdf && (
+                <label className="flex items-start gap-3 rounded-lg border border-border/60 bg-muted/30 px-3 py-3 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={includePrintablePdf}
+                    onChange={(event) => setIncludePrintablePdf(event.target.checked)}
+                    className="mt-1 size-4 accent-primary"
+                  />
+                  <span className="space-y-1">
+                    <span className="block font-medium">Add printable PDF</span>
+                    <span className="block text-muted-foreground">Include the licensed buyer PDF for an additional $5.00.</span>
+                  </span>
+                </label>
+              )}
+              {book.hasPremiumPdf && (
+                <div className="space-y-2 rounded-lg border border-border/60 bg-background/60 p-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Web package</span>
+                    <span className="font-medium">{formatBookPrice(book.price)}</span>
+                  </div>
+                  {includePrintablePdf && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Printable PDF add-on</span>
+                      <span className="font-medium">$5.00</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between border-t border-border/60 pt-2">
+                    <span className="font-medium">Total</span>
+                    <span className="text-base font-semibold">{formatBookPrice(totalPrice)}</span>
+                  </div>
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="coupon">Coupon code</Label>
                 <Input
@@ -301,7 +343,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 </div>
                 {gatewayOnly && (
                   <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
-                    Wallet checkout is disabled for this licensed PDF. Gateway payment keeps the download traceable and unlocks the dashboard PDF button.
+                    Wallet checkout is disabled for this gateway-only package. Gateway payment keeps the add-on traceable and unlocks the dashboard PDF button when selected.
                   </div>
                 )}
                 {walletInsufficient && (

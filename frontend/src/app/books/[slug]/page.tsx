@@ -40,8 +40,8 @@ type Book = {
 
 const formatPrice = (value: number | string) => {
   const amount = typeof value === "string" ? Number(value) : value;
-  if (!Number.isFinite(amount)) return "BDT 0.00";
-  return `BDT ${amount.toFixed(2)}`;
+  if (!Number.isFinite(amount)) return "$0.00";
+  return `$${amount.toFixed(2)}`;
 };
 
 export default function BookDetailPage({ params }: { params: { slug: string } }) {
@@ -119,7 +119,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                       {book?.description}
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {book?.hasPremiumPdf && <Badge variant="secondary">Printable PDF included</Badge>}
+                      {book?.hasPremiumPdf && <Badge variant="secondary">Printable PDF add-on: $5</Badge>}
                       {book?.requiresGatewayPayment && <Badge variant="warning">Gateway payment required</Badge>}
                     </div>
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -221,7 +221,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     Get full access
                   </CardTitle>
                   <CardDescription>
-                    Includes certificate, quiz access, and {book?.hasPremiumPdf ? 'a licensed printable PDF.' : 'the full web edition.'}
+                    Includes certificate, quiz access, and the $10 web edition. Printable PDF is available separately as a $5 add-on.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -234,7 +234,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                   ) : (
                     <>
                       <div className="text-3xl font-semibold gradient-text-static">
-                        {book ? formatPrice(book.price) : "BDT --"}
+                        {book ? formatPrice(book.price) : "$--"}
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
@@ -259,7 +259,7 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                           <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
                             <BookOpen className="size-3.5 text-primary" />
                           </div>
-                          Printable PDF license included with purchase
+                          Printable PDF add-on available separately for $5
                         </div>
                       )}
                     </>

@@ -100,7 +100,7 @@ describe('OrdersService premium PDF flow', () => {
     prisma.order.findUnique.mockResolvedValue({
       id: 'order-1',
       userId: 'user-1',
-      aamarpayTranId: 'TXN-123456',
+      aamarpayTranId: 'TXN-123456-PDF',
       status: 'PAID',
       paymentMethod: 'GATEWAY',
       user: { email: 'buyer@example.com' },
@@ -117,22 +117,22 @@ describe('OrdersService premium PDF flow', () => {
     expect(mockedEnsurePremiumPdfFile).toHaveBeenCalledWith({
       product: expect.objectContaining({ slug: 'google-dorks-complete-handbook' }),
       orderId: 'order-1',
-      aamarpayTranId: 'TXN-123456',
+      aamarpayTranId: 'TXN-123456-PDF',
       buyerEmail: 'buyer@example.com',
     });
   });
 
   it.each([
-    ['pending order', { status: 'PENDING', paymentMethod: 'GATEWAY', userId: 'user-1', slug: 'google-dorks-complete-handbook' }],
-    ['wallet order', { status: 'PAID', paymentMethod: 'WALLET', userId: 'user-1', slug: 'google-dorks-complete-handbook' }],
-    ['non-owner order', { status: 'PAID', paymentMethod: 'GATEWAY', userId: 'someone-else', slug: 'google-dorks-complete-handbook' }],
-    ['non-pdf order', { status: 'PAID', paymentMethod: 'GATEWAY', userId: 'user-1', slug: 'another-book' }],
+    ['pending order', { status: 'PENDING', paymentMethod: 'GATEWAY', userId: 'user-1', slug: 'google-dorks-complete-handbook', tranId: 'TXN-123456-PDF' }],
+    ['wallet order', { status: 'PAID', paymentMethod: 'WALLET', userId: 'user-1', slug: 'google-dorks-complete-handbook', tranId: 'TXN-123456-PDF' }],
+    ['non-owner order', { status: 'PAID', paymentMethod: 'GATEWAY', userId: 'someone-else', slug: 'google-dorks-complete-handbook', tranId: 'TXN-123456-PDF' }],
+    ['non-pdf order', { status: 'PAID', paymentMethod: 'GATEWAY', userId: 'user-1', slug: 'another-book', tranId: 'TXN-123456' }],
   ])('rejects %s downloads', async (_label, orderState: any) => {
     const { service, prisma } = createService();
     prisma.order.findUnique.mockResolvedValue({
       id: 'order-1',
       userId: orderState.userId,
-      aamarpayTranId: 'TXN-123456',
+      aamarpayTranId: orderState.tranId,
       status: orderState.status,
       paymentMethod: orderState.paymentMethod,
       user: { email: 'buyer@example.com' },

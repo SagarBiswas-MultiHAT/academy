@@ -18,9 +18,9 @@ export class OrdersController {
   @Post()
   createOrder(
     @CurrentUser('id') userId: string,
-    @Body() dto: { bookId: string; paymentMethod?: PaymentMethod; couponCode?: string },
+    @Body() dto: { bookId: string; paymentMethod?: PaymentMethod; couponCode?: string; includePrintablePdf?: boolean },
   ) {
-    return this.ordersService.createOrder(userId, dto.bookId, dto.paymentMethod, dto.couponCode);
+    return this.ordersService.createOrder(userId, dto.bookId, dto.paymentMethod, dto.couponCode, dto.includePrintablePdf);
   }
 
   @Get('my')

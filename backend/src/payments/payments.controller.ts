@@ -79,8 +79,9 @@ export class PaymentsController {
       await this.referralsService.updateCumulativeSpend(order.userId, order.amount);
 
       const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
+      const hasPdfAddon = Boolean(order.aamarpayTranId?.endsWith('-PDF'));
 
-      if (premiumPdfProduct) {
+      if (premiumPdfProduct && hasPdfAddon) {
         try {
           const pdfPath = await ensurePremiumPdfFile({
             product: premiumPdfProduct,

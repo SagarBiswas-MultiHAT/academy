@@ -34,7 +34,7 @@ export class OrdersService {
 
   private enrichOrder(order: any) {
     const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
-    const canDownloadPdf = Boolean(premiumPdfProduct) && order.status === 'PAID' && order.paymentMethod === 'GATEWAY';
+    const canDownloadPdf = Boolean(premiumPdfProduct) && order.status === 'PAID' && order.paymentMethod === 'GATEWAY' && Boolean(order.aamarpayTranId?.endsWith('-PDF'));
 
     return {
       ...order,
@@ -46,7 +46,13 @@ export class OrdersService {
     };
   }
 
-  async createOrder(userId: string, bookId: string, paymentMethod: PaymentMethod = 'GATEWAY', couponCode?: string) {
+  async createOrder(
+    userId: string,
+    bookId: string,
+    paymentMethod: PaymentMethod = 'GATEWAY',
+    couponCode?: string,
+    includePrintablePdf = false,
+  ) {
     // 1. Validate book exists
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!book || !book.isPublished) throw new NotFoundException('Book not found');
@@ -125,7 +131,7 @@ export class OrdersService {
         discountApplied: discount,
         status: 'PENDING',
         paymentMethod: 'GATEWAY',
-        aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        aamarpayTranId: `TXN-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${includePrintablePdf ? '-PDF' : ''}`,
       },
     });
 
@@ -185,7 +191,7 @@ export class OrdersService {
       throw new ForbiddenException('This order does not include a downloadable PDF');
     }
 
-    if (order.status !== 'PAID' || order.paymentMethod !== 'GATEWAY') {
+    if (order.status !== 'PAID' || order.paymentMethod !== 'GATEWAY' || !order.aamarpayTranId?.endsWith('-PDF')) {
       throw new ForbiddenException('The PDF is only available after gateway payment is confirmed');
     }
 

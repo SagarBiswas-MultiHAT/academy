@@ -51,6 +51,8 @@ const txTypeColors: Record<string, string> = {
   SHOWCASE_CREDIT: "text-cyan-500 dark:text-cyan-400",
 };
 
+const TOP_UP_FLAG = "walletTopUpPending";
+
 export default function WalletPage() {
   const { user, loading: authLoading } = useAuth();
   const [balance, setBalance] = useState<WalletBalance | null>(null);
@@ -61,6 +63,19 @@ export default function WalletPage() {
   const [topUpError, setTopUpError] = useState<string | null>(null);
   const [topUpLoading, setTopUpLoading] = useState(false);
 
+  const loadWalletData = async () => {
+    const [balanceRes, transactionsRes] = await Promise.all([
+      api.get("/wallet/balance"),
+      api.get("/wallet/transactions", { params: { page: 1, limit: 20 } }),
+    ]);
+
+    setBalance(balanceRes.data.data as WalletBalance);
+    const payload = transactionsRes.data.data as { transactions: WalletTransaction[] };
+    setTransactions(payload.transactions || []);
+
+    return balanceRes.data.data as WalletBalance;
+  };
+
   useEffect(() => {
     if (!user) {
       setLoading(false);
@@ -70,15 +85,16 @@ export default function WalletPage() {
     let active = true;
     setError(null);
     setLoading(true);
-    Promise.all([
-      api.get("/wallet/balance"),
-      api.get("/wallet/transactions", { params: { page: 1, limit: 20 } }),
-    ])
-      .then(([balanceRes, transactionsRes]) => {
+    loadWalletData()
+      .then((currentBalance) => {
         if (!active) return;
-        setBalance(balanceRes.data.data as WalletBalance);
-        const payload = transactionsRes.data.data as { transactions: WalletTransaction[] };
-        setTransactions(payload.transactions || []);
+
+        const hasPendingTopUp = typeof window !== "undefined" && Boolean(window.localStorage.getItem(TOP_UP_FLAG));
+        const balanceAmount = Number(currentBalance.balanceBdt);
+
+        if (hasPendingTopUp && Number.isFinite(balanceAmount) && balanceAmount > 0) {
+          window.localStorage.removeItem(TOP_UP_FLAG);
+        }
       })
       .catch(() => {
         if (!active) return;
@@ -91,6 +107,37 @@ export default function WalletPage() {
 
     return () => {
       active = false;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const refreshOnFocus = () => {
+      loadWalletData().catch(() => undefined);
+    };
+
+    const refreshInterval = window.setInterval(() => {
+      const hasPendingTopUp = window.localStorage.getItem(TOP_UP_FLAG);
+      if (!hasPendingTopUp) return;
+
+      loadWalletData()
+        .then((currentBalance) => {
+          const balanceAmount = Number(currentBalance.balanceBdt);
+          if (Number.isFinite(balanceAmount) && balanceAmount > 0) {
+            window.localStorage.removeItem(TOP_UP_FLAG);
+          }
+        })
+        .catch(() => undefined);
+    }, 4000);
+
+    window.addEventListener("focus", refreshOnFocus);
+    document.addEventListener("visibilitychange", refreshOnFocus);
+
+    return () => {
+      window.removeEventListener("focus", refreshOnFocus);
+      document.removeEventListener("visibilitychange", refreshOnFocus);
+      window.clearInterval(refreshInterval);
     };
   }, [user]);
 
