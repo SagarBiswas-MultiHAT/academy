@@ -32,7 +32,9 @@ type Order = {
   amount: number | string;
   status: string;
   createdAt: string;
-  book: { title: string; slug: string };
+  canDownloadPdf?: boolean;
+  pdfFilename?: string | null;
+  book: { title: string; slug: string; hasPremiumPdf?: boolean; requiresGatewayPayment?: boolean };
 };
 
 type Certificate = {
@@ -54,6 +56,7 @@ export default function DashboardPage() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadingOrderId, setDownloadingOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -93,6 +96,24 @@ export default function DashboardPage() {
     () => orders.filter((order) => order.status === "PAID"),
     [orders]
   );
+
+  const handlePdfDownload = async (order: Order) => {
+    try {
+      setDownloadingOrderId(order.id);
+      const response = await api.get(`/orders/${order.id}/pdf`, { responseType: "blob" });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = order.pdfFilename || "Google_Dorks_Complete_OSINT_Handbook_Licensed.pdf";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setDownloadingOrderId(null);
+    }
+  };
 
   if (authLoading) {
     return (
@@ -236,14 +257,28 @@ export default function DashboardPage() {
                   </div>
                 ) : paidOrders.length ? (
                   paidOrders.slice(0, 3).map((order) => (
-                    <div key={order.id} className="flex items-center justify-between text-sm">
-                      <div>
-                        <p className="font-medium">{order.book.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(order.createdAt).toLocaleDateString()}
-                        </p>
+                    <div key={order.id} className="space-y-2 rounded-lg border border-border/40 p-3 text-sm">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="font-medium">{order.book.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Badge variant="success">Owned</Badge>
                       </div>
-                      <Badge variant="success">Owned</Badge>
+                      {order.canDownloadPdf && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => handlePdfDownload(order)}
+                          disabled={downloadingOrderId === order.id}
+                        >
+                          {downloadingOrderId === order.id ? "Preparing PDF..." : "Download PDF"}
+                        </Button>
+                      )}
                     </div>
                   ))
                 ) : (

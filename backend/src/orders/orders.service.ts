@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsService } from '../payments/payments.service';
 import { WalletService } from '../wallet/wallet.service';
@@ -6,12 +6,12 @@ import { ReferralsService } from '../referrals/referrals.service';
 import { EmailService } from '../email/email.service';
 import { PaymentMethod } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
-
-// Products that MUST use gateway (PDF traceability requires aamarPay paper trail)
-const GATEWAY_ONLY_SLUGS: string[] = [
-  // Add slugs for Premium E-Book PDFs and Membership-with-PDF products here.
-  // Example: 'google-dorks-complete-handbook-pdf', 'annual-membership-with-pdf'
-];
+import {
+  ensurePremiumPdfFile,
+  getPremiumPdfProductBySlug,
+  getPremiumPdfShortRef,
+  isPremiumPdfProduct,
+} from '../common/utils/premium-pdf';
 
 @Injectable()
 export class OrdersService {
@@ -23,13 +23,36 @@ export class OrdersService {
     private emailService: EmailService,
   ) {}
 
+  private enrichBook(book: { slug: string }) {
+    const premiumPdfProduct = getPremiumPdfProductBySlug(book.slug);
+    return {
+      ...book,
+      hasPremiumPdf: isPremiumPdfProduct(book.slug),
+      requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
+    };
+  }
+
+  private enrichOrder(order: any) {
+    const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
+    const canDownloadPdf = Boolean(premiumPdfProduct) && order.status === 'PAID' && order.paymentMethod === 'GATEWAY';
+
+    return {
+      ...order,
+      canDownloadPdf,
+      pdfFilename: canDownloadPdf ? premiumPdfProduct!.attachmentFilename : null,
+      hasPremiumPdf: Boolean(premiumPdfProduct),
+      requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
+      book: this.enrichBook(order.book),
+    };
+  }
+
   async createOrder(userId: string, bookId: string, paymentMethod: PaymentMethod = 'GATEWAY', couponCode?: string) {
     // 1. Validate book exists
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!book || !book.isPublished) throw new NotFoundException('Book not found');
 
     // 2. Enforce gateway-only restriction for PDF products
-    if (paymentMethod === 'WALLET' && GATEWAY_ONLY_SLUGS.includes(book.slug)) {
+    if (paymentMethod === 'WALLET' && isPremiumPdfProduct(book.slug)) {
       throw new BadRequestException('This product requires payment via aamarPay gateway (PDF anti-piracy policy)');
     }
 
@@ -118,11 +141,12 @@ export class OrdersService {
   }
 
   async getMyOrders(userId: string) {
-    return this.prisma.order.findMany({
+    const orders = await this.prisma.order.findMany({
       where: { userId },
       include: { book: { select: { title: true, slug: true } } },
       orderBy: { createdAt: 'desc' },
     });
+    return orders.map((order) => this.enrichOrder(order));
   }
 
   async getAllOrders(page = 1, limit = 50) {
@@ -139,6 +163,43 @@ export class OrdersService {
       }),
       this.prisma.order.count(),
     ]);
-    return { orders, total, page, limit };
+    return { orders: orders.map((order) => this.enrichOrder(order)), total, page, limit };
+  }
+
+  async downloadPremiumPdf(userId: string, orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { user: true, book: true },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    if (order.userId !== userId) {
+      throw new ForbiddenException('You do not have access to this order');
+    }
+
+    const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
+    if (!premiumPdfProduct) {
+      throw new ForbiddenException('This order does not include a downloadable PDF');
+    }
+
+    if (order.status !== 'PAID' || order.paymentMethod !== 'GATEWAY') {
+      throw new ForbiddenException('The PDF is only available after gateway payment is confirmed');
+    }
+
+    const filePath = await ensurePremiumPdfFile({
+      product: premiumPdfProduct,
+      orderId: order.id,
+      aamarpayTranId: order.aamarpayTranId,
+      buyerEmail: order.user.email,
+    });
+
+    return {
+      filePath,
+      attachmentFilename: premiumPdfProduct.attachmentFilename,
+      shortOrderRef: getPremiumPdfShortRef(order.id, order.aamarpayTranId),
+    };
   }
 }

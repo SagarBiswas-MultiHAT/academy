@@ -6,6 +6,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { BooksService } from './books.service';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
+import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt-auth.guard';
 import { Role } from '@prisma/client';
 
 @ApiTags('Books')
@@ -20,6 +21,7 @@ export class BooksController {
 
   // IMPORTANT: This specific route must be declared BEFORE the generic :slug route
   // so NestJS doesn't swallow "slug/chapters/index" as a single :slug param.
+  @UseGuards(OptionalJwtAuthGuard)
   @Get(':slug/chapters/:index')
   async getChapterContent(
     @Param('slug') slug: string,

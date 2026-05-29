@@ -34,6 +34,8 @@ type Book = {
   description: string;
   price: number | string;
   chapterMetadata: ChapterMeta[];
+  hasPremiumPdf?: boolean;
+  requiresGatewayPayment?: boolean;
 };
 
 const formatPrice = (value: number | string) => {
@@ -116,6 +118,10 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     <p className="text-muted-foreground">
                       {book?.description}
                     </p>
+                    <div className="flex flex-wrap gap-2">
+                      {book?.hasPremiumPdf && <Badge variant="secondary">Printable PDF included</Badge>}
+                      {book?.requiresGatewayPayment && <Badge variant="warning">Gateway payment required</Badge>}
+                    </div>
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
                       <BookOpen className="size-4" />
                       {book?.chapterMetadata?.length ?? 0} chapters
@@ -214,7 +220,9 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                     <Crown className="size-5 text-primary" />
                     Get full access
                   </CardTitle>
-                  <CardDescription>Includes certificate and quiz access.</CardDescription>
+                  <CardDescription>
+                    Includes certificate, quiz access, and {book?.hasPremiumPdf ? 'a licensed printable PDF.' : 'the full web edition.'}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {isLoading ? (
@@ -246,6 +254,14 @@ export default function BookDetailPage({ params }: { params: { slug: string } })
                         </div>
                         Quiz + certification flow
                       </div>
+                      {book?.hasPremiumPdf && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <div className="flex items-center justify-center size-6 rounded-full bg-primary/10">
+                            <BookOpen className="size-3.5 text-primary" />
+                          </div>
+                          Printable PDF license included with purchase
+                        </div>
+                      )}
                     </>
                   )}
                 </CardContent>

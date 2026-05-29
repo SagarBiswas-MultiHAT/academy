@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
 import { Resend } from 'resend';
 
 @Injectable()
@@ -21,6 +22,28 @@ export class EmailService {
 				<p>Your purchase of <strong>${bookTitle}</strong> is confirmed.</p>
 				<p>Your watermarked PDF will be delivered to this email shortly.</p>
 				<p>— MultiHAT Academy</p>`,
+		});
+	}
+
+	async sendPremiumPdfDeliveryEmail(
+		to: string,
+		name: string,
+		bookTitle: string,
+		pdfPath: string,
+		attachmentFilename: string,
+		orderRef: string,
+	) {
+		await this.resend.emails.send({
+			from: this.senderEmail,
+			to,
+			subject: `Your licensed PDF delivery: ${bookTitle}`,
+			html: `<h2>Thank you, ${name}!</h2>
+				<p>Your payment for <strong>${bookTitle}</strong> is confirmed.</p>
+				<p>The licensed PDF is attached to this email and is also available from your dashboard.</p>
+				<p>Order reference: <strong>${orderRef}</strong></p>
+				<p>Sign in to your dashboard to re-download it later: <a href="${this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000')}/dashboard">Open dashboard</a></p>
+				<p>— MultiHAT Academy</p>`,
+			attachments: [{ filename: attachmentFilename, content: fs.readFileSync(pdfPath) }],
 		});
 	}
 

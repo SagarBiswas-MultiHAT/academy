@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PaymentsService } from './payments.service';
@@ -7,10 +7,13 @@ import { EmailService } from '../email/email.service';
 import { WalletService } from '../wallet/wallet.service';
 import { ReferralsService } from '../referrals/referrals.service';
 import { Decimal } from '@prisma/client/runtime/library';
+import { ensurePremiumPdfFile, getPremiumPdfProductBySlug, getPremiumPdfShortRef } from '../common/utils/premium-pdf';
 
 @ApiTags('Payments')
 @Controller('payments')
 export class PaymentsController {
+  private readonly logger = new Logger(PaymentsController.name);
+
   constructor(
     private paymentsService: PaymentsService,
     private prisma: PrismaService,
@@ -75,8 +78,32 @@ export class PaymentsController {
       // 5. Update referral cumulative spend
       await this.referralsService.updateCumulativeSpend(order.userId, order.amount);
 
-      // 6. Send email with purchase receipt (PDF generation triggered separately)
-      await this.emailService.sendPurchaseReceipt(order.user.email, order.user.name, order.book.title);
+      const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
+
+      if (premiumPdfProduct) {
+        try {
+          const pdfPath = await ensurePremiumPdfFile({
+            product: premiumPdfProduct,
+            orderId: order.id,
+            aamarpayTranId: order.aamarpayTranId,
+            buyerEmail: order.user.email,
+          });
+
+          await this.emailService.sendPremiumPdfDeliveryEmail(
+            order.user.email,
+            order.user.name,
+            order.book.title,
+            pdfPath,
+            premiumPdfProduct.attachmentFilename,
+            getPremiumPdfShortRef(order.id, order.aamarpayTranId),
+          );
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unknown error';
+          this.logger.error(`Premium PDF delivery failed for order ${order.id}: ${message}`);
+        }
+      } else {
+        await this.emailService.sendPurchaseReceipt(order.user.email, order.user.name, order.book.title);
+      }
 
       return { status: 'SUCCESS' };
     }

@@ -30,6 +30,8 @@ type Book = {
   slug: string;
   description: string;
   price: number | string;
+  hasPremiumPdf?: boolean;
+  requiresGatewayPayment?: boolean;
 };
 
 type WalletBalance = {
@@ -68,6 +70,9 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
           setError("Book not found.");
         } else {
           setBook(found);
+          if (found.requiresGatewayPayment) {
+            setPaymentMethod("GATEWAY");
+          }
         }
       })
       .catch(() => {
@@ -92,6 +97,12 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
       .catch(() => setWallet(null));
   }, [user]);
 
+  useEffect(() => {
+    if (book?.requiresGatewayPayment) {
+      setPaymentMethod("GATEWAY");
+    }
+  }, [book?.requiresGatewayPayment]);
+
   const numericPrice = useMemo(() => {
     if (!book) return 0;
     const price = typeof book.price === "string" ? Number(book.price) : book.price;
@@ -110,7 +121,7 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
     try {
       const res = await api.post("/orders", {
         bookId: book.id,
-        paymentMethod,
+        paymentMethod: book.requiresGatewayPayment ? "GATEWAY" : paymentMethod,
         couponCode: couponCode || undefined,
       });
 
@@ -176,7 +187,9 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
   }
 
   const walletBalance = wallet ? Number(wallet.balanceBdt) : 0;
-  const walletInsufficient = paymentMethod === "WALLET" && walletBalance < numericPrice;
+  const gatewayOnly = Boolean(book.requiresGatewayPayment);
+  const selectedPaymentMethod = gatewayOnly ? "GATEWAY" : paymentMethod;
+  const walletInsufficient = selectedPaymentMethod === "WALLET" && walletBalance < numericPrice;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -210,6 +223,10 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
               <div>
                 <p className="text-lg font-semibold">{book.title}</p>
                 <p className="text-sm text-muted-foreground">{book.description}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {book.hasPremiumPdf && <Badge variant="secondary">Printable PDF included</Badge>}
+                {gatewayOnly && <Badge variant="warning">Gateway only</Badge>}
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Price</span>
@@ -260,10 +277,13 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("WALLET")}
+                  disabled={gatewayOnly}
                   className={`flex items-center gap-2 rounded-lg border p-3 text-sm transition-all duration-200 ${
-                    paymentMethod === "WALLET"
-                      ? "border-primary/50 bg-primary/10 font-medium dark:border-[rgba(var(--glow-primary),0.4)] dark:bg-[rgba(var(--glow-primary),0.08)] dark:shadow-[0_0_10px_rgba(var(--glow-primary),0.08)]"
-                      : "border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.15] dark:hover:border-white/[0.12]"
+                    gatewayOnly
+                      ? "cursor-not-allowed border-foreground/[0.06] bg-muted/40 text-muted-foreground opacity-70"
+                      : paymentMethod === "WALLET"
+                        ? "border-primary/50 bg-primary/10 font-medium dark:border-[rgba(var(--glow-primary),0.4)] dark:bg-[rgba(var(--glow-primary),0.08)] dark:shadow-[0_0_10px_rgba(var(--glow-primary),0.08)]"
+                        : "border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.15] dark:hover:border-white/[0.12]"
                   }`}
                 >
                   <Wallet className="size-4" /> Wallet balance
@@ -279,6 +299,11 @@ export default function CheckoutPage({ params }: { params: { bookId: string } })
                 <div>
                   Wallet balance: {wallet ? formatCurrency(wallet.balanceBdt) : "BDT --"}
                 </div>
+                {gatewayOnly && (
+                  <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+                    Wallet checkout is disabled for this licensed PDF. Gateway payment keeps the download traceable and unlocks the dashboard PDF button.
+                  </div>
+                )}
                 {walletInsufficient && (
                   <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
                     Wallet balance is lower than the book price. Top up or use gateway.

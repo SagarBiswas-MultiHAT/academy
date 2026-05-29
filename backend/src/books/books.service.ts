@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getPremiumPdfProductBySlug, isPremiumPdfProduct } from '../common/utils/premium-pdf';
 
 type ChapterMeta = { index: number; title: string; isFree: boolean };
 
@@ -264,6 +265,15 @@ function convertPipeGridTables(content: string): string {
 export class BooksService {
   constructor(private prisma: PrismaService) {}
 
+  private withComputedFlags<T extends { slug: string }>(book: T) {
+    const premiumPdfProduct = getPremiumPdfProductBySlug(book.slug);
+    return {
+      ...book,
+      hasPremiumPdf: isPremiumPdfProduct(book.slug),
+      requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
+    };
+  }
+
   async findAll(page = 1, limit = 20) {
     const skip = (page - 1) * limit;
     const [books, total] = await Promise.all([
@@ -275,13 +285,13 @@ export class BooksService {
       }),
       this.prisma.book.count({ where: { isPublished: true } }),
     ]);
-    return { books, total, page, limit };
+    return { books: books.map((book) => this.withComputedFlags(book)), total, page, limit };
   }
 
   async findBySlug(slug: string) {
     const book = await this.prisma.book.findUnique({ where: { slug } });
     if (!book) throw new NotFoundException('Book not found');
-    return book;
+    return this.withComputedFlags(book);
   }
 
   /**
@@ -364,6 +374,7 @@ export class BooksService {
     return {
       bookTitle: book.title,
       bookSlug: book.slug,
+      hasPremiumPdf: isPremiumPdfProduct(book.slug),
       chapter: {
         index: chapter.index,
         title: chapter.title,
