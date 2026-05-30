@@ -683,29 +683,17 @@ resource in a]{.underline} p[articular format]{.underline}.
 >
 > =\> Road accident data from Bangladeshi government sources
 
----
 
-**Extension** **File Type** **Best Used For**
+| Extension | File Type | Best Used For |
+|---|---|---|
+| `pdf` | PDF Document | Reports, papers, manuals |
+| `xlsx` / `xls` | Excel Spreadsheet | Datasets, budgets, tables |
+| `docx` / `doc` | Word Document | Templates, policies, contracts |
+| `pptx` / `ppt` | PowerPoint | Slides, training materials |
+| `csv` | Comma-Separated Values | Raw data for analysis |
+| `sql` | SQL Script | Database schemas, scripts |
+| `txt` | Plain Text | Config files, logs, notes |
 
----
-
-pdf PDF Document Reports, papers, manuals
-
-xlsx/xls Excel Spreadsheet Datasets, budgets, tables
-
-docx/doc Word Document Templates, policies,
-contracts
-
-pptx/ppt PowerPoint Slides, training
-materials
-
-csv Comma-Separated Values Raw data for analysis
-
-sql SQL Script Database schemas, scripts
-
-txt Plain Text Config files, logs, notes
-
----
 
 ## 2.5 ext: \-- Filtering by File Extension
 

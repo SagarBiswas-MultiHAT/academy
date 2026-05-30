@@ -1,4 +1,4 @@
-﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -501,6 +501,12 @@ export class BooksService {
       /^> \*\*([^*]*(Example|Examples|Queries|Scenarios)[^*]*)\*\*\s*$/gm,
       '\n#### $1\n'
     );
+    // Also convert italic blockquote comment headings: > _# SECURITY AUDIT..._
+    content = content.replace(
+      /^> _\\?#\s*(SECURITY AUDIT[^_\n]*)_\s*$/gm,
+      '\n#### $1\n'
+    );
+
 
     // STEP 7: Detect callout types in blockquotes and prefix them with
     // a data-type attribute via an HTML wrapper so the frontend can

@@ -148,8 +148,11 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     const isIntermediate= text.includes("intermediate");
     const isAdvanced    = text.includes("advanced")   || text.includes("expert");
     const isCountry     = text.includes("bangladesh") || text.includes("specific");
+    const isSecurity    = text.includes("security")   || text.includes("audit");
 
-    const style = isBeginner
+    const style = isSecurity
+      ? "border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/5"
+      : isBeginner
       ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5"
       : isIntermediate
       ? "border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-500/5"
