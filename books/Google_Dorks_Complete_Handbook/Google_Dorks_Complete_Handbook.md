@@ -321,7 +321,7 @@ practice]{.underline} as of the publication date.
 
 **Introduction to Google Dorks**
 
-_What they are, where they came from, and why they matter_
+<div class="text-right text-muted-foreground italic mb-8"><em>What they are, where they came from, and why they matter</em></div>
 
 # Chapter 1: Introduction to Google Dorks
 
@@ -440,33 +440,16 @@ precise, stackable filters.
 
 ---
 
-**Role** **How They Use Google Dorks**
-
----
-
-Security Finding exposed files, admin panels, and vulnerabilities
-Researchers on authorised test systems
-
-Journalists Locating government documents, public records, and
-source materials for investigative reporting
-
-Students Finding academic papers, datasets, and study materials
-in specific formats such as PDF or CSV
-
-Marketers Analysing competitor websites, finding indexed landing
-pages, and auditing SEO performance
-
-Data Scientists Locating public datasets, CSV files, and research
-databases for analysis
-
-Investigators Gathering publicly available intelligence on
-organisations or persons of public interest
-
-System Admins Auditing their own infrastructure to discover what
-Google has indexed about their organisation
-
-Bug Bounty Mapping attack surfaces and finding accidentally exposed
-Hunters assets within authorised programme scope
+| Role | How They Use Google Dorks |
+| :--- | :------------------------ |
+| Security Researchers | Finding exposed files, admin panels, and vulnerabilities on authorised test systems |
+| Journalists | Locating government documents, public records, and source materials for investigative reporting |
+| Students | Finding academic papers, datasets, and study materials in specific formats such as PDF or CSV |
+| Marketers | Analysing competitor websites, finding indexed landing pages, and auditing SEO performance |
+| Data Scientists | Locating public datasets, CSV files, and research databases for analysis |
+| Investigators | Gathering publicly available intelligence on organisations or persons of public interest |
+| System Admins | Auditing their own infrastructure to discover what Google has indexed about their organisation |
+| Bug Bounty Hunters | Mapping attack surfaces and finding accidentally exposed assets within authorised programme scope |
 
 ---
 

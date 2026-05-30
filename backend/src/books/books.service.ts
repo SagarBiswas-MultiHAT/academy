@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -355,37 +355,221 @@ export class BooksService {
 
     let content = chapterLines.join('\n');
 
-    // ── Strip pandoc artifact: the decorative CHAPTER N header block ──
-    // Matches lines like: **CHAPTER 1\** or **CHAPTER 2\** followed by subtitle lines
-    content = content.replace(/^\*\*CHAPTER \d+\\\*\*\n+\*\*[^\n]+\*\*\n+\*[^\n]+\*\n*/gm, '');
-    content = content.replace(/^\*\*CHAPTER \d+\\\*\*\n+\*\*[^\n]+\*\*\n*/gm, '');
-    // Also catch italicized chapter headers like *CHAPTER 1*
-    content = content.replace(/^\*CHAPTER \d+\*\n*/gm, '');
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 1: Strip pandoc-generated chapter/appendix decorative headers // v135030
+    // These appear as: \*\*CHAPTER N\*\* followed by a bold title and
+    // optionally an italicised subtitle div or italic line.
+    // ══════════════════════════════════════════════════════════════════
+
+    // Remove the literal escape artifact form: \*\*CHAPTER N\*\*
+    content = content.replace(/^\\\*\\\*CHAPTER\s+\d+\\\*\\\*[\s\S]*?(?=^#\s)/m, '');
+    // Remove pandoc bold chapter headers: **CHAPTER N\**
+    content = content.replace(/^\*\*CHAPTER\s+\d+\\?\*\*\s*\n+\*\*[^\n]+\*\*\s*\n+(?:\*[^\n]+\*\s*\n+)?/gm, '');
+    content = content.replace(/^\*\*CHAPTER\s+\d+\\?\*\*\s*\n+/gm, '');
+    // Remove any residual standalone bold title lines that are pandoc artifacts (e.g., **Introduction to Google Dorks**)
+    // These appear right after a stripped CHAPTER header — we detect them as a bold line before the # Chapter heading
+    content = content.replace(/^\*\*[^\n]+\*\*\s*\n+(?=<div|#\s)/gm, '');
+    // Remove the right-aligned div subtitles inserted by pandoc: <div class="text-right ...">...</div>
+    content = content.replace(/<div[^>]*class="[^"]*text-right[^"]*"[^>]*>[\s\S]*?<\/div>/gm, '');
+    // Remove italicised chapter *CHAPTER N* markers
+    content = content.replace(/^\*CHAPTER\s+\d+\*\s*\n+/gm, '');
 
     // ── Strip APPENDIX header artifact blocks ──
-    content = content.replace(/^\*\*\\\n\\\nAPPENDIX [A-E]\\\*\*\n+\*\*[^\n]+\*\*\n*/gm, '');
-    content = content.replace(/^APPENDIX [A-E]\\\*\*\n+\*\*[^\n]+\*\*\n*/gm, '');
+    content = content.replace(/^\*\*\\?\n?\\?\n?APPENDIX [A-E]\\?\*\*\s*\n+\*\*[^\n]+\*\*\s*\n*/gm, '');
+    content = content.replace(/^APPENDIX [A-E]\\\*\*\s*\n+\*\*[^\n]+\*\*\s*\n*/gm, '');
 
-    // ── Convert pandoc grid tables to GFM pipe tables ──
-    // Grid tables look like: rows of dashes/pipes followed by content rows
+    // ── Strip chapter-bleed: next chapter's decorative header leaking into this chapter ──
+    // Cut everything from the next \*\*CHAPTER N\*\* or **CHAPTER N** block onward
+    content = content.replace(/\n\\\*\\\*CHAPTER\s+\d+\\\*\\\*[\s\S]*$/, '');
+    content = content.replace(/\n\*\*CHAPTER\s+\d+\\?\*\*[\s\S]*$/, '');
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 2a: Normalise escaped characters FIRST so they don't
+    // interfere with the {.underline} span regex below
+    // ══════════════════════════════════════════════════════════════════
+    content = content.replace(/\\\\/g, '');          // double backslashes → nothing
+    content = content.replace(/\\'/g, "'");           // escaped apostrophes
+    content = content.replace(/\\"/g, '"');           // escaped quotes
+    content = content.replace(/^\\\s*$/gm, '');      // lone backslash lines
+    content = content.replace(/\\-{2,}/g, '--');     // escaped dashes \--
+    content = content.replace(/[\\\\](?=\r?\n)/g, ''); // trailing backslash at end of line (pandoc)
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 2b (pre-pass): Convert ASCII flowchart to HTML BEFORE underline stripping
+    // so flowchart [brackets] are HTML elements when the underline regex runs.
+    // This prevents the lazy [\s\S]*? from cross-spanning into crawling para.
+    // ══════════════════════════════════════════════════════════════════
+    content = content.replace(
+      /<div\s+align="center">[\s\S]*?<\/div>/g,
+      (match) => {
+        const stepPattern = /\[\s*([^\]]+?)\s*\]/g;
+        const steps: string[] = [];
+        let m: RegExpExecArray | null;
+        // eslint-disable-next-line no-cond-assign
+        while ((m = stepPattern.exec(match)) !== null) {
+          steps.push(m[1].trim().replace(/\\/g, '').trim());
+        }
+        if (steps.length < 2) return match;
+        const stepsHtml = steps
+          .map((step, i) => {
+            const isFirst = i === 0;
+            const isLast = i === steps.length - 1;
+            const accent = isFirst || isLast ? 'flowchart-step--accent' : '';
+            const arrow = i < steps.length - 1
+              ? '<div class="flowchart-arrow">▼</div>'
+              : '';
+            return `<div class="flowchart-step ${accent}"><span>${step}</span></div>${arrow}`;
+          })
+          .join('\n');
+        return `<div class="flowchart-container">${stepsHtml}</div>`;
+      }
+    );
+
+    // STEP 2b: Strip ALL pandoc {.underline} spans — including those
+    // that span multiple lines (pandoc reflows long underlined phrases).
+    // Strategy: use a lazy dotall match [\s\S]*? so newlines inside
+    // the span are consumed.  Run twice to handle adjacent spans.
+    // ══════════════════════════════════════════════════════════════════
+    // Pass 1 – multi-line aware: [any content]{.underline} → content
+    for (let pass = 0; pass < 4; pass++) {
+      content = content.replace(/\[([\s\S]*?)\]\{[^}]*\.underline[^}]*\}/g, '$1');
+    }
+    // Pass 2 – remove any remaining bare {.underline} annotation stubs
+    content = content.replace(/\{[^}]*\.underline[^}]*\}/g, '');
+
+    // ══════════════════════════════════════════════════════════════════
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 2c (orphan cleanup): Remove orphaned [ ] bracket pairs that
+    // are NOT markdown links, images, or footnotes. These are left-over
+    // from pandoc's fragmented underline spans.
+    // ══════════════════════════════════════════════════════════════════
+    // Single-character brackets: [g], [y], [l], etc.
+    content = content.replace(/\[([a-zA-Z])\](?![\(\[])/g, '$1');
+    // Multi-word phrase brackets not followed by ( or [ (i.e. not links)
+    content = content.replace(/\[([a-zA-Z][\s\S]{0,200}?)\](?![\(\[])/g, '$1');
+    // Restore any escaped \[ \] that should be literal brackets
+    content = content.replace(/\\\[/g, '[');
+    content = content.replace(/\\\]/g, ']');
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 4: Fix deeply-nested blockquotes (the "Russian Doll" bug)
+    // Pandoc reflows underlined text across blockquote lines, creating
+    // chains of >> >>> >>>> nesting. Flatten them all to a single >
+    // ══════════════════════════════════════════════════════════════════
+    content = content.replace(/^(>(?:\s*>)+)\s*/gm, '> ');
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 6: Convert inline code examples that appear in blockquotes
+    // Pattern: a lone blockquote line that IS a search query / command
+    // (no narrative text, just operator syntax) → promote to code fence
+    // ══════════════════════════════════════════════════════════════════
+    content = content.replace(
+      /^> ((?:site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|https?:\/\/)[^\n]+)$/gm,
+      '```\n$1\n```'
+    );
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 7: Detect callout types in blockquotes and prefix them with
+    // a data-type attribute via an HTML wrapper so the frontend can
+    // apply distinct styling (NOTE, IMPORTANT, TIP, CRITICAL, WARNING)
+    // ══════════════════════════════════════════════════════════════════
+    // We do a line-by-line scan to wrap blockquote groups with typed divs
+    const bqLines = content.split('\n');
+    const bqResult: string[] = [];
+    let inBq = false;
+    let bqType = 'default';
+    let bqBuffer: string[] = [];
+
+    const flushBq = () => {
+      if (bqBuffer.length > 0) {
+        if (bqType !== 'default') {
+          // For typed callouts, strip the leading `> ` from each line
+          // so the content becomes pure HTML inside the div wrapper
+          const innerLines = bqBuffer.map(l => l.replace(/^>\s?/, ''));
+          // Join consecutive non-empty lines into paragraphs, separated by <br> on blank lines
+          const paragraphs: string[] = [];
+          let para: string[] = [];
+          for (const il of innerLines) {
+            if (il.trim() === '') {
+              if (para.length > 0) {
+                const joined = para.join(' ')
+                  .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                  .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+                paragraphs.push('<p>' + joined + '</p>');
+                para = [];
+              }
+            } else {
+              para.push(il);
+            }
+          }
+          if (para.length > 0) {
+            const joined = para.join(' ')
+              .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+              .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            paragraphs.push('<p>' + joined + '</p>');
+          }
+          bqResult.push(`<div data-callout="${bqType}">`);
+          bqResult.push(...paragraphs);
+          bqResult.push('</div>');
+        } else {
+          bqResult.push(...bqBuffer);
+        }
+        bqBuffer = [];
+        bqType = 'default';
+        inBq = false;
+      }
+    };
+
+    for (const line of bqLines) {
+      const isBqLine = /^>\s?/.test(line);
+      if (isBqLine) {
+        if (!inBq) {
+          inBq = true;
+          // Detect type from first blockquote line
+          const firstContent = line.replace(/^>\s?/, '');
+          if (/^\*\*NOTE[:\*]|^NOTE:/i.test(firstContent)) bqType = 'note';
+          else if (/^\*\*IMPORTANT[:\*]|^IMPORTANT:|GOLDEN PRINCIPLE/i.test(firstContent)) bqType = 'important';
+          else if (/^\*\*TIP[:\*]|^TIP:/i.test(firstContent)) bqType = 'tip';
+          else if (/^\*\*CRITICAL[:\*]|^CRITICAL:/i.test(firstContent)) bqType = 'critical';
+          else if (/^\*\*WARNING[:\*]|^WARNING:/i.test(firstContent)) bqType = 'warning';
+          else bqType = 'default';
+        }
+        bqBuffer.push(line);
+      } else {
+        flushBq();
+        bqResult.push(line);
+      }
+    }
+    flushBq();
+    content = bqResult.join('\n');
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 8: Convert pandoc grid/pipe tables to GFM pipe tables
+    // ══════════════════════════════════════════════════════════════════
     content = convertGridTables(content);
     content = convertPipeGridTables(content);
 
-    // ── Strip remaining pandoc artifacts ──
-    content = content.replace(/\[([^\]]*)\]\{\.underline\}/g, '$1');   // {.underline} spans
-    content = content.replace(/\\\\/g, '');                              // double backslashes
-    content = content.replace(/\\'/g, "'");                              // escaped apostrophes
-    content = content.replace(/\\"/g, '"');                              // escaped quotes
-    content = content.replace(/^\\\s*$/gm, '');                         // lone backslash lines
-    
-    // ── Resolve relative image links to the API ──
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 9: Resolve relative image links to the API URL
+    // ══════════════════════════════════════════════════════════════════
     const apiUrl = process.env.API_URL || 'http://localhost:5000/api/v1';
     content = content.replace(/!\[([^\]]*)\]\((media\/[^\)]+)\)/g, `![$1](${apiUrl}/books/${book.slug}/$2)`);
-    
-    // ── Add a new line (extra spacing) before section/chapter numbers ──
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 10: Typography polish
+    // ══════════════════════════════════════════════════════════════════
+    // Add extra spacing before numbered section headings and Key Takeaways
     content = content.replace(/^(#{1,6}\s+\d+\.\d+.*)$/gm, '&nbsp;\n\n$1');
-    
-    content = content.replace(/\n{3,}/g, '\n\n');                       // collapse excess blank lines
+    content = content.replace(/^(#{1,6}\s+⭐.*Key Takeaways.*)$/gm, '&nbsp;\n\n$1');
+    // Convert --- (em-dash) sequences used as section dividers
+    content = content.replace(/^---\s*$/gm, '');
+    // Collapse excess blank lines
+    content = content.replace(/\n{3,}/g, '\n\n');
+    // Strip stray backslash-newline artifacts from pandoc
+    content = content.replace(/\\\n/g, '\n');
 
     return {
       bookTitle: book.title,

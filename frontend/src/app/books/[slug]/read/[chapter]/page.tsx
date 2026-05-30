@@ -1,8 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, BookOpen, ChevronLeft, Lock } from "lucide-react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  ChevronLeft,
+  Lock,
+  Clock,
+  AlertCircle,
+  Info,
+  Lightbulb,
+  ShieldAlert,
+  TriangleAlert,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
@@ -31,7 +43,89 @@ type ChapterData = {
   totalChapters: number;
 };
 
-// Custom renderers to ensure proper styling regardless of tailwind prose config
+/** Estimate reading time from markdown content */
+function estimateReadingTime(content: string): number {
+  const words = content.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+/** Callout icon/color map for typed blockquotes */
+const CALLOUT_CONFIG: Record<
+  string,
+  { icon: React.ElementType; label: string; className: string; iconClass: string }
+> = {
+  note: {
+    icon: Info,
+    label: "Note",
+    className:
+      "bg-sky-500/8 dark:bg-sky-500/10 border-l-4 border-sky-400 dark:border-sky-500",
+    iconClass: "text-sky-500 dark:text-sky-400",
+  },
+  important: {
+    icon: AlertCircle,
+    label: "Important",
+    className:
+      "bg-amber-500/8 dark:bg-amber-500/10 border-l-4 border-amber-400 dark:border-amber-500",
+    iconClass: "text-amber-500 dark:text-amber-400",
+  },
+  tip: {
+    icon: Lightbulb,
+    label: "Tip",
+    className:
+      "bg-emerald-500/8 dark:bg-emerald-500/10 border-l-4 border-emerald-400 dark:border-emerald-500",
+    iconClass: "text-emerald-500 dark:text-emerald-400",
+  },
+  critical: {
+    icon: ShieldAlert,
+    label: "Critical",
+    className:
+      "bg-red-500/8 dark:bg-red-500/10 border-l-4 border-red-500 dark:border-red-500",
+    iconClass: "text-red-500 dark:text-red-400",
+  },
+  warning: {
+    icon: TriangleAlert,
+    label: "Warning",
+    className:
+      "bg-orange-500/8 dark:bg-orange-500/10 border-l-4 border-orange-400 dark:border-orange-500",
+    iconClass: "text-orange-500 dark:text-orange-400",
+  },
+};
+
+/** Detect data-callout attribute on a div and render as typed callout */
+const CalloutDiv = ({
+  "data-callout": calloutType,
+  children,
+}: {
+  "data-callout"?: string;
+  children?: React.ReactNode;
+}) => {
+  if (calloutType && CALLOUT_CONFIG[calloutType]) {
+    const cfg = CALLOUT_CONFIG[calloutType];
+    const Icon = cfg.icon;
+    return (
+      <div
+        className={`my-5 rounded-r-xl px-4 py-4 ${cfg.className}`}
+        style={{ position: "relative" }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <Icon className={`size-4 shrink-0 ${cfg.iconClass}`} />
+          <span
+            className={`text-xs font-bold uppercase tracking-widest ${cfg.iconClass}`}
+          >
+            {cfg.label}
+          </span>
+        </div>
+        <div className="text-sm text-foreground/80 leading-relaxed [&>p]:mb-2 [&>p:last-child]:mb-0">
+          {children}
+        </div>
+      </div>
+    );
+  }
+  // Plain div (e.g. flowchart-container) — pass through
+  return <div data-callout={calloutType}>{children}</div>;
+};
+
+// Custom renderers
 const getMarkdownComponents = (bookSlug: string): Components => ({
   h1: ({ children }) => (
     <h2 className="text-2xl font-bold mt-10 mb-4 font-[family-name:var(--font-space-grotesk)] tracking-tight text-foreground border-b border-border/40 pb-2">
@@ -49,7 +143,7 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     </h4>
   ),
   p: ({ children }) => (
-    <p className="text-base text-muted-foreground leading-relaxed mb-4">
+    <p className="text-base text-muted-foreground leading-relaxed mb-4 last:mb-0">
       {children}
     </p>
   ),
@@ -60,7 +154,7 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     <em className="italic text-foreground/80">{children}</em>
   ),
   blockquote: ({ children }) => (
-    <blockquote className="my-4 border-l-4 border-primary/50 bg-primary/5 dark:bg-primary/10 rounded-r-lg px-4 py-3 text-sm text-foreground/80">
+    <blockquote className="my-4 border-l-4 border-primary/40 bg-primary/5 dark:bg-primary/8 rounded-r-xl px-4 py-3 text-sm text-foreground/80 [&>p]:mb-1 [&>p:last-child]:mb-0">
       {children}
     </blockquote>
   ),
@@ -73,8 +167,21 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
         </pre>
       );
     }
+    // Inline code — detect if it looks like a search query
+    const text = String(children);
+    const isQuery =
+      /^(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:)/.test(
+        text
+      );
+    if (isQuery) {
+      return (
+        <code className="px-2 py-1 rounded-md bg-primary/10 border border-primary/20 text-primary text-sm font-mono">
+          {children}
+        </code>
+      );
+    }
     return (
-      <code className="px-1.5 py-0.5 rounded-md bg-primary/10 text-primary text-sm font-mono">
+      <code className="px-1.5 py-0.5 rounded-md bg-muted text-foreground/90 text-sm font-mono">
         {children}
       </code>
     );
@@ -104,13 +211,31 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
   tbody: ({ children }) => (
     <tbody className="divide-y divide-border/30">{children}</tbody>
   ),
-  th: ({ children }) => (
-    <th className="px-4 py-3 text-left text-sm font-semibold text-foreground whitespace-nowrap">
+  th: ({ children, align }) => (
+    <th
+      className={`px-4 py-3 text-sm font-semibold text-foreground whitespace-nowrap ${
+        align === "center"
+          ? "text-center"
+          : align === "right"
+          ? "text-right"
+          : "text-left"
+      }`}
+    >
       {children}
     </th>
   ),
-  td: ({ children }) => (
-    <td className="px-4 py-3 text-sm text-muted-foreground">{children}</td>
+  td: ({ children, align }) => (
+    <td
+      className={`px-4 py-3 text-sm text-muted-foreground ${
+        align === "center"
+          ? "text-center"
+          : align === "right"
+          ? "text-right"
+          : "text-left"
+      }`}
+    >
+      {children}
+    </td>
   ),
   hr: () => <Separator className="my-8" />,
   a: ({ href, children }) => (
@@ -130,10 +255,93 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     }
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={resolvedSrc} alt={alt} className="my-6 rounded-xl border border-border/40 shadow-sm max-w-full" {...props} />
+      <img
+        src={resolvedSrc}
+        alt={alt}
+        className="my-6 rounded-xl border border-border/40 shadow-sm max-w-full"
+        {...props}
+      />
     );
   },
+  // Handle div elements (callouts, flowcharts)
+  div: (props) => {
+    const { "data-callout": calloutType, className, children, ...rest } = props as {
+      "data-callout"?: string;
+      className?: string;
+      children?: React.ReactNode;
+      [key: string]: unknown;
+    };
+
+    if (calloutType) {
+      return <CalloutDiv data-callout={calloutType}>{children}</CalloutDiv>;
+    }
+
+    if (className === "flowchart-container") {
+      return (
+        <div className="my-8 flex flex-col items-center gap-0 py-6 px-4 rounded-2xl bg-muted/30 dark:bg-muted/20 border border-border/30">
+          {children}
+        </div>
+      );
+    }
+
+    if (className?.includes("flowchart-step")) {
+      const isAccent = className.includes("--accent");
+      return (
+        <div
+          className={`px-6 py-3 rounded-xl text-sm font-medium text-center max-w-sm w-full ${
+            isAccent
+              ? "bg-primary/15 border border-primary/30 text-primary font-semibold"
+              : "bg-background border border-border/50 text-foreground/80"
+          }`}
+        >
+          {children}
+        </div>
+      );
+    }
+
+    if (className === "flowchart-arrow") {
+      return (
+        <div className="text-primary/50 text-lg leading-none py-1 select-none">
+          ▼
+        </div>
+      );
+    }
+
+    return <div className={className} {...rest}>{children}</div>;
+  },
 });
+
+/** Reading progress bar component */
+function ReadingProgressBar() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
+    };
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    return () => window.removeEventListener("scroll", updateProgress);
+  }, []);
+
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 z-[100] h-0.5"
+      style={{ background: "transparent" }}
+    >
+      <div
+        className="h-full transition-all duration-150 ease-out"
+        style={{
+          width: `${progress}%`,
+          background:
+            "linear-gradient(90deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end))",
+        }}
+      />
+    </div>
+  );
+}
 
 export default function ChapterReaderPage({
   params,
@@ -143,6 +351,7 @@ export default function ChapterReaderPage({
   const [data, setData] = useState<ChapterData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const articleRef = useRef<HTMLElement>(null);
 
   const chapterIndex = Number(params.chapter);
 
@@ -150,6 +359,9 @@ export default function ChapterReaderPage({
     let active = true;
     setLoading(true);
     setError(null);
+    // Scroll to top on chapter change
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     api
       .get(`/books/${params.slug}/chapters/${params.chapter}`)
       .then((res) => {
@@ -160,7 +372,9 @@ export default function ChapterReaderPage({
         if (!active) return;
         const status = err?.response?.status;
         if (status === 403) {
-          setError("This chapter requires a purchase to access. Unlock the full book to continue reading.");
+          setError(
+            "This chapter requires a purchase to access. Unlock the full book to continue reading."
+          );
         } else if (status === 404) {
           setError("Chapter not found.");
         } else {
@@ -172,22 +386,31 @@ export default function ChapterReaderPage({
         setLoading(false);
       });
 
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [params.slug, params.chapter]);
 
   const hasPrev = chapterIndex > 1;
   const hasNext = data ? chapterIndex < data.totalChapters : false;
+  const readingTime = data ? estimateReadingTime(data.content) : null;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ReadingProgressBar />
       <SiteHeader />
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 animate-fade-in-up">
-          <Link href="/books" className="hover:text-foreground transition-colors">Books</Link>
+          <Link href="/books" className="hover:text-foreground transition-colors">
+            Books
+          </Link>
           <span className="opacity-40">/</span>
-          <Link href={`/books/${params.slug}`} className="hover:text-foreground transition-colors truncate max-w-[200px]">
+          <Link
+            href={`/books/${params.slug}`}
+            className="hover:text-foreground transition-colors truncate max-w-[200px]"
+          >
             {data?.bookTitle ?? "Book"}
           </Link>
           <span className="opacity-40">/</span>
@@ -216,7 +439,6 @@ export default function ChapterReaderPage({
               </Button>
             </CardContent>
           </Card>
-
         ) : loading ? (
           <div className="space-y-6 animate-fade-in-up">
             <Skeleton className="h-6 w-36" />
@@ -225,29 +447,45 @@ export default function ChapterReaderPage({
             <Separator />
             <div className="space-y-3 mt-6">
               {Array.from({ length: 14 }).map((_, i) => (
-                <Skeleton key={i} className="h-4" style={{ width: `${55 + (i % 4) * 12}%` }} />
+                <Skeleton
+                  key={i}
+                  className="h-4"
+                  style={{ width: `${55 + (i % 4) * 12}%` }}
+                />
               ))}
             </div>
           </div>
-
         ) : data ? (
-          <article className="animate-fade-in-up">
+          <article ref={articleRef} className="animate-fade-in-up">
             {/* Chapter header */}
             <div className="space-y-3 mb-8">
-              <Badge variant="holographic">
-                <BookOpen className="mr-1 size-3" />
-                Chapter {data.chapter.index} of {data.totalChapters}
-              </Badge>
+              <div className="flex items-center gap-3 flex-wrap">
+                <Badge variant="holographic">
+                  <BookOpen className="mr-1 size-3" />
+                  Chapter {data.chapter.index} of {data.totalChapters}
+                </Badge>
+                {data.chapter.isFree && (
+                  <Badge variant="success">Free preview</Badge>
+                )}
+                {readingTime && (
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="size-3" />
+                    {readingTime} min read
+                  </span>
+                )}
+              </div>
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
                 <span className="gradient-text">{data.chapter.title}</span>
               </h1>
-              {data.chapter.isFree && <Badge variant="success">Free preview</Badge>}
             </div>
 
             <Separator className="mb-10" />
 
             {/* Markdown content */}
-            <div className="space-y-0">
+            <div
+              className="prose-reader"
+              style={{ "--reader-max": "100%" } as React.CSSProperties}
+            >
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
@@ -262,7 +500,9 @@ export default function ChapterReaderPage({
             <div className="flex items-center justify-between">
               {hasPrev ? (
                 <Button asChild variant="outline">
-                  <Link href={`/books/${data.bookSlug}/read/${chapterIndex - 1}`}>
+                  <Link
+                    href={`/books/${data.bookSlug}/read/${chapterIndex - 1}`}
+                  >
                     <ArrowLeft className="mr-2 size-4" />Previous chapter
                   </Link>
                 </Button>
@@ -275,8 +515,11 @@ export default function ChapterReaderPage({
               )}
               {hasNext ? (
                 <Button asChild>
-                  <Link href={`/books/${data.bookSlug}/read/${chapterIndex + 1}`}>
-                    Next chapter<ArrowRight className="ml-2 size-4" />
+                  <Link
+                    href={`/books/${data.bookSlug}/read/${chapterIndex + 1}`}
+                  >
+                    Next chapter
+                    <ArrowRight className="ml-2 size-4" />
                   </Link>
                 </Button>
               ) : (

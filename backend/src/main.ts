@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+﻿import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
@@ -11,12 +11,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // ── Security Headers ──
+  // â”€â”€ Security Headers â”€â”€
   app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
   }));
 
-  // ── Strict CORS ──
+  // â”€â”€ Strict CORS â”€â”€
   const frontendUrl = configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
   app.enableCors({
     origin: [frontendUrl, 'https://academy.multihat.dev'],
@@ -24,7 +24,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // ── Global DTO Validation ──
+  // â”€â”€ Global DTO Validation â”€â”€
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -37,10 +37,10 @@ async function bootstrap() {
 
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // ── Global API Prefix ──
+  // â”€â”€ Global API Prefix â”€â”€
   app.setGlobalPrefix('api/v1');
 
-  // ── Swagger / OpenAPI 3.0 Documentation ──
+  // â”€â”€ Swagger / OpenAPI 3.0 Documentation â”€â”€
   const swaggerConfig = new DocumentBuilder()
     .setTitle('MultiHAT Academy API')
     .setDescription('RESTful API for the MultiHAT Academy micro-credential platform')
@@ -50,10 +50,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  // ── Start Server ──
+  // â”€â”€ Start Server â”€â”€
   const port = configService.get<number>('PORT', 5000);
   await app.listen(port);
-  console.log(`🚀 Academy API running on http://localhost:${port}`);
-  console.log(`📄 Swagger docs at http://localhost:${port}/api/docs`);
+  console.log(`ðŸš€ Academy API running on http://localhost:${port}`);
+  console.log(`ðŸ“„ Swagger docs at http://localhost:${port}/api/docs`);
 }
 bootstrap();
