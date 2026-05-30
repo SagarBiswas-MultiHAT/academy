@@ -506,6 +506,11 @@ export class BooksService {
       /^> _\\?#\s*(SECURITY AUDIT[^_\n]*)_\s*$/gm,
       '\n#### $1\n'
     );
+    // Also convert italic blockquote comment headings: > _# SECURITY AUDIT..._
+    content = content.replace(
+      /^> _\\?#\s*(SECURITY AUDIT[^_\n]*)_\s*$/gm,
+      '\n#### $1\n'
+    );
 
 
     // STEP 7: Detect callout types in blockquotes and prefix them with
@@ -525,6 +530,10 @@ export class BooksService {
           // For typed callouts, strip the leading `> ` from each line
           // so the content becomes pure HTML inside the div wrapper
           const innerLines = bqBuffer.map(l => l.replace(/^>\s?/, ''));
+          // Strip the bold callout prefix (e.g. **CRITICAL:**) from the first line
+          // so it doesn't render redundantly inside the box
+          innerLines[0] = innerLines[0].replace(/^(?:\*\*|_)?(?:NOTE|IMPORTANT|GOLDEN PRINCIPLE|TIP|CRITICAL|WARNING)[:\-]?\s*(?:\*\*|_)?\s*[:\-]?\s*/i, '');
+
           // Join consecutive non-empty lines into paragraphs, separated by <br> on blank lines
           const paragraphs: string[] = [];
           let para: string[] = [];

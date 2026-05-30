@@ -727,18 +727,21 @@ servers.]{.underline}
 > =\> Check for exposed log files (should return ZERO results)
 >
 > ext:bak site:yourdomain.com
->
+
 > =\> Check for exposed backup files (should return ZERO results)
->
+
 > **CRITICAL:** If ext:env, ext:sql, ext:log, or ext:bak returns any
 > results for your own domain, those files are publicly accessible and
 > almost certainly contain sensitive information. Take the following
-> steps immediately:\
-> \
-> (1) Remove the files from your web root.\
-> (2) Rotate all exposed credentials.\
-> (3) Submit a removal request in Google Search Console.\
-> (4) Add server rules to block these types.
+> steps immediately:
+>
+> <br>(1) Remove the files from your web root.
+>
+> <br>(2) Rotate all exposed credentials.
+>
+> <br>(3) Submit a removal request in Google Search Console.
+>
+> <br>(4) Add server rules to block these types.
 
 ## 2.6 cache: \-- Viewing Cached Page Versions
 
