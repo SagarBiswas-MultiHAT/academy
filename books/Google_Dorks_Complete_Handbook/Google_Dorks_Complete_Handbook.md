@@ -501,11 +501,7 @@ security research and find that these ten cover the vast majority of
 what you need. The key is to know not just what each operator does, but
 when and why to reach for it.
 
-> **TIP:** Operators must be written with no spaces around the colon.
-> Write site:wikipedia.org, not\
-> site: wikipedia.org or site :wikipedia.org. The latter two are treated
-> as plain text searches and the operator is completely ignored by
-> Google.
+> **TIP:** Operators must be written with no spaces around the colon. Write ***site:wikipedia.org***, not *site: wikipedia.org* or *site :wikipedia.org*. The latter two are treated as plain text searches and the operator is completely ignored by Google.
 
 ## 2.1 site: \-- Restricting Results to a Specific Domain
 

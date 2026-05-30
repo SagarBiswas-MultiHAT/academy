@@ -142,6 +142,30 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
       {children}
     </h4>
   ),
+  h4: ({ children }) => {
+    const text = String(children ?? "").toLowerCase();
+    const isBeginner    = text.includes("beginner")   || text.includes("basic");
+    const isIntermediate= text.includes("intermediate");
+    const isAdvanced    = text.includes("advanced")   || text.includes("expert");
+    const isCountry     = text.includes("bangladesh") || text.includes("specific");
+
+    const style = isBeginner
+      ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5"
+      : isIntermediate
+      ? "border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-500/5"
+      : isAdvanced
+      ? "border-violet-500/40 text-violet-600 dark:text-violet-400 bg-violet-500/5"
+      : isCountry
+      ? "border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5"
+      : "border-primary/40 text-primary bg-primary/5";
+
+    return (
+      <div className={`flex items-center gap-2 mt-6 mb-3 px-3 py-1.5 rounded-lg border w-fit ${style}`}>
+        <span className="size-1.5 rounded-full bg-current opacity-70 shrink-0" />
+        <span className="text-xs font-bold uppercase tracking-widest">{children}</span>
+      </div>
+    );
+  },
   p: ({ children }) => (
     <p className="text-base text-muted-foreground leading-relaxed mb-4 last:mb-0">
       {children}

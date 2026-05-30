@@ -355,6 +355,10 @@ export class BooksService {
 
     let content = chapterLines.join('\n');
 
+    // Normalise CRLF → LF so all downstream split/regex is line-ending agnostic
+    content = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+
     // ══════════════════════════════════════════════════════════════════
     // STEP 1: Strip pandoc-generated chapter/appendix decorative headers // v135030
     // These appear as: \*\*CHAPTER N\*\* followed by a bold title and
@@ -488,6 +492,15 @@ export class BooksService {
     // ══════════════════════════════════════════════════════════════════
     // Blank line after any > blockquote line not followed by blank or >
     content = content.replace(/^(> [^\n\r]+)\r?\n(?!\r?\n|>)/gm, '$1\n\n');
+
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 6c: Promote > **…Examples…** blockquote headings to real ####
+    // headings so they always render on their own line with clear styling.
+    // ══════════════════════════════════════════════════════════════════
+    content = content.replace(
+      /^> \*\*([^*]*(Example|Examples|Queries|Scenarios)[^*]*)\*\*\s*$/gm,
+      '\n#### $1\n'
+    );
 
     // STEP 7: Detect callout types in blockquotes and prefix them with
     // a data-type attribute via an HTML wrapper so the frontend can
