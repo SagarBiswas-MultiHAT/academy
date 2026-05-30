@@ -1,16 +1,16 @@
 **GOOGLE DORKS**
 
-*The Complete Handbook for Beginners*
+_The Complete Handbook for Beginners_
 
 +-----------------------------------------------------------------------+
-| *Master the Art of Advanced Web Searching\*                           |
-|                                                                       |
-| site: │ intitle: │ inurl: │ filetype: │ intext: │ before: │ after:    |
-|                                                                       |
-| ───────────────────────────────                                       |
-|                                                                       |
-| OSINT • Ethical Hacking • Security Research • Bug Bounty • Academic   |
-| Study                                                                 |
+| \*Master the Art of Advanced Web Searching\* |
+| |
+| site: │ intitle: │ inurl: │ filetype: │ intext: │ before: │ after: |
+| |
+| ─────────────────────────────── |
+| |
+| OSINT • Ethical Hacking • Security Research • Bug Bounty • Academic |
+| Study |
 +=======================================================================+
 
 Version 2.0 --- Expanded & Publish-Ready Edition
@@ -19,7 +19,7 @@ Original notebook by **SagarBiswas-MultiHAT**
 
 github.com/SagarBiswas-MultiHAT
 
-*For Educational Use Only • Permission First, Always • Stay Ethical*
+_For Educational Use Only • Permission First, Always • Stay Ethical_
 
 **Google Dorks: The Complete Handbook for Beginners**
 
@@ -317,11 +317,11 @@ handbook says so clearly and provides a tested alternative. The
 techniques in [Chapters 5 and 6 reflect real-world security and OSINT
 practice]{.underline} as of the publication date.
 
-**CHAPTER 1\**
+\*\*CHAPTER 1\*\*
 
 **Introduction to Google Dorks**
 
-*What they are, where they came from, and why they matter*
+_What they are, where they came from, and why they matter_
 
 # Chapter 1: Introduction to Google Dorks
 
@@ -386,6 +386,8 @@ crawling, indexing, and serving.
 
 **How a Web Page Becomes a Search Result**
 
+<div align="center">
+
 > **\[ A Web Page Goes Live on a Public Server \]**
 
 ▼
@@ -408,6 +410,8 @@ crawling, indexing, and serving.
 
 > **\[ Targeted Results Are Returned to You \]**
 
+</div>
+
 **Crawling:** Googlebot, Google\'s automated web crawler, follows links
 from page to page across the internet. [When it finds a new URL, it
 downloads the pa]{.underline}g[e\'s content and sends it back to
@@ -425,40 +429,46 @@ precise, stackable filters.
 
 > **NOTE:** Google does not search the live web when you type a query.
 > It searches its stored copy of the web. [This means files that were
-> publicl]{.underline}y [accessible when Goo]{.underline}g[lebot visited
-> ma]{.underline}y [still appear in search results even if the file has
-> since been]{.underline} **moved or deleted** [from the original
-> server]{.underline}.
+>
+> > publicl]{.underline}y [accessible when Goo]{.underline}g[lebot visited
+> >
+> > > > ma]{.underline}y [still appear in search results even if the file has
+> > > > > > > > since been]{.underline} **moved or deleted** [from the original
+> > > > > > > > server]{.underline}.
 
 ## 1.4 Who Uses Google Dorks and Why
 
-  ------------------------------------------------------------------------
-  **Role**        **How They Use Google Dorks**
-  --------------- --------------------------------------------------------
-  Security        Finding exposed files, admin panels, and vulnerabilities
-  Researchers     on authorised test systems
+---
 
-  Journalists     Locating government documents, public records, and
-                  source materials for investigative reporting
+**Role** **How They Use Google Dorks**
 
-  Students        Finding academic papers, datasets, and study materials
-                  in specific formats such as PDF or CSV
+---
 
-  Marketers       Analysing competitor websites, finding indexed landing
-                  pages, and auditing SEO performance
+Security Finding exposed files, admin panels, and vulnerabilities
+Researchers on authorised test systems
 
-  Data Scientists Locating public datasets, CSV files, and research
-                  databases for analysis
+Journalists Locating government documents, public records, and
+source materials for investigative reporting
 
-  Investigators   Gathering publicly available intelligence on
-                  organisations or persons of public interest
+Students Finding academic papers, datasets, and study materials
+in specific formats such as PDF or CSV
 
-  System Admins   Auditing their own infrastructure to discover what
-                  Google has indexed about their organisation
+Marketers Analysing competitor websites, finding indexed landing
+pages, and auditing SEO performance
 
-  Bug Bounty      Mapping attack surfaces and finding accidentally exposed
-  Hunters         assets within authorised programme scope
-  ------------------------------------------------------------------------
+Data Scientists Locating public datasets, CSV files, and research
+databases for analysis
+
+Investigators Gathering publicly available intelligence on
+organisations or persons of public interest
+
+System Admins Auditing their own infrastructure to discover what
+Google has indexed about their organisation
+
+Bug Bounty Mapping attack surfaces and finding accidentally exposed
+Hunters assets within authorised programme scope
+
+---
 
 ## 1.5 The Golden Principle
 
@@ -471,7 +481,7 @@ precise, stackable filters.
 > 7 covers this distinction in full. Please read it before applying any
 > technique in this handbook.
 
-## ⭐ Key Takeaways 
+## ⭐ Key Takeaways
 
 - **✓** Google Dorks are advanced search queries using special operators
   to filter Google\'s index with precision.
@@ -487,11 +497,11 @@ precise, stackable filters.
 - **✓** The golden principle: findable is not the same as accessible or
   legally usable.
 
-**CHAPTER 2\**
+\*\*CHAPTER 2\*\*
 
 **The 10 Essential Operators**
 
-*Your core toolkit for precise, powerful web searching*
+_Your core toolkit for precise, powerful web searching_
 
 # Chapter 2: The 10 Essential Operators
 
@@ -693,25 +703,29 @@ resource in a]{.underline} p[articular format]{.underline}.
 >
 > =\> Road accident data from Bangladeshi government sources
 
-  -------------------------------------------------------------------
-  **Extension**   **File Type**             **Best Used For**
-  --------------- ------------------------- -------------------------
-  pdf             PDF Document              Reports, papers, manuals
+---
 
-  xlsx/xls        Excel Spreadsheet         Datasets, budgets, tables
+**Extension** **File Type** **Best Used For**
 
-  docx/doc        Word Document             Templates, policies,
-                                            contracts
+---
 
-  pptx/ppt        PowerPoint                Slides, training
-                                            materials
+pdf PDF Document Reports, papers, manuals
 
-  csv             Comma-Separated Values    Raw data for analysis
+xlsx/xls Excel Spreadsheet Datasets, budgets, tables
 
-  sql             SQL Script                Database schemas, scripts
+docx/doc Word Document Templates, policies,
+contracts
 
-  txt             Plain Text                Config files, logs, notes
-  -------------------------------------------------------------------
+pptx/ppt PowerPoint Slides, training
+materials
+
+csv Comma-Separated Values Raw data for analysis
+
+sql SQL Script Database schemas, scripts
+
+txt Plain Text Config files, logs, notes
+
+---
 
 ## 2.5 ext: \-- Filtering by File Extension
 
@@ -734,7 +748,7 @@ servers.]{.underline}
 >
 > =\> SQL files on GitHub containing table definitions
 >
-> *\# SECURITY AUDIT (own site only):*
+> _\# SECURITY AUDIT (own site only):_
 >
 > ext:env site:yourdomain.com
 >
@@ -775,9 +789,9 @@ major websites.
 >
 > cache:who.int/news =\> Often returns: \"did not match any documents\"
 >
-> *\# Result: Google cache links are no longer reliably available.*
+> _\# Result: Google cache links are no longer reliably available._
 >
-> *\# Use the Wayback Machine instead (see below).*
+> _\# Use the Wayback Machine instead (see below)._
 
 ### The Reliable Alternative: The Wayback Machine
 
@@ -790,35 +804,39 @@ structure lets you navigate it precisely.
 
 > **Wayback Machine URL Patterns**
 >
-> *\# View all saved snapshots (calendar view):*
+> _\# View all saved snapshots (calendar view):_
 >
 > https://web.archive.org/web/\*/https://www.example.com/page
 >
-> *\# View a specific snapshot by date (YYYYMMDD format):*
+> _\# View a specific snapshot by date (YYYYMMDD format):_
 >
 > https://web.archive.org/web/20231015/https://www.who.int/news
 >
 > =\> WHO news as it appeared on 15 October 2023
 >
-> *\# Save the current live page to the archive right now:*
+> _\# Save the current live page to the archive right now:_
 >
 > https://web.archive.org/save/https://www.example.com/page
 
-  --------------------------------------------------------------
-  **URL Part**      **What It Means**
-  ----------------- --------------------------------------------
-  web.archive.org   The Internet Archive host
+---
 
-  /web/             The Wayback Machine web-capture service
+**URL Part** **What It Means**
 
-  \*                Wildcard: show all available snapshots in a
-                    calendar view
+---
 
-  20231015          Specific timestamp in YYYYMMDD format (15
-                    October 2023)
+web.archive.org The Internet Archive host
 
-  /https://\...     The original URL you want to inspect
-  --------------------------------------------------------------
+/web/ The Wayback Machine web-capture service
+
+\* Wildcard: show all available snapshots in a
+calendar view
+
+20231015 Specific timestamp in YYYYMMDD format (15
+October 2023)
+
+/https://\... The original URL you want to inspect
+
+---
 
 ### Why a Page May Not Be Cached
 
@@ -907,13 +925,13 @@ patterns, and web relationships.
 
 ### Extra Tools:
 
-A.  Find Ownership Clues:
+A. Find Ownership Clues:
 
     1.  <https://www.whois.com/>
 
     2.  <https://lookup.icann.org/en>
 
-B.  Find Shared Technology Footprints: <https://builtwith.com/>
+B. Find Shared Technology Footprints: <https://builtwith.com/>
 
 ## 2.8 info: \-- Getting Information About a Domain
 
@@ -959,7 +977,7 @@ elements.
 >
 > =\> Dhaka University pages with admission requirements in body text
 >
-> *\# SECURITY AUDIT (own site only):*
+> _\# SECURITY AUDIT (own site only):_
 >
 > intext:\"DB_PASSWORD\" ext:env site:yourdomain.com
 >
@@ -1002,36 +1020,40 @@ you need laser-focused results.
 
 ## Chapter 2 Quick Reference
 
-  ----------------------------------------------------------------
-  **Operator**   **Purpose**             **Example**
-  -------------- ----------------------- -------------------------
-  site:          Restrict to a domain    site:wikipedia.org AI
+---
 
-  intitle:       Keyword in page title   intitle:\"login page\"
+**Operator** **Purpose** **Example**
 
-  inurl:         Keyword in URL          inurl:admin
-                                         site:example.com
+---
 
-  filetype:      Filter by document      filetype:pdf report
-                 format                  
+site: Restrict to a domain site:wikipedia.org AI
 
-  ext:           Filter by file          ext:xlsx finance data
-                 extension               
+intitle: Keyword in page title intitle:\"login page\"
 
-  cache:         View cached page        cache:example.com
-                 (unreliable)            
+inurl: Keyword in URL inurl:admin
+site:example.com
 
-  related:       Find similar websites   related:spotify.com
+filetype: Filter by document filetype:pdf report
+format
 
-  info:          Get Google info about a info:github.com
-                 domain                  
+ext: Filter by file ext:xlsx finance data
+extension
 
-  intext:        Phrase in body content  intext:\"terms of
-                                         service\"
+cache: View cached page cache:example.com
+(unreliable)
 
-  allintitle:    All words must appear   allintitle:python
-                 in title                tutorial
-  ----------------------------------------------------------------
+related: Find similar websites related:spotify.com
+
+info: Get Google info about a info:github.com
+domain
+
+intext: Phrase in body content intext:\"terms of
+service\"
+
+allintitle: All words must appear allintitle:python
+in title tutorial
+
+---
 
 ## ⭐ Key Takeaways
 
@@ -1050,13 +1072,13 @@ you need laser-focused results.
 - **✓** intext: searches body content and is ideal for finding specific
   phrases buried in longer documents.
 
-**\
+\*\*\
 \
-CHAPTER 3\**
+CHAPTER 3\*\*
 
 **Advanced Search Operators**
 
-*Boolean logic, wildcards, date filters, and anchor text*
+_Boolean logic, wildcards, date filters, and anchor text_
 
 # Chapter 3: Advanced Search Operators
 
@@ -1106,8 +1128,9 @@ topics at the same time.
 > =\> Bangladeshi sites mentioning either mobile payment provider
 >
 > **TIP:** OR must be written in uppercase. [Lowercase \"or\" is treated
-> as a re]{.underline}g[ular search word]{.underline}. The pipe symbol
-> \| is an exact equivalent: Python \| Java tutorial
+>
+> > as a re]{.underline}g[ular search word]{.underline}. The pipe symbol
+> > \| is an exact equivalent: Python \| Java tutorial
 
 ### AND \-- Require Both Terms
 
@@ -1230,7 +1253,7 @@ structure.
 >
 > =\> Finds sports reports with different match types
 >
-> *\# Multiple \**
+> \*\# Multiple \*\*
 >
 > \"Elon Mask \* \*\"
 >
@@ -1364,7 +1387,7 @@ tends to be more reliable.
 >
 > =\> Recent London tech conference coverage
 >
-> *\# For general searches, just include the location in the query:*
+> _\# For general searches, just include the location in the query:_
 >
 > \"software job\" Dhaka Bangladesh site:.bd
 >
@@ -1477,18 +1500,22 @@ p[ossible results]{.underline}.
 >
 > =\> Bug bounty guide pages linked with all four words
 
-  -----------------------------------------------------------------------
-  **Use Case**    **Operator Approach**   **What You Learn**
-  --------------- ----------------------- -------------------------------
-  SEO Research    inanchor:\"your brand\" How others describe your site
-                                          when linking to it
+---
 
-  Competitor      allinanchor: competitor Which competitor pages attract
-  Analysis        product feature         the most backlinks
+**Use Case** **Operator Approach** **What You Learn**
 
-  OSINT           inanchor:\"leaked       Pages commonly cited as sources
-  Investigation   document\"              for specific information
-  -----------------------------------------------------------------------
+---
+
+SEO Research inanchor:\"your brand\" How others describe your site
+when linking to it
+
+Competitor allinanchor: competitor Which competitor pages attract
+Analysis product feature the most backlinks
+
+OSINT inanchor:\"leaked Pages commonly cited as sources
+Investigation document\" for specific information
+
+---
 
 ## 3.7 before: and after: \-- Date-Based Filtering
 
@@ -1574,39 +1601,43 @@ somewhere on the same page.
 
 ## Chapter 3 Quick Reference
 
-  ----------------------------------------------------------------
-  **Operator**   **Purpose**           **Example**
-  -------------- --------------------- ---------------------------
-  OR or \|       Either term (or both) Python OR Java tutorial
+---
 
-  AND            Both terms required   ML AND healthcare
-                 (default)             
+**Operator** **Purpose** **Example**
 
-  \-             Exclude a term        recipe -meat
+---
 
-  \" \"          Exact phrase match    \"artificial intelligence\"
+OR or \| Either term (or both) Python OR Java tutorial
 
-  \*             Wildcard placeholder  \"best \* for data
-                                       science\"
+AND Both terms required ML AND healthcare
+(default)
 
-  ..             Numeric range         laptop \$300..\$800
+\- Exclude a term recipe -meat
 
-  location:      Filter by geography   location:Dhaka startup
-                 (news)                
+\" \" Exact phrase match \"artificial intelligence\"
 
-  inanchor:      Phrase in link anchor inanchor:\"learn more\"
-                 text                  
+\* Wildcard placeholder \"best \* for data
+science\"
 
-  allinanchor:   All words in link     allinanchor:python tutorial
-                 anchor text           
+.. Numeric range laptop \$300..\$800
 
-  before:        Content before a date news before:2023-01-01
+location: Filter by geography location:Dhaka startup
+(news)
 
-  after:         Content after a date  article after:2024-01-01
+inanchor: Phrase in link anchor inanchor:\"learn more\"
+text
 
-  AROUND(X)      Two terms within X    Apple AROUND(3) innovation
-                 words of each other   
-  ----------------------------------------------------------------
+allinanchor: All words in link allinanchor:python tutorial
+anchor text
+
+before: Content before a date news before:2023-01-01
+
+after: Content after a date article after:2024-01-01
+
+AROUND(X) Two terms within X Apple AROUND(3) innovation
+words of each other
+
+---
 
 ## ⭐ Key Takeaways
 
@@ -1629,16 +1660,16 @@ somewhere on the same page.
 - **✓** AROUND(X) finds conceptually related content where two terms
   appear close together in context.
 
-**\
+\*\*\
 \
-CHAPTER 4\**
+CHAPTER 4\*\*
 
 **Special Operators**
 
-*ONLY FOR DEEP DIVE (OTHERWISE SKIP THE CHAPTER)\*
+\*ONLY FOR DEEP DIVE (OTHERWISE SKIP THE CHAPTER)\*
 
-*Quick-lookup operators, price search, grouping symbols, and Google\'s
-hidden math engine*
+_Quick-lookup operators, price search, grouping symbols, and Google\'s
+hidden math engine_
 
 # Chapter 4: Special Operators, Google Tools, and the Built-in Calculator
 
@@ -1724,7 +1755,7 @@ company\'s full name]{.underline}.
 >
 > stocks:pfizer =\> Pfizer Inc.
 >
-> *\# Note: ticker symbols are case-insensitive for this operator*
+> _\# Note: ticker symbols are case-insensitive for this operator_
 
 **When to use it:** For a quick price check without visiting a financial
 site; when monitoring multiple stocks during research.
@@ -1783,9 +1814,9 @@ trusted outlet without navigating to that outlet\'s website.
 >
 > \"startup\" source:techcrunch
 >
-> *\# MultiTopics*
+> _\# MultiTopics_
 >
-> *\# OR*
+> _\# OR_
 >
 > \"startup\" **OR** \"funding\" source:techcrunch
 >
@@ -1794,7 +1825,7 @@ trusted outlet without navigating to that outlet\'s website.
 >
 > =\> The Daily Star\'s news that mention Bangladesh or Dhaka.
 >
-> *\# AND*
+> _\# AND_
 >
 > \"startup\" **AND** \"funding\" source:techcrunch
 >
@@ -1829,7 +1860,7 @@ dedicated weather site **for a quick check.**
 >
 > weather:Tokyo
 >
-> *\# For ambiguous locations, add the country:*
+> _\# For ambiguous locations, add the country:_
 >
 > weather:Springfield United States
 
@@ -1851,15 +1882,15 @@ instant geographic context without opening a separate application.
 >
 > map:\"Silicon Valley\"
 >
-> *\# paste Geolocation in the search engine. Get the locationName.
-> weather:"locationName"*
+> _\# paste Geolocation in the search engine. Get the locationName.
+> weather:"locationName"_
 >
 > 40.713851, -74.005811
 >
-> *\# 40.713851, -74.005811 ≈ 58 Chambers St rm 320, New York, NY 10007,
-> United States*
+> _\# 40.713851, -74.005811 ≈ 58 Chambers St rm 320, New York, NY 10007,
+> United States_
 >
-> *weather:\"New York, NY 10007, United States\"*
+> _weather:\"New York, NY 10007, United States\"_
 
 ### id: \-- Page Identifier (Experimental)
 
@@ -1915,59 +1946,59 @@ allinurl: with other operators in the same query.
 >
 > =\> API URLs with versioning and a users endpoint
 >
-> *\# Key limitation: allinurl: cannot be combined with site: or other
-> operators*
+> _\# Key limitation: allinurl: cannot be combined with site: or other
+> operators_
 >
-> *\# Use multiple inurl: instead when you need to combine with other
-> operators:*
+> _\# Use multiple inurl: instead when you need to combine with other
+> operators:_
 >
 > inurl:healthy inurl:eating site:gov.uk
 
 ### allinurl: Query Equivalence Table
 
 +-------------------+--------------------+------------------------------------------+
-| **Query           | **Equivalent to ** | **Explanation & Parser Behavior**        |
-| Variation**       |                    |                                          |
-|                   | **allinurl:healthy |                                          |
-|                   | eating?**          |                                          |
+| **Query | **Equivalent to ** | **Explanation & Parser Behavior** |
+| Variation** | | |
+| | **allinurl:healthy | |
+| | eating?** | |
 +===================+:==================:+==========================================+
-| allinurl: healthy | ✅ Yes             | **Tolerated syntax.** Google\'s parser   |
-| eating            |                    | trims the space after the colon.         |
-|                   |                    | Functionally identical to the base       |
-|                   |                    | query, though strict syntax omits the    |
-|                   |                    | space.                                   |
+| allinurl: healthy | ✅ Yes | **Tolerated syntax.** Google\'s parser |
+| eating | | trims the space after the colon. |
+| | | Functionally identical to the base |
+| | | query, though strict syntax omits the |
+| | | space. |
 +-------------------+--------------------+------------------------------------------+
-| allinurl:healthy  | ✅ **Yes (Base     | **Correct strict syntax.** No space      |
-| eating            | Case)**            | between colon and first term. This is    |
-|                   |                    | the canonical form per Google            |
-|                   |                    | documentation.                           |
+| allinurl:healthy | ✅ **Yes (Base | **Correct strict syntax.** No space |
+| eating | Case)** | between colon and first term. This is |
+| | | the canonical form per Google |
+| | | documentation. |
 +-------------------+--------------------+------------------------------------------+
-| inurl:healthy     | ✅ Yes             | Functionally identical. This is the      |
-| inurl:eating      |                    | recommended workaround if you need to    |
-|                   |                    | combine with site: or filetype:.         |
+| inurl:healthy | ✅ Yes | Functionally identical. This is the |
+| inurl:eating | | recommended workaround if you need to |
+| | | combine with site: or filetype:. |
 +-------------------+--------------------+------------------------------------------+
-| inurl:healthy AND | ✅ Yes             | Explicit AND is redundant but valid.     |
-| inurl:eating      |                    | Google\'s default logic is AND, so       |
-|                   |                    | results are identical to the line above. |
+| inurl:healthy AND | ✅ Yes | Explicit AND is redundant but valid. |
+| inurl:eating | | Google\'s default logic is AND, so |
+| | | results are identical to the line above. |
 +-------------------+--------------------+------------------------------------------+
-| allinurl:         | ❌ No              | **Broken Syntax.** allinurl: treats      |
-| \"healthy\" AND   |                    | quotes and AND as **literal              |
-| \"eating\"        |                    | characters**. [It searches               |
-|                   |                    | for \"healthy\", AND, and \"eating\" in  |
-|                   |                    | the URL]{.underline}. This fails and     |
-|                   |                    | falls back to a standard text search.    |
+| allinurl: | ❌ No | **Broken Syntax.** allinurl: treats |
+| \"healthy\" AND | | quotes and AND as **literal |
+| \"eating\" | | characters**. [It searches |
+| | | for \"healthy\", AND, and \"eating\" in |
+| | | the URL]{.underline}. This fails and |
+| | | falls back to a standard text search. |
 +-------------------+--------------------+------------------------------------------+
-| allinurl:         | ❌ No              | **Broken                                 |
-| \"healthy         |                    | Syntax.** allinurl: does **not** support |
-| eating\"          |                    | phrase grouping. [It treats the quotes   |
-|                   |                    | as literal characters and searches       |
-|                   |                    | for \"healthy and eating\" in the        |
-|                   |                    | URL]{.underline}. This fails and falls   |
-|                   |                    | back to a standard text search.          |
+| allinurl: | ❌ No | **Broken |
+| \"healthy | | Syntax.** allinurl: does **not** support |
+| eating\" | | phrase grouping. [It treats the quotes |
+| | | as literal characters and searches |
+| | | for \"healthy and eating\" in the |
+| | | URL]{.underline}. This fails and falls |
+| | | back to a standard text search. |
 +-------------------+--------------------+------------------------------------------+
 
-**\**
-🔐 Security Practitioner\'s Note(**The \"Failing Silently\" Trap**)
+**\*\*
+🔐 Security Practitioner\'s Note(**The \"Failing Silently\" Trap\*\*)
 
 As demonstrated in the table above, allinurl: \"admin\" AND
 \"login\" does **not** throw an error. It simply [stops filtering by
@@ -2003,8 +2034,8 @@ operators.
 >
 > =\> Pages discussing all three concepts in body content
 >
-> *\# Equivalent using intext: (but allows adding site: and other
-> operators):*
+> _\# Equivalent using intext: (but allows adding site: and other
+> operators):_
 >
 > intext:machine intext:learning intext:python intext:tutorial
 > site:github.com
@@ -2025,23 +2056,27 @@ both terms to the body text while properly respecting the domain filter.
 
 **allinurl: / allintext: VS multiple inurl:/intext:**
 
-  ------------------------------------------------------------
-  **Feature**         **allinurl: /     **Multiple
-                      allintext:**      inurl:/intext:**
-  ------------------- ----------------- ----------------------
-  All words required  Yes               Yes
+---
 
-  Can combine with    No                Yes
-  site:                                 
+**Feature** **allinurl: / **Multiple
+allintext:** inurl:/intext:**
 
-  Can combine with    No                Yes
-  filetype:                             
+---
 
-  Syntax conciseness  More concise      More flexible
+All words required Yes Yes
 
-  Best used when      Simple standalone Compound
-                      query             multi-operator query
-  ------------------------------------------------------------
+Can combine with No Yes
+site:
+
+Can combine with No Yes
+filetype:
+
+Syntax conciseness More concise More flexible
+
+Best used when Simple standalone Compound
+query multi-operator query
+
+---
 
 **4.3 Grouping and Modifier Symbols**
 
@@ -2100,7 +2135,7 @@ was a way to tell Google: *\"No, don\'t skip this word; I actually need
 it in the results.\"*]{.underline}
 
 **Example:** If you searched for what is XSS, Google might silently drop
-*\"what\"* and *\"is\"* and just search for XSS. Prepending a + like
+_\"what\"_ and _\"is\"_ and just search for XSS. Prepending a + like
 +what +is XSS forced Google to include those words literally.
 
 **Why it no longer matters:** Google officially removed this behaviour
@@ -2115,15 +2150,15 @@ substitution.
 
 > **Historical vs modern approach**
 >
-> *\# Old approach (deprecated in 2011, no longer reliable):*
+> _\# Old approach (deprecated in 2011, no longer reliable):_
 >
 > +security +audit Bangladesh
 >
-> *\# Modern equivalent (reliable):*
+> _\# Modern equivalent (reliable):_
 >
 > \"security\" \"audit\" Bangladesh
 >
-> *\# Or even more precisely:*
+> _\# Or even more precisely:_
 >
 > \"security audit\" Bangladesh
 >
@@ -2197,15 +2232,19 @@ driven by:
   specific phrase where one or more words are unknown. Use it to find
   information.
 
-  --------------------------------------------------------------------------
-  **Symbol**     **Works In**          **Purpose**
-  -------------- --------------------- -------------------------------------
-  \* (asterisk)  Search RESULTS        Search wildcard. *\"Find pages with
-                                       any word in this spot.\"*
+  ***
 
-  **\_**         Search AUTOCOMPLETE   Autocomplete hint. *\"Show me what
-  (underscore)                         people type here.\"*
-  --------------------------------------------------------------------------
+  **Symbol** **Works In** **Purpose**
+
+  ***
+
+  \* (asterisk) Search RESULTS Search wildcard. *\"Find pages with
+  any word in this spot.\"*
+
+  **\_** Search AUTOCOMPLETE Autocomplete hint. *\"Show me what
+  (underscore) people type here.\"*
+
+  ***
 
 ### OSINT Investigative Workflow: Exploiting Google Autocomplete
 
@@ -2375,102 +2414,113 @@ When you load the debugger, you are presented with two zones: the
 ![](media/media/image6.png){width="8.211805555555555in"
 height="4.490795056867891in"}
 
-**\**
+\*\*\*\*
 
 **\
 Control Panel: Input Parameters**
 
-  ----------------------------------------------------------------------------------
-  Control                     Purpose                Investigator Use
-  --------------------------- ---------------------- -------------------------------
-  [Text field]{.underline}    Where you type the     Input your seed keyword exactly
-                              partial query          as a user might type it
+---
 
-  [Connect window             Mirrors real browser   Enable for authentic results
-  omnibox]{.underline}        omnibox state          reflecting actual profile
-                                                     history
+Control Purpose Investigator Use
 
-  [Lock cursor to end of      Keeps cursor at end    Prevents mid-word cursor drift
-  input]{.underline}                                 during live testing
+---
 
-  [Zero suggest]{.underline}  Shows suggestions with Reveals browser\'s \"cold
-                              empty input            start\" assumptions about the
-                                                     user
+[Text field]{.underline} Where you type the Input your seed keyword exactly
+partial query as a user might type it
 
-  [Prevent inline             Disables               Critical; always enable to
-  autocomplete]{.underline}   first-suggestion       prevent the first result from
-                              pre-fill               biasing the query
+[Connect window Mirrors real browser Enable for authentic results
+omnibox]{.underline} omnibox state reflecting actual profile
+history
 
-  [In keyword                 Activates site-search  Useful for scoping to specific
-  mode]{.underline}           shortcuts              engine behaviors
-  ----------------------------------------------------------------------------------
+[Lock cursor to end of Keeps cursor at end Prevents mid-word cursor drift
+input]{.underline} during live testing
+
+[Zero suggest]{.underline} Shows suggestions with Reveals browser\'s \"cold
+empty input start\" assumptions about the
+user
+
+[Prevent inline Disables Critical; always enable to
+autocomplete]{.underline} first-suggestion prevent the first result from
+pre-fill biasing the query
+
+[In keyword Activates site-search Useful for scoping to specific
+mode]{.underline} shortcuts engine behaviors
+
+---
 
 **\
 Control Panel: Display Parameters**
 
-  ---------------------------------------------------------------------
-  Control                 Purpose
-  ----------------------- ---------------------------------------------
-  [Show incomplete        Shows results still loading; useful for
-  results]{.underline}    timing analysis
+---
 
-  [Show all               Expands every metadata field per row
-  details]{.underline}    
+Control Purpose
 
-  [Show results per       Groups by provider type (most useful for
-  provider]{.underline}   comparative work)
+---
 
-  [Elide                  Truncates long URLs for readability
-  cells]{.underline}      
+[Show incomplete Shows results still loading; useful for
+results]{.underline} timing analysis
 
-  [Thin rows]{.underline} Compacts the table for scanning many results
-  ---------------------------------------------------------------------
+[Show all Expands every metadata field per row
+details]{.underline}
+
+[Show results per Groups by provider type (most useful for
+provider]{.underline} comparative work)
+
+[Elide Truncates long URLs for readability
+cells]{.underline}
+
+[Thin rows]{.underline} Compacts the table for scanning many results
+
+---
 
 **The Results Table: Field-by-Field Breakdown**
 
 This is the core intelligence layer. Each row is one suggestion
 candidate.
 
-**Provider & Type**: Tells you *where* the suggestion originated:
+**Provider & Type**: Tells you _where_ the suggestion originated:
 
 - [search-what-you-typed:]{.underline} A literal echo of your input,
-  formatted as a search query. Always present. Relevance is typically
-  1300.
+  formatted as a search query. Always present. Relevance is typically 1300.
 
 - [search-suggest:]{.underline} Suggestions fetched in real time from
   Google/Bing\'s autocomplete API. This is crowd-sourced query volume
   made visible.
 
-- [HistoryQuick / history-url]{.underline}: A URL the *current browser
-  profile* has visited recently. Relevance score factors in recency and
+- [HistoryQuick / history-url]{.underline}: A URL the _current browser
+  profile_ has visited recently. Relevance score factors in recency and
   visit frequency.
 
 - [Bookmark / bookmark-title:]{.underline} A saved bookmark from the
   profile\'s bookmarks bar or folder structure. The path is shown
   verbatim in the Content column.
 
-- [search-history:]{.underline} A query the *current user* has
+- [search-history:]{.underline} A query the _current user_ has
   personally typed before.
 
 **Relevance Score**: The numerical weight assigned by Chrome\'s ranking
 algorithm. Higher = shown first. Key thresholds to understand:
 
-  ---------------------------------------------------
-  Score Range  Signal
-  ------------ --------------------------------------
-  1400--1500   Near-certain to appear as top
-               suggestion
+---
 
-  1200--1399   Strong; typically appears in top 3
+Score Range Signal
 
-  900--1199    Moderate; appears if few higher-ranked
-               results exist
+---
 
-  600--899     Weak; appears only when top slots are
-               sparse
+1400--1500 Near-certain to appear as top
+suggestion
 
-  \< 600       Marginal; often suppressed
-  ---------------------------------------------------
+1200--1399 Strong; typically appears in top 3
+
+900--1199 Moderate; appears if few higher-ranked
+results exist
+
+600--899 Weak; appears only when top slots are
+sparse
+
+\< 600 Marginal; often suppressed
+
+---
 
 Scores are not additive; each provider calculates independently and
 Chrome selects the highest-scoring non-duplicate candidates to display.
@@ -2482,30 +2532,34 @@ investigative signal. It renders the **favicon** (the small site icon)
 for any HistoryQuick, Bookmark, or URL-type suggestion. What to read
 from it:
 
-  -----------------------------------------------------------------------
-  Control        Investigator Use
-  -------------- --------------------------------------------------------
-  favicon        Browser has a cached favicon --- confirms the profile
-  present        genuinely visited this origin. Persists even after
-                 history is cleared (stored in Favicons SQLite DB).
+---
 
-  favicon absent URL exists in history/bookmarks but favicon was never
-                 cached or fetch failed. May indicate incognito visit,
-                 proxy interception, or domain change.
+Control Investigator Use
 
-  favicon        red flag Icon doesn\'t match the domain in the URL
-  mismatch       column. Possible redirect chain, phishing URL, or
-                 manually edited bookmark.
+---
 
-  bookmark icon  Custom favicon saved at bookmark-creation time. If it
-  age            differs from the live site\'s current icon, it
-                 timestamps when the bookmark was created relative to
-                 site rebrand history.ss
+favicon Browser has a cached favicon --- confirms the profile
+present genuinely visited this origin. Persists even after
+history is cleared (stored in Favicons SQLite DB).
 
-  search engine  Reveals the profile\'s configured default search engine.
-  logo           Unexpected logo = non-default engine or a hijacked
-                 search provider.
-  -----------------------------------------------------------------------
+favicon absent URL exists in history/bookmarks but favicon was never
+cached or fetch failed. May indicate incognito visit,
+proxy interception, or domain change.
+
+favicon red flag Icon doesn\'t match the domain in the URL
+mismatch column. Possible redirect chain, phishing URL, or
+manually edited bookmark.
+
+bookmark icon Custom favicon saved at bookmark-creation time. If it
+age differs from the live site\'s current icon, it
+timestamps when the bookmark was created relative to
+site rebrand history.ss
+
+search engine Reveals the profile\'s configured default search engine.
+logo Unexpected logo = non-default engine or a hijacked
+search provider.
+
+---
 
 **\
 Contents & Description & Answer Column:** This is the richest
@@ -2519,35 +2573,35 @@ Plain = your input  ·  Bold = predicted completion  ·  Longer bold =
 higher engine confidence
 
 +-------------+--------------------------------------------------------+
-| Control     | Investigator Use                                       |
+| Control | Investigator Use |
 +=============+========================================================+
-| Contents    | The suggestion string. Bold suffix = autocomplete      |
-|             | prediction. Length of bold portion indicates           |
-|             | specificity of the engine\'s confidence.               |
+| Contents | The suggestion string. Bold suffix = autocomplete |
+| | prediction. Length of bold portion indicates |
+| | specificity of the engine\'s confidence. |
 +-------------+--------------------------------------------------------+
-| Description | Shown after separator. For search: engine name. For    |
-|             | history/bookmarks: the page title as stored at time of |
-|             | visit/save; not the current live title. Reveals        |
-|             | historical page content even if the page has since     |
-|             | changed or been deleted.                               |
+| Description | Shown after separator. For search: engine name. For |
+| | history/bookmarks: the page title as stored at time of |
+| | visit/save; not the current live title. Reveals |
+| | historical page content even if the page has since |
+| | changed or been deleted. |
 +-------------+--------------------------------------------------------+
-| Answer      | Direct structured answer from Google Knowledge Graph.  |
-| (orange)    | Presence means the query topic has a canonical         |
-|             | structured data entry.                                 |
-|             |                                                        |
-|             | Calculator, unit conversion, dictionary, entity,       |
-|             | knowledge, weather, time/timezone                      |
+| Answer | Direct structured answer from Google Knowledge Graph. |
+| (orange) | Presence means the query topic has a canonical |
+| | structured data entry. |
+| | |
+| | Calculator, unit conversion, dictionary, entity, |
+| | knowledge, weather, time/timezone |
 +-------------+--------------------------------------------------------+
-| Answer      | If a search-suggest row shows an orange Answer but     |
-| divergence  | search-what-you-typed does not; the Answer only        |
-|             | triggers on a specific canonical phrasing. Test        |
-|             | variations to find the exact phrase that unlocks the   |
-|             | structured result.                                     |
+| Answer | If a search-suggest row shows an orange Answer but |
+| divergence | search-what-you-typed does not; the Answer only |
+| | triggers on a specific canonical phrasing. Test |
+| | variations to find the exact phrase that unlocks the |
+| | structured result. |
 +-------------+--------------------------------------------------------+
-| Stale title | If Description text differs from the live page title,  |
-| signal      | the page was modified after the profile\'s last visit. |
-|             | Useful for detecting deleted, edited, or taken-down    |
-|             | content.                                               |
+| Stale title | If Description text differs from the live page title, |
+| signal | the page was modified after the profile\'s last visit. |
+| | Useful for detecting deleted, edited, or taken-down |
+| | content. |
 +-------------+--------------------------------------------------------+
 
 **\
@@ -2560,7 +2614,7 @@ high relevance score.
 **URL & Stripped URL**: The full destination URL is shown alongside a
 normalized \"stripped\" version (without UTM parameters, source tags,
 etc.). Discrepancies between the two reveal tracking parameters appended
-by referral sources --- useful for understanding *how* a URL was shared
+by referral sources --- useful for understanding _how_ a URL was shared
 or reached.
 
 **Additional Info**: This column is the richest metadata layer:
@@ -2639,7 +2693,7 @@ responses.
 
 **Trick 3: Zero-input profiling.** Clear the text field entirely and
 observe results with \"Zero suggest\" enabled. This reveals the
-browser\'s predictions about what the user *might* want to search before
+browser\'s predictions about what the user _might_ want to search before
 they type anything; based purely on time-of-day, recent history, and
 geographic signals. This is the highest-confidence profile fingerprint
 available through this tool.
@@ -2771,18 +2825,22 @@ Although it sounds academic, this function is directly useful for:
 
 **Key Distinction (Combinations vs. Permutations):**
 
-  ------------------------------------------------------------------------------
-  **Scenario**   **Does Order      **Can repeat?**  **Google Query  **Result**
-                 Matter?**                          / Formula**     
-  -------------- ----------------- ---------------- --------------- ------------
-  **Lottery      **No** {3,7,12} = **No** each      49 choose 6     13,983,816
-  Ticket** (Pick {12,7,3}          number drawn                     
-  6 numbers)                       once                             
+---
 
-  **ATM PIN** (4 **Yes** (1234 ≠   Yes (e.g., 1111) Not supported   10,000
-  digits)        4321)                              by choose. Use  
-                                                    10\^4           
-  ------------------------------------------------------------------------------
+**Scenario** **Does Order **Can repeat?\*\* **Google Query **Result**
+Matter?** / Formula\*\*
+
+---
+
+**Lottery **No** {3,7,12} = **No** each 49 choose 6 13,983,816
+Ticket** (Pick {12,7,3} number drawn  
+ 6 numbers) once
+
+**ATM PIN** (4 **Yes** (1234 ≠ Yes (e.g., 1111) Not supported 10,000
+digits) 4321) by choose. Use  
+ 10\^4
+
+---
 
 ### How to Visualize the Lottery Ticket: Lexicographic Order
 
@@ -2806,155 +2864,167 @@ minimum forces the 6th number\'s minimum up by 1 too; so, [each
 successive block has exactly one fewer combination than the previous
 block]{.underline}.
 
-  --------------------------------------------------------
-  Block   (5th      6th number    Count       Cumulative
-          number)   ranges                    End
-  ------- --------- ------------- ----------- ------------
-  1       5         6 → 49        49 − 6 + 1  **44**
-                                  = **44**    
+---
 
-  2       6         7 → 49        49 − 7 + 1  44 + 43 =
-                                  = **43**    **87**
+Block (5th 6th number Count Cumulative
+number) ranges End
 
-  3       7         8 → 49        49 − 8 + 1  87 + 42 =
-                                  = **42**    **129**
+---
 
-  4       8         9 → 49        49 − 9 + 1  129 + 41 =
-                                  = **41**    **170**
+1 5 6 → 49 49 − 6 + 1 **44**
+= **44**
 
-  5       9         10 → 49       49 − 10 + 1 170 + 40 =
-                                  = **40**    **210**
+2 6 7 → 49 49 − 7 + 1 44 + 43 =
+= **43** **87**
 
-  ...     ...       ...           ...         ...
+3 7 8 → 49 49 − 8 + 1 87 + 42 =
+= **42** **129**
 
-  3rd     46        47 → 49       49 − 47 + 1 **987**
-  Last                            = **3**     
+4 8 9 → 49 49 − 9 + 1 129 + 41 =
+= **41** **170**
 
-  2nd     47        48 → 49       49 − 48 + 1 987 + 2 =
-  Last                            = **2**     **989**
+5 9 10 → 49 49 − 10 + 1 170 + 40 =
+= **40** **210**
 
-  Last    48        49 → 49       49 − 49 + 1 989 + 1 =
-                                  = **1**     **990**
-  --------------------------------------------------------
+... ... ... ... ...
+
+3rd 46 47 → 49 49 − 47 + 1 **987**
+Last = **3**
+
+2nd 47 48 → 49 49 − 48 + 1 987 + 2 =
+Last = **2** **989**
+
+Last 48 49 → 49 49 − 49 + 1 989 + 1 =
+= **1** **990**
+
+---
 
 **The Combination List**
 
-  -----------------------------------------------------------------------------
-  \#    Combination                                135   1, 2, 3, 4, 8, 14
-  ----- ------------- ----- ---------------------- ----- ----------------------
-  1     1, 2, 3, 4,   43    1, 2, 3, 4, 5, **48**  ...   ... (6th increases by
-        5, **6**                                         1 each row)
-        (Block 1                                         
-        start)                                           
+---
 
-  2     1, 2, 3, 4,   44    1, 2, 3, 4, 5, **49**  170   1, 2, 3, 4, 8, **49**
-        5, **7**            ← Block 1 ends (5th=5        ← Block 4 ends (5th=8
-                            exhausted)                   exhausted)
+\# Combination 135 1, 2, 3, 4, 8, 14
 
-  3     1, 2, 3, 4,   45    1, 2, 3, 4, **6**, 7←  171   1, 2, 3, 4, **9**, 10
-        5, **8**            Block 2 starts               ← Block 5 starts
+---
 
-  4     1, 2, 3, 4,   46    1, 2, 3, 4, 6, 8       172   1, 2, 3, 4, 9, **11**
-        5, **9**                                         
+1 1, 2, 3, 4, 43 1, 2, 3, 4, 5, **48** ... ... (6th increases by
+5, **6** 1 each row)
+(Block 1  
+ start)
 
-  5     1, 2, 3, 4,   47    1, 2, 3, 4, 6, **9**   173   1, 2, 3, 4, 9, **12**
-        5, **10**                                        
+2 1, 2, 3, 4, 44 1, 2, 3, 4, 5, **49** 170 1, 2, 3, 4, 8, **49**
+5, **7** ← Block 1 ends (5th=5 ← Block 4 ends (5th=8
+exhausted) exhausted)
 
-  6     1, 2, 3, 4,   48    1, 2, 3, 4, 6, **10**  174   1, 2, 3, 4, 9, **13**
-        5, **11**                                        
+3 1, 2, 3, 4, 45 1, 2, 3, 4, **6**, 7← 171 1, 2, 3, 4, **9**, 10
+5, **8** Block 2 starts ← Block 5 starts
 
-  7     1, 2, 3, 4,   49    1, 2, 3, 4, 6, **11**  175   1, 2, 3, 4, 9, **14**
-        5, **12**                                        
+4 1, 2, 3, 4, 46 1, 2, 3, 4, 6, 8 172 1, 2, 3, 4, 9, **11**
+5, **9**
 
-  8     1, 2, 3, 4,   ...   ... (6th increases by  ...   ... (6th increases by
-        5, **13**           1 each row)                  1 each row)
+5 1, 2, 3, 4, 47 1, 2, 3, 4, 6, **9** 173 1, 2, 3, 4, 9, **12**
+5, **10**
 
-  9     1, 2, 3, 4,   87    1, 2, 3, 4, 6, **49**  210   1, 2, 3, 4, 9, **49**
-        5, **14**           ← Block 2 ends (5th=6        ← Block 5 ends (5th=9
-                            exhausted)                   exhausted)
+6 1, 2, 3, 4, 48 1, 2, 3, 4, 6, **10** 174 1, 2, 3, 4, 9, **13**
+5, **11**
 
-  10    1, 2, 3, 4,   88    1, 2, 3, 4, **7**, 8 ← ...   ... (first 4 stay as
-        5, **15**           Block 3 starts               1,2,3,4; pattern
-                                                         continues)
+7 1, 2, 3, 4, 49 1, 2, 3, 4, 6, **11** 175 1, 2, 3, 4, 9, **14**
+5, **12**
 
-  11    1, 2, 3, 4,   89    1, 2, 3, 4, 7, 9             
-        5, **16**                                        
+8 1, 2, 3, 4, ... ... (6th increases by ... ... (6th increases by
+5, **13** 1 each row) 1 each row)
 
-  12    1, 2, 3, 4,   90    1, 2, 3, 4, 7, **10**        
-        5, **17**                                        
+9 1, 2, 3, 4, 87 1, 2, 3, 4, 6, **49** 210 1, 2, 3, 4, 9, **49**
+5, **14** ← Block 2 ends (5th=6 ← Block 5 ends (5th=9
+exhausted) exhausted)
 
-  13    1, 2, 3, 4,   91    1, 2, 3, 4, 7, **11**        
-        5, **18**                                        
+10 1, 2, 3, 4, 88 1, 2, 3, 4, **7**, 8 ← ... ... (first 4 stay as
+5, **15** Block 3 starts 1,2,3,4; pattern
+continues)
 
-  14    1, 2, 3, 4,   92    1, 2, 3, 4, 7, **12**        
-        5, **19**                                        
+11 1, 2, 3, 4, 89 1, 2, 3, 4, 7, 9  
+ 5, **16**
 
-  15    1, 2, 3, 4,   ...   ... (6th increases by        
-        5, **20**           1 each row)                  
+12 1, 2, 3, 4, 90 1, 2, 3, 4, 7, **10**  
+ 5, **17**
 
-  16    1, 2, 3, 4,   129   1, 2, 3, 4, 7, **49**        
-        5, **21**           ← Block 3 ends (5th=7        
-                            exhausted)                   
+13 1, 2, 3, 4, 91 1, 2, 3, 4, 7, **11**  
+ 5, **18**
 
-  17    1, 2, 3, 4,   130   1, 2, 3, 4, **8**, 9 ←       
-        5, **22**           Block 4 starts               
+14 1, 2, 3, 4, 92 1, 2, 3, 4, 7, **12**  
+ 5, **19**
 
-  18    1, 2, 3, 4,   131   1, 2, 3, 4, 8, **10**        
-        5, **23**           ⚠️ Common error: NOT         
-                            \"8,9,9\" --- numbers        
-                            must be strictly             
-                            increasing                   
+15 1, 2, 3, 4, ... ... (6th increases by  
+ 5, **20** 1 each row)
 
-  19    1, 2, 3, 4,   132   1, 2, 3, 4, 8, **11**        
-        5, **24**                                        
+16 1, 2, 3, 4, 129 1, 2, 3, 4, 7, **49**  
+ 5, **21** ← Block 3 ends (5th=7  
+ exhausted)
 
-  20    1, 2, 3, 4,   133   1, 2, 3, 4, 8, **12**        
-        5, **25**                                        
+17 1, 2, 3, 4, 130 1, 2, 3, 4, **8**, 9 ←  
+ 5, **22** Block 4 starts
 
-  ...   ...           134   1, 2, 3, 4, 8, **13**        
-  -----------------------------------------------------------------------------
+18 1, 2, 3, 4, 131 1, 2, 3, 4, 8, **10**  
+ 5, **23** ⚠️ Common error: NOT  
+ \"8,9,9\" --- numbers  
+ must be strictly  
+ increasing
 
-**\**
+19 1, 2, 3, 4, 132 1, 2, 3, 4, 8, **11**  
+ 5, **24**
+
+20 1, 2, 3, 4, 133 1, 2, 3, 4, 8, **12**  
+ 5, **25**
+
+... ... 134 1, 2, 3, 4, 8, **13**
+
+---
+
+**\*\*
 The **Last 20 Combinations** of the Full List (# 13,983,797 → \#
-13,983,816)**:**
+13,983,816)**:\*\*
 
 These are generated by working backwards from the largest possible
 combination. The rule is: start with the largest possible numbers, then
 step backwards one position at a time.
 
-  -----------------------------------------------------------------------------------
-  Rank     \#           Combination      Rank       \#               Combination
-  -------- ------------ ---------------- ---------- ---------------- ----------------
-  20^th^   13,983,797   **42**, 43, 44,  10^th^     13,983,807       42, 44, 45,
-  Last                  46, 48, 49       Last                        **47**, 48, 49
+---
 
-  19^th^   13,983,798   42, 43, 44,      9^th^ Last 13,983,808       42, 44, **46**,
-  Last                  **47**, 48, 49                               47, 48, 49
+Rank \# Combination Rank \# Combination
 
-  18^th^   13,983,799   42, 43, 45, 46,  8^th^ Last 13,983,809       42, **45**, 46,
-  Last                  47, **48**                                   47, 48, 49
+---
 
-  17^th^   13,983,800   42, 43, 45, 46,  7^th^ Last 13,983,810       43, 44, 45, 46,
-  Last                  47, **49**                                   47, **48**
+20^th^ 13,983,797 **42**, 43, 44, 10^th^ 13,983,807 42, 44, 45,
+Last 46, 48, 49 Last **47**, 48, 49
 
-  16^th^   13,983,801   42, 43, 45, 46,  6^th^ Last 13,983,811       43, 44, 45, 46,
-  Last                  **48**, 49                                   47, **49**
+19^th^ 13,983,798 42, 43, 44, 9^th^ Last 13,983,808 42, 44, **46**,
+Last **47**, 48, 49 47, 48, 49
 
-  15^th^   13,983,802   42, 43, 45,      5^th^ Last 13,983,812       43, 44, 45, 46,
-  Last                  **47**, 48, 49                               **48**, 49
+18^th^ 13,983,799 42, 43, 45, 46, 8^th^ Last 13,983,809 42, **45**, 46,
+Last 47, **48** 47, 48, 49
 
-  14^th^   13,983,803   42, 43, **46**,  4^th^ Last 13,983,813       43, 44, 45,
-  Last                  47, 48, 49                                   **47**, 48, 49
+17^th^ 13,983,800 42, 43, 45, 46, 7^th^ Last 13,983,810 43, 44, 45, 46,
+Last 47, **49** 47, **48**
 
-  13^th^   13,983,804   42, 44, 45, 46,  3^rd^ Last 13,983,814       43, 44, **46**,
-  Last                  47, **48**                                   47, 48, 49
+16^th^ 13,983,801 42, 43, 45, 46, 6^th^ Last 13,983,811 43, 44, 45, 46,
+Last **48**, 49 47, **49**
 
-  12^th^   13,983,805   42, 44, 45, 46,  2^nd^ Last 13,983,815       43, **45**, 46,
-  Last                  47, **49**                                   47, 48, 49
+15^th^ 13,983,802 42, 43, 45, 5^th^ Last 13,983,812 43, 44, 45, 46,
+Last **47**, 48, 49 **48**, 49
 
-  11^th^   13,983,806   42, 44, 45, 46,  **Last**   **13,983,816**   **44, 45, 46,
-  Last                  **48**, 49                                   47, 48, 49**
-  -----------------------------------------------------------------------------------
+14^th^ 13,983,803 42, 43, **46**, 4^th^ Last 13,983,813 43, 44, 45,
+Last 47, 48, 49 **47**, 48, 49
+
+13^th^ 13,983,804 42, 44, 45, 46, 3^rd^ Last 13,983,814 43, 44, **46**,
+Last 47, **48** 47, 48, 49
+
+12^th^ 13,983,805 42, 44, 45, 46, 2^nd^ Last 13,983,815 43, **45**, 46,
+Last 47, **49** 47, 48, 49
+
+11^th^ 13,983,806 42, 44, 45, 46, **Last** **13,983,816** **44, 45, 46,
+Last **48**, 49 47, 48, 49**
+
+---
 
 **\
 Why 49? Why Not 40 or 50?**
@@ -2963,24 +3033,28 @@ The choice of 49 is a carefully balanced business and psychological
 decision; large enough to make the jackpot enormous, small enough to
 allow regular smaller prizes, and with a practical design bonus.
 
-  ----------------------------------------------------------------------------
-  Pool Size (N) Formula     Jackpot Odds   Assessment
-  ------------- ----------- -------------- -----------------------------------
-  30            30 choose 6 1 in 593,775   Too easy. Jackpot never
-                                           accumulates.
+---
 
-  40            40 choose 6 1 in 3,838,380 Reasonable odds, but the grid
-                                           layout is awkward.
+Pool Size (N) Formula Jackpot Odds Assessment
 
-  49            **49 choose **1 in         **Industry standard. Fits a perfect
-                6**         13,983,816**   7 × 7 grid.**
+---
 
-  59 (UK Lotto) 59 choose 6 1 in           Larger jackpots, but harder to win.
-                            45,057,474     Grid: 10 × 6.
+30 30 choose 6 1 in 593,775 Too easy. Jackpot never
+accumulates.
 
-  69            69 choose   1 in           Requires a separate bonus ball just
-  (Powerball)   5 + bonus   292,201,338    to make wins frequent enough.
-  ----------------------------------------------------------------------------
+40 40 choose 6 1 in 3,838,380 Reasonable odds, but the grid
+layout is awkward.
+
+49 **49 choose **1 in **Industry standard. Fits a perfect
+6** 13,983,816** 7 × 7 grid.**
+
+59 (UK Lotto) 59 choose 6 1 in Larger jackpots, but harder to win.
+45,057,474 Grid: 10 × 6.
+
+69 69 choose 1 in Requires a separate bonus ball just
+(Powerball) 5 + bonus 292,201,338 to make wins frequent enough.
+
+---
 
 **\
 The 7 × 7 grid advantage:** 49 balls arranged in a 7 × 7 grid is
@@ -3002,9 +3076,9 @@ from 10 options, so the total is:
 
 10 × 10 × 10 × 10 = 10\^4 = 10,000
 
-**Rule of thumb:** Use [n choose r]{.underline} when you are *selecting
-a group* with no repeats and no ordering. Use [n\^r]{.underline} when
-each position is *independently filled* from the same pool, with
+**Rule of thumb:** Use [n choose r]{.underline} when you are _selecting
+a group_ with no repeats and no ordering. Use [n\^r]{.underline} when
+each position is _independently filled_ from the same pool, with
 repetition allowed.
 
 > **Examples of Combinations as Google Dork**
@@ -3020,12 +3094,12 @@ repetition allowed.
 
 ### 💡 Shortcut Trick: The \"Leave Behind\" Principle
 
-**Key insight:** Choosing R items to *include* is mathematically
-identical to choosing (N − R) items to *exclude*. [Alwa]{.underline}y[s
+**Key insight:** Choosing R items to _include_ is mathematically
+identical to choosing (N − R) items to _exclude_. [Alwa]{.underline}y[s
 calculate whichever side is smaller; it involves fewer
 multi]{.underline}p[lications]{.underline}.
 
-A.  **6 choose 4 = 6 choose 2**
+A. **6 choose 4 = 6 choose 2**
 
 **Why?** Picking 4 people from 6 to include automatically decides 2
 people to leave out. The count of ways to do either is the same.
@@ -3046,26 +3120,30 @@ Since 2 \< 4, calculate 6 choose 2:
 files. **Goal:** Select exactly 4. Order does not matter ({A,B,C,D} is
 the same group as {D,C,B,A}).
 
-  -------------------------------------------------------------------
-  \#   Group Selected   Excluded    \#   Group Selected   Excluded
-       (4)              (2)              (4)              (2)
-  ---- ---------------- ----------- ---- ---------------- -----------
-  1    A, B, C, D       E, F        9    A, C, E, F       B, D
+---
 
-  2    A, B, C, E       D, F        10   A, D, E, F       B, C
+\# Group Selected Excluded \# Group Selected Excluded
+(4) (2) (4) (2)
 
-  3    A, B, C, F       D, E        11   B, C, D, E       A, F
+---
 
-  4    A, B, D, E       C, F        12   B, C, D, F       A, E
+1 A, B, C, D E, F 9 A, C, E, F B, D
 
-  5    A, B, D, F       C, E        13   B, C, E, F       A, D
+2 A, B, C, E D, F 10 A, D, E, F B, C
 
-  6    A, B, E, F       C, D        14   B, D, E, F       A, C
+3 A, B, C, F D, E 11 B, C, D, E A, F
 
-  7    A, C, D, E       B, F        15   C, D, E, F       A, B
+4 A, B, D, E C, F 12 B, C, D, F A, E
 
-  8    A, C, D, F       B, E                              
-  -------------------------------------------------------------------
+5 A, B, D, F C, E 13 B, C, E, F A, D
+
+6 A, B, E, F C, D 14 B, D, E, F A, C
+
+7 A, C, D, E B, F 15 C, D, E, F A, B
+
+8 A, C, D, F B, E
+
+---
 
 **\
 OSINT interpretation:** If a log file contains activity from 6 unique IP
@@ -3073,7 +3151,7 @@ addresses (A through F) and you need to identify clusters of 4 IPs that
 acted together, there are exactly **15 possible clusters** to examine.
 No more, no fewer.
 
-A.  **9 choose 5 = 9 choose 4**
+A. **9 choose 5 = 9 choose 4**
 
 **Why?** Choosing 5 to include from 9 is the same as choosing 4 to
 exclude.
@@ -3267,43 +3345,47 @@ Google misinterprets the query as a web search.
 
 ## Chapter 4 Quick Reference
 
-  -----------------------------------------------------------------------
-  **Operator /     **Triggers**                **Example**
-  Function**                                   
-  ---------------- --------------------------- --------------------------
-  define:          Dictionary definition panel define:reconnaissance
+---
 
-  stocks:          Real-time stock data panel  stocks:MSFT
+**Operator / **Triggers\*\* **Example**
+Function\*\*
 
-  movie:           Film information panel      movie:\"Inception\"
+---
 
-  source:          Google News filtered by     \"AI\" source:reuters
-                   outlet                      
+define: Dictionary definition panel define:reconnaissance
 
-  weather:         Live weather panel          weather:Dhaka
+stocks: Real-time stock data panel stocks:MSFT
 
-  map:             Embedded map panel          map:\"Silicon Valley\"
+movie: Film information panel movie:\"Inception\"
 
-  allinurl:        All words must be in URL    allinurl: api v2 login
+source: Google News filtered by \"AI\" source:reuters
+outlet
 
-  allintext:       All words must be in body   allintext: sql injection
-                   text                        bypass
+weather: Live weather panel weather:Dhaka
 
-  ( )              Logical grouping of         (Python OR R)
-                   operators                   site:github.com
+map: Embedded map panel map:\"Silicon Valley\"
 
-  \+               Force-include (deprecated;  \"security\" audit
-                   use quotes)                 site:.gov
+allinurl: All words must be in URL allinurl: api v2 login
 
-  \_               Autocomplete wildcard (not  Michael \_ singer
-                   in results)                 
+allintext: All words must be in body allintext: sql injection
+text bypass
 
-  expression       Calculator / graph /        sqrt(144) / 6 ft 2 in cm
-                   converter                   
+( ) Logical grouping of (Python OR R)
+operators site:github.com
 
-  timer / dice /   Interactive browser widget  timer for 20 minutes
-  coin                                         
-  -----------------------------------------------------------------------
+\+ Force-include (deprecated; \"security\" audit
+use quotes) site:.gov
+
+\_ Autocomplete wildcard (not Michael \_ singer
+in results)
+
+expression Calculator / graph / sqrt(144) / 6 ft 2 in cm
+converter
+
+timer / dice / Interactive browser widget timer for 20 minutes
+coin
+
+---
 
 **⭐ Key Takeaways**
 
@@ -3332,11 +3414,11 @@ Google misinterprets the query as a web search.
 - **✓** Google\'s calculator handles arithmetic, trigonometry, unit
   conversion, graphing, timers, and more.
 
-**CHAPTER 5\**
+\*\*CHAPTER 5\*\*
 
 **Combining Operators for Power Searches**
 
-*Stacking operators to build precise, multi-layered queries*
+_Stacking operators to build precise, multi-layered queries_
 
 # Chapter 5: Combining Operators for Power Searches
 
@@ -3432,7 +3514,7 @@ Result: a tight list of recent Harvard-hosted academic PDFs.
 > URL (inurl:) + any .com domain + remote mentioned in text + excluding
 > internships.
 >
-> *\# Bangladesh-specific:*
+> _\# Bangladesh-specific:_
 >
 > inurl:jobs \"junior developer\" site:bd.linkedin.com OR
 > site:bdjobs.com
@@ -3530,38 +3612,42 @@ PDF + published since 2022. Produces authoritative, citable sources.
 
 ## 5.3 Multi-Dimensional Query Design Framework
 
-  -----------------------------------------------------------------------
-  **Dimension**   **Operator(s)**     **Example Use**
-  --------------- ------------------- -----------------------------------
-  Source / Domain site:               Limit results to a trusted or
-                                      specific website
+---
 
-  Format          filetype: / ext:    Get only downloadable documents in
-                                      a specific format
+**Dimension** **Operator(s)** **Example Use**
 
-  Title Focus     intitle: /          Target pages dedicated to the
-                  allintitle:         **topic**
+---
 
-  URL Pattern     inurl:              Find specific sections of a website
-                                      by URL structure
+Source / Domain site: Limit results to a trusted or
+specific website
 
-  Exact Content   \" \" / intext:     [Find a specific]{.underline}
-                                      p[hrase in title **or**
-                                      bod]{.underline}y
-                                      [content]{.underline}
+Format filetype: / ext: Get only downloadable documents in
+a specific format
 
-  Time Window     after: / before:    Restrict results to a relevant date
-                                      range
+Title Focus intitle: / Target pages dedicated to the
+allintitle: **topic**
 
-  Exclusions      -term / -site:      Remove noise and irrelevant sources
-                                      from results
+URL Pattern inurl: Find specific sections of a website
+by URL structure
 
-  Alternatives    OR / \|             Accept multiple valid values,
-                                      formats, or synonyms
+Exact Content \" \" / intext: [Find a specific]{.underline}
+p[hrase in title **or**
+bod]{.underline}y
+[content]{.underline}
 
-  Proximity       AROUND(X)           Find pages where two terms appear
-                                      close together
-  -----------------------------------------------------------------------
+Time Window after: / before: Restrict results to a relevant date
+range
+
+Exclusions -term / -site: Remove noise and irrelevant sources
+from results
+
+Alternatives OR / \| Accept multiple valid values,
+formats, or synonyms
+
+Proximity AROUND(X) Find pages where two terms appear
+close together
+
+---
 
 ## 5.4 Practice Exercises
 
@@ -3646,38 +3732,38 @@ You can combine Google dorking commands and operations for specific
 results.
 
 +-------------------------+------------------------------------------------+
-| **Example Query**       | **Research Scenario**                          |
+| **Example Query** | **Research Scenario** |
 +=========================+================================================+
-| inurl:zoom.us/j         | Get links to publicly shared Zoom meetings you |
-| intext:scheduled        | may want to access.                            |
+| inurl:zoom.us/j | Get links to publicly shared Zoom meetings you |
+| intext:scheduled | may want to access. |
 +-------------------------+------------------------------------------------+
-| \"index of\"            | Get unsecured SQL dumps. Data from improperly  |
-| \"database.sql.zip\"    | configured SQL                                 |
-|                         |                                                |
-|                         | servers will show up on this page.             |
+| \"index of\" | Get unsecured SQL dumps. Data from improperly |
+| \"database.sql.zip\" | configured SQL |
+| | |
+| | servers will show up on this page. |
 +-------------------------+------------------------------------------------+
-| filetype:doc            | StationX with the .doc extension. This looks   |
-| site:stationx.net       | for legacy Microsoft Word files containing the |
-| nathan                  | keyword "nathan" (founder's name).             |
+| filetype:doc | StationX with the .doc extension. This looks |
+| site:stationx.net | for legacy Microsoft Word files containing the |
+| nathan | keyword "nathan" (founder's name). |
 +-------------------------+------------------------------------------------+
-| filetype:yaml           | Get YAML configuration files specific to       |
-| inurl:cassandra         |                                                |
-|                         | Apache Cassandra databases                     |
+| filetype:yaml | Get YAML configuration files specific to |
+| inurl:cassandra | |
+| | Apache Cassandra databases |
 +-------------------------+------------------------------------------------+
-| \@youtube trending      | Find short clips trending on YouTube           |
-| shorts                  |                                                |
+| \@youtube trending | Find short clips trending on YouTube |
+| shorts | |
 +-------------------------+------------------------------------------------+
-| \@reddit memes -dark    | Find memes on Reddit that are not dark         |
+| \@reddit memes -dark | Find memes on Reddit that are not dark |
 +-------------------------+------------------------------------------------+
-| site:cdn.cloudflare.net | Find PDFs on the \*.cdn.cloudflare.net domain  |
-| filetype:pdf            |                                                |
+| site:cdn.cloudflare.net | Find PDFs on the \*.cdn.cloudflare.net domain |
+| filetype:pdf | |
 +-------------------------+------------------------------------------------+
-| secret in spanish       | Translate the word "secret" to Spanish and     |
-| inurl:dict              | limit results to URLs containing "dict"        |
+| secret in spanish | Translate the word "secret" to Spanish and |
+| inurl:dict | limit results to URLs containing "dict" |
 +-------------------------+------------------------------------------------+
-| link:ox.ac.uk PhD math  | Find information on "PhD" and "math" that link |
-|                         | to the University of Oxford's official         |
-|                         | website. Compare with ox.ac.uk PhD math        |
+| link:ox.ac.uk PhD math | Find information on "PhD" and "math" that link |
+| | to the University of Oxford's official |
+| | website. Compare with ox.ac.uk PhD math |
 +-------------------------+------------------------------------------------+
 
 **Deep Dive With @ and link:**
@@ -3771,11 +3857,11 @@ assessment.
 - **✓** Check your exercises against Appendix C for expected findings
   and refinement suggestions.
 
-**CHAPTER 6\**
+\*\*CHAPTER 6\*\*
 
 **Real-World Applications**
 
-*Ethical hacking, OSINT, SEO, academic research, and bug bounty*
+_Ethical hacking, OSINT, SEO, academic research, and bug bounty_
 
 # Chapter 6: Real-World Applications
 
@@ -3934,8 +4020,8 @@ production. Apply input validation and WAF rules.
 >
 > )
 >
-> *\# Any result from this query is a finding requiring immediate
-> remediation.*
+> _\# Any result from this query is a finding requiring immediate
+> remediation._
 
 ## 6.2 OSINT Research
 
@@ -3945,34 +4031,38 @@ investigators, researchers, and security analysts all use OSINT. Google
 Dorks are a foundational OSINT tool because they turn Google\'s enormous
 index into a structured, filterable research database.
 
-  -----------------------------------------------------------------------
-  **Research          **Example Query**
-  Scenario**          
-  ------------------- ---------------------------------------------------
-  Bangladesh          site:gov.bd filetype:pdf \"annual report\"
-  Government          after:2023-01-01
-  Documents           
+---
 
-  Corporate Reports   filetype:pdf intitle:\"annual report\"
-                      site:company.com
+**Research **Example Query**
+Scenario**
 
-  Academic Research   site:arxiv.org \"natural language processing\"
-                      after:2024-01-01 filetype:pdf
+---
 
-  News Archive        \"whistleblower\" site:theguardian.com
-  Research            before:2020-01-01
+Bangladesh site:gov.bd filetype:pdf \"annual report\"
+Government after:2023-01-01
+Documents
 
-  Data Breach Reports intitle:\"data breach\" OR intitle:\"security
-                      incident\" site:.gov filetype:pdf
+Corporate Reports filetype:pdf intitle:\"annual report\"
+site:company.com
 
-  Conference          filetype:pptx \"cybersecurity\" site:defcon.org OR
-  Presentations       site:blackhat.com OR \*.gov
+Academic Research site:arxiv.org \"natural language processing\"
+after:2024-01-01 filetype:pdf
 
-  OSINT Investigation inanchor:\"leaked document\"
+News Archive \"whistleblower\" site:theguardian.com
+Research before:2020-01-01
 
-  Bangladesh NGO Data filetype:pdf \"impact report\" site:brac.net OR
-                      site:grameen.com
-  -----------------------------------------------------------------------
+Data Breach Reports intitle:\"data breach\" OR intitle:\"security
+incident\" site:.gov filetype:pdf
+
+Conference filetype:pptx \"cybersecurity\" site:defcon.org OR
+Presentations site:blackhat.com OR \*.gov
+
+OSINT Investigation inanchor:\"leaked document\"
+
+Bangladesh NGO Data filetype:pdf \"impact report\" site:brac.net OR
+site:grameen.com
+
+---
 
 ### OSINT Best Practices
 
@@ -4137,23 +4227,23 @@ exclude known benign subdomains.
 
 > **Queries**
 >
-> *\# Broad search, excluding common benign subdomains:*
+> _\# Broad search, excluding common benign subdomains:_
 >
 > site:example.com -www -shop -share -ir -mfa
 >
-> *\# PHP pages with query parameters (potential injection points):*
+> _\# PHP pages with query parameters (potential injection points):_
 >
 > site:example.com ext:php inurl:?
 >
-> *\# API endpoints across REST versions:*
+> _\# API endpoints across REST versions:_
 >
 > site:example.com inurl:api \| site:example.com/rest \|
 > site:example.com/v1
 >
 > \| site:example.com/v2 \| site:example.com/v3
 >
-> *\# Comprehensive Sensitive Endpoint Discovery (The \"All-in-One\"
-> Recon Dork):*
+> _\# Comprehensive Sensitive Endpoint Discovery (The \"All-in-One\"
+> Recon Dork):_
 >
 > site:example.com (inurl:admin OR inurl:login OR inurl:config OR
 > inurl:backup OR inurl:.git OR inurl:.env OR intitle:\"index of\" OR
@@ -4175,33 +4265,37 @@ frequently contain sensitive information.
 >
 > \| ext:htpasswd \| ext:htaccess \| ext:json
 
-  ----------------------------------------------------------------------------
-  **Extension**     **Why It Matters**
-  ----------------- ----------------------------------------------------------
-  .env              Environment files almost always contain DB passwords, API
-                    keys, and app secrets.
+---
 
-  .log              Application and server logs may expose internal paths,
-                    usernames, IP addresses, and error traces.
+**Extension** **Why It Matters**
 
-  .bak / .old       Backup copies of source files or config files, often
-                    containing credentials.
+---
 
-  .swp              Vim swap files left behind during editing. May contain
-                    source code fragments or config.
+.env Environment files almost always contain DB passwords, API
+keys, and app secrets.
 
-  .git / .svn       Source control directories containing full project
-                    history, credentials, and logic.
+.log Application and server logs may expose internal paths,
+usernames, IP addresses, and error traces.
 
-  .htpasswd         Apache password files. Contains hashed credentials for
-                    HTTP basic authentication.
+.bak / .old Backup copies of source files or config files, often
+containing credentials.
 
-  ssssss.htaccess   Apache configuration files that may reveal rewrite rules,
-                    protected paths, or security policies.
+.swp Vim swap files left behind during editing. May contain
+source code fragments or config.
 
-  .conf / .ini      Server and application configuration files frequently
-                    containing connection strings and keys.
-  ----------------------------------------------------------------------------
+.git / .svn Source control directories containing full project
+history, credentials, and logic.
+
+.htpasswd Apache password files. Contains hashed credentials for
+HTTP basic authentication.
+
+ssssss.htaccess Apache configuration files that may reveal rewrite rules,
+protected paths, or security policies.
+
+.conf / .ini Server and application configuration files frequently
+containing connection strings and keys.
+
+---
 
 ### High-Value inurl Keywords
 
@@ -4235,35 +4329,39 @@ The following queries identify URL parameter patterns statistically
 associated with specific vulnerability classes. Each finding is a
 candidate for manual testing, not a confirmed vulnerability.
 
-  --------------------------------------------------------------------------
-  **Vulnerability   **Google Dork Query**
-  Class**           
-  ----------------- --------------------------------------------------------
-  XSS (Cross-Site   inurl:q= \| inurl:s= \| inurl:search= \| inurl:query= \|
-  Scripting)        inurl:keyword= \| inurl:lang= inurl:& site:example.com
+---
 
-  Open Redirect     inurl:url= \| inurl:return= \| inurl:next= \|
-                    inurl:redirect= \| inurl:redir= \| inurl:ret= \|
-                    inurl:r2= \| inurl:page= inurl:& inurl:http
-                    site:example.com
+**Vulnerability **Google Dork Query**
+Class**
 
-  SQL Injection     inurl:id= \| inurl:pid= \| inurl:category= \| inurl:cat=
-                    \| inurl:action= \| inurl:sid= \| inurl:dir= inurl:&
-                    site:example.com
+---
 
-  SSRF              inurl:http \| inurl:url= \| inurl:path= \| inurl:dest=
-                    \| inurl:html= \| inurl:data= \| inurl:domain= \|
-                    inurl:page= inurl:& site:example.com
+XSS (Cross-Site inurl:q= \| inurl:s= \| inurl:search= \| inurl:query= \|
+Scripting) inurl:keyword= \| inurl:lang= inurl:& site:example.com
 
-  LFI (Local File   inurl:include \| inurl:dir \| inurl:detail= \|
-  Inclusion)        inurl:file= \| inurl:folder= \| inurl:inc= \|
-                    inurl:locate= \| inurl:doc= \| inurl:conf= inurl:&
-                    site:example.com
+Open Redirect inurl:url= \| inurl:return= \| inurl:next= \|
+inurl:redirect= \| inurl:redir= \| inurl:ret= \|
+inurl:r2= \| inurl:page= inurl:& inurl:http
+site:example.com
 
-  RCE (Remote Code  inurl:cmd \| inurl:exec= \| inurl:query= \| inurl:code=
-  Execution)        \| inurl:do= \| inurl:run= \| inurl:read= \| inurl:ping=
-                    inurl:& site:example.com
-  --------------------------------------------------------------------------
+SQL Injection inurl:id= \| inurl:pid= \| inurl:category= \| inurl:cat=
+\| inurl:action= \| inurl:sid= \| inurl:dir= inurl:&
+site:example.com
+
+SSRF inurl:http \| inurl:url= \| inurl:path= \| inurl:dest=
+\| inurl:html= \| inurl:data= \| inurl:domain= \|
+inurl:page= inurl:& site:example.com
+
+LFI (Local File inurl:include \| inurl:dir \| inurl:detail= \|
+Inclusion) inurl:file= \| inurl:folder= \| inurl:inc= \|
+inurl:locate= \| inurl:doc= \| inurl:conf= inurl:&
+site:example.com
+
+RCE (Remote Code inurl:cmd \| inurl:exec= \| inurl:query= \| inurl:code=
+Execution) \| inurl:do= \| inurl:run= \| inurl:read= \| inurl:ping=
+inurl:& site:example.com
+
+---
 
 ### Specific High-Value Functionality
 
@@ -4298,7 +4396,7 @@ candidate for manual testing, not a confirmed vulnerability.
 > site:example.com ext:txt \| ext:pdf \| ext:xml \| ext:xls \| ext:xlsx
 > \| ext:ppt \| ext:pptx \| ext:doc \| ext:docx
 >
-> *\# Combine with content markers:*
+> _\# Combine with content markers:_
 >
 > intext:\"confidential\" \| intext:\"Not for Public Release\"
 >
@@ -4312,20 +4410,24 @@ candidate for manual testing, not a confirmed vulnerability.
 
 ### CMS and Framework-Specific Dorks
 
-  -------------------------------------------------------------------------
-  **Technology**   **Dork Query**
-  ---------------- --------------------------------------------------------
-  WordPress        inurl:/wp-admin/admin-ajax.php site:example.com
+---
 
-  Drupal           intext:\"Powered by\" intext:Drupal inurl:user
-                   site:example.com
+**Technology** **Dork Query**
 
-  Joomla           inurl:joomla/login site:example.com
+---
 
-  Adobe AEM        inurl:/content/usergenerated \| inurl:/content/dam \|
-                   inurl:/jcr:content \| inurl:/libs/granite \|
-                   inurl:/crx/de site:example.com
-  -------------------------------------------------------------------------
+WordPress inurl:/wp-admin/admin-ajax.php site:example.com
+
+Drupal intext:\"Powered by\" intext:Drupal inurl:user
+site:example.com
+
+Joomla inurl:joomla/login site:example.com
+
+Adobe AEM inurl:/content/usergenerated \| inurl:/content/dam \|
+inurl:/jcr:content \| inurl:/libs/granite \|
+inurl:/crx/de site:example.com
+
+---
 
 ### Third-Party Platform Leaks
 
@@ -4525,8 +4627,8 @@ further expand your findings.
 
 ## 6.7 Reveal the Cloud with Google Dorks
 
-*Find sensitive data in Amazon AWS, Google Cloud, Azure, Firebase, and
-more*
+_Find sensitive data in Amazon AWS, Google Cloud, Azure, Firebase, and
+more_
 
 Cloud storage services have transformed how organisations share and
 store data. They have also [introduced an enormous
@@ -4561,7 +4663,7 @@ and become discoverable.
 > \"not for public release\" to narrow results to the most sensitive
 > documents.
 
-**Primary Cloud Storage Dorks\**
+\*\*Primary Cloud Storage Dorks\*\*
 
 \# Amazon S3 --- the most common cloud exposure vector:
 
@@ -4586,177 +4688,197 @@ OR \"privileged\"
 
 #### Amazon S3 --- Real-World Exposures
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example: Capital One (2019)**
-  -----------------------------------------------------------------------
-  An attacker used Server-Side Request Forgery (SSRF) to access an S3
-  bucket containing \~106 million customer records including SSNs, bank
-  account numbers, and credit scores. The breach was discovered because
-  the attacker posted the data publicly. Total regulatory fine: \$80
-  million (OCC/Federal Reserve settlement). This class of exposure is
-  reachable by a researcher who identifies Capital One\'s S3 namespaces
-  first via Google Dork and then probes for misconfigured ACLs.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example: Capital One (2019)**
 
-  **site:s3.amazonaws.com \"capitalone.com\"**
+---
 
-  **site:s3.amazonaws.com \"capitalone\" \"data\" OR \"customers\" OR
-  \"backup\"**
-  -----------------------------------------------------------------------
+An attacker used Server-Side Request Forgery (SSRF) to access an S3
+bucket containing \~106 million customer records including SSNs, bank
+account numbers, and credit scores. The breach was discovered because
+the attacker posted the data publicly. Total regulatory fine: \$80
+million (OCC/Federal Reserve settlement). This class of exposure is
+reachable by a researcher who identifies Capital One\'s S3 namespaces
+first via Google Dork and then probes for misconfigured ACLs.
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example: Twitch Source Code Leak (2021)**
-  -----------------------------------------------------------------------
-  A misconfigured S3 bucket exposed the platform\'s entire source code
-  (125 GB), internal security tools, creator payout data, and unreleased
-  projects. The data was posted to 4chan. The exposure was traced to an
-  incorrectly set bucket ACL during a server migration.\
-  Researchers identify Twitch\'s bucket namespace via:
+**🔍 Google Dork Used:**
 
-  **🔍 Google Dork Used:**
+**site:s3.amazonaws.com \"capitalone.com\"**
 
-  **site:s3.amazonaws.com \"twitch.tv\" OR \"twitchsvc\"**
+**site:s3.amazonaws.com \"capitalone\" \"data\" OR \"customers\" OR
+\"backup\"**
 
-  **site:s3.amazonaws.com \"twitch\" \"source\" OR \"internal\" OR
-  \"backup\"**
-  -----------------------------------------------------------------------
+---
+
+---
+
+**★ Real-Life Example: Twitch Source Code Leak (2021)**
+
+---
+
+A misconfigured S3 bucket exposed the platform\'s entire source code
+(125 GB), internal security tools, creator payout data, and unreleased
+projects. The data was posted to 4chan. The exposure was traced to an
+incorrectly set bucket ACL during a server migration.\
+ Researchers identify Twitch\'s bucket namespace via:
+
+**🔍 Google Dork Used:**
+
+**site:s3.amazonaws.com \"twitch.tv\" OR \"twitchsvc\"**
+
+**site:s3.amazonaws.com \"twitch\" \"source\" OR \"internal\" OR
+\"backup\"**
+
+---
 
 +-----------------------------------------------------------------------+
-| **★ Real-Life Example: Accenture 4-Bucket Exposure (2017)**           |
+| **★ Real-Life Example: Accenture 4-Bucket Exposure (2017)** |
 +=======================================================================+
 | The global consulting firm accidentally left four S3 buckets publicly |
-| accessible, exposing 137 GB of data including authentication          |
-| credentials, certificates, decryption keys, and internal API data.    |
-| Discovered by security firm UpGuard.                                  |
-|                                                                       |
-| A researcher targeting Accenture would begin with the following       |
-| dorks:                                                                |
+| accessible, exposing 137 GB of data including authentication |
+| credentials, certificates, decryption keys, and internal API data. |
+| Discovered by security firm UpGuard. |
+| |
+| A researcher targeting Accenture would begin with the following |
+| dorks: |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"accenture.com\"**                           |
+| **site:s3.amazonaws.com \"accenture.com\"** |
 +-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"accenture\" \"credentials\" OR              |
-| \"certificates\" OR \"keys\"**                                        |
+| **site:s3.amazonaws.com \"accenture\" \"credentials\" OR |
+| \"certificates\" OR \"keys\"** |
 +-----------------------------------------------------------------------+
 
 +-----------------------------------------------------------------------+
-| **★ Real-Life Example --- GrayhatWarfare --- Ongoing S3 Index**       |
+| **★ Real-Life Example --- GrayhatWarfare --- Ongoing S3 Index** |
 +=======================================================================+
-| The public tool at grayhatwarfare.com indexes public S3 buckets and   |
-| their contents. Researchers routinely find production database        |
-| backups, private key files, and internal application configs          |
-| discoverable through a combination of this tool and Google Dorks      |
-| targeting s3.amazonaws.com.                                           |
-|                                                                       |
+| The public tool at grayhatwarfare.com indexes public S3 buckets and |
+| their contents. Researchers routinely find production database |
+| backups, private key files, and internal application configs |
+| discoverable through a combination of this tool and Google Dorks |
+| targeting s3.amazonaws.com. |
+| |
 | To replicate the same discovery method purely via Google Dork without |
-| the GrayhatWarfare tool:                                              |
+| the GrayhatWarfare tool: |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"database\" OR \"backup\" filetype:sql OR    |
-| filetype:bak**                                                        |
+| **site:s3.amazonaws.com \"database\" OR \"backup\" filetype:sql OR |
+| filetype:bak** |
 +-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \".env\" OR \"credentials\" OR \"config\" OR  |
-| \"secret\"**                                                          |
+| **site:s3.amazonaws.com \".env\" OR \"credentials\" OR \"config\" OR |
+| \"secret\"** |
 +-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"example.com\" \"db_password\" OR            |
-| \"api_key\" OR \"private_key\"**                                      |
+| **site:s3.amazonaws.com \"example.com\" \"db_password\" OR |
+| \"api_key\" OR \"private_key\"** |
 +-----------------------------------------------------------------------+
 
 #### Microsoft Azure Blob Storage --- Real-World Exposures
 
 +-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Microsoft Power Apps (2021) --- 38M         |
-| Government Records**                                                  |
+| **★ Real-Life Example --- Microsoft Power Apps (2021) --- 38M |
+| Government Records** |
 +=======================================================================+
-| A researcher discovered that six US state government agencies and 47  |
-| other organisations had exposed 38 million records in misconfigured   |
-| Azure Blob Storage tables including COVID-19 vaccination data,        |
-| employee SSNs, and contact tracing details. Microsoft subsequently    |
-| changed the default Power Apps setting from public to private.        |
-|                                                                       |
-| The exposure was discoverable through the following dorks targeting   |
-| government domains:                                                   |
+| A researcher discovered that six US state government agencies and 47 |
+| other organisations had exposed 38 million records in misconfigured |
+| Azure Blob Storage tables including COVID-19 vaccination data, |
+| employee SSNs, and contact tracing details. Microsoft subsequently |
+| changed the default Power Apps setting from public to private. |
+| |
+| The exposure was discoverable through the following dorks targeting |
+| government domains: |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:blob.core.windows.net \"gov\" \"covid\" OR \"vaccination\" OR  |
-| \"contact tracing\"**                                                 |
+| **site:blob.core.windows.net \"gov\" \"covid\" OR \"vaccination\" OR |
+| \"contact tracing\"** |
 +-----------------------------------------------------------------------+
-| **site:blob.core.windows.net \"powerapps\" \"state.gov\" OR           |
-| \".gov\"**                                                            |
+| **site:blob.core.windows.net \"powerapps\" \"state.gov\" OR |
+| \".gov\"** |
 +-----------------------------------------------------------------------+
-| **site:blob.core.windows.net \"example.com\" \"health\" OR            |
-| \"employee\" OR \"ssn\"**                                             |
+| **site:blob.core.windows.net \"example.com\" \"health\" OR |
+| \"employee\" OR \"ssn\"** |
 +-----------------------------------------------------------------------+
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- SharePoint-to-Azure Migration Leaks
-  (Ongoing)**
-  -----------------------------------------------------------------------
-  Researchers using site:blob.core.windows.net \"company.com\" have
-  repeatedly found internal SharePoint migrations, HR system exports, and
-  financial report PDFs accidentally transferred to public Azure Blob
-  containers during cloud migrations. Migration projects routinely leave
-  temporary public containers uncleaned.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- SharePoint-to-Azure Migration Leaks
+(Ongoing)**
 
-  **site:blob.core.windows.net \"example.com\" \"sharepoint\" OR
-  \"migration\"**
+---
 
-  **site:blob.core.windows.net \"example.com\" \"internal\" OR
-  \"confidential\" OR \"hr\"**
+Researchers using site:blob.core.windows.net \"company.com\" have
+repeatedly found internal SharePoint migrations, HR system exports, and
+financial report PDFs accidentally transferred to public Azure Blob
+containers during cloud migrations. Migration projects routinely leave
+temporary public containers uncleaned.
 
-  **site:blob.core.windows.net \"example.com\" filetype:pdf OR
-  filetype:xlsx**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**site:blob.core.windows.net \"example.com\" \"sharepoint\" OR
+\"migration\"**
+
+**site:blob.core.windows.net \"example.com\" \"internal\" OR
+\"confidential\" OR \"hr\"**
+
+**site:blob.core.windows.net \"example.com\" filetype:pdf OR
+filetype:xlsx**
+
+---
 
 #### Google Drive and Google Cloud --- Real-World Exposures
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Google Docs Misconfiguration (Ongoing)**
-  -----------------------------------------------------------------------
-  Researchers routinely find internal company documents, pitch decks, and
-  HR records by searching for Google Docs shared with \"anyone with the
-  link.\" When the organisation\'s domain appears in the document
-  content, Google indexes the link and it becomes discoverable. Documents
-  are often shared for a meeting and never reverted to private.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Google Docs Misconfiguration (Ongoing)**
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"confidential\"**
+---
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"internal use
-  only\"**
+Researchers routinely find internal company documents, pitch decks, and
+HR records by searching for Google Docs shared with \"anyone with the
+link.\" When the organisation\'s domain appears in the document
+content, Google indexes the link and it becomes discoverable. Documents
+are often shared for a meeting and never reverted to private.
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"not for
-  distribution\"**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- HackerOne Bug Bounty Submissions --- Google
-  Drive Finds (2019--2024)**
-  -----------------------------------------------------------------------
-  Researchers on HackerOne and Bugcrowd have submitted reports where
-  internal API documentation, employee PII, and unreleased product
-  roadmaps were found in publicly readable Google Drive folders belonging
-  to target organisations. Rewards ranged from \$500 to \$5,000 depending
-  on data sensitivity and programme scope.
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"confidential\"**
 
-  **🔍 Google Dork Used:**
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"internal use
+only\"**
 
-  **site:drive.google.com \"example.com\" \"api\" OR \"roadmap\" OR
-  \"unreleased\"**
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"not for
+distribution\"**
 
-  **site:drive.google.com \"example.com\" \"internal\" OR \"employees\"
-  OR \"confidential\"**
+---
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR
-  \"board\" OR \"acquisition\"**
-  -----------------------------------------------------------------------
+---
+
+**★ Real-Life Example --- HackerOne Bug Bounty Submissions --- Google
+Drive Finds (2019--2024)**
+
+---
+
+Researchers on HackerOne and Bugcrowd have submitted reports where
+internal API documentation, employee PII, and unreleased product
+roadmaps were found in publicly readable Google Drive folders belonging
+to target organisations. Rewards ranged from \$500 to \$5,000 depending
+on data sensitivity and programme scope.
+
+**🔍 Google Dork Used:**
+
+**site:drive.google.com \"example.com\" \"api\" OR \"roadmap\" OR
+\"unreleased\"**
+
+**site:drive.google.com \"example.com\" \"internal\" OR \"employees\"
+OR \"confidential\"**
+
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR
+\"board\" OR \"acquisition\"**
+
+---
 
 ### Bug Bounty Programme Discovery Dorks
 
@@ -4824,25 +4946,29 @@ inurl:/administrator/ site:example.com
 
 =\> Joomla administrator panel --- a common brute-force target.
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Drupalgeddon --- CVE-2018-7600 (Mass
-  Exploitation)**
-  -----------------------------------------------------------------------
-  A critical SQL injection vulnerability in Drupal\'s core affected all
-  Drupal 6, 7, and 8 sites. Google Dorks identifying Drupal sites were
-  actively used by attackers within 24 hours of CVE disclosure to find
-  and mass-exploit vulnerable installations before administrators could
-  patch. Identifying CMS versions through Google Dorks is now a standard
-  step in defensive auditing to catch unpatched deployments.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Drupalgeddon --- CVE-2018-7600 (Mass
+Exploitation)**
 
-  **intext:\"Powered by\" intext:Drupal inurl:user**
+---
 
-  **intext:\"Drupal\" inurl:/user/login**
+A critical SQL injection vulnerability in Drupal\'s core affected all
+Drupal 6, 7, and 8 sites. Google Dorks identifying Drupal sites were
+actively used by attackers within 24 hours of CVE disclosure to find
+and mass-exploit vulnerable installations before administrators could
+patch. Identifying CMS versions through Google Dorks is now a standard
+step in defensive auditing to catch unpatched deployments.
 
-  **inurl:/sites/default/files/ intext:\"Drupal\"**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**intext:\"Powered by\" intext:Drupal inurl:user**
+
+**intext:\"Drupal\" inurl:/user/login**
+
+**inurl:/sites/default/files/ intext:\"Drupal\"**
+
+---
 
 ## 6.8 XSS (Cross-Site Scripting) Dorks
 
@@ -4863,65 +4989,77 @@ inurl:q= \| inurl:s= \| inurl:search= \| inurl:query= \| inurl:keyword=
 
 \| inurl:lang= \| inurl:page= \| inurl:view= inurl:& site:example.com
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Reflected XSS via /?s= (WordPress Search
-  Parameter)**
-  -----------------------------------------------------------------------
-  The /?s= parameter is the most common XSS vector across millions of
-  WordPress sites. Security researchers have found this class of XSS on
-  government websites, university portals, and major e-commerce
-  platforms. Payload: ?s=\<script\>alert(1)\</script\> frequently
-  succeeds on unpatched themes.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Reflected XSS via /?s= (WordPress Search
+Parameter)**
 
-  **site:target.com inurl:?s=**
+---
 
-  **inurl:?s= site:target.gov**
+The /?s= parameter is the most common XSS vector across millions of
+WordPress sites. Security researchers have found this class of XSS on
+government websites, university portals, and major e-commerce
+platforms. Payload: ?s=\<script\>alert(1)\</script\> frequently
+succeeds on unpatched themes.
 
-  **inurl:/?s= site:example.com**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Language Parameter XSS via /index.php?lang=**
-  -----------------------------------------------------------------------
-  The lang= parameter is the 5th most vulnerable parameter in the XSS
-  frequency table (1.4% of scanned sites). Researchers have found
-  reflected XSS on multilingual CMS sites where the language code is
-  reflected directly into the page without sanitisation. Payload for HTML
-  context:
-  /index.php?lang=\"\>\<script\>alert(document.cookie)\</script\> Payload
-  for JS context: /index.php?lang=\";alert(document.domain); // HackerOne
-  reports in this class: \$500--\$2,000 reward range.
+**site:target.com inurl:?s=**
 
-  **🔍 Google Dork Used:**
+**inurl:?s= site:target.gov**
 
-  **inurl:?lang= site:target.com**
+**inurl:/?s= site:example.com**
 
-  **inurl:index.php?lang= site:example.com**
+---
 
-  **inurl:/?lang= inurl:& site:example.com**
-  -----------------------------------------------------------------------
+---
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- redirect_uri Parameter --- XSS Escalation
-  Chain**
-  -----------------------------------------------------------------------
-  The redirect_uri parameter appears in OAuth login flows on thousands of
-  sites. When the redirect destination is reflected in an error page or
-  confirmation screen without encoding, it escalates from open redirect
-  to stored or reflected XSS. This chained vulnerability class has earned
-  rewards of \$3,000--\$10,000+ on major programmes. Escalation payload
-  test: /login?redirect_uri=javascript:alert(document.cookie)
+**★ Real-Life Example --- Language Parameter XSS via /index.php?lang=**
 
-  **🔍 Google Dork Used:**
+---
 
-  **inurl:redirect_uri= \| inurl:redirect= site:example.com**
+The lang= parameter is the 5th most vulnerable parameter in the XSS
+frequency table (1.4% of scanned sites). Researchers have found
+reflected XSS on multilingual CMS sites where the language code is
+reflected directly into the page without sanitisation. Payload for HTML
+context:
+/index.php?lang=\"\>\<script\>alert(document.cookie)\</script\> Payload
+for JS context: /index.php?lang=\";alert(document.domain); // HackerOne
+reports in this class: \$500--\$2,000 reward range.
 
-  **inurl:/login?redirect_uri= site:target.com**
+**🔍 Google Dork Used:**
 
-  **inurl:oauth2?redirect_uri= site:example.com**
-  -----------------------------------------------------------------------
+**inurl:?lang= site:target.com**
+
+**inurl:index.php?lang= site:example.com**
+
+**inurl:/?lang= inurl:& site:example.com**
+
+---
+
+---
+
+**★ Real-Life Example --- redirect_uri Parameter --- XSS Escalation
+Chain**
+
+---
+
+The redirect_uri parameter appears in OAuth login flows on thousands of
+sites. When the redirect destination is reflected in an error page or
+confirmation screen without encoding, it escalates from open redirect
+to stored or reflected XSS. This chained vulnerability class has earned
+rewards of \$3,000--\$10,000+ on major programmes. Escalation payload
+test: /login?redirect_uri=javascript:alert(document.cookie)
+
+**🔍 Google Dork Used:**
+
+**inurl:redirect_uri= \| inurl:redirect= site:example.com**
+
+**inurl:/login?redirect_uri= site:target.com**
+
+**inurl:oauth2?redirect_uri= site:example.com**
+
+---
 
 ### Open Redirect Dorks
 
@@ -4961,56 +5099,60 @@ server-side request can enable SSRF.
 =\> AWS EC2 metadata endpoint --- if the server fetches this, SSRF is
 confirmed
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- OAuth Token Theft via Open Redirect
-  (HackerOne, 2019--2024)**
-  -----------------------------------------------------------------------
-  Researchers using inurl:next= and inurl:return= dorks against OAuth
-  login flows found that many social login implementations redirect users
-  to an attacker-controlled domain after authentication if the next=
-  parameter is manipulated. Chain: open redirect in login flow + social
-  engineering = OAuth token theft. Rewards in this class typically range
-  from \$500 to \$4,500.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- OAuth Token Theft via Open Redirect
+(HackerOne, 2019--2024)**
 
-  **inurl:next= \| inurl:return= \| inurl:redirect= inurl:http
-  site:target.com**
+---
 
-  **inurl:/login?next= site:example.com**
+Researchers using inurl:next= and inurl:return= dorks against OAuth
+login flows found that many social login implementations redirect users
+to an attacker-controlled domain after authentication if the next=
+parameter is manipulated. Chain: open redirect in login flow + social
+engineering = OAuth token theft. Rewards in this class typically range
+from \$500 to \$4,500.
 
-  **inurl:/auth?return= \| inurl:/signin?redirect= site:example.com**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**inurl:next= \| inurl:return= \| inurl:redirect= inurl:http
+site:target.com**
+
+**inurl:/login?next= site:example.com**
+
+**inurl:/auth?return= \| inurl:/signin?redirect= site:example.com**
+
+---
 
 +-----------------------------------------------------------------------+
 | **★ Real-Life Example --- SSRF via Open Redirect --- AWS EC2 Metadata |
-| Chain**                                                               |
+| Chain** |
 +=======================================================================+
-| A well-documented critical-severity attack chain:                     |
-|                                                                       |
-| 1.  Find an open redirect endpoint via the inurl:url= dork.           |
-|                                                                       |
-| 2.  Set the redirect target to                                        |
-|     <http://169.254.169.254/latest/meta-data/>                        |
-|                                                                       |
-| 3.  The server-side fetch follows the redirect, returning AWS EC2     |
-|     instance metadata.                                                |
-|                                                                       |
-| 4.  The metadata response includes temporary IAM credentials usable   |
-|     to access S3.                                                     |
-|                                                                       |
-| Multiple HackerOne P1 reports have used this exact chain. Rewards:    |
-| \$5,000--\$50,000+.                                                   |
+| A well-documented critical-severity attack chain: |
+| |
+| 1. Find an open redirect endpoint via the inurl:url= dork. |
+| |
+| 2. Set the redirect target to |
+| <http://169.254.169.254/latest/meta-data/> |
+| |
+| 3. The server-side fetch follows the redirect, returning AWS EC2 |
+| instance metadata. |
+| |
+| 4. The metadata response includes temporary IAM credentials usable |
+| to access S3. |
+| |
+| Multiple HackerOne P1 reports have used this exact chain. Rewards: |
+| \$5,000--\$50,000+. |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **inurl:url= inurl:http site:target.com**                             |
+| **inurl:url= inurl:http site:target.com** |
 +-----------------------------------------------------------------------+
-| **inurl:url= \| inurl:fetch= \| inurl:load= inurl:http                |
-| site:example.com**                                                    |
+| **inurl:url= \| inurl:fetch= \| inurl:load= inurl:http |
+| site:example.com** |
 +-----------------------------------------------------------------------+
-| **inurl:proxy= \| inurl:dest= \| inurl:forward= inurl:http            |
-| site:example.com**                                                    |
+| **inurl:proxy= \| inurl:dest= \| inurl:forward= inurl:http |
+| site:example.com** |
 +-----------------------------------------------------------------------+
 
 ### Curated Resources
@@ -5035,7 +5177,7 @@ penetration testers.
 > it. Test in a non-destructive way (e.g. a harmless alert payload) and
 > report responsibly through the programme channel.
 
-#### **How to Use This List** 
+#### **How to Use This List**
 
 1.  Pick a parameter from the frequency table below (e.g. q, s, search,
     lang).
@@ -5059,107 +5201,111 @@ penetration testers.
 Parameters listed by the percentage of scanned sites where XSS was
 confirmed through that parameter.
 
-  ---------------------------------------------------------------------------
-  **Parameter**         **Frequency**   **Parameter**         **Frequency**
-  --------------------- --------------- --------------------- ---------------
-  ?q=                   5.5%            ?text=                0.3%
+---
 
-  ?s=                   4.5%            ?handler=             0.2%
+**Parameter** **Frequency** **Parameter** **Frequency**
 
-  ?search=              1.9%            ?myord=               0.2%
+---
 
-  ?id=                  1.7%            ?myshownums=          0.2%
+?q= 5.5% ?text= 0.3%
 
-  ?lang=                1.4%            ?id_site=             0.2%
+?s= 4.5% ?handler= 0.2%
 
-  ?keyword=             1.2%            ?city=                0.2%
+?search= 1.9% ?myord= 0.2%
 
-  ?query=               1.1%            ?search_query=        0.2%
+?id= 1.7% ?myshownums= 0.2%
 
-  ?page=                1.0%            ?msg=                 0.2%
+?lang= 1.4% ?id_site= 0.2%
 
-  ?keywords=            0.8%            ?sortby=              0.2%
+?keyword= 1.2% ?city= 0.2%
 
-  ?year=                0.8%            ?mode=                0.2%
+?query= 1.1% ?search_query= 0.2%
 
-  ?view=                0.8%            ?CODE=                0.2%
+?page= 1.0% ?msg= 0.2%
 
-  ?email=               0.8%            ?location=            0.2%
+?keywords= 0.8% ?sortby= 0.2%
 
-  ?type=                0.7%            ?v=                   0.2%
+?year= 0.8% ?mode= 0.2%
 
-  ?name=                0.7%            ?order=               0.2%
+?view= 0.8% ?CODE= 0.2%
 
-  ?p=                   0.7%            ?n=                   0.2%
+?email= 0.8% ?location= 0.2%
 
-  ?month=               0.6%            ?term=                0.2%
+?type= 0.7% ?v= 0.2%
 
-  ?immagine=            0.6%            ?start=               0.2%
+?name= 0.7% ?order= 0.2%
 
-  ?list_type=           0.5%            ?k=                   0.2%
+?p= 0.7% ?n= 0.2%
 
-  ?url=                 0.5%            ?redirect=            0.2%
+?month= 0.6% ?term= 0.2%
 
-  ?terms=               0.5%            ?ref=                 0.2%
+?immagine= 0.6% ?start= 0.2%
 
-  ?categoryid=          0.5%            ?file=                0.2%
+?list_type= 0.5% ?k= 0.2%
 
-  ?key=                 0.5%            ?country=             0.2%
+?url= 0.5% ?redirect= 0.2%
 
-  ?l=                   0.5%            ?from=                0.1%
+?terms= 0.5% ?ref= 0.2%
 
-  ?begindate=           0.4%            ?r=                   0.1%
+?categoryid= 0.5% ?file= 0.2%
 
-  ?enddate=             0.4%            ?f=                   0.1%
+?key= 0.5% ?country= 0.2%
 
-  ?categoryid2=         0.4%            ?field%5B%5D=         0.1%
+?l= 0.5% ?from= 0.1%
 
-  ?t=                   0.4%            ?searchScope=         0.1%
+?begindate= 0.4% ?r= 0.1%
 
-  ?cat=                 0.4%            ?state=               0.1%
+?enddate= 0.4% ?f= 0.1%
 
-  ?category=            0.4%            ?phone=               0.1%
+?categoryid2= 0.4% ?field%5B%5D= 0.1%
 
-  ?action=              0.4%            ?Itemid=              0.1%
+?t= 0.4% ?searchScope= 0.1%
 
-  ?bukva=               0.4%            ?lng=                 0.1%
+?cat= 0.4% ?state= 0.1%
 
-  ?redirect_uri=        0.4%            ?place=               0.1%
+?category= 0.4% ?phone= 0.1%
 
-  ?firstname=           0.4%            ?bedrooms=            0.1%
+?action= 0.4% ?Itemid= 0.1%
 
-  ?c=                   0.4%            ?expand=              0.1%
+?bukva= 0.4% ?lng= 0.1%
 
-  ?lastname=            0.3%            ?e=                   0.1%
+?redirect_uri= 0.4% ?place= 0.1%
 
-  ?uid=                 0.3%            ?price=               0.1%
+?firstname= 0.4% ?bedrooms= 0.1%
 
-  ?startTime=           0.3%            ?d=                   0.1%
+?c= 0.4% ?expand= 0.1%
 
-  ?eventSearch=         0.3%            ?path=                0.1%
+?lastname= 0.3% ?e= 0.1%
 
-  ?categoryids2=        0.3%            ?address=             0.1%
+?uid= 0.3% ?price= 0.1%
 
-  ?categoryids=         0.3%            ?day=                 0.1%
+?startTime= 0.3% ?d= 0.1%
 
-  ?sort=                0.3%            ?display=             0.1%
+?eventSearch= 0.3% ?path= 0.1%
 
-  ?positiontitle=       0.3%            ?a=                   0.1%
+?categoryids2= 0.3% ?address= 0.1%
 
-  ?groupid=             0.3%            ?error=               0.1%
+?categoryids= 0.3% ?day= 0.1%
 
-  ?m=                   0.3%            ?form=                0.1%
+?sort= 0.3% ?display= 0.1%
 
-  ?message=             0.3%            ?language=            0.1%
+?positiontitle= 0.3% ?a= 0.1%
 
-  ?tag=                 0.3%            ?mls=                 0.1%
+?groupid= 0.3% ?error= 0.1%
 
-  ?pn=                  0.3%            ?kw=                  0.1%
+?m= 0.3% ?form= 0.1%
 
-  ?title=               0.3%            ?u=                   0.1%
+?message= 0.3% ?language= 0.1%
 
-  ?orgId=               0.3%                                  
-  ---------------------------------------------------------------------------
+?tag= 0.3% ?mls= 0.1%
+
+?pn= 0.3% ?kw= 0.1%
+
+?title= 0.3% ?u= 0.1%
+
+?orgId= 0.3%
+
+---
 
 #### **Table 2: Most Vulnerable Paths with Parameters**
 
@@ -5167,124 +5313,128 @@ These are the most statistically vulnerable path+parameter combinations.
 More specific than Table 1, they represent exact URL structures found to
 be exploitable across millions of scanned websites.
 
-  ----------------------------------------------------------------------
-  **Path + Parameter**                                **Frequency
-                                                      Score**
-  --------------------------------------------------- ------------------
-  /?s=                                                3.6
+---
 
-  /search?q=                                          2.5
+**Path + Parameter** **Frequency
+Score**
 
-  /index.php?lang=                                    0.6
+---
 
-  /pplay/info_prenotazioni.asp?immagine=              0.6
+/?s= 3.6
 
-  /shared/lgflsearch.php?terms=                       0.5
+/search?q= 2.5
 
-  /index.php?page=                                    0.4
+/index.php?lang= 0.6
 
-  /search?query=                                      0.4
+/pplay/info_prenotazioni.asp?immagine= 0.6
 
-  /index.php?bukva=                                   0.4
+/shared/lgflsearch.php?terms= 0.5
 
-  /pro/events_print_setup.cfm?list_type=              0.3
+/index.php?page= 0.4
 
-  /pro/events_print_setup.cfm?categoryid=             0.3
+/search?query= 0.4
 
-  /pro/events_print_setup.cfm?categoryid2=            0.3
+/index.php?bukva= 0.4
 
-  /?eventSearch=                                      0.3
+/pro/events_print_setup.cfm?list_type= 0.3
 
-  /?startTime=                                        0.3
+/pro/events_print_setup.cfm?categoryid= 0.3
 
-  /pro/events_ical.cfm?categoryids=                   0.3
+/pro/events_print_setup.cfm?categoryid2= 0.3
 
-  /pro/events_ical.cfm?categoryids2=                  0.3
+/?eventSearch= 0.3
 
-  /pro/events_print_setup.cfm?month=                  0.3
+/?startTime= 0.3
 
-  /pro/events_print_setup.cfm?year=                   0.3
+/pro/events_ical.cfm?categoryids= 0.3
 
-  /pro/events_print_setup.cfm?begindate=              0.3
+/pro/events_ical.cfm?categoryids2= 0.3
 
-  /pro/events_print_setup.cfm?enddate=                0.3
+/pro/events_print_setup.cfm?month= 0.3
 
-  /search?keyword=                                    0.3
+/pro/events_print_setup.cfm?year= 0.3
 
-  /?q=                                                0.3
+/pro/events_print_setup.cfm?begindate= 0.3
 
-  /search/?q=                                         0.3
+/pro/events_print_setup.cfm?enddate= 0.3
 
-  /index.php?pn=                                      0.3
+/search?keyword= 0.3
 
-  /?lang=                                             0.3
+/?q= 0.3
 
-  /property/search?uid=                               0.3
+/search/?q= 0.3
 
-  /index.php?id=                                      0.3
+/index.php?pn= 0.3
 
-  /search?orgId=                                      0.3
+/?lang= 0.3
 
-  /products?handler=                                  0.2
+/property/search?uid= 0.3
 
-  /login?redirect_uri=                                0.2
+/index.php?id= 0.3
 
-  /connexion?redirect_uri=                            0.2
+/search?orgId= 0.3
 
-  /index.php?action=                                  0.2
+/products?handler= 0.2
 
-  /search/?search=                                    0.2
+/login?redirect_uri= 0.2
 
-  /news/class/index.php?myshownums=                   0.2
+/connexion?redirect_uri= 0.2
 
-  /news/class/index.php?myord=                        0.2
+/index.php?action= 0.2
 
-  /servlet/com.jsbsoft.jtf.core.SG?CODE=              0.2
+/search/?search= 0.2
 
-  /index.php?mebel_id=                                0.2
+/news/class/index.php?myshownums= 0.2
 
-  /search.html?searchScope=                           0.1
+/news/class/index.php?myord= 0.2
 
-  /videos?tag=                                        0.1
+/servlet/com.jsbsoft.jtf.core.SG?CODE= 0.2
 
-  /videos?place=                                      0.1
+/index.php?mebel_id= 0.2
 
-  /videos?search=                                     0.1
+/search.html?searchScope= 0.1
 
-  /?email=                                            0.1
+/videos?tag= 0.1
 
-  /?cat=                                              0.1
+/videos?place= 0.1
 
-  /content.php?expand=                                0.1
+/videos?search= 0.1
 
-  /?page=                                             0.1
+/?email= 0.1
 
-  /search/?s=                                         0.1
+/?cat= 0.1
 
-  /apps/email/index.jsp?n=                            0.1
+/content.php?expand= 0.1
 
-  /?name=                                             0.1
+/?page= 0.1
 
-  /?sort=                                             0.1
+/search/?s= 0.1
 
-  /search-results?q=                                  0.1
+/apps/email/index.jsp?n= 0.1
 
-  /plan_du_site.php?lang=                             0.1
+/?name= 0.1
 
-  /index.php?Itemid=                                  0.1
+/?sort= 0.1
 
-  /?view=                                             0.1
+/search-results?q= 0.1
 
-  /?t=                                                0.1
+/plan_du_site.php?lang= 0.1
 
-  /firms/?text=                                       0.1
+/index.php?Itemid= 0.1
 
-  /servlet/com.jsbsoft.jtf.core.SG?OBJET=             0.1
+/?view= 0.1
 
-  /?bathrooms= / /?bedrooms= / /?price=               0.1
+/?t= 0.1
 
-  /?minprice= / /?maxprice= / /?mls=                  0.1
-  ----------------------------------------------------------------------
+/firms/?text= 0.1
+
+/servlet/com.jsbsoft.jtf.core.SG?OBJET= 0.1
+
+/?bathrooms= / /?bedrooms= / /?price= 0.1
+
+/?minprice= / /?maxprice= / /?mls= 0.1
+
+---
 
 #### **Greatest Real-Life XSS Examples**
 
@@ -5302,24 +5452,28 @@ findings were initially discovered through Google Dork recon.
 **Example payload:** /?s=\"\>\<img src=x
 onerror=alert(document.domain)\>
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- WordPress /?s= XSS --- 400+ Vulnerable
-  Plugins (2022 Wordfence Audit)**
-  -----------------------------------------------------------------------
-  Wordfence identified 400+ WordPress plugins where the ?s= search
-  parameter was reflected without output encoding, enabling reflected XSS
-  across millions of sites. Government portals, university websites, and
-  major e-commerce platforms were affected. Payload: /?s=\"\>\<img src=x
-  onerror=alert(document.domain)\>
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- WordPress /?s= XSS --- 400+ Vulnerable
+Plugins (2022 Wordfence Audit)**
 
-  **inurl:?s= site:target.gov**
+---
 
-  **site:target.com inurl:?s=**
+Wordfence identified 400+ WordPress plugins where the ?s= search
+parameter was reflected without output encoding, enabling reflected XSS
+across millions of sites. Government portals, university websites, and
+major e-commerce platforms were affected. Payload: /?s=\"\>\<img src=x
+onerror=alert(document.domain)\>
 
-  **inurl:/?s= inurl:& site:example.com**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**inurl:?s= site:target.gov**
+
+**site:target.com inurl:?s=**
+
+**inurl:/?s= inurl:& site:example.com**
+
+---
 
 ##### **2. Reflected XSS via /search?q= (Universal Search Parameter)**
 
@@ -5328,25 +5482,29 @@ frequency score (2.5). It is the single most dangerous parameter class
 after WordPress\'s /?s=, found across frameworks, custom CMS platforms,
 and enterprise portals.
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- University Portal XSS via /search?q= ---
-  \$1,500 Reward (2021)**
-  -----------------------------------------------------------------------
-  A researcher discovered that a major South Asian university\'s student
-  portal reflected the ?q= parameter directly into a JavaScript string
-  without escaping single quotes. Payload:
-  /search?q=\'-alert(document.cookie)-\' This resulted in a stored cookie
-  exfiltration PoC. The university\'s bug bounty programme paid a \$1,500
-  reward after remediation.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- University Portal XSS via /search?q= ---
+\$1,500 Reward (2021)**
 
-  **inurl:/search?q= site:target.edu**
+---
 
-  **inurl:search?q= site:\*.edu**
+A researcher discovered that a major South Asian university\'s student
+portal reflected the ?q= parameter directly into a JavaScript string
+without escaping single quotes. Payload:
+/search?q=\'-alert(document.cookie)-\' This resulted in a stored cookie
+exfiltration PoC. The university\'s bug bounty programme paid a \$1,500
+reward after remediation.
 
-  **inurl:?q= inurl:& site:example.com**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**inurl:/search?q= site:target.edu**
+
+**inurl:search?q= site:\*.edu**
+
+**inurl:?q= inurl:& site:example.com**
+
+---
 
 ##### **3. XSS via ?lang= (Language Parameter Injection)**
 
@@ -5359,28 +5517,28 @@ attributes, JavaScript variables, or meta tags for i18n purposes.
 **JS context payload:** ?lang=\";alert(document.domain);//
 
 +-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Language Parameter XSS --- Travel & SaaS    |
-| Platforms (\$750--\$3,000 Rewards)**                                  |
+| **★ Real-Life Example --- Language Parameter XSS --- Travel & SaaS |
+| Platforms (\$750--\$3,000 Rewards)** |
 +=======================================================================+
-| Multiple HackerOne reports in the \$750--\$3,000 range used the       |
-| ?lang= vector against travel booking platforms, SaaS dashboards, and  |
-| government multilingual portals.                                      |
-|                                                                       |
-| Common vulnerable pattern:                                            |
-|                                                                       |
-| \<html lang=\"\[user_input\]\"\> OR \<script\>var lang =              |
-| \"\[user_input\]\";\</script\>                                        |
-|                                                                       |
-| Both HTML and JS context variants have been confirmed on production   |
-| targets.                                                              |
+| Multiple HackerOne reports in the \$750--\$3,000 range used the |
+| ?lang= vector against travel booking platforms, SaaS dashboards, and |
+| government multilingual portals. |
+| |
+| Common vulnerable pattern: |
+| |
+| \<html lang=\"\[user_input\]\"\> OR \<script\>var lang = |
+| \"\[user_input\]\";\</script\> |
+| |
+| Both HTML and JS context variants have been confirmed on production |
+| targets. |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **inurl:?lang= site:target.com**                                      |
+| **inurl:?lang= site:target.com** |
 +-----------------------------------------------------------------------+
-| **inurl:index.php?lang= site:example.com**                            |
+| **inurl:index.php?lang= site:example.com** |
 +-----------------------------------------------------------------------+
-| **inurl:/?lang= inurl:& site:example.com**                            |
+| **inurl:/?lang= inurl:& site:example.com** |
 +-----------------------------------------------------------------------+
 
 ##### **4. XSS via ?redirect_uri= --- OAuth Escalation Chain**
@@ -5391,26 +5549,26 @@ redirect_uri is simultaneously: (a) an open redirect, (b) an OAuth token
 theft vector, and (c) an XSS if the javascript: protocol is accepted.
 
 +-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Fintech Platform XSS via redirect_uri= ---  |
-| \$4,200 HackerOne Reward**                                            |
+| **★ Real-Life Example --- Fintech Platform XSS via redirect_uri= --- |
+| \$4,200 HackerOne Reward** |
 +=======================================================================+
-| A disclosed HackerOne report on a major fintech platform used:        |
-|                                                                       |
-| /login?redirect_uri=javascript:alert(document.cookie)                 |
-|                                                                       |
-| This successfully executed XSS in the context of the login origin,    |
-| bypassing the Same-Origin Policy. The redirect_uri was not validated  |
-| against an allowlist of permitted redirect destinations. Severity:    |
-| High \| Reward: \$4,200 \| Fix: server-side allowlist enforcement.    |
+| A disclosed HackerOne report on a major fintech platform used: |
+| |
+| /login?redirect_uri=javascript:alert(document.cookie) |
+| |
+| This successfully executed XSS in the context of the login origin, |
+| bypassing the Same-Origin Policy. The redirect_uri was not validated |
+| against an allowlist of permitted redirect destinations. Severity: |
+| High \| Reward: \$4,200 \| Fix: server-side allowlist enforcement. |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **inurl:/login?redirect_uri= \| inurl:/connexion?redirect_uri=        |
-| site:target.com**                                                     |
+| **inurl:/login?redirect_uri= \| inurl:/connexion?redirect_uri= |
+| site:target.com** |
 +-----------------------------------------------------------------------+
-| **inurl:/oauth2/authorize?redirect_uri= site:example.com**            |
+| **inurl:/oauth2/authorize?redirect_uri= site:example.com** |
 +-----------------------------------------------------------------------+
-| **inurl:/auth/callback?redirect_uri= site:example.com**               |
+| **inurl:/auth/callback?redirect_uri= site:example.com** |
 +-----------------------------------------------------------------------+
 
 ##### **5. XSS via ColdFusion Event Management Parameters**
@@ -5420,25 +5578,29 @@ month, year, etc.) appear repeatedly in the Top 100 list because they
 belong to a widely-deployed ColdFusion event management system used by
 government agencies and conference platforms.
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- ColdFusion events_print_setup.cfm --- US
-  Government Portals (Reported to CISA 2020--2021)**
-  -----------------------------------------------------------------------
-  Researchers found that multiple US county and city government websites
-  using this exact ColdFusion module reflected all listed parameters
-  without HTML encoding. The vulnerability was reported to CISA and
-  patched across affected deployments in 2020--2021. Bug bounty rewards
-  for this class: \$500--\$2,000 (government VDPs). All six path variants
-  from Table 2 were confirmed vulnerable across different targets.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- ColdFusion events_print_setup.cfm --- US
+Government Portals (Reported to CISA 2020--2021)**
 
-  **site:target.gov inurl:/pro/events_print_setup.cfm**
+---
 
-  **site:\*.gov inurl:/pro/events_print_setup.cfm**
+Researchers found that multiple US county and city government websites
+using this exact ColdFusion module reflected all listed parameters
+without HTML encoding. The vulnerability was reported to CISA and
+patched across affected deployments in 2020--2021. Bug bounty rewards
+for this class: \$500--\$2,000 (government VDPs). All six path variants
+from Table 2 were confirmed vulnerable across different targets.
 
-  **site:\*.gov inurl:/pro/events_ical.cfm**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**site:target.gov inurl:/pro/events_print_setup.cfm**
+
+**site:\*.gov inurl:/pro/events_print_setup.cfm**
+
+**site:\*.gov inurl:/pro/events_ical.cfm**
+
+---
 
 ## 6.9 Top Google Dorks for Sensitive Data
 
@@ -5448,8 +5610,8 @@ Dorking. For each platform, the dork query is provided alongside
 documented real-world findings and verified HackerOne reports where
 available.
 
-*Swap \"example.com\" with your target\'s domain or organisation name in
-every query.*
+_Swap \"example.com\" with your target\'s domain or organisation name in
+every query._
 
 > **CRITICAL:** Never open, download, or use data you find in any of
 > these storage locations without explicit written authorisation. Find,
@@ -5479,48 +5641,56 @@ OR \"acquisition\"
 site:docs.google.com inurl:\"/d/\" \"example.com\" \"salary\" OR
 \"performance review\"
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Fortune 500 M&A Target List Exposed ---
-  \$3,500 HackerOne Reward**
-  -----------------------------------------------------------------------
-  A researcher targeting a Fortune 500 technology company discovered a
-  Google Doc shared \"anyone with the link\" containing the company\'s
-  internal acquisition target list for the upcoming fiscal year,
-  including valuation figures and due diligence timelines. The programme
-  classified it as \"Unintended Data Exposure\" and awarded \$3,500. The
-  document was immediately restricted and the company implemented Google
-  Workspace DLP.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Fortune 500 M&A Target List Exposed ---
+\$3,500 HackerOne Reward**
 
-  **site:docs.google.com inurl:\"/d/\" \"companyname\" \"acquisition\"**
+---
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR
-  \"board\" OR \"M&A\"**
-  -----------------------------------------------------------------------
+A researcher targeting a Fortune 500 technology company discovered a
+Google Doc shared \"anyone with the link\" containing the company\'s
+internal acquisition target list for the upcoming fiscal year,
+including valuation figures and due diligence timelines. The programme
+classified it as \"Unintended Data Exposure\" and awarded \$3,500. The
+document was immediately restricted and the company implemented Google
+Workspace DLP.
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Employee Salary Bands & M&A Negotiations in
-  Public Google Docs (Ongoing)**
-  -----------------------------------------------------------------------
-  Researchers have repeatedly found employee salary bands, HR performance
-  review templates, and M&A negotiation documents in public Google Docs
-  belonging to major consulting firms, banks, and government contractors.
-  Exposure pattern: document created for a team, sharing set to \"anyone
-  with the link\" for convenience, then never reverted to private after
-  the meeting.
+**🔍 Google Dork Used:**
 
-  **🔍 Google Dork Used:**
+**site:docs.google.com inurl:\"/d/\" \"companyname\" \"acquisition\"**
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"salary\" OR
-  \"compensation\"**
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR
+\"board\" OR \"M&A\"**
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"performance\" OR
-  \"review\"**
+---
 
-  **site:docs.google.com inurl:\"/d/\" \"example.com\" \"nda\" OR
-  \"negotiation\"**
-  -----------------------------------------------------------------------
+---
+
+**★ Real-Life Example --- Employee Salary Bands & M&A Negotiations in
+Public Google Docs (Ongoing)**
+
+---
+
+Researchers have repeatedly found employee salary bands, HR performance
+review templates, and M&A negotiation documents in public Google Docs
+belonging to major consulting firms, banks, and government contractors.
+Exposure pattern: document created for a team, sharing set to \"anyone
+with the link\" for convenience, then never reverted to private after
+the meeting.
+
+**🔍 Google Dork Used:**
+
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"salary\" OR
+\"compensation\"**
+
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"performance\" OR
+\"review\"**
+
+**site:docs.google.com inurl:\"/d/\" \"example.com\" \"nda\" OR
+\"negotiation\"**
+
+---
 
 ### 2. Microsoft OneDrive
 
@@ -5541,42 +5711,50 @@ site:onedrive.live.com \"example.com\" \"internal\" OR \"confidential\"
 
 site:onedrive.live.com \"example.com\" filetype:pdf OR filetype:pptx
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- OneDrive Research Scan --- 12% of Indexed
-  Links Contained Internal Files (2023)**
-  -----------------------------------------------------------------------
-  A 2023 research scan found that approximately 12% of OneDrive links
-  indexed by Google contained files that appeared to be internal-only
-  based on their filenames and content. Common finds: employee onboarding
-  guides containing default passwords, proprietary training materials,
-  and internal process documentation.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- OneDrive Research Scan --- 12% of Indexed
+Links Contained Internal Files (2023)**
 
-  **site:onedrive.live.com \"internal\" OR \"confidential\" filetype:pdf
-  OR filetype:pptx**
+---
 
-  **site:onedrive.live.com \"example.com\" \"onboarding\" OR
-  \"procedure\" OR \"policy\"**
-  -----------------------------------------------------------------------
+A 2023 research scan found that approximately 12% of OneDrive links
+indexed by Google contained files that appeared to be internal-only
+based on their filenames and content. Common finds: employee onboarding
+guides containing default passwords, proprietary training materials,
+and internal process documentation.
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Former Employee OneDrive --- Production API
-  Docs & DB Schema Leaked**
-  -----------------------------------------------------------------------
-  A penetration tester on an authorised engagement found a presentation
-  uploaded by a former employee containing API endpoint documentation,
-  internal credential formats, and the schema for the company\'s
-  production database. The employee had uploaded it during a workshop and
-  never revoked the public link.
+**🔍 Google Dork Used:**
 
-  **🔍 Google Dork Used:**
+**site:onedrive.live.com \"internal\" OR \"confidential\" filetype:pdf
+OR filetype:pptx**
 
-  **site:onedrive.live.com \"targetcompany\"**
+**site:onedrive.live.com \"example.com\" \"onboarding\" OR
+\"procedure\" OR \"policy\"**
 
-  **site:onedrive.live.com \"example.com\" \"api\" OR \"schema\" OR
-  \"database\"**
-  -----------------------------------------------------------------------
+---
+
+---
+
+**★ Real-Life Example --- Former Employee OneDrive --- Production API
+Docs & DB Schema Leaked**
+
+---
+
+A penetration tester on an authorised engagement found a presentation
+uploaded by a former employee containing API endpoint documentation,
+internal credential formats, and the schema for the company\'s
+production database. The employee had uploaded it during a workshop and
+never revoked the public link.
+
+**🔍 Google Dork Used:**
+
+**site:onedrive.live.com \"targetcompany\"**
+
+**site:onedrive.live.com \"example.com\" \"api\" OR \"schema\" OR
+\"database\"**
+
+---
 
 ### 3. Dropbox
 
@@ -5598,42 +5776,46 @@ site:dropbox.com/s \"example.com\" \"backup\" OR \"export\" OR \"dump\"
 
 +-----------------------------------------------------------------------+
 | **★ Real-Life Example --- Dropbox Credential Breach (2012) --- Reused |
-| Password via LinkedIn**                                               |
+| Password via LinkedIn** |
 +=======================================================================+
-| Dropbox itself suffered a breach where employee credentials were      |
-| stolen via a reused password from the LinkedIn breach. 68M accounts   |
-| were exposed. Though not a Google Dork attack, researchers use        |
+| Dropbox itself suffered a breach where employee credentials were |
+| stolen via a reused password from the LinkedIn breach. 68M accounts |
+| were exposed. Though not a Google Dork attack, researchers use |
 | Dropbox dorks to find forgotten public shares containing credentials, |
-| database exports, and client contract PDFs.                           |
-|                                                                       |
-| The dork below is what a researcher targeting post-breach Dropbox     |
-| exposure would use:                                                   |
+| database exports, and client contract PDFs. |
+| |
+| The dork below is what a researcher targeting post-breach Dropbox |
+| exposure would use: |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:dropbox.com/s \"example.com\" \"password\" OR \"credentials\"  |
-| OR \"auth\"**                                                         |
+| **site:dropbox.com/s \"example.com\" \"password\" OR \"credentials\" |
+| OR \"auth\"** |
 +-----------------------------------------------------------------------+
-| **site:dropbox.com/s \"company\" filetype:sql OR filetype:csv OR      |
-| filetype:env**                                                        |
+| **site:dropbox.com/s \"company\" filetype:sql OR filetype:csv OR |
+| filetype:env** |
 +-----------------------------------------------------------------------+
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- SaaS Customer DB Export Found on Dropbox ---
-  \$5,000 Bugcrowd Critical**
-  -----------------------------------------------------------------------
-  A bug bounty researcher found a Dropbox folder link containing a
-  complete export of a SaaS company\'s customer database in CSV format:
-  14,000 records with email addresses, subscription details, and hashed
-  passwords. Reported on Bugcrowd. Severity: Critical. Reward: \$5,000.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- SaaS Customer DB Export Found on Dropbox ---
+\$5,000 Bugcrowd Critical**
 
-  **site:dropbox.com/s \"companyname\"**
+---
 
-  **site:dropbox.com/s \"companyname\" \".csv\" OR \".sql\" OR
-  \"export\"**
-  -----------------------------------------------------------------------
+A bug bounty researcher found a Dropbox folder link containing a
+complete export of a SaaS company\'s customer database in CSV format:
+14,000 records with email addresses, subscription details, and hashed
+passwords. Reported on Bugcrowd. Severity: Critical. Reward: \$5,000.
+
+**🔍 Google Dork Used:**
+
+**site:dropbox.com/s \"companyname\"**
+
+**site:dropbox.com/s \"companyname\" \".csv\" OR \".sql\" OR
+\"export\"**
+
+---
 
 ### 4. Box
 
@@ -5653,24 +5835,28 @@ site:box.com/s \"example.com\" \"audit\" OR \"financial\"
 
 site:box.com/s \"example.com\" \"confidential\" OR \"privileged\"
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Enterprise Audit --- Client Contracts
-  Publicly Accessible via Box**
-  -----------------------------------------------------------------------
-  Enterprise security auditors using site:box.com/s \"clientname\" during
-  authorised assessments have consistently found client-facing shared
-  folders containing internal financial reports, legal contracts, and M&A
-  due diligence packs. Configured with public link access instead of
-  restricted sharing in all cases found.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Enterprise Audit --- Client Contracts
+Publicly Accessible via Box**
 
-  **site:box.com/s \"clientname\" \"contract\" OR \"nda\" OR
-  \"agreement\"**
+---
 
-  **site:box.com/s \"example.com\" \"audit\" OR \"due diligence\" OR
-  \"financial\"**
-  -----------------------------------------------------------------------
+Enterprise security auditors using site:box.com/s \"clientname\" during
+authorised assessments have consistently found client-facing shared
+folders containing internal financial reports, legal contracts, and M&A
+due diligence packs. Configured with public link access instead of
+restricted sharing in all cases found.
+
+**🔍 Google Dork Used:**
+
+**site:box.com/s \"clientname\" \"contract\" OR \"nda\" OR
+\"agreement\"**
+
+**site:box.com/s \"example.com\" \"audit\" OR \"due diligence\" OR
+\"financial\"**
+
+---
 
 ### 5. Azure DevOps
 
@@ -5692,24 +5878,28 @@ site:dev.azure.com \"example.com\" \"connection string\"
 
 site:dev.azure.com \"example.com\" \"password\" OR \"private_key\"
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Public Azure DevOps Repos --- Hardcoded
-  Secrets (\$1,500--\$8,000 Rewards)**
-  -----------------------------------------------------------------------
-  Multiple HackerOne reports (2020--2024) describe researchers finding
-  Azure DevOps repositories set to \"Public\" by a developer during a
-  demo and never reverted. Contents found: production .env files in git
-  history, hardcoded API keys for Twilio, Stripe, and AWS, and complete
-  infrastructure-as-code files revealing internal topology. Rewards in
-  this class: \$1,500--\$8,000 depending on severity of exposed secrets.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Public Azure DevOps Repos --- Hardcoded
+Secrets (\$1,500--\$8,000 Rewards)**
 
-  **site:dev.azure.com \"example.com\"**
+---
 
-  **site:dev.azure.com \"company\" \"api_key\" OR \"token\" OR \"secret\"
-  OR \"password\"**
-  -----------------------------------------------------------------------
+Multiple HackerOne reports (2020--2024) describe researchers finding
+Azure DevOps repositories set to \"Public\" by a developer during a
+demo and never reverted. Contents found: production .env files in git
+history, hardcoded API keys for Twilio, Stripe, and AWS, and complete
+infrastructure-as-code files revealing internal topology. Rewards in
+this class: \$1,500--\$8,000 depending on severity of exposed secrets.
+
+**🔍 Google Dork Used:**
+
+**site:dev.azure.com \"example.com\"**
+
+**site:dev.azure.com \"company\" \"api_key\" OR \"token\" OR \"secret\"
+OR \"password\"**
+
+---
 
 ### 6. Microsoft SharePoint
 
@@ -5732,24 +5922,28 @@ site:sharepoint.com \"example.com\" \"employee\" OR \"HR\" OR \"salary\"
 site:sharepoint.com \"example.com\" \"network\" OR \"infrastructure\" OR
 \"topology\"
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Government Agency SharePoint --- IT
-  Infrastructure Diagrams Publicly Accessible**
-  -----------------------------------------------------------------------
-  A government agency\'s SharePoint site was found by a researcher via
-  the dork below. The site was configured with \"external sharing\"
-  enabled, allowing anyone with a Microsoft account to view the
-  documents. Contents included internal security audit reports, IT
-  procurement plans, and network infrastructure diagrams. Reported to the
-  agency\'s CERT; the site was taken private within 48 hours.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Government Agency SharePoint --- IT
+Infrastructure Diagrams Publicly Accessible**
 
-  **site:sharepoint.com \"agency-name\"**
+---
 
-  **site:sharepoint.com \"example.gov\" \"internal\" OR \"security\" OR
-  \"infrastructure\"**
-  -----------------------------------------------------------------------
+A government agency\'s SharePoint site was found by a researcher via
+the dork below. The site was configured with \"external sharing\"
+enabled, allowing anyone with a Microsoft account to view the
+documents. Contents included internal security audit reports, IT
+procurement plans, and network infrastructure diagrams. Reported to the
+agency\'s CERT; the site was taken private within 48 hours.
+
+**🔍 Google Dork Used:**
+
+**site:sharepoint.com \"agency-name\"**
+
+**site:sharepoint.com \"example.gov\" \"internal\" OR \"security\" OR
+\"infrastructure\"**
+
+---
 
 ### 7. DigitalOcean Spaces
 
@@ -5769,24 +5963,28 @@ site:digitaloceanspaces.com \"example.com\" \".sql\" OR \".bak\" OR
 site:digitaloceanspaces.com \"example.com\" \"backup\" OR \"config\" OR
 \"dump\"
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- PostgreSQL Backups & Redis Credentials on
-  Public DigitalOcean Spaces**
-  -----------------------------------------------------------------------
-  Researchers using site:digitaloceanspaces.com in authorised engagements
-  have found full PostgreSQL database backups, application configuration
-  files with Redis credentials, and user-generated content including
-  documents containing PII. DigitalOcean Spaces defaults to private, so
-  public buckets represent a deliberate but often forgotten configuration
-  change made during development and never reverted.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- PostgreSQL Backups & Redis Credentials on
+Public DigitalOcean Spaces**
 
-  **site:digitaloceanspaces.com \"example.com\"**
+---
 
-  **site:digitaloceanspaces.com \"example.com\" filetype:sql OR
-  filetype:bak OR filetype:env**
-  -----------------------------------------------------------------------
+Researchers using site:digitaloceanspaces.com in authorised engagements
+have found full PostgreSQL database backups, application configuration
+files with Redis credentials, and user-generated content including
+documents containing PII. DigitalOcean Spaces defaults to private, so
+public buckets represent a deliberate but often forgotten configuration
+change made during development and never reverted.
+
+**🔍 Google Dork Used:**
+
+**site:digitaloceanspaces.com \"example.com\"**
+
+**site:digitaloceanspaces.com \"example.com\" filetype:sql OR
+filetype:bak OR filetype:env**
+
+---
 
 ### 8. Firebase
 
@@ -5808,44 +6006,48 @@ https://company-name-default-rtdb.firebaseio.com/.json
 readable.
 
 +-----------------------------------------------------------------------+
-| **⚠ HackerOne Report #1065134** ---                                   |
-| https://hackerone.com/reports/1065134                                 |
+| **⚠ HackerOne Report #1065134** --- |
+| https://hackerone.com/reports/1065134 |
 +=======================================================================+
-| A researcher used site:firebaseio.com \"targetapp\" to find a         |
-| Firebase Realtime Database belonging to a mobile app with over 5      |
-| million installs. Appending /.json to the database URL returned ALL   |
-| user records (emails, phone numbers, profile photos, location         |
-| history) without any authentication.                                  |
-|                                                                       |
-| Severity: Critical \| Reward: \$2,500 \| Time to fix: 6 hours after   |
-| report.                                                               |
+| A researcher used site:firebaseio.com \"targetapp\" to find a |
+| Firebase Realtime Database belonging to a mobile app with over 5 |
+| million installs. Appending /.json to the database URL returned ALL |
+| user records (emails, phone numbers, profile photos, location |
+| history) without any authentication. |
+| |
+| Severity: Critical \| Reward: \$2,500 \| Time to fix: 6 hours after |
+| report. |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:firebaseio.com \"targetapp\"**                                 |
+| **site:firebaseio.com \"targetapp\"** |
 +-----------------------------------------------------------------------+
-| **site:firebaseio.com \"example\" \"-default-rtdb\"**                 |
+| **site:firebaseio.com \"example\" \"-default-rtdb\"** |
 +-----------------------------------------------------------------------+
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Appknox Research --- 2,300 Publicly Readable
-  Firebase Databases (2021)**
-  -----------------------------------------------------------------------
-  Security researchers found 2,300 publicly readable Firebase databases
-  exposing user data from iOS and Android apps. Many belonged to apps
-  with millions of users. The researchers used site:firebaseio.com
-  combined with app names from the Apple App Store and Google Play to
-  construct targeted dorks for each app package.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Appknox Research --- 2,300 Publicly Readable
+Firebase Databases (2021)**
 
-  **site:firebaseio.com \"appname\"**
+---
 
-  **site:firebaseio.com \"com.company.appname\"**
+Security researchers found 2,300 publicly readable Firebase databases
+exposing user data from iOS and Android apps. Many belonged to apps
+with millions of users. The researchers used site:firebaseio.com
+combined with app names from the Apple App Store and Google Play to
+construct targeted dorks for each app package.
 
-  **site:firebaseio.com \"example\" (combined with App Store / Google
-  Play app names)**
-  -----------------------------------------------------------------------
+**🔍 Google Dork Used:**
+
+**site:firebaseio.com \"appname\"**
+
+**site:firebaseio.com \"com.company.appname\"**
+
+**site:firebaseio.com \"example\" (combined with App Store / Google
+Play app names)**
+
+---
 
 ### 9. JFrog Artifactory
 
@@ -5865,43 +6067,47 @@ site:jfrog.io \"companyname\"
 site:jfrog.io \"example\" \"npm\" OR \"pypi\" OR \"docker\" OR \"maven\"
 
 +-----------------------------------------------------------------------+
-| **⚠ HackerOne Report #911606** ---                                    |
-| https://hackerone.com/reports/911606                                  |
+| **⚠ HackerOne Report #911606** --- |
+| https://hackerone.com/reports/911606 |
 +=======================================================================+
 | A researcher discovered an exposed JFrog Artifactory instance via the |
-| dork below. The instance was configured with anonymous read access,   |
-| revealing internal build artefacts including a Docker image           |
-| containing hardcoded AWS credentials in the build scripts. The AWS    |
-| keys provided read access to 14 S3 buckets.                           |
-|                                                                       |
+| dork below. The instance was configured with anonymous read access, |
+| revealing internal build artefacts including a Docker image |
+| containing hardcoded AWS credentials in the build scripts. The AWS |
+| keys provided read access to 14 S3 buckets. |
+| |
 | Severity: Critical \| Reward: \$1,000 (initial) + escalation bonus \| |
-| Chain: JFrog → AWS.                                                   |
+| Chain: JFrog → AWS. |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:jfrog.io \"targetcompany\"**                                   |
+| **site:jfrog.io \"targetcompany\"** |
 +-----------------------------------------------------------------------+
-| **site:jfrog.io \"example\" \"docker\" OR \"aws\" OR                  |
-| \"credentials\"**                                                     |
+| **site:jfrog.io \"example\" \"docker\" OR \"aws\" OR |
+| \"credentials\"** |
 +-----------------------------------------------------------------------+
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Internal npm / PyPI Packages with Connection
-  Strings on JFrog (Ongoing)**
-  -----------------------------------------------------------------------
-  A common JFrog Artifactory finding is the discovery of internal npm or
-  Python packages published to the internal registry that contain
-  connection strings, API tokens, or private encryption keys. These
-  become accessible when the registry is misconfigured as publicly
-  readable.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Internal npm / PyPI Packages with Connection
+Strings on JFrog (Ongoing)**
 
-  **site:jfrog.io \"company\" \"npm\" OR \"pypi\" OR \"maven\"**
+---
 
-  **site:jfrog.io \"example\" \"token\" OR \"secret\" OR \"api_key\" OR
-  \"connection_string\"**
-  -----------------------------------------------------------------------
+A common JFrog Artifactory finding is the discovery of internal npm or
+Python packages published to the internal registry that contain
+connection strings, API tokens, or private encryption keys. These
+become accessible when the registry is misconfigured as publicly
+readable.
+
+**🔍 Google Dork Used:**
+
+**site:jfrog.io \"company\" \"npm\" OR \"pypi\" OR \"maven\"**
+
+**site:jfrog.io \"example\" \"token\" OR \"secret\" OR \"api_key\" OR
+\"connection_string\"**
+
+---
 
 ### 10. Lesser-Known Amazon S3 Subdomains
 
@@ -5924,79 +6130,87 @@ site:s3.amazonaws.com OR site:s3-external-1.amazonaws.com
 
 OR site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"
 
-  -----------------------------------------------------------------------
-  **★ Real-Life Example --- Legacy Buckets in AWS Security Assessments
-  --- Pre-2023 Public ACLs**
-  -----------------------------------------------------------------------
-  Penetration testers on authorised AWS security assessments have found
-  that s3-external-1.amazonaws.com and the dualstack endpoints frequently
-  host legacy buckets created during early AWS migrations that were never
-  included in subsequent bucket policy review cycles. These buckets
-  retain the old public ACLs from before AWS made private-by-default the
-  standard in 2023.
+---
 
-  **🔍 Google Dork Used:**
+**★ Real-Life Example --- Legacy Buckets in AWS Security Assessments
+--- Pre-2023 Public ACLs**
 
-  **site:s3-external-1.amazonaws.com \"example.com\"**
+---
 
-  **site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"**
-  -----------------------------------------------------------------------
+Penetration testers on authorised AWS security assessments have found
+that s3-external-1.amazonaws.com and the dualstack endpoints frequently
+host legacy buckets created during early AWS migrations that were never
+included in subsequent bucket policy review cycles. These buckets
+retain the old public ACLs from before AWS made private-by-default the
+standard in 2023.
+
+**🔍 Google Dork Used:**
+
+**site:s3-external-1.amazonaws.com \"example.com\"**
+
+**site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"**
+
+---
 
 +-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Media Company Legacy S3 Bucket ---          |
-| HackerOne High Severity, \$2,000 Reward**                             |
+| **★ Real-Life Example --- Media Company Legacy S3 Bucket --- |
+| HackerOne High Severity, \$2,000 Reward** |
 +=======================================================================+
-| A bug bounty researcher targeting a major media company found a       |
-| publicly accessible bucket at s3-external-1.amazonaws.com containing  |
-| full video production assets, unedited interview footage, and         |
-| broadcast scheduling spreadsheets. The bucket had been created in     |
-| 2015 for a CDN migration and was never locked down.                   |
-|                                                                       |
-| Reported via HackerOne: Severity High, Reward \$2,000.                |
+| A bug bounty researcher targeting a major media company found a |
+| publicly accessible bucket at s3-external-1.amazonaws.com containing |
+| full video production assets, unedited interview footage, and |
+| broadcast scheduling spreadsheets. The bucket had been created in |
+| 2015 for a CDN migration and was never locked down. |
+| |
+| Reported via HackerOne: Severity High, Reward \$2,000. |
 +-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:**                                              |
+| **🔍 Google Dork Used:** |
 +-----------------------------------------------------------------------+
-| **site:s3-external-1.amazonaws.com \"mediacompany.com\"**             |
+| **site:s3-external-1.amazonaws.com \"mediacompany.com\"** |
 +-----------------------------------------------------------------------+
 | **site:s3-external-1.amazonaws.com \"company\" \"video\" OR \"media\" |
-| OR \"cdn\"**                                                          |
+| OR \"cdn\"** |
 +-----------------------------------------------------------------------+
 
 ### Consolidated Cloud Storage Dork Reference
 
-  -----------------------------------------------------------------------------
-  **Platform**   **Google Dork**                    **Common Finding**
-  -------------- ---------------------------------- ---------------------------
-  Google Docs    site:docs.google.com inurl:\"/d/\" Internal presentations, M&A
-                 \"target\"                         docs, HR files
+---
 
-  OneDrive       site:onedrive.live.com \"target\"  Process docs, credentials,
-                                                    project files
+**Platform** **Google Dork** **Common Finding**
 
-  Dropbox        site:dropbox.com/s \"target\"      DB exports, source code,
-                                                    client data
+---
 
-  Box            site:box.com/s \"target\"          Contracts, audit reports,
-                                                    legal docs
+Google Docs site:docs.google.com inurl:\"/d/\" Internal presentations, M&A
+\"target\" docs, HR files
 
-  Azure DevOps   site:dev.azure.com \"target\"      Source code, API keys,
-                                                    pipeline configs
+OneDrive site:onedrive.live.com \"target\" Process docs, credentials,
+project files
 
-  SharePoint     site:sharepoint.com \"target\"     Policy docs, HR records,
-                                                    audit reports
+Dropbox site:dropbox.com/s \"target\" DB exports, source code,
+client data
 
-  DigitalOcean   site:digitaloceanspaces.com        DB backups, config files,
-                 \"target\"                         app logs
+Box site:box.com/s \"target\" Contracts, audit reports,
+legal docs
 
-  Firebase       site:firebaseio.com \"target\"     User PII, app secrets, API
-                                                    endpoints
+Azure DevOps site:dev.azure.com \"target\" Source code, API keys,
+pipeline configs
 
-  JFrog          site:jfrog.io \"target\"           Build artefacts,
-  Artifactory                                       credentials, Docker images
+SharePoint site:sharepoint.com \"target\" Policy docs, HR records,
+audit reports
 
-  AWS S3         site:s3-external-1.amazonaws.com   Legacy buckets, media
-  (legacy)       \"target\"                         assets, DBs
-  -----------------------------------------------------------------------------
+DigitalOcean site:digitaloceanspaces.com DB backups, config files,
+\"target\" app logs
+
+Firebase site:firebaseio.com \"target\" User PII, app secrets, API
+endpoints
+
+JFrog site:jfrog.io \"target\" Build artefacts,
+Artifactory credentials, Docker images
+
+AWS S3 site:s3-external-1.amazonaws.com Legacy buckets, media
+(legacy) \"target\" assets, DBs
+
+---
 
 ### Resources
 
@@ -6005,15 +6219,15 @@ OR site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"
 - <https://hackerone.com/reports/911606>
 
 +-----------------------------------------------------------------------+
-| **CRITICAL**                                                          |
+| **CRITICAL** |
 +:=====================================================================:+
-| *For Educational Use Only • Permission First, Always • Stay Ethical\* |
-|                                                                       |
-| Keep in mind that using Google Dorks for malicious purposes is        |
-| illegal and unethical. Use them for security testing and bug bounty   |
-| hunting only, against targets you are explicitly authorised to test.  |
-| The security community relies on ethical researchers to keep these    |
-| techniques available for defensive use.                               |
+| \*For Educational Use Only • Permission First, Always • Stay Ethical\* |
+| |
+| Keep in mind that using Google Dorks for malicious purposes is |
+| illegal and unethical. Use them for security testing and bug bounty |
+| hunting only, against targets you are explicitly authorised to test. |
+| The security community relies on ethical researchers to keep these |
+| techniques available for defensive use. |
 +-----------------------------------------------------------------------+
 
 ## 6.10 Examples of Creepy Dorks
@@ -6024,33 +6238,33 @@ be newsworthy
 depending on the zeitgeist.
 
 +---------------------------------+------------------------------------+
-| **Example Query**               | **Research Scenario**              |
+| **Example Query** | **Research Scenario** |
 +=================================+====================================+
-| inurl:\"view.shtml\" \"Network  | Get web applications showing live  |
-| Camera\",                       | webcam                             |
-|                                 |                                    |
-| \"Camera Live Image\",          | (online camera) footage.           |
-|                                 |                                    |
-| inurl:\"guestimage.html\",      |                                    |
-|                                 |                                    |
-| intitle:\"webcamXP5'\"          |                                    |
+| inurl:\"view.shtml\" \"Network | Get web applications showing live |
+| Camera\", | webcam |
+| | |
+| \"Camera Live Image\", | (online camera) footage. |
+| | |
+| inurl:\"guestimage.html\", | |
+| | |
+| intitle:\"webcamXP5'\" | |
 +---------------------------------+------------------------------------+
-| \"Not for Public Release\" +    | Get links to documents meant to be |
-| \"Confidential\" ext:pdf \|     |                                    |
-| ext:doc \| ext:xlsx             | classified. Some come from         |
-|                                 | governmental                       |
-|                                 |                                    |
-|                                 | websites.                          |
+| \"Not for Public Release\" + | Get links to documents meant to be |
+| \"Confidential\" ext:pdf \| | |
+| ext:doc \| ext:xlsx | classified. Some come from |
+| | governmental |
+| | |
+| | websites. |
 +---------------------------------+------------------------------------+
-| site:.hk & inurl:wp-login       | Get login pages of WordPress sites |
-|                                 | ending                             |
-|                                 |                                    |
-|                                 | in the notoriously unsafe domain   |
-|                                 | ".hk"                              |
+| site:.hk & inurl:wp-login | Get login pages of WordPress sites |
+| | ending |
+| | |
+| | in the notoriously unsafe domain |
+| | ".hk" |
 +---------------------------------+------------------------------------+
-| "index of" inurl:ftp secret     | Get FTP servers you want to access |
-|                                 |                                    |
-|                                 | containing the keyword "secret"    |
+| "index of" inurl:ftp secret | Get FTP servers you want to access |
+| | |
+| | containing the keyword "secret" |
 +---------------------------------+------------------------------------+
 
 **⭐ Key Takeaways**
@@ -6070,11 +6284,11 @@ depending on the zeitgeist.
 - **✓** Bug bounty hunters use dorks as a rapid, low-noise first pass to
   map an attack surface.
 
-**CHAPTER 7\**
+\*\*CHAPTER 7\*\*
 
 **Defending Against Google Dorks**
 
-*Auditing, protecting, and monitoring your digital footprint*
+_Auditing, protecting, and monitoring your digital footprint_
 
 # Chapter 7: Defending Against Google Dorks
 
@@ -6097,39 +6311,43 @@ cycle, ideally monthly. Treat any result as a finding that requires
 immediate action. [The goal is to find problems before attackers
 do]{.underline}.
 
-  -----------------------------------------------------------------------
-  **Audit Query**                 **Immediate Action If Results Appear**
-  ------------------------------- ---------------------------------------
-  site:yourdomain.com             Review each PDF. Remove any containing
-  filetype:pdf                    sensitive data.
+---
 
-  site:yourdomain.com inurl:admin Add noindex. Restrict by IP. Enable MFA
-                                  immediately.
+**Audit Query** **Immediate Action If Results Appear**
 
-  site:yourdomain.com             Remove log files from web root. Block
-  filetype:log                    file type at server level.
+---
 
-  site:yourdomain.com ext:env     CRITICAL: Remove files. Rotate ALL
-                                  exposed credentials now.
+site:yourdomain.com Review each PDF. Remove any containing
+filetype:pdf sensitive data.
 
-  site:yourdomain.com ext:sql     Remove SQL files. Assess whether schema
-                                  or data was exposed.
+site:yourdomain.com inurl:admin Add noindex. Restrict by IP. Enable MFA
+immediately.
 
-  site:yourdomain.com             Disable directory listings in web
-  intitle:\"index of\"            server configuration.
+site:yourdomain.com Remove log files from web root. Block
+filetype:log file type at server level.
 
-  site:yourdomain.com             Delete or move backup directories
-  inurl:backup                    outside the web root.
+site:yourdomain.com ext:env CRITICAL: Remove files. Rotate ALL
+exposed credentials now.
 
-  site:yourdomain.com             Remove config files. They almost always
-  filetype:cfg                    contain credentials.
+site:yourdomain.com ext:sql Remove SQL files. Assess whether schema
+or data was exposed.
 
-  site:yourdomain.com ext:bak     Remove all backup files. They may
-                                  expose your source code.
+site:yourdomain.com Disable directory listings in web
+intitle:\"index of\" server configuration.
 
-  site:yourdomain.com inurl:/.git CRITICAL: Block access to .git. Rotate
-                                  all repository secrets.
-  -----------------------------------------------------------------------
+site:yourdomain.com Delete or move backup directories
+inurl:backup outside the web root.
+
+site:yourdomain.com Remove config files. They almost always
+filetype:cfg contain credentials.
+
+site:yourdomain.com ext:bak Remove all backup files. They may
+expose your source code.
+
+site:yourdomain.com inurl:/.git CRITICAL: Block access to .git. Rotate
+all repository secrets.
+
+---
 
 ## 7.2 Configuring robots.txt
 
@@ -6160,13 +6378,13 @@ not to index. It is your first and cheapest line of defence.
 >
 > Disallow: /.git/ \# Block crawling of git repository
 >
-> *\# Block only a specific crawler by name:*
+> _\# Block only a specific crawler by name:_
 >
 > User-agent: Googlebot
 >
 > Disallow: /internal/
 >
-> *\# Allow everything else:*
+> _\# Allow everything else:_
 >
 > Allow: /
 
@@ -6194,19 +6412,19 @@ p[rom]{.underline}p[t before serving an]{.underline}y
 >
 > Require valid-user
 >
-> *\# Note: AuthUserFile must be an absolute path.*
+> _\# Note: AuthUserFile must be an absolute path._
 >
-> *\# Store .htpasswd OUTSIDE the web root for security.*
+> _\# Store .htpasswd OUTSIDE the web root for security._
 >
 > **Creating the .htpasswd password file**
 >
-> *\# From the command line:*
+> _\# From the command line:_
 >
 > htpasswd -c /full/path/to/.htpasswd yourusername
 >
 > =\> You will be prompted to set and confirm a password.
 >
-> *\# Add additional users (without -c, which would overwrite):*
+> _\# Add additional users (without -c, which would overwrite):_
 >
 > htpasswd /full/path/to/.htpasswd seconduser
 
@@ -6222,7 +6440,7 @@ p[rom]{.underline}p[t before serving an]{.underline}y
 >
 > }
 >
-> *\# The .htpasswd file is created the same way as for Apache.*
+> _\# The .htpasswd file is created the same way as for Apache._
 
 ## 7.4 Using Google Search Console
 
@@ -6407,40 +6625,44 @@ overlapping layers of protection, so that when any one layer fails, the
 others contain the damage. Use this checklist as your minimum security
 baseline:
 
-  --------------------------------------------------------------------------------
-  **\#**   **Defensive Measure**                 **Priority**   **Frequency**
-  -------- ------------------------------------- -------------- ------------------
-  1        Run Google Dork audits against your   Critical       Monthly
-           own domain                                           
+---
 
-  2        Configure robots.txt to block         High           Once + on change
-           sensitive directories                                
+**\#** **Defensive Measure** **Priority** **Frequency**
 
-  3        Password-protect admin and internal   Critical       Once + review
-           directories                                          quarterly
+---
 
-  4        Monitor indexed pages via Google      High           Weekly
-           Search Console                                       
+1 Run Google Dork audits against your Critical Monthly
+own domain
 
-  5        Enable 2FA on all administrative      Critical       Immediately
-           accounts                                             
+2 Configure robots.txt to block High Once + on change
+sensitive directories
 
-  6        Keep all software, plugins, and       High           Weekly
-           dependencies updated                                 
+3 Password-protect admin and internal Critical Once + review
+directories quarterly
 
-  7        Set up Google Alerts for your domain  Medium         Once + ongoing
-           and brand name                                       
+4 Monitor indexed pages via Google High Weekly
+Search Console
 
-  8        Audit cloud storage bucket            High           Quarterly
-           permissions                                          
+5 Enable 2FA on all administrative Critical Immediately
+accounts
 
-  9        Maintain encrypted, tested, versioned Critical       Daily backup,
-           off-site backups                                     monthly restore
-                                                                test
+6 Keep all software, plugins, and High Weekly
+dependencies updated
 
-  10       Conduct team security awareness       High           Quarterly
-           training                                             
-  --------------------------------------------------------------------------------
+7 Set up Google Alerts for your domain Medium Once + ongoing
+and brand name
+
+8 Audit cloud storage bucket High Quarterly
+permissions
+
+9 Maintain encrypted, tested, versioned Critical Daily backup,
+off-site backups monthly restore
+test
+
+10 Conduct team security awareness High Quarterly
+training
+
+---
 
 **⭐ Key Takeaways**
 
@@ -6462,11 +6684,11 @@ baseline:
 - **✓** Defence-in-depth means multiple overlapping layers: no single
   measure is enough on its own.
 
-**CHAPTER 8\**
+\*\*CHAPTER 8\*\*
 
 **Legal and Ethical Guidelines**
 
-*The framework that makes Google Dorking responsible and legitimate*
+_The framework that makes Google Dorking responsible and legitimate_
 
 # Chapter 8: Legal and Ethical Guidelines
 
@@ -6591,33 +6813,37 @@ Laws governing computer access and data privacy vary significantly by
 country. A general awareness of the legal landscape is important for any
 researcher working in this field.
 
-  --------------------------------------------------------------------------
-  **Jurisdiction**   **Relevant Legal Framework**
-  ------------------ -------------------------------------------------------
-  United States      Computer Fraud and Abuse Act (CFAA): broadly prohibits
-                     unauthorised access to computers. Even well-intentioned
-                     research without explicit permission can create CFAA
-                     exposure.
+---
 
-  European Union     General Data Protection Regulation (GDPR): imposes
-                     obligations on anyone handling personal data.
-                     Incidental access to personal data through research may
-                     trigger GDPR obligations.
+**Jurisdiction** **Relevant Legal Framework**
 
-  United Kingdom     Computer Misuse Act 1990: criminalises unauthorised
-                     access to computer systems. Penalties include fines and
-                     imprisonment.
+---
 
-  Bangladesh         Digital Security Act 2018 and ICT Act: contain
-                     provisions against unauthorised computer access and
-                     cybercrime. Research without authorisation carries
-                     legal risk.
+United States Computer Fraud and Abuse Act (CFAA): broadly prohibits
+unauthorised access to computers. Even well-intentioned
+research without explicit permission can create CFAA
+exposure.
 
-  General Principle  In virtually every jurisdiction: explicit written
-                     authorisation from the system owner is the clearest
-                     path to lawful security research. When in doubt, obtain
-                     written permission first.
-  --------------------------------------------------------------------------
+European Union General Data Protection Regulation (GDPR): imposes
+obligations on anyone handling personal data.
+Incidental access to personal data through research may
+trigger GDPR obligations.
+
+United Kingdom Computer Misuse Act 1990: criminalises unauthorised
+access to computer systems. Penalties include fines and
+imprisonment.
+
+Bangladesh Digital Security Act 2018 and ICT Act: contain
+provisions against unauthorised computer access and
+cybercrime. Research without authorisation carries
+legal risk.
+
+General Principle In virtually every jurisdiction: explicit written
+authorisation from the system owner is the clearest
+path to lawful security research. When in doubt, obtain
+written permission first.
+
+---
 
 > **IMPORTANT:** PRACTICAL RULE: When in doubt, do not proceed. The
 > downside of being overly cautious is that you miss a research finding.
@@ -6631,32 +6857,36 @@ hold themselves to a simple, consistent code of conduct. These
 principles are not externally imposed rules. They are the professional
 standards that define the field.
 
-  --------------------------------------------------------------------
-  **Principle**   **What It Means in Practice**
-  --------------- ----------------------------------------------------
-  Permission      Always confirm explicit written authorisation before
-  first           testing any system that is not your own.
+---
 
-  Document        Keep clear, timestamped records of your methodology,
-  everything      queries used, URLs found, and findings.
+**Principle** **What It Means in Practice**
 
-  Report          Disclose findings to those who can fix them, not to
-  responsibly     the public first. Give organisations a fair window
-                  to respond.
+---
 
-  Do no harm      Research should improve security. Stop at discovery.
-                  Never exploit, modify, or exfiltrate data.
+Permission Always confirm explicit written authorisation before
+first testing any system that is not your own.
 
-  Respect privacy Publicly available does not mean ethically
-                  appropriate to republish, redistribute, or act upon.
+Document Keep clear, timestamped records of your methodology,
+everything queries used, URLs found, and findings.
 
-  Credit others   Acknowledge the tools, researchers, and prior work
-                  that made your research possible.
+Report Disclose findings to those who can fix them, not to
+responsibly the public first. Give organisations a fair window
+to respond.
 
-  Stay current    Laws and tools evolve. Stay informed about legal
-                  developments in your jurisdiction and the OSINT
-                  community.
-  --------------------------------------------------------------------
+Do no harm Research should improve security. Stop at discovery.
+Never exploit, modify, or exfiltrate data.
+
+Respect privacy Publicly available does not mean ethically
+appropriate to republish, redistribute, or act upon.
+
+Credit others Acknowledge the tools, researchers, and prior work
+that made your research possible.
+
+Stay current Laws and tools evolve. Stay informed about legal
+developments in your jurisdiction and the OSINT
+community.
+
+---
 
 **⭐ Key Takeaways**
 
@@ -6675,273 +6905,289 @@ standards that define the field.
 - **✓** The researcher\'s code: permission first, document everything,
   report responsibly, do no harm.
 
-**\
+\*\*\
 \
-APPENDIX A\**
+APPENDIX A\*\*
 
 **Master Operator Cheat Sheet**
 
 ## All Operators in One Place
 
-  -------------------------------------------------------------------------
-  **Operator**   **Function**                   **Quick Example**
-  -------------- ------------------------------ ---------------------------
-  site:          Restrict to a domain or TLD    site:wikipedia.org AI
+---
 
-  intitle:       Keyword must be in page title  intitle:\"login\"
-                                                inurl:admin
+**Operator** **Function** **Quick Example**
 
-  allintitle:    All words must be in title     allintitle:python tutorial
-                                                2024
+---
 
-  inurl:         Keyword must be in URL         inurl:careers \"data
-                                                scientist\"
+site: Restrict to a domain or TLD site:wikipedia.org AI
 
-  intext:        Keyword must be in body text   intext:\"API key\"
-                                                site:github.com
+intitle: Keyword must be in page title intitle:\"login\"
+inurl:admin
 
-  filetype:      Filter by document format      filetype:pdf \"annual
-                                                report\"
+allintitle: All words must be in title allintitle:python tutorial
+2024
 
-  ext:           Filter by file extension       ext:env site:yourdomain.com
+inurl: Keyword must be in URL inurl:careers \"data
+scientist\"
 
-  cache:         View cached copy (unreliable;  cache:example.com
-                 use Wayback)                   
+intext: Keyword must be in body text intext:\"API key\"
+site:github.com
 
-  related:       Find similar websites          related:stackoverflow.com
+filetype: Filter by document format filetype:pdf \"annual
+report\"
 
-  info:          Get Google\'s info about a     info:github.com
-                 domain                         
+ext: Filter by file extension ext:env site:yourdomain.com
 
-  inanchor:      Phrase in backlink anchor text inanchor:\"learn more\"
+cache: View cached copy (unreliable; cache:example.com
+use Wayback)
 
-  allinanchor:   All words in backlink anchor   allinanchor:best python
-                 text                           tutorial
+related: Find similar websites related:stackoverflow.com
 
-  OR or \|       Either term is acceptable      Python OR Java tutorial
+info: Get Google\'s info about a info:github.com
+domain
 
-  AND            Both terms required (default)  ML AND healthcare
+inanchor: Phrase in backlink anchor text inanchor:\"learn more\"
 
-  \-             Exclude a term from results    Jaguar -car
+allinanchor: All words in backlink anchor allinanchor:best python
+text tutorial
 
-  \" \"          Exact phrase match             \"machine learning
-                                                tutorial\"
+OR or \| Either term is acceptable Python OR Java tutorial
 
-  \*             Wildcard for any word          \"best \* for beginners\"
+AND Both terms required (default) ML AND healthcare
 
-  ..             Numeric range                  laptop \$500..\$1000
+\- Exclude a term from results Jaguar -car
 
-  before:        Content before a publication   news before:2023-01-01
-                 date                           
+\" \" Exact phrase match \"machine learning
+tutorial\"
 
-  after:         Content after a publication    article after:2024-06-01
-                 date                           
+\* Wildcard for any word \"best \* for beginners\"
 
-  location:      Filter by geography            location:Dhaka startup
-                 (news/local)                   
+.. Numeric range laptop \$500..\$1000
 
-  AROUND(X)      Two terms within X words of    Apple AROUND(3) innovation
-                 each other                     
-  -------------------------------------------------------------------------
+before: Content before a publication news before:2023-01-01
+date
+
+after: Content after a publication article after:2024-06-01
+date
+
+location: Filter by geography location:Dhaka startup
+(news/local)
+
+AROUND(X) Two terms within X words of Apple AROUND(3) innovation
+each other
+
+---
 
 ## Power Query Templates
 
-*Replace bracketed placeholders with your own values.*
+_Replace bracketed placeholders with your own values._
 
-  ----------------------------------------------------------------------
-  **Research       **Template Query**
-  Goal**           
-  ---------------- -----------------------------------------------------
-  Academic PDFs    site:\[university.edu\] filetype:pdf \"\[topic\]\"
-  from a           after:YYYY-01-01
-  university       
+---
 
-  Audit own site   site:yourdomain.com (filetype:env OR ext:sql OR
-  for exposure     intitle:\"index of\" OR ext:bak)
+**Research **Template Query**
+Goal**
 
-  Authoritative    \"\[exact topic\]\" site:.edu OR site:.gov
-  research on a    filetype:pdf after:YYYY-01-01
-  topic            
+---
 
-  Remote job       intitle:\"\[job title\]\" inurl:careers \"remote\"
-  listings         site:\*.com -internship
+Academic PDFs site:\[university.edu\] filetype:pdf \"\[topic\]\"
+from a after:YYYY-01-01
+university
 
-  Competitor       site:competitor.com inurl:blog \"\[topic\]\"
-  content analysis -inurl:author after:YYYY-01-01
+Audit own site site:yourdomain.com (filetype:env OR ext:sql OR
+for exposure intitle:\"index of\" OR ext:bak)
 
-  Open datasets    filetype:csv OR filetype:xlsx \"\[dataset name\]\"
-                   site:data.gov
+Authoritative \"\[exact topic\]\" site:.edu OR site:.gov
+research on a filetype:pdf after:YYYY-01-01
+topic
 
-  Presentation     filetype:pptx \"\[topic\]\" site:\[source.com\]
-  slides           after:YYYY-01-01
+Remote job intitle:\"\[job title\]\" inurl:careers \"remote\"
+listings site:\*.com -internship
 
-  Bug bounty recon site:target.com (inurl:admin OR inurl:api OR ext:env
-                   OR intitle:\"index of\")
+Competitor site:competitor.com inurl:blog \"\[topic\]\"
+content analysis -inurl:author after:YYYY-01-01
 
-  Bangladesh       site:gov.bd OR site:bbs.gov.bd filetype:pdf
-  government data  \"\[topic\]\" after:YYYY-01-01
-  ----------------------------------------------------------------------
+Open datasets filetype:csv OR filetype:xlsx \"\[dataset name\]\"
+site:data.gov
+
+Presentation filetype:pptx \"\[topic\]\" site:\[source.com\]
+slides after:YYYY-01-01
+
+Bug bounty recon site:target.com (inurl:admin OR inurl:api OR ext:env
+OR intitle:\"index of\")
+
+Bangladesh site:gov.bd OR site:bbs.gov.bd filetype:pdf
+government data \"\[topic\]\" after:YYYY-01-01
+
+---
 
 ## Security Audit Quick Reference
 
-*Run all of these with site:yourdomain.com. Zero results is the target
-for every row.*
+_Run all of these with site:yourdomain.com. Zero results is the target
+for every row._
 
-  --------------------------------------------------------------
-  **Audit Query         **Risk Level**   **Fix If Found**
-  Suffix**                               
-  --------------------- ---------------- -----------------------
-  ext:env               CRITICAL         Remove file. Rotate ALL
-                                         credentials.
+---
 
-  ext:sql               CRITICAL         Remove file. Assess
-                                         data exposure.
+**Audit Query **Risk Level\*\* **Fix If Found**
+Suffix\*\*
 
-  inurl:/.git           CRITICAL         Block access at server.
-                                         Rotate secrets.
+---
 
-  filetype:log          HIGH             Remove file. Block file
-                                         type at server.
+ext:env CRITICAL Remove file. Rotate ALL
+credentials.
 
-  intitle:\"index of\"  HIGH             Disable directory
-                                         listings.
+ext:sql CRITICAL Remove file. Assess
+data exposure.
 
-  inurl:admin           HIGH             Add noindex. Restrict
-                                         by IP. Enable MFA.
+inurl:/.git CRITICAL Block access at server.
+Rotate secrets.
 
-  filetype:cfg OR       HIGH             Remove files from web
-  ext:bak                                root.
+filetype:log HIGH Remove file. Block file
+type at server.
 
-  inurl:backup          MEDIUM           Move backups outside
-                                         web root.
+intitle:\"index of\" HIGH Disable directory
+listings.
 
-  filetype:pdf          MEDIUM           Review and remove
-  \"confidential\"                       sensitive PDFs.
-  --------------------------------------------------------------
+inurl:admin HIGH Add noindex. Restrict
+by IP. Enable MFA.
 
-**\
+filetype:cfg OR HIGH Remove files from web
+ext:bak root.
+
+inurl:backup MEDIUM Move backups outside
+web root.
+
+filetype:pdf MEDIUM Review and remove
+\"confidential\" sensitive PDFs.
+
+---
+
+\*\*\
 \
-APPENDIX B\**
+APPENDIX B\*\*
 
 **Glossary of Key Terms**
 
-  -----------------------------------------------------------------------
-  **Term**         **Definition**
-  ---------------- ------------------------------------------------------
-  Anchor Text      The visible, clickable text in a hyperlink. If a link
-                   says \"click here\", that phrase is its anchor text.
+---
 
-  Attack Surface   The total set of points where an unauthorised user can
-                   attempt to enter data into or extract data from a
-                   system.
+**Term** **Definition**
 
-  Boolean Operator A logical keyword (AND, OR, NOT) used to define
-                   relationships between search terms. Derived from
-                   Boolean algebra.
+---
 
-  Bug Bounty       A programme offered by organisations that rewards
-                   security researchers for finding and responsibly
-                   reporting vulnerabilities.
+Anchor Text The visible, clickable text in a hyperlink. If a link
+says \"click here\", that phrase is its anchor text.
 
-  Cache            A stored copy of a web page saved by a search engine
-                   when its crawler last visited the page.
+Attack Surface The total set of points where an unauthorised user can
+attempt to enter data into or extract data from a
+system.
 
-  CERT             Computer Emergency Response Team. Organisations that
-                   handle security incidents and coordinate responsible
-                   disclosure.
+Boolean Operator A logical keyword (AND, OR, NOT) used to define
+relationships between search terms. Derived from
+Boolean algebra.
 
-  CFAA             Computer Fraud and Abuse Act. The primary US federal
-                   law governing unauthorised computer access and
-                   cybercrime.
+Bug Bounty A programme offered by organisations that rewards
+security researchers for finding and responsibly
+reporting vulnerabilities.
 
-  CSRF             Cross-Site Request Forgery. A web attack that tricks a
-                   user\'s browser into performing unintended actions on
-                   a trusted site.
+Cache A stored copy of a web page saved by a search engine
+when its crawler last visited the page.
 
-  CVE              Common Vulnerabilities and Exposures. A publicly
-                   maintained database of known security vulnerabilities
-                   at cve.mitre.org.
+CERT Computer Emergency Response Team. Organisations that
+handle security incidents and coordinate responsible
+disclosure.
 
-  Directory        A server feature that displays folder contents when no
-  Listing          index file is present. Dangerous when publicly
-                   accessible.
+CFAA Computer Fraud and Abuse Act. The primary US federal
+law governing unauthorised computer access and
+cybercrime.
 
-  Dork             A clever, unconventional search query using special
-                   operators to find highly specific information that
-                   regular searches miss.
+CSRF Cross-Site Request Forgery. A web attack that tricks a
+user\'s browser into performing unintended actions on
+a trusted site.
 
-  GHDB             Google Hacking Database. A searchable collection of
-                   Google Dork queries maintained at
-                   exploit-db.com/google-hacking-database.
+CVE Common Vulnerabilities and Exposures. A publicly
+maintained database of known security vulnerabilities
+at cve.mitre.org.
 
-  Google Dorking   The practice of using Google\'s advanced search
-                   operators to find specific, filtered information with
-                   precision.
+Directory A server feature that displays folder contents when no
+Listing index file is present. Dangerous when publicly
+accessible.
 
-  Googlebot        Google\'s automated web crawler that visits web pages,
-                   downloads content, and sends it to Google\'s servers
-                   for indexing.
+Dork A clever, unconventional search query using special
+operators to find highly specific information that
+regular searches miss.
 
-  IAM              Identity and Access Management. A framework of
-                   policies and technologies for managing digital
-                   identities and access permissions.
+GHDB Google Hacking Database. A searchable collection of
+Google Dork queries maintained at
+exploit-db.com/google-hacking-database.
 
-  Index            A giant database maintained by search engines,
-                   containing stored copies of web page content,
-                   metadata, and URLs.
+Google Dorking The practice of using Google\'s advanced search
+operators to find specific, filtered information with
+precision.
 
-  IoT              Internet of Things. Physical devices (cameras,
-                   routers, sensors) connected to the internet, often
-                   with web management interfaces.
+Googlebot Google\'s automated web crawler that visits web pages,
+downloads content, and sends it to Google\'s servers
+for indexing.
 
-  MFA / 2FA        Multi-Factor / Two-Factor Authentication. A security
-                   mechanism requiring two or more verification factors
-                   to log in.
+IAM Identity and Access Management. A framework of
+policies and technologies for managing digital
+identities and access permissions.
 
-  noindex          A directive in a page\'s HTML meta tags or HTTP
-                   headers instructing crawlers not to include that page
-                   in search results.
+Index A giant database maintained by search engines,
+containing stored copies of web page content,
+metadata, and URLs.
 
-  OSINT            Open-Source Intelligence. The collection and analysis
-                   of information gathered exclusively from publicly
-                   available sources.
+IoT Internet of Things. Physical devices (cameras,
+routers, sensors) connected to the internet, often
+with web management interfaces.
 
-  Penetration Test An authorised, simulated cyberattack on a system
-                   performed to evaluate its security posture.
+MFA / 2FA Multi-Factor / Two-Factor Authentication. A security
+mechanism requiring two or more verification factors
+to log in.
 
-  Reconnaissance   The first phase of a security test or OSINT
-                   investigation: gathering public information about a
-                   target system or organisation.
+noindex A directive in a page\'s HTML meta tags or HTTP
+headers instructing crawlers not to include that page
+in search results.
 
-  Responsible      Reporting security vulnerabilities privately to the
-  Disclosure       affected organisation before any public disclosure.
+OSINT Open-Source Intelligence. The collection and analysis
+of information gathered exclusively from publicly
+available sources.
 
-  robots.txt       A text file at a website\'s root that instructs
-                   crawlers which pages not to index. Does not block
-                   direct URL access.
+Penetration Test An authorised, simulated cyberattack on a system
+performed to evaluate its security posture.
 
-  security.txt     A proposed standard file (at /security.txt or
-                   /.well-known/security.txt) that defines how to report
-                   security issues to an organisation.
+Reconnaissance The first phase of a security test or OSINT
+investigation: gathering public information about a
+target system or organisation.
 
-  SQL Injection    A vulnerability allowing an attacker to interfere with
-                   the queries an application sends to its database.
+Responsible Reporting security vulnerabilities privately to the
+Disclosure affected organisation before any public disclosure.
 
-  TLD              Top-Level Domain. The final segment of a domain name
-                   (.com, .org, .bd, .gov, .edu). Used with site: to
-                   search entire domain categories.
+robots.txt A text file at a website\'s root that instructs
+crawlers which pages not to index. Does not block
+direct URL access.
 
-  WAF              Web Application Firewall. Monitors, filters, and
-                   blocks HTTP traffic to a web application based on
-                   security rules.
+security.txt A proposed standard file (at /security.txt or
+/.well-known/security.txt) that defines how to report
+security issues to an organisation.
 
-  Wayback Machine  A digital archive at web.archive.org, maintained by
-                   the Internet Archive. Stores web page snapshots going
-                   back to 1996.
-  -----------------------------------------------------------------------
+SQL Injection A vulnerability allowing an attacker to interfere with
+the queries an application sends to its database.
 
-**\
-APPENDIX C\**
+TLD Top-Level Domain. The final segment of a domain name
+(.com, .org, .bd, .gov, .edu). Used with site: to
+search entire domain categories.
+
+WAF Web Application Firewall. Monitors, filters, and
+blocks HTTP traffic to a web application based on
+security rules.
+
+Wayback Machine A digital archive at web.archive.org, maintained by
+the Internet Archive. Stores web page snapshots going
+back to 1996.
+
+---
+
+\*\*\
+APPENDIX C\*\*
 
 **Practice Exercise Answer Key**
 
@@ -7113,9 +7359,9 @@ results you get. This is the core principle of compound query design.
 **Next level:** Add inurl:deep-learning OR inurl:nlp to target
 repositories with specific topic tags in their URLs.
 
-**\
+\*\*\
 \
-APPENDIX D\**
+APPENDIX D\*\*
 
 **Further Resources and Tools**
 
@@ -7125,144 +7371,160 @@ quality and relevance to Google Dorking, OSINT, and security research.
 
 ## Core Reference Resources
 
-  -----------------------------------------------------------------------
-  **Resource**            **URL and Description**
-  ----------------------- -----------------------------------------------
-  Google Hacking Database exploit-db.com/google-hacking-database \-- The
-  (GHDB)                  definitive, community-maintained database of
-                          thousands of verified Google Dork queries,
-                          categorised by exposure type.
+---
 
-  Google Search Help      support.google.com/websearch/answer/2466433 \--
-                          Google\'s official documentation of all
-                          supported search operators.
+**Resource** **URL and Description**
 
-  taksec Bug Bounty Dorks taksec.github.io/google-dorks-bug-bounty/ \-- A
-                          curated, searchable collection of dorks
-                          specifically for bug bounty reconnaissance.
-                          Enter a domain to generate tailored queries.
+---
 
-  Wayback Machine         web.archive.org \-- The Internet Archive\'s
-                          Wayback Machine. Archive, retrieve, and compare
-                          historical snapshots of any public web page.
+Google Hacking Database exploit-db.com/google-hacking-database \-- The
+(GHDB) definitive, community-maintained database of
+thousands of verified Google Dork queries,
+categorised by exposure type.
 
-  SecurityHeaders.io      securityheaders.com \-- Analyse the security
-                          headers of any website, including headers
-                          relevant to caching and indexing control
-                          (X-Robots-Tag, etc.).
+Google Search Help support.google.com/websearch/answer/2466433 \--
+Google\'s official documentation of all
+supported search operators.
 
-  security.txt Standard   securitytxt.org \-- The proposed standard for
-                          how organisations publish their security
-                          contact information and vulnerability
-                          disclosure policy.
-  -----------------------------------------------------------------------
+taksec Bug Bounty Dorks taksec.github.io/google-dorks-bug-bounty/ \-- A
+curated, searchable collection of dorks
+specifically for bug bounty reconnaissance.
+Enter a domain to generate tailored queries.
+
+Wayback Machine web.archive.org \-- The Internet Archive\'s
+Wayback Machine. Archive, retrieve, and compare
+historical snapshots of any public web page.
+
+SecurityHeaders.io securityheaders.com \-- Analyse the security
+headers of any website, including headers
+relevant to caching and indexing control
+(X-Robots-Tag, etc.).
+
+security.txt Standard securitytxt.org \-- The proposed standard for
+how organisations publish their security
+contact information and vulnerability
+disclosure policy.
+
+---
 
 ## OSINT Tools and Platforms
 
-  -----------------------------------------------------------------------
-  **Tool / Platform**     **URL and Purpose**
-  ----------------------- -----------------------------------------------
-  Shodan                  shodan.io \-- A search engine for
-                          internet-connected devices. The OSINT
-                          complement to Google Dorking for discovering
-                          exposed IoT devices and services.
+---
 
-  Censys                  censys.io \-- Internet-wide scanning platform
-                          for discovering exposed hosts, certificates,
-                          and services.
+**Tool / Platform** **URL and Purpose**
 
-  theHarvester            github.com/laramies/theHarvester \--
-                          Open-source tool for gathering emails,
-                          subdomains, and open ports from public sources
-                          including Google.
+---
 
-  Maltego                 maltego.com \-- Visual link analysis and data
-                          mining tool used extensively in professional
-                          OSINT investigations.
+Shodan shodan.io \-- A search engine for
+internet-connected devices. The OSINT
+complement to Google Dorking for discovering
+exposed IoT devices and services.
 
-  IntelTechniques         inteltechniques.com \-- Michael Bazzell\'s
-                          OSINT resource site with custom search tools,
-                          podcasts, and training.
+Censys censys.io \-- Internet-wide scanning platform
+for discovering exposed hosts, certificates,
+and services.
 
-  OSINT Framework         osintframework.com \-- A comprehensive mind-map
-                          of OSINT tools and resources categorised by
-                          source type.
-  -----------------------------------------------------------------------
+theHarvester github.com/laramies/theHarvester \--
+Open-source tool for gathering emails,
+subdomains, and open ports from public sources
+including Google.
+
+Maltego maltego.com \-- Visual link analysis and data
+mining tool used extensively in professional
+OSINT investigations.
+
+IntelTechniques inteltechniques.com \-- Michael Bazzell\'s
+OSINT resource site with custom search tools,
+podcasts, and training.
+
+OSINT Framework osintframework.com \-- A comprehensive mind-map
+of OSINT tools and resources categorised by
+source type.
+
+---
 
 ## Security Audit and Defence Tools
 
-  -----------------------------------------------------------------------
-  **Tool**                **URL and Purpose**
-  ----------------------- -----------------------------------------------
-  Google Search Console   search.google.com/search-console \-- Monitor
-                          what Google has indexed from your domain and
-                          submit URL removal requests.
+---
 
-  Google Alerts           google.com/alerts \-- Set up email
-                          notifications for any Google search query.
-                          Essential for monitoring your digital
-                          footprint.
+**Tool** **URL and Purpose**
 
-  Have I Been Pwned       haveibeenpwned.com \-- Check whether your email
-                          address or domain has been exposed in a
-                          publicly known data breach.
+---
 
-  SSL Labs                ssllabs.com/ssltest \-- Analyse the TLS/SSL
-                          configuration of any public web server.
+Google Search Console search.google.com/search-console \-- Monitor
+what Google has indexed from your domain and
+submit URL removal requests.
 
-  robots.txt Validator    en.ryte.com/free-tools/robots-txt \-- Validate
-                          and test your robots.txt file for correct
-                          syntax and logic.
+Google Alerts google.com/alerts \-- Set up email
+notifications for any Google search query.
+Essential for monitoring your digital
+footprint.
 
-  CVE Database            cve.mitre.org \-- The official database of
-                          publicly known cybersecurity vulnerabilities.
-                          Cross-reference with software versions on your
-                          stack.
-  -----------------------------------------------------------------------
+Have I Been Pwned haveibeenpwned.com \-- Check whether your email
+address or domain has been exposed in a
+publicly known data breach.
+
+SSL Labs ssllabs.com/ssltest \-- Analyse the TLS/SSL
+configuration of any public web server.
+
+robots.txt Validator en.ryte.com/free-tools/robots-txt \-- Validate
+and test your robots.txt file for correct
+syntax and logic.
+
+CVE Database cve.mitre.org \-- The official database of
+publicly known cybersecurity vulnerabilities.
+Cross-reference with software versions on your
+stack.
+
+---
 
 ## Learning and Community Resources
 
-  ----------------------------------------------------------------------
-  **Resource**            **URL and Description**
-  ----------------------- ----------------------------------------------
-  SANS Reading Room       sans.org/white-papers \-- Free whitepapers on
-                          security topics including OSINT,
-                          reconnaissance, and Google Dorking techniques.
+---
 
-  HackerOne Hacktivity    hackerone.com/hacktivity \-- Publicly
-                          disclosed bug bounty reports. Reading these
-                          builds an intuition for what real
-                          vulnerabilities look like.
+**Resource** **URL and Description**
 
-  Bugcrowd University     bugcrowd.com/university \-- Free educational
-                          content on bug bounty hunting methodology,
-                          including reconnaissance techniques.
+---
 
-  OWASP                   owasp.org \-- The Open Worldwide Application
-                          Security Project. Definitive reference for web
-                          application vulnerabilities.
+SANS Reading Room sans.org/white-papers \-- Free whitepapers on
+security topics including OSINT,
+reconnaissance, and Google Dorking techniques.
 
-  TryHackMe               tryhackme.com \-- Hands-on cybersecurity
-                          training platform with rooms specifically
-                          covering OSINT and Google Dorking.
+HackerOne Hacktivity hackerone.com/hacktivity \-- Publicly
+disclosed bug bounty reports. Reading these
+builds an intuition for what real
+vulnerabilities look like.
 
-  Original Notebook       github.com/SagarBiswas-MultiHAT \-- The
-                          original Google Dorks beginner\'s notebook
-                          (v1.0.0) on which this handbook is based.
-  ----------------------------------------------------------------------
+Bugcrowd University bugcrowd.com/university \-- Free educational
+content on bug bounty hunting methodology,
+including reconnaissance techniques.
 
-**\
+OWASP owasp.org \-- The Open Worldwide Application
+Security Project. Definitive reference for web
+application vulnerabilities.
+
+TryHackMe tryhackme.com \-- Hands-on cybersecurity
+training platform with rooms specifically
+covering OSINT and Google Dorking.
+
+Original Notebook github.com/SagarBiswas-MultiHAT \-- The
+original Google Dorks beginner\'s notebook
+(v1.0.0) on which this handbook is based.
+
+---
+
+\*\*\
 \
-APPENDIX E\**
+APPENDIX E\*\*
 
 **About the Author**
 
 +-------------------------------------------------------------+
-| **Sagar Biswas**                                            |
-|                                                             |
-| *Student • Developer • Security Enthusiast • Researcher*    |
-|                                                             |
-| github.com/SagarBiswas-MultiHAT                             |
+| **Sagar Biswas** |
+| |
+| _Student • Developer • Security Enthusiast • Researcher_ |
+| |
+| github.com/SagarBiswas-MultiHAT |
 +=============================================================+
 
 SagarBiswas is a Computer Science and Engineering (CSE) student at
@@ -7304,31 +7566,31 @@ achieved its purpose.
 
 Feedback, corrections, and contributions are welcome via GitHub.
 
-*\"The goal of security research is not to break things. It is to
-understand how things break, so that we can build them better.\"*
+_\"The goal of security research is not to break things. It is to
+understand how things break, so that we can build them better.\"_
 
-*--- A guiding principle for every responsible practitioner in this
-field.*
+_--- A guiding principle for every responsible practitioner in this
+field._
 
 **Happy Dorking!**
 
-*Permission First, Always. • Stay Ethical. • Stay Curious.*
+_Permission First, Always. • Stay Ethical. • Stay Curious._
 
 +---------------------------------------------------------------------------------------------------------------+
-| **Original Notebook**                                                                                         |
-|                                                                                                               |
+| **Original Notebook** |
+| |
 | <https://sagarbiswas-multihat.github.io/Cybersecurity-Notebooks/Google_Dorks_A_Beginners_Notebook-v1.0.0.pdf> |
-|                                                                                                               |
-| **Bug Bounty Dork Collection**                                                                                |
-|                                                                                                               |
-| taksec.github.io/google-dorks-bug-bounty/                                                                     |
-|                                                                                                               |
-| **Internet Archive / Wayback Machine**                                                                        |
-|                                                                                                               |
-| web.archive.org                                                                                               |
+| |
+| **Bug Bounty Dork Collection** |
+| |
+| taksec.github.io/google-dorks-bug-bounty/ |
+| |
+| **Internet Archive / Wayback Machine** |
+| |
+| web.archive.org |
 +===============================================================================================================+
 
-*This handbook is for educational use only.*
+_This handbook is for educational use only._
 
 **Never access systems or data without explicit authorisation.**
 

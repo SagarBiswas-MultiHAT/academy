@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, BookOpen, ChevronLeft, Lock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
 
@@ -249,6 +250,7 @@ export default function ChapterReaderPage({
             <div className="space-y-0">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
                 components={getMarkdownComponents(data.bookSlug)}
               >
                 {data.content}

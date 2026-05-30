@@ -4,7 +4,7 @@ import { PaymentsService } from '../payments/payments.service';
 import { WalletService } from '../wallet/wallet.service';
 import { ReferralsService } from '../referrals/referrals.service';
 import { EmailService } from '../email/email.service';
-import { PaymentMethod } from '@prisma/client';
+import { Coupon, PaymentMethod } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import {
   ensurePremiumPdfFile,
@@ -72,7 +72,7 @@ export class OrdersService {
     // 3. Load coupon
     let couponId: string | null = null;
     let isPdfIncludedViaCoupon = false;
-    let couponRef = null;
+    let couponRef: Coupon | null = null;
 
     if (couponCode) {
       const coupon = await this.prisma.coupon.findUnique({ where: { code: couponCode } });
