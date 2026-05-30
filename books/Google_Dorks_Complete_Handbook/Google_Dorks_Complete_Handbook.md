@@ -308,15 +308,6 @@ query, and hands-on practice is irreplaceable.
 > ethical framework in full. Please read it. It is the most important
 > chapter in this handbook.
 
-## A Note on Accuracy
-
-All operators described in this handbook are verified against current
-Google search behaviour. Where two operators have become unreliable,
-such as cache:(e.g., cache:example.com, related:en.wikipedia.org), this
-handbook says so clearly and provides a tested alternative. The
-techniques in [Chapters 5 and 6 reflect real-world security and OSINT
-practice]{.underline} as of the publication date.
-
 \*\*CHAPTER 1\*\*
 
 **Introduction to Google Dorks**
@@ -433,23 +424,24 @@ precise, stackable filters.
 > > publicl]{.underline}y [accessible when Goo]{.underline}g[lebot visited
 > >
 > > > > ma]{.underline}y [still appear in search results even if the file has
+> > > >
 > > > > > > > > since been]{.underline} **moved or deleted** [from the original
-> > > > > > > > server]{.underline}.
+> > > > > > > > > > > > > > > > server]{.underline}.
 
 ## 1.4 Who Uses Google Dorks and Why
 
 ---
 
-| Role | How They Use Google Dorks |
-| :--- | :------------------------ |
-| Security Researchers | Finding exposed files, admin panels, and vulnerabilities on authorised test systems |
-| Journalists | Locating government documents, public records, and source materials for investigative reporting |
-| Students | Finding academic papers, datasets, and study materials in specific formats such as PDF or CSV |
-| Marketers | Analysing competitor websites, finding indexed landing pages, and auditing SEO performance |
-| Data Scientists | Locating public datasets, CSV files, and research databases for analysis |
-| Investigators | Gathering publicly available intelligence on organisations or persons of public interest |
-| System Admins | Auditing their own infrastructure to discover what Google has indexed about their organisation |
-| Bug Bounty Hunters | Mapping attack surfaces and finding accidentally exposed assets within authorised programme scope |
+| Role                 | How They Use Google Dorks                                                                         |
+| :------------------- | :------------------------------------------------------------------------------------------------ |
+| Security Researchers | Finding exposed files, admin panels, and vulnerabilities on authorised test systems               |
+| Journalists          | Locating government documents, public records, and source materials for investigative reporting   |
+| Students             | Finding academic papers, datasets, and study materials in specific formats such as PDF or CSV     |
+| Marketers            | Analysing competitor websites, finding indexed landing pages, and auditing SEO performance        |
+| Data Scientists      | Locating public datasets, CSV files, and research databases for analysis                          |
+| Investigators        | Gathering publicly available intelligence on organisations or persons of public interest          |
+| System Admins        | Auditing their own infrastructure to discover what Google has indexed about their organisation    |
+| Bug Bounty Hunters   | Mapping attack surfaces and finding accidentally exposed assets within authorised programme scope |
 
 ---
 
@@ -463,6 +455,15 @@ precise, stackable filters.
 > Finding them is not the same as having permission to use them. Chapter
 > 7 covers this distinction in full. Please read it before applying any
 > technique in this handbook.
+
+## A Note on Accuracy
+
+All operators described in this handbook are verified against current
+Google search behaviour. Where two operators have become unreliable,
+such as cache:(e.g., cache:example.com, related:en.wikipedia.org), this
+handbook says so clearly and provides a tested alternative. The
+techniques in [Chapters 5 and 6 reflect real-world security and OSINT
+practice]{.underline} as of the publication date.
 
 ## ⭐ Key Takeaways
 

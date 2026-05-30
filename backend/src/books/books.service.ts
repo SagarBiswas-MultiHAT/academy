@@ -9,7 +9,7 @@ type ChapterMeta = { index: number; title: string; isFree: boolean };
 // Chapter boundary line numbers (1-indexed) derived from the markdown structure.
 // Each entry is [startLine, endLine] inclusive.
 const CHAPTER_BOUNDARIES: Record<number, [number, number]> = {
-  1: [320, 489],
+  1: [312, 489],
   2: [490, 1060],
   3: [1061, 1642],
   4: [1643, 3340],
