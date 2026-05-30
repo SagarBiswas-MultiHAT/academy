@@ -162,13 +162,13 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     const isBlock = className?.startsWith("language-");
     if (isBlock) {
       return (
-        <pre className="my-4 rounded-xl bg-muted/60 dark:bg-muted/30 border border-border/40 px-5 py-4 overflow-x-auto text-sm font-mono text-foreground/90">
+        <pre className="rounded-xl bg-muted/60 dark:bg-muted/30 border border-border/40 px-5 py-4 overflow-x-auto text-sm font-mono text-foreground/90">
           <code>{children}</code>
         </pre>
       );
     }
     // Inline code — detect if it looks like a search query
-    const text = String(children);
+    const text = String(children).trim();
     const isQuery =
       /^(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:)/.test(
         text
@@ -186,7 +186,7 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
       </code>
     );
   },
-  pre: ({ children }) => <>{children}</>,
+  pre: ({ children }) => <div className="my-4">{children}</div>,
   ul: ({ children }) => (
     <ul className="my-3 ml-6 space-y-1 list-disc marker:text-primary/60">
       {children}
@@ -213,26 +213,24 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
   ),
   th: ({ children, align }) => (
     <th
-      className={`px-4 py-3 text-sm font-semibold text-foreground whitespace-nowrap ${
-        align === "center"
-          ? "text-center"
-          : align === "right"
+      className={`px-4 py-3 text-sm font-semibold text-foreground whitespace-nowrap ${align === "center"
+        ? "text-center"
+        : align === "right"
           ? "text-right"
           : "text-left"
-      }`}
+        }`}
     >
       {children}
     </th>
   ),
   td: ({ children, align }) => (
     <td
-      className={`px-4 py-3 text-sm text-muted-foreground ${
-        align === "center"
-          ? "text-center"
-          : align === "right"
+      className={`px-4 py-3 text-sm text-muted-foreground ${align === "center"
+        ? "text-center"
+        : align === "right"
           ? "text-right"
           : "text-left"
-      }`}
+        }`}
     >
       {children}
     </td>
@@ -288,11 +286,10 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
       const isAccent = className.includes("--accent");
       return (
         <div
-          className={`px-6 py-3 rounded-xl text-sm font-medium text-center max-w-sm w-full ${
-            isAccent
-              ? "bg-primary/15 border border-primary/30 text-primary font-semibold"
-              : "bg-background border border-border/50 text-foreground/80"
-          }`}
+          className={`px-6 py-3 rounded-xl text-sm font-medium text-center max-w-sm w-full ${isAccent
+            ? "bg-primary/15 border border-primary/30 text-primary font-semibold"
+            : "bg-background border border-border/50 text-foreground/80"
+            }`}
         >
           {children}
         </div>
@@ -474,7 +471,7 @@ export default function ChapterReaderPage({
                   </span>
                 )}
               </div>
-              
+
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
                 <span className="gradient-text">{data.chapter.title}</span>
               </h1>

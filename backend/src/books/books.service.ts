@@ -475,10 +475,20 @@ export class BooksService {
     // ══════════════════════════════════════════════════════════════════
     content = content.replace(
       /^> ((?:site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|https?:\/\/)[^\n]+)$/gm,
-      '```\n$1\n```'
+      '```\n$1\n```\n'
     );
 
     // ══════════════════════════════════════════════════════════════════
+
+    // ══════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════
+    // STEP 6b: Ensure blank line after closing code fences and after any
+    // blockquote line immediately followed by prose (no blank separator).
+    // Pandoc omits these blanks, causing text to hug code blocks.
+    // ══════════════════════════════════════════════════════════════════
+    // Blank line after any > blockquote line not followed by blank or >
+    content = content.replace(/^(> [^\n\r]+)\r?\n(?!\r?\n|>)/gm, '$1\n\n');
+
     // STEP 7: Detect callout types in blockquotes and prefix them with
     // a data-type attribute via an HTML wrapper so the frontend can
     // apply distinct styling (NOTE, IMPORTANT, TIP, CRITICAL, WARNING)

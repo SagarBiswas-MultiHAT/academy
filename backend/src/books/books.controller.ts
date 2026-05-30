@@ -12,7 +12,7 @@ import { Role } from '@prisma/client';
 @ApiTags('Books')
 @Controller('books')
 export class BooksController {
-  constructor(private booksService: BooksService) {}
+  constructor(private booksService: BooksService) { }
 
   @Get()
   findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
@@ -39,23 +39,23 @@ export class BooksController {
     @Res() res: any,
   ) {
     const bookDir = path.resolve(process.cwd(), '..', 'books', 'Google_Dorks_Complete_Handbook');
-    
+
     let mediaPath = req.params[0] || req.params['*'];
     if (!mediaPath) {
       const match = req.url.match(/\/media\/(.+)$/);
       if (match) mediaPath = match[1];
     }
     if (mediaPath) mediaPath = mediaPath.split('?')[0];
-    
+
     if (!mediaPath) {
       return res.status(404).json({ message: 'Media path not provided' });
     }
-    
+
     const fullPath = path.join(bookDir, 'media', mediaPath);
     if (!fs.existsSync(fullPath)) {
       return res.status(404).json({ message: 'Media file not found' });
     }
-    
+
     return res.sendFile(fullPath);
   }
 
