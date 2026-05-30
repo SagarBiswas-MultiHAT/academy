@@ -458,7 +458,7 @@ export default function ChapterReaderPage({
         ) : data ? (
           <article ref={articleRef} className="animate-fade-in-up">
             {/* Chapter header */}
-            <div className="space-y-3 mb-8">
+            <div className="flex flex-col gap-6 mb-10">
               <div className="flex items-center gap-3 flex-wrap">
                 <Badge variant="holographic">
                   <BookOpen className="mr-1 size-3" />
@@ -474,6 +474,7 @@ export default function ChapterReaderPage({
                   </span>
                 )}
               </div>
+              
               <h1 className="text-3xl font-bold tracking-tight sm:text-4xl font-[family-name:var(--font-space-grotesk)]">
                 <span className="gradient-text">{data.chapter.title}</span>
               </h1>

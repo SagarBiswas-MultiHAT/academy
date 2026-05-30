@@ -436,6 +436,13 @@ export class BooksService {
     }
     // Pass 2 – remove any remaining bare {.underline} annotation stubs
     content = content.replace(/\{[^}]*\.underline[^}]*\}/g, '');
+    // STEP 2c (bold-merge): After underline stripping, pandoc leaves adjacent
+    // bold markers like **an****yone** from split spans. Collapse them.
+    for (let m = 0; m < 3; m++) {
+      content = content.replace(/\*\*([^*\n]+)\*\*\*\*([^*\n]+)\*\*/g, '**$1$2**');
+    }
+    // Strip lone ** pairs with no content between them (empty bold artifacts)
+    content = content.replace(/\*\*\s*\*\*/g, '');
 
     // ══════════════════════════════════════════════════════════════════
 
