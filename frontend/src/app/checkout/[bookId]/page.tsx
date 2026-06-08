@@ -44,6 +44,13 @@ type WalletBalance = {
   balanceBdt: number | string;
 };
 
+type Coupon = {
+  code: string;
+  discountType: "PERCENTAGE" | "FIXED";
+  discountValue: number | string;
+  includesPdf: boolean;
+};
+
 const formatBookPrice = (value: number | string) => {
   return formatUsdFromBdt(value);
 };
@@ -55,6 +62,9 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
   const [wallet, setWallet] = useState<WalletBalance | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"GATEWAY" | "WALLET">("GATEWAY");
   const [couponCode, setCouponCode] = useState("");
+  const [verifiedCoupon, setVerifiedCoupon] = useState<Coupon | null>(null);
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
+  const [verifyingCoupon, setVerifyingCoupon] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -64,6 +74,7 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
   const [processing, setProcessing] = useState(false);
   const [includePrintablePdf, setIncludePrintablePdf] = useState(addon === "pdf");
   const [alreadyOwnsBook, setAlreadyOwnsBook] = useState(false);
+  const [alreadyOwnsPdf, setAlreadyOwnsPdf] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -108,9 +119,13 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
     api
       .get("/orders/my")
       .then((res) => {
-        const orders = res.data.data as { book: { id: string }, status: string }[];
+        const orders = res.data.data as { book: { id: string }; status: string; canDownloadPdf?: boolean }[];
         const hasPaid = orders.some(o => o.book.id === params.bookId && o.status === "PAID");
+        const hasPdf = orders.some(
+          (order) => order.book.id === params.bookId && order.status === "PAID" && Boolean(order.canDownloadPdf),
+        );
         setAlreadyOwnsBook(hasPaid);
+        setAlreadyOwnsPdf(hasPdf);
       })
       .catch(() => setAlreadyOwnsBook(false));
   }, [user, params.bookId]);
@@ -120,6 +135,12 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
       setIncludePrintablePdf(true);
     }
   }, [alreadyOwnsBook]);
+
+  useEffect(() => {
+    if (alreadyOwnsPdf) {
+      setCheckoutError("You already own this book and its PDF. Open the dashboard to download it.");
+    }
+  }, [alreadyOwnsPdf]);
 
   useEffect(() => {
     if (book?.hasPremiumPdf && includePrintablePdf) {
@@ -134,12 +155,42 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
     return Number.isFinite(price) ? price : 0;
   }, [book, alreadyOwnsBook]);
 
+  const walletBalanceUsd = wallet ? bdtToUsdAmount(wallet.balanceBdt) : 0;
+  const gatewayOnly = Boolean(book?.hasPremiumPdf && includePrintablePdf);
+  const selectedPaymentMethod = gatewayOnly ? "GATEWAY" : paymentMethod;
+  const addOnPriceBdt = book?.hasPremiumPdf ? usdToBdtAmount(GOOGLE_DORKS_PRINTABLE_ADDON_USD) : 0;
+  const couponDiscountBdt = useMemo(() => {
+    if (!verifiedCoupon || !book) return 0;
+    const discountValue =
+      typeof verifiedCoupon.discountValue === "string"
+        ? Number(verifiedCoupon.discountValue)
+        : verifiedCoupon.discountValue;
+    if (!Number.isFinite(discountValue)) return 0;
+    const basePrice = alreadyOwnsBook ? 0 : numericPrice;
+    if (verifiedCoupon.discountType === "PERCENTAGE") {
+      return Math.min((basePrice * discountValue) / 100, basePrice);
+    }
+    return Math.min(discountValue, basePrice);
+  }, [verifiedCoupon, book, numericPrice, alreadyOwnsBook]);
+  const discountedBookPriceBdt = Math.max((alreadyOwnsBook ? 0 : numericPrice) - couponDiscountBdt, 0);
+  const addOnDiscountedByCoupon = Boolean(verifiedCoupon?.includesPdf);
+  const addOnPriceBdtAfterCoupon =
+    book?.hasPremiumPdf && includePrintablePdf && !addOnDiscountedByCoupon ? addOnPriceBdt : 0;
+  const totalPriceBdt = discountedBookPriceBdt + addOnPriceBdtAfterCoupon;
+  const walletInsufficient =
+    selectedPaymentMethod === "WALLET" && walletBalanceUsd < bdtToUsdAmount(totalPriceBdt);
+  const alreadyOwnedFully = alreadyOwnsBook && alreadyOwnsPdf;
+
   const handleCheckout = async () => {
     if (!user) {
       router.push("/auth/login");
       return;
     }
     if (!book) return;
+    if (alreadyOwnedFully) {
+      setCheckoutError("You already own this book and its PDF. Open the dashboard to download it.");
+      return;
+    }
 
     setCheckoutError(null);
     setProcessing(true);
@@ -212,12 +263,34 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
     );
   }
 
-  const walletBalanceUsd = wallet ? bdtToUsdAmount(wallet.balanceBdt) : 0;
-  const gatewayOnly = Boolean(book.hasPremiumPdf && includePrintablePdf);
-  const selectedPaymentMethod = gatewayOnly ? "GATEWAY" : paymentMethod;
-  const addOnPriceBdt = book.hasPremiumPdf ? usdToBdtAmount(GOOGLE_DORKS_PRINTABLE_ADDON_USD) : 0;
-  const totalPriceBdt = numericPrice + (includePrintablePdf && book.hasPremiumPdf ? addOnPriceBdt : 0);
-  const walletInsufficient = selectedPaymentMethod === "WALLET" && walletBalanceUsd < bdtToUsdAmount(totalPriceBdt);
+  const verifyCoupon = async () => {
+    const normalizedCode = couponCode.trim();
+    if (!normalizedCode) {
+      setVerifiedCoupon(null);
+      setCouponMessage("Enter a coupon code first.");
+      return;
+    }
+
+    setVerifyingCoupon(true);
+    setCouponMessage(null);
+
+    try {
+      const res = await api.get(`/coupons/verify/${encodeURIComponent(normalizedCode)}`);
+      const coupon = res.data.data as Coupon;
+      setVerifiedCoupon(coupon);
+      setCouponCode(coupon.code);
+      setCouponMessage(
+        coupon.includesPdf
+          ? `Coupon applied. ${coupon.code} unlocks the printable PDF.`
+          : `Coupon applied. ${coupon.code} verified successfully.`,
+      );
+    } catch {
+      setVerifiedCoupon(null);
+      setCouponMessage("Coupon not valid or expired.");
+    } finally {
+      setVerifyingCoupon(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -305,12 +378,31 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
               )}
               <div className="space-y-2">
                 <Label htmlFor="coupon">Coupon code</Label>
-                <Input
-                  id="coupon"
-                  value={couponCode}
-                  onChange={(event) => setCouponCode(event.target.value)}
-                  placeholder="Optional"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="coupon"
+                    value={couponCode}
+                    onChange={(event) => {
+                      setCouponCode(event.target.value);
+                      setVerifiedCoupon(null);
+                      setCouponMessage(null);
+                    }}
+                    placeholder="Enter coupon code"
+                    className="flex-1"
+                  />
+                  <Button type="button" variant="outline" onClick={verifyCoupon} disabled={verifyingCoupon}>
+                    {verifyingCoupon ? "Verifying..." : "Verify"}
+                  </Button>
+                </div>
+                {verifiedCoupon && (
+                  <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
+                    <Badge variant="success">Verified</Badge>
+                    <span>{verifiedCoupon.includesPdf ? "PDF included" : "Discount active"}</span>
+                  </div>
+                )}
+                {couponMessage && !verifiedCoupon && (
+                  <p className="text-xs text-destructive">{couponMessage}</p>
+                )}
               </div>
               {checkoutError && (
                 <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive backdrop-blur-sm">
@@ -386,9 +478,9 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
               <Button
                 className="w-full"
                 onClick={handleCheckout}
-                disabled={processing || walletInsufficient}
+                disabled={processing || walletInsufficient || alreadyOwnedFully}
               >
-                {processing ? "Processing..." : "Complete purchase"}
+                {processing ? "Processing..." : alreadyOwnedFully ? "Already owned" : "Complete purchase"}
               </Button>
               {!user && (
                 <Button asChild variant="outline" className="w-full">

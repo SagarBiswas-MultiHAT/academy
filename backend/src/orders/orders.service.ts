@@ -75,7 +75,8 @@ export class OrdersService {
     let couponRef: Coupon | null = null;
 
     if (couponCode) {
-      const coupon = await this.prisma.coupon.findUnique({ where: { code: couponCode } });
+      const normalizedCode = couponCode.trim().toUpperCase();
+      const coupon = await this.prisma.coupon.findUnique({ where: { code: normalizedCode } });
       if (!coupon || !coupon.isActive) throw new BadRequestException('Invalid coupon');
       if (new Date() < coupon.validFrom || new Date() > coupon.validUntil) throw new BadRequestException('Coupon expired');
       if (coupon.usageCount >= coupon.usageLimit) throw new BadRequestException('Coupon usage limit reached');
@@ -116,6 +117,36 @@ export class OrdersService {
       ? new Decimal(usdToBdt(PRINTABLE_PDF_ADDON_USD))
       : new Decimal(0);
     const finalAmount = discountedBookAmount.plus(printablePdfAddonAmount);
+
+    if (finalAmount.lte(0)) {
+      const order = await this.prisma.order.create({
+        data: {
+          userId,
+          bookId,
+          couponId,
+          amount: finalAmount,
+          discountApplied: actualDiscount,
+          status: 'PAID',
+          paymentMethod: 'GATEWAY',
+          aamarpayTranId: `FREE-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          includesPdf: includePremiumPdfAddon,
+        },
+      });
+
+      if (couponId) {
+        await this.prisma.coupon.update({
+          where: { id: couponId },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
+
+      await this.referralsService.updateCumulativeSpend(userId, finalAmount);
+
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      await this.emailService.sendPurchaseReceipt(user!.email, user!.name, book.title);
+
+      return { orderId: order.id, paymentMethod: 'GATEWAY', status: 'PAID' };
+    }
 
     // ─── PATH A: WALLET PAYMENT (instant fulfillment) ───
     if (paymentMethod === 'WALLET') {

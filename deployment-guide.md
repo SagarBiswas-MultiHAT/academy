@@ -347,7 +347,7 @@ module.exports = {
   apps: [
     {
       name: 'academy-backend',
-      script: 'dist/main.js',
+      script: 'dist/src/main.js',
       instances: 1,        // Single instance for 1 GB RAM Droplet
       exec_mode: 'fork',
       watch: false,
@@ -402,7 +402,7 @@ module.exports = {
   apps: [
     {
       name: 'academy-backend',
-      script: 'dist/main.js',
+      script: 'dist/src/main.js',
       cwd: '/var/www/academy/backend',
       instances: 1,
       exec_mode: 'fork',

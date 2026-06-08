@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -7,10 +11,40 @@ import { PrismaService } from '../prisma/prisma.service';
 export class CouponsService {
   constructor(private prisma: PrismaService) {}
 
+  private normalizeCode(code: string) {
+    return code.trim().toUpperCase();
+  }
+
+  async verifyCoupon(code: string) {
+    const normalizedCode = this.normalizeCode(code);
+    if (!normalizedCode) {
+      throw new BadRequestException('Coupon code is required');
+    }
+
+    const coupon = await this.prisma.coupon.findUnique({
+      where: { code: normalizedCode },
+    });
+
+    if (!coupon || !coupon.isActive) {
+      throw new BadRequestException('Invalid coupon');
+    }
+
+    const now = new Date();
+    if (now < coupon.validFrom || now > coupon.validUntil) {
+      throw new BadRequestException('Coupon expired');
+    }
+
+    if (coupon.usageCount >= coupon.usageLimit) {
+      throw new BadRequestException('Coupon usage limit reached');
+    }
+
+    return coupon;
+  }
+
   create(createCouponDto: CreateCouponDto) {
     return this.prisma.coupon.create({
       data: {
-        code: createCouponDto.code,
+        code: this.normalizeCode(createCouponDto.code),
         discountType: createCouponDto.discountType,
         discountValue: createCouponDto.discountValue,
         validFrom: new Date(createCouponDto.validFrom),
@@ -38,14 +72,30 @@ export class CouponsService {
     return this.prisma.coupon.update({
       where: { id },
       data: {
-        ...(updateCouponDto.code && { code: updateCouponDto.code }),
-        ...(updateCouponDto.discountType && { discountType: updateCouponDto.discountType }),
-        ...(updateCouponDto.discountValue !== undefined && { discountValue: updateCouponDto.discountValue }),
-        ...(updateCouponDto.validFrom && { validFrom: new Date(updateCouponDto.validFrom) }),
-        ...(updateCouponDto.validUntil && { validUntil: new Date(updateCouponDto.validUntil) }),
-        ...(updateCouponDto.usageLimit !== undefined && { usageLimit: updateCouponDto.usageLimit }),
-        ...(updateCouponDto.isActive !== undefined && { isActive: updateCouponDto.isActive }),
-        ...(updateCouponDto.includesPdf !== undefined && { includesPdf: updateCouponDto.includesPdf }),
+        ...(updateCouponDto.code && {
+          code: this.normalizeCode(updateCouponDto.code),
+        }),
+        ...(updateCouponDto.discountType && {
+          discountType: updateCouponDto.discountType,
+        }),
+        ...(updateCouponDto.discountValue !== undefined && {
+          discountValue: updateCouponDto.discountValue,
+        }),
+        ...(updateCouponDto.validFrom && {
+          validFrom: new Date(updateCouponDto.validFrom),
+        }),
+        ...(updateCouponDto.validUntil && {
+          validUntil: new Date(updateCouponDto.validUntil),
+        }),
+        ...(updateCouponDto.usageLimit !== undefined && {
+          usageLimit: updateCouponDto.usageLimit,
+        }),
+        ...(updateCouponDto.isActive !== undefined && {
+          isActive: updateCouponDto.isActive,
+        }),
+        ...(updateCouponDto.includesPdf !== undefined && {
+          includesPdf: updateCouponDto.includesPdf,
+        }),
       },
     });
   }
