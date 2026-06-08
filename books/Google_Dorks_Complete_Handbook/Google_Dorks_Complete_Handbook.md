@@ -714,8 +714,8 @@ servers.]{.underline}
 >
 > =\> SQL files on GitHub containing table definitions
 >
-> _\# SECURITY AUDIT (own site only):_
->
+#### Security Audit (own site only)
+
 > ext:env site:yourdomain.com
 >
 > =\> Check for exposed .env files (should return ZERO results)
@@ -725,7 +725,7 @@ servers.]{.underline}
 > =\> Check for exposed log files (should return ZERO results)
 >
 > ext:bak site:yourdomain.com
-
+>
 > =\> Check for exposed backup files (should return ZERO results)
 
 > **CRITICAL:** If ext:env, ext:sql, ext:log, or ext:bak returns any
@@ -751,13 +751,14 @@ major websites.
 
 > **Current Reality**
 >
-> cache:wikipedia.org =\> Often returns: \"did not match any documents\"
+> cache:wikipedia.org 
+>=\> Often returns: \"did not match any documents\"
 >
-> cache:who.int/news =\> Often returns: \"did not match any documents\"
+> cache:who.int/news
 >
-> _\# Result: Google cache links are no longer reliably available._
->
-> _\# Use the Wayback Machine instead (see below)._
+> =\> Often returns: \"did not match any documents\"
+
+> **Result:** Google cache links are no longer reliably available. Use the Wayback Machine instead (see below).
 
 ### The Reliable Alternative: The Wayback Machine
 
@@ -768,25 +769,29 @@ view an]{.underline}y [saved sna]{.underline}p[shot of almost
 an]{.underline}y p[ublic URL.]{.underline} Understanding the URL
 structure lets you navigate it precisely.
 
-> **Wayback Machine URL Patterns**
+#### View All Saved Snapshots (Calendar View)
 
-> _\# View all saved snapshots (calendar view):_
->
 > https://web.archive.org/web/*/https://www.wikipedia.org
 >
-> _\# View a specific snapshot by date (YYYYMMDD format):_
->
+> =\> Opens a calendar showing every archived date for wikipedia.org
+
+#### View a Specific Snapshot by Date (YYYYMMDD format)
+
 > https://web.archive.org/web/20231015/https://www.who.int/news
 >
 > =\> WHO news as it appeared on 15 October 2023
 
-> _\# View a specific snapshot by date with accurate time(YYYYMMDDhhmmss format):_
->
+#### View a Snapshot with Exact Time (YYYYMMDDhhmmss format)
+
 > https://web.archive.org/web/20230701043508/https://openai.com/
 >
-> _\# Save the current live page to the archive right now:_
->
+> =\> OpenAI homepage as it appeared on 1 July 2023 at 04:35:08 UTC
+
+#### Save the Current Live Page Right Now
+
 > https://web.archive.org/save/https://www.example.com/page
+>
+> =\> Triggers the Wayback Machine to archive the page immediately
 
 ---
 
@@ -812,8 +817,8 @@ If a cached copy is unavailable, one of **three**
 
 3.  The page was removed from Google\'s index entirely.
 
-To check whether a page blocks caching, [view the pa]{.underline}g[e
-source and look for]{.underline}:
+To check whether a page blocks caching, [<b>view the pa</b>]{.underline}<b>g</b>[<b>e
+source and look for</b>]{.underline}:
 
 > \<meta name=\"robots\" content=\"noarchive\"\> (blocks Google cache)<br>
 > \<meta name=\"internetarchive\" content=\"noarchive\"\> (blocks Wayback Machine)
@@ -834,8 +839,7 @@ popular services, and mapping a content category comprehensively.
 >
 > related:unsplash.com =\> Inconsistent or unrelated matches
 >
-> related:stackoverflow.com =\> Often ignored or replaced with normal
-> search results
+> related:stackoverflow.com =\> Often ignored or replaced with normal search results
 
 However, Google officially **deprecated** the related**:** operator in
 2023, and it no longer returns reliable or consistent results. In many
@@ -850,25 +854,24 @@ patterns, and web relationships.
 
 **Website:** <https://www.similarsites.com/>
 
-**SimilarSites URL Pattern:**
-[https://www.similarsites.com/site/{targetDomain}](https://www.similarsites.com/site/%7btargetDomain%7d)
+**SimilarSites URL Pattern:** https://www.similarsites.com/site/{targetDomain}
 
 > **Examples**
 >
-> https://www.similarsites.com/site/wikipedia.org =\> No reliable
-> similarity results
+> https://www.similarsites.com/site/wikipedia.org 
+> =\> No reliable similarity results
 >
-> https://www.similarsites.com/site/unsplash.com =\> Free image sites
-> like Pexels, Pixabay, or Freepik
+> https://www.similarsites.com/site/unsplash.com 
+> =\> Free image sites like Pexels, Pixabay, or Freepik
 >
-> https://www.similarsites.com/site/stackoverflow.com =\> Coding Q&A
-> sites like Stack Exchange or Dev.to
+> https://www.similarsites.com/site/stackoverflow.com 
+> =\> Coding Q&A sites like Stack Exchange or Dev.to
 >
-> https://www.similarsites.com/site/coursera.org =\> Other online
-> learning platforms
+> https://www.similarsites.com/site/coursera.org 
+> =\> Other online learning platforms
 >
-> https://www.similarsites.com/site/prothomalo.com =\> Other major
-> Bangladeshi news portals
+> https://www.similarsites.com/site/prothomalo.com 
+> =\> Other major Bangladeshi news portals
 
 ### When to use it:
 
@@ -886,13 +889,14 @@ patterns, and web relationships.
 
 ### Extra Tools:
 
-A. Find Ownership Clues:
+**A. Find Ownership Clues:**
 
-    1.  <https://www.whois.com/>
+- **whois.com** — [https://www.whois.com/](https://www.whois.com/) — WHOIS lookup for domain registration details
+- **lookup.icann.org** — [https://lookup.icann.org/en](https://lookup.icann.org/en) — Official ICANN domain registration lookup
 
-    2.  <https://lookup.icann.org/en>
+**B. Find Shared Technology Footprints:**
 
-B. Find Shared Technology Footprints: <https://builtwith.com/>
+- [builtwith.com](https://builtwith.com/) — Discover what technologies a website is built with
 
 ## 2.8 info: \-- Getting Information About a Domain
 
@@ -905,13 +909,16 @@ indexed.
 
 > **Examples**
 >
-> info:openai.com =\> Google\'s stored data about OpenAI\'s website
+> info:openai.com 
+> =\> Google\'s stored data about OpenAI\'s website
 >
-> info:bbc.com =\> Cached link, related sites, pages referencing BBC
+> info:bbc.com 
+> =\> Cached link, related sites, pages referencing BBC
 >
-> info:yourdomain.com =\> Quick check of how Google sees your own site
-> info:reservexbd.com =\> similar sites (if any), and pages linking to
-> ReserveXBD; help centre page, etc.
+> info:yourdomain.com 
+> =\> Quick check of how Google sees your own site
+> info:reservexbd.com 
+> =\> similar sites (if any), and pages linking to ReserveXBD; help centre page, etc.
 
 ## 2.9 intext: \-- Searching in Page Body Content
 
@@ -937,9 +944,9 @@ elements.
 > intext:\"admission requirements\" site:du.ac.bd
 >
 > =\> Dhaka University pages with admission requirements in body text
->
-> _\# SECURITY AUDIT (own site only):_
->
+
+#### Security Audit (own site only)
+
 > intext:\"DB_PASSWORD\" ext:env site:yourdomain.com
 >
 > =\> Environment files containing database password variables
