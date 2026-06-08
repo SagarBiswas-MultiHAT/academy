@@ -426,6 +426,7 @@ precise, stackable filters.
 > > > > ma]{.underline}y [still appear in search results even if the file has
 > > > >
 > > > > > > > > since been]{.underline} **moved or deleted** [from the original
+> > > > > > > >
 > > > > > > > > > > > > > > > > server]{.underline}.
 
 ## 1.4 Who Uses Google Dorks and Why
@@ -462,8 +463,7 @@ All operators described in this handbook are verified against current
 Google search behaviour. Where two operators have become unreliable,
 such as cache:(e.g., cache:example.com, related:en.wikipedia.org), this
 handbook says so clearly and provides a tested alternative. The
-techniques in [Chapters 5 and 6 reflect real-world security and OSINT
-practice]{.underline} as of the publication date.
+techniques in <b>Chapters 5 and 6 reflect real-world security and OSINT practice</b> as of the publication date.
 
 ## ⭐ Key Takeaways
 
@@ -501,7 +501,7 @@ security research and find that these ten cover the vast majority of
 what you need. The key is to know not just what each operator does, but
 when and why to reach for it.
 
-> **TIP:** Operators must be written with no spaces around the colon. Write ***site:wikipedia.org***, not *site: wikipedia.org* or *site :wikipedia.org*. The latter two are treated as plain text searches and the operator is completely ignored by Google.
+> **TIP:** Operators must be written with no spaces around the colon. Write **_site:wikipedia.org_**, not _site: wikipedia.org_ or _site :wikipedia.org_. The latter two are treated as plain text searches and the operator is completely ignored by Google.
 
 ## 2.1 site: \-- Restricting Results to a Specific Domain
 
@@ -683,17 +683,15 @@ resource in a]{.underline} p[articular format]{.underline}.
 >
 > =\> Road accident data from Bangladeshi government sources
 
-
-| Extension | File Type | Best Used For |
-|---|---|---|
-| `pdf` | PDF Document | Reports, papers, manuals |
-| `xlsx` / `xls` | Excel Spreadsheet | Datasets, budgets, tables |
-| `docx` / `doc` | Word Document | Templates, policies, contracts |
-| `pptx` / `ppt` | PowerPoint | Slides, training materials |
-| `csv` | Comma-Separated Values | Raw data for analysis |
-| `sql` | SQL Script | Database schemas, scripts |
-| `txt` | Plain Text | Config files, logs, notes |
-
+| Extension      | File Type              | Best Used For                  |
+| -------------- | ---------------------- | ------------------------------ |
+| `pdf`          | PDF Document           | Reports, papers, manuals       |
+| `xlsx` / `xls` | Excel Spreadsheet      | Datasets, budgets, tables      |
+| `docx` / `doc` | Word Document          | Templates, policies, contracts |
+| `pptx` / `ppt` | PowerPoint             | Slides, training materials     |
+| `csv`          | Comma-Separated Values | Raw data for analysis          |
+| `sql`          | SQL Script             | Database schemas, scripts      |
+| `txt`          | Plain Text             | Config files, logs, notes      |
 
 ## 2.5 ext: \-- Filtering by File Extension
 
@@ -735,13 +733,10 @@ servers.]{.underline}
 > almost certainly contain sensitive information. Take the following
 > steps immediately:
 >
-> <br>(1) Remove the files from your web root.
->
-> <br>(2) Rotate all exposed credentials.
->
-> <br>(3) Submit a removal request in Google Search Console.
->
-> <br>(4) Add server rules to block these types.
+> 1. Remove the files from your web root.
+> 2. Rotate all exposed credentials.
+> 3. Submit a removal request in Google Search Console.
+> 4. Add server rules to block these types.
 
 ## 2.6 cache: \-- Viewing Cached Page Versions
 
@@ -774,16 +769,20 @@ an]{.underline}y p[ublic URL.]{.underline} Understanding the URL
 structure lets you navigate it precisely.
 
 > **Wayback Machine URL Patterns**
->
+
 > _\# View all saved snapshots (calendar view):_
 >
-> https://web.archive.org/web/\*/https://www.example.com/page
+> https://web.archive.org/web/*/https://www.wikipedia.org
 >
 > _\# View a specific snapshot by date (YYYYMMDD format):_
 >
 > https://web.archive.org/web/20231015/https://www.who.int/news
 >
 > =\> WHO news as it appeared on 15 October 2023
+
+> _\# View a specific snapshot by date with accurate time(YYYYMMDDhhmmss format):_
+>
+> https://web.archive.org/web/20230701043508/https://openai.com/
 >
 > _\# Save the current live page to the archive right now:_
 >
@@ -791,21 +790,14 @@ structure lets you navigate it precisely.
 
 ---
 
-**URL Part** **What It Means**
-
----
-
-web.archive.org The Internet Archive host
-
-/web/ The Wayback Machine web-capture service
-
-\* Wildcard: show all available snapshots in a
-calendar view
-
-20231015 Specific timestamp in YYYYMMDD format (15
-October 2023)
-
-/https://\... The original URL you want to inspect
+| URL Part          | What It Means                                                  |
+| ----------------- | -------------------------------------------------------------- |
+| `web.archive.org` | The Internet Archive host                                      |
+| `/web/`           | The Wayback Machine web-capture service                        |
+| `*`               | Wildcard: show all available snapshots in a calendar view      |
+| `20231015`        | Specific timestamp in YYYYMMDD format (15 October 2023)        |
+| `20230701043508`  | Timestamp in YYYYMMDDhhmmss format (1 July 2023, 04:35:08 UTC) |
+| `/https://...`    | The original URL you want to inspect                           |
 
 ---
 
@@ -823,10 +815,8 @@ If a cached copy is unavailable, one of **three**
 To check whether a page blocks caching, [view the pa]{.underline}g[e
 source and look for]{.underline}:
 
-> \<meta name=\"robots\" content=\"noarchive\"\> (blocks Google cache)
->
-> \<meta name=\"internetarchive\" content=\"noarchive\"\> (blocks
-> Wayback Machine)
+> \<meta name=\"robots\" content=\"noarchive\"\> (blocks Google cache)<br>
+> \<meta name=\"internetarchive\" content=\"noarchive\"\> (blocks Wayback Machine)
 
 ## 2.7 related: \-- Finding Similar Websites
 
