@@ -312,9 +312,9 @@ query, and hands-on practice is irreplaceable.
 
 **Introduction to Google Dorks**
 
-<div class="text-right text-muted-foreground italic mb-8"><em>What they are, where they came from, and why they matter</em></div>
-
 # Chapter 1: Introduction to Google Dorks
+
+<div class="text-right text-muted-foreground italic mb-8 -mt-4"><em>What they are, where they came from, and why they matter</em></div>
 
 > **Chapter Overview:** This chapter introduces the concept of Google
 > Dorking from the ground up. You will learn what Google Dorks are, how
@@ -485,9 +485,9 @@ techniques in <b>Chapters 5 and 6 reflect real-world security and OSINT practice
 
 **The 10 Essential Operators**
 
-_Your core toolkit for precise, powerful web searching_
-
 # Chapter 2: The 10 Essential Operators
+
+<div class="text-right text-muted-foreground italic mb-8 -mt-4"><em>Your core toolkit for precise, powerful web searching</em></div>
 
 > **Chapter Overview:** This chapter covers the ten most important
 > Google Dork operators. Each operator is explained with its syntax,
@@ -891,12 +891,12 @@ patterns, and web relationships.
 
 **A. Find Ownership Clues:**
 
-- **whois.com** — [https://www.whois.com/](https://www.whois.com/) — WHOIS lookup for domain registration details
-- **lookup.icann.org** — [https://lookup.icann.org/en](https://lookup.icann.org/en) — Official ICANN domain registration lookup
+- [WHOIS Search](https://www.whois.com/) — WHOIS lookup for domain registration details
+- [ICANN Lookup](https://lookup.icann.org/en) — Official ICANN domain registration lookup
 
 **B. Find Shared Technology Footprints:**
 
-- [builtwith.com](https://builtwith.com/) — Discover what technologies a website is built with
+- [BuiltWith](https://builtwith.com/) — Discover what technologies a website is built with
 
 ## 2.8 info: \-- Getting Information About a Domain
 
@@ -988,40 +988,18 @@ you need laser-focused results.
 
 ## Chapter 2 Quick Reference
 
----
-
-**Operator** **Purpose** **Example**
-
----
-
-site: Restrict to a domain site:wikipedia.org AI
-
-intitle: Keyword in page title intitle:\"login page\"
-
-inurl: Keyword in URL inurl:admin
-site:example.com
-
-filetype: Filter by document filetype:pdf report
-format
-
-ext: Filter by file ext:xlsx finance data
-extension
-
-cache: View cached page cache:example.com
-(unreliable)
-
-related: Find similar websites related:spotify.com
-
-info: Get Google info about a info:github.com
-domain
-
-intext: Phrase in body content intext:\"terms of
-service\"
-
-allintitle: All words must appear allintitle:python
-in title tutorial
-
----
+| Operator | Purpose | Example |
+| :--- | :--- | :--- |
+| `site:` | Restrict to a domain | `site:wikipedia.org AI` |
+| `intitle:` | Keyword in page title | `intitle:"login page"` |
+| `inurl:` | Keyword in URL | `inurl:admin site:example.com` |
+| `filetype:` | Filter by document format | `filetype:pdf report` |
+| `ext:` | Filter by file extension | `ext:xlsx finance data` |
+| `cache:` | View cached page (unreliable) | `cache:example.com` |
+| `related:` | Find similar websites | `related:spotify.com` |
+| `info:` | Get Google info about a domain | `info:github.com` |
+| `intext:` | Phrase in body content | `intext:"terms of service"` |
+| `allintitle:`| All words must appear in title | `allintitle:python tutorial` |
 
 ## ⭐ Key Takeaways
 
@@ -1040,15 +1018,13 @@ in title tutorial
 - **✓** intext: searches body content and is ideal for finding specific
   phrases buried in longer documents.
 
-\*\*\
-\
-CHAPTER 3\*\*
+\*\*CHAPTER 3\*\*
 
 **Advanced Search Operators**
 
-_Boolean logic, wildcards, date filters, and anchor text_
-
 # Chapter 3: Advanced Search Operators
+
+<div class="text-right text-muted-foreground italic mb-8 -mt-4"><em>Boolean logic, wildcards, date filters, and anchor text</em></div>
 
 > **Chapter Overview:** Chapter 3 covers the second layer of Google Dork
 > power: Boolean operators (OR, AND, minus), exact phrase matching,
@@ -1071,34 +1047,19 @@ either term, not just results containing both. This is useful when a
 concept has multiple names or when you want to search across related
 topics at the same time.
 
-**Syntax:** term1 OR term2 or equivalently: term1 \| term2
+**Syntax:** `term1 OR term2` or equivalently: `term1 | term2`
 
-> **Examples**
->
-> Python OR Java tutorial
->
-> =\> Tutorials on Python, Java, or both
->
-> machine learning \| deep learning site:arxiv.org
->
-> =\> ArXiv papers on machine learning or deep learning
->
-> \"cyber attack\" OR \"data breach\" site:.gov after:2024-01-01
->
-> =\> Recent government reports on either topic
->
-> filetype:csv OR filetype:xlsx \"population 2024\" site:worldbank.org
->
-> =\> World Bank data in either spreadsheet format
->
-> bKash OR Nagad \"digital payment\" site:.bd
->
-> =\> Bangladeshi sites mentioning either mobile payment provider
->
-> **TIP:** OR must be written in uppercase. [Lowercase \"or\" is treated
->
-> > as a re]{.underline}g[ular search word]{.underline}. The pipe symbol
-> > \| is an exact equivalent: Python \| Java tutorial
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `Python OR Java tutorial` | Tutorials on Python, Java, or both |
+| `machine learning \| deep learning site:arxiv.org` | ArXiv papers on machine learning or deep learning |
+| `"cyber attack" OR "data breach" site:.gov after:2024-01-01` | Recent government reports on either topic |
+| `filetype:csv OR filetype:xlsx "population 2024" site:worldbank.org` | World Bank data in either spreadsheet format |
+| `bKash OR Nagad "digital payment" site:.bd` | Bangladeshi sites mentioning either mobile payment provider |
+
+> **TIP:** OR must be written in uppercase. Lowercase "or" is treated as a regular search word. The pipe symbol `|` is an exact equivalent: `Python | Java tutorial`
 
 ### AND \-- Require Both Terms
 
@@ -1109,18 +1070,14 @@ for pa]{.underline}g[es containin]{.underline}g [both]{.underline}. You
 mainly use the explicit AND keyword for clarity in long, complex queries
 where its presence makes the logic easier to read and verify.
 
-**Syntax:** term1 AND term2
+**Syntax:** `term1 AND term2`
 
-> **Examples**
->
-> machine learning AND healthcare
->
-> =\> Pages discussing both topics (same as: machine learning
-> healthcare)
->
-> site:.bd AND filetype:pdf AND \"budget report\"
->
-> =\> Explicit AND for clarity in a compound query
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `machine learning AND healthcare` | Pages discussing both topics (same as: `machine learning healthcare`) |
+| `site:.bd AND filetype:pdf AND "budget report"` | Explicit AND for clarity in a compound query |
 
 ### - (Minus) \-- Exclude a Specific Term
 
@@ -1130,29 +1087,17 @@ word]{.underline}. It is the most practically useful Boolean operator
 for day-to-day searching because it removes the noise that clutters
 otherwise good results.
 
-**Syntax:** search term -excluded (no space between - and the word)
+**Syntax:** `search term -excluded` (no space between `-` and the word)
 
-> **Examples**
->
-> Python tutorial -video
->
-> =\> Python tutorials, excluding video content
->
-> Jaguar -car
->
-> =\> Information about the animal, not the car brand
->
-> site:medium.com \"machine learning\" -tutorial -beginner
->
-> =\> Medium ML articles, excluding tutorials and beginner content
->
-> \"data science\" -site:youtube.com -site:udemy.com
->
-> =\> Data science resources excluding those two platforms
->
-> site:github.com \"wifi deauth\" -tutorial -fork
->
-> =\> GitHub projects about wifi deauth, excluding tutorials and forks
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `Python tutorial -video` | Python tutorials, excluding video content |
+| `Jaguar -car` | Information about the animal, not the car brand |
+| `site:medium.com "machine learning" -tutorial -beginner` | Medium ML articles, excluding tutorials and beginner content |
+| `"data science" -site:youtube.com -site:udemy.com` | Data science resources excluding those two platforms |
+| `site:github.com "wifi deauth" -tutorial -fork` | GitHub projects about wifi deauth, excluding tutorials and forks |
 
 ## 3.2 Phrase and Wildcard Operators
 
@@ -1169,27 +1114,15 @@ searching for a **s**]{.underline}**p[ecific]{.underline}** [error
 messa]{.underline}g[e, title,]{.underline} q[uote, or technical
 strin]{.underline}g.
 
-> **Examples**
->
-> \"to be or not to be\"
->
-> =\> Finds that exact phrase
->
-> \"error 404 not found\"
->
-> =\> Exact error message search (very useful for debugging)
->
-> \"machine learning tutorial\"
->
-> =\> Pages where these three words appear consecutively
->
-> Without quotes: machine learning tutorial
->
-> =\> Pages with the words anywhere, in any order
->
-> \"admission circular 2024\" site:.bd
->
-> =\> Exact phrase from Bangladeshi websites
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `"to be or not to be"` | Finds that exact phrase |
+| `"error 404 not found"` | Exact error message search (very useful for debugging) |
+| `"machine learning tutorial"` | Pages where these three words appear consecutively |
+| `machine learning tutorial` (no quotes) | Pages with the words anywhere, in any order |
+| `"admission circular 2024" site:.bd` | Exact phrase from Bangladeshi websites |
 
 ### \* \-- Wildcard Placeholder
 
@@ -1200,38 +1133,15 @@ in that position. Particularly useful when you cannot remember an exact
 word in a phrase, or when you want to find all variations of a sentence
 structure.
 
-> **Examples**
->
-> \"Python is \* programming language\"
->
-> =\> Matches: \"Python is a powerful programming language\"
->
-> =\> Matches: \"Python is an interpreted programming language\"
->
-> =\> Matches: \"Python is a general-purpose high-level computer
-> programming language\"
->
-> \"best \* for beginners\"
->
-> =\> Matches: \"best laptop for beginners\"
->
-> =\> Matches: \"best book for beginners\"
->
-> \"Bangladesh won the \* match\"
->
-> =\> Finds sports reports with different match types
->
-> \*\# Multiple \*\*
->
-> \"Elon Mask \* \*\"
->
-> =\> Exactly **2** word groups; Example Matches: \"Elon Mask \*\*buys
-> Twitter\*\*\"
->
-> \"Elon Mask \* \* \*\"
->
-> =\> Exactly **3** word groups; Example Matches: \"Elon Mask \*\*buys
-> Twitter for\*\*\"
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `"Python is * programming language"` | Matches: "Python is a powerful programming language", "Python is an interpreted programming language", etc. |
+| `"best * for beginners"` | Matches: "best laptop for beginners", "best book for beginners" |
+| `"Bangladesh won the * match"` | Finds sports reports with different match types |
+| `"Elon Musk * *"` | Exactly 2 word groups — e.g. "Elon Musk **buys Twitter**" |
+| `"Elon Musk * * *"` | Exactly 3 word groups — e.g. "Elon Musk **buys Twitter for**" |
 
 ## 3.3 The .. Numeric Range Operator
 
@@ -1240,29 +1150,17 @@ tell Google to return results containing any number within a specific
 range. It was commonly applied to prices, years, population figures, and
 other numeric values.
 
-**Syntax:** term min..max
+**Syntax:** `term min..max`
 
-> **Examples**
->
-> laptop \$500..\$1000
->
-> =\> Laptops priced between \$500 and \$1,000
->
-> smartphones 2020..2023
->
-> =\> Smartphones released between 2020 and 2023
->
-> \"best movies\" 1990..2000
->
-> =\> Best movie lists from the 1990s
->
-> \"population\" 1000000..5000000 Bangladesh filetype:csv
->
-> =\> Bangladesh population datasets in the 1-5 million range
->
-> \"laptop review\" 2023..2025 \$800..\$1200
->
-> =\> Recent laptop reviews in the \$800-\$1,200 price range
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `laptop $500..$1000` | Laptops priced between $500 and $1,000 |
+| `smartphones 2020..2023` | Smartphones released between 2020 and 2023 |
+| `"best movies" 1990..2000` | Best movie lists from the 1990s |
+| `"population" 1000000..5000000 Bangladesh filetype:csv` | Bangladesh population datasets in the 1–5 million range |
+| `"laptop review" 2023..2025 $800..$1200` | Recent laptop reviews in the $800–$1,200 price range |
 
 ### Current Reality (Important)
 
@@ -1278,18 +1176,12 @@ often ignored**. Results may:
 - Break when combined with symbols like \$
 
 > **Examples of unreliable behavior:**
->
-> laptop \$500..\$1000
->
-> =\> Often ignores price range or shows unrelated results
->
-> smartphones 2020..2023
->
-> =\> May include results outside this range
->
-> \"laptop review\" 2023..2025 800..1200
->
-> =\> Typically ignores one or more constraints
+
+| Query | Unreliable Behaviour |
+| :--- | :--- |
+| `laptop $500..$1000` | Often ignores price range or shows unrelated results |
+| `smartphones 2020..2023` | May include results outside this range |
+| `"laptop review" 2023..2025 800..1200` | Typically ignores one or more constraints |
 
 **\# Result:** The .. operator is no longer reliable for precise
 filtering.
@@ -1314,15 +1206,13 @@ repeatable results.
 ### The Reliable Alternatives (Use Plain Keywords)
 
 > **Instead of forcing ranges, describe intent clearly:**
->
-> best laptops under 1000 USD
->
-> smartphones released after 2020
->
-> best movies of the 1990s
->
-> Instead of: \"laptop review\" 2023..2025 800..1200 Use: laptop reviews
-> 2024 under 1200
+
+| Instead of | Use |
+| :--- | :--- |
+| `laptop $500..$1000` | `best laptops under 1000 USD` |
+| `smartphones 2020..2023` | `smartphones released after 2020` |
+| `"best movies" 1990..2000` | `best movies of the 1990s` |
+| `"laptop review" 2023..2025 800..1200` | `laptop reviews 2024 under 1200` |
 
 ## 3.4 location: \-- Geographic Filtering
 
@@ -1332,34 +1222,17 @@ works best for news searches and local event listings. For general
 informational queries, simply including the location name in your query
 tends to be more reliable.
 
-**Syntax:** location:City \"search term\"
+**Syntax:** `location:City "search term"`
 
-> **Examples**
->
-> location:Dhaka \"startup event\"
->
-> =\> Startup events in Dhaka (works best in Google News context)
->
-> location:Barisal \"Sagar Biswas\"
->
-> =\> News or web pages mentioning a person named Sagar Biswas that
-> Google associates with Barisal, Bangladesh.
->
-> location:india \"Terrorist attack\" after:2024-01-01
->
-> =\> News articles about terrorist attacks, foiled plots, or
-> terror‑related arrests in India after Jan 1, 2024 (e.g., Red Fort
-> blast case, radical module busts)
->
-> location:London \"tech conference\" after:2024-01-01
->
-> =\> Recent London tech conference coverage
->
-> _\# For general searches, just include the location in the query:_
->
-> \"software job\" Dhaka Bangladesh site:.bd
->
-> =\> More reliable for non-news general searches
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `location:Dhaka "startup event"` | Startup events in Dhaka (works best in Google News context) |
+| `location:Barisal "Sagar Biswas"` | News mentioning Sagar Biswas associated with Barisal, Bangladesh |
+| `location:india "Terrorist attack" after:2024-01-01` | News about terrorist attacks in India after Jan 1, 2024 |
+| `location:London "tech conference" after:2024-01-01` | Recent London tech conference coverage |
+| `"software job" Dhaka Bangladesh site:.bd` | More reliable for non-news general searches |
 
 ## 3.5 site: with Subdomains and TLD Wildcards
 
@@ -1402,21 +1275,15 @@ for specific terms, making it a powerful SEO and OSINT tool.
 
 ### inanchor: \-- Single Phrase in Anchor Text
 
-**Syntax:** inanchor:\"keyword phrase\"
+**Syntax:** `inanchor:"keyword phrase"`
 
-> **Examples**
->
-> inanchor:\"ethical hacking course\"
->
-> =\> Pages that others link to using that exact phrase
->
-> inanchor:\"cybersecurity tools\" site:github.com
->
-> =\> GitHub repos that others link to using \"cybersecurity tools\"
->
-> inanchor:\"SSC result\" site:.bd
->
-> =\> Bangladeshi pages that others link to as \"SSC result\" sources
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `inanchor:"ethical hacking course"` | Pages that others link to using that exact phrase |
+| `inanchor:"cybersecurity tools" site:github.com` | GitHub repos linked to using "cybersecurity tools" |
+| `inanchor:"SSC result" site:.bd` | Bangladeshi pages that others link to as "SSC result" sources |
 
 ### Q: How does the inanchor: operator work, and [what exactl]{.underline}y [a]{.underline}pp[ears in the search results when usin]{.underline}g [it]{.underline}?
 
@@ -1456,17 +1323,14 @@ text of links pointing to the results]{.underline}. More **restrictive**
 than inanchor:, and p[roduces the ti]{.underline}g[htest]{.underline}
 p[ossible results]{.underline}.
 
-**Syntax:** allinanchor: keyword1 keyword2 keyword3
+**Syntax:** `allinanchor: keyword1 keyword2 keyword3`
 
-> **Examples**
->
-> allinanchor: cybersecurity training free
->
-> =\> Pages linked with all three words in anchor text
->
-> allinanchor: bug bounty guide 2024
->
-> =\> Bug bounty guide pages linked with all four words
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `allinanchor: cybersecurity training free` | Pages linked with all three words in anchor text |
+| `allinanchor: bug bounty guide 2024` | Bug bounty guide pages linked with all four words |
 
 ---
 
@@ -1495,38 +1359,24 @@ limiting academic searches to a specific publication period.
 
 **Syntax:**
 
-> search term after:YYYY-MM-DD
->
-> search term before:YYYY-MM-DD
->
-> search term after:YYYY-MM-DD before:YYYY-MM-DD (combined window)
->
-> **Examples**
->
-> \"COVID-19\" after:2021-01-01 before:2022-01-01 site:.gov filetype:pdf
->
-> =\> Government COVID-19 PDFs from 2021 only
->
-> \"AI trends\" after:2024-01-01 site:arxiv.org filetype:pdf
->
-> =\> Recent AI research from ArXiv
->
-> \"Bangladesh flood\" after:2024-06-01 site:bbc.com OR site:reuters.com
->
-> =\> Recent international coverage of Bangladesh flooding
->
-> \"budget 2024-25\" site:gov.bd after:2024-01-01 filetype:pdf
->
-> =\> Bangladesh budget documents published in 2024
->
-> **TIP:** Google\'s search interface also has a built-in time filter.
-> After any search, click \"Tools\" below the search bar, then use the
-> \"Any time\" dropdown to filter by past hour, day, week, month, year,
-> or a custom date range. This achieves the same result **without** the
-> operators.
+```
+search term after:YYYY-MM-DD
+search term before:YYYY-MM-DD
+search term after:YYYY-MM-DD before:YYYY-MM-DD  (combined window)
+```
 
-![](media/media/image1.png){width="7.268055555555556in"
-height="2.982638888888889in"}
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `"COVID-19" after:2021-01-01 before:2022-01-01 site:.gov filetype:pdf` | Government COVID-19 PDFs from 2021 only |
+| `"AI trends" after:2024-01-01 site:arxiv.org filetype:pdf` | Recent AI research from ArXiv |
+| `"Bangladesh flood" after:2024-06-01 site:bbc.com OR site:reuters.com` | Recent international coverage of Bangladesh flooding |
+| `"budget 2024-25" site:gov.bd after:2024-01-01 filetype:pdf` | Bangladesh budget documents published in 2024 |
+
+> **TIP:** Google's search interface also has a built-in time filter. After any search, click "Tools" below the search bar, then use the "Any time" dropdown to filter by past hour, day, week, month, year, or a custom date range. This achieves the same result **without** the operators.
+
+
 
 ## 3.8 The AROUND(X) Proximity Operator
 
@@ -1544,68 +1394,30 @@ somewhere on the same page.
 
 **Syntax:** term1 AROUND(X) term2
 
-> **Examples**
->
-> Apple AROUND(3) innovation
->
-> =\> Pages where \"Apple\" and \"innovation\" appear within 3 words of
-> each other
->
-> Search for:
->
-> Apple **drives continuous** innovation
->
-> Apple **is known for** innovation
->
-> NOT: Apple released a new phone. Innovation is key to their strategy.
->
-> \"machine learning\" AROUND(5) \"healthcare\"
->
-> =\> Pages where both phrases appear close together in context
->
-> \"Bangladesh\" AROUND(4) \"economic growth\"
->
-> =\> Pages discussing economic growth in close proximity to Bangladesh
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `Apple AROUND(3) innovation` | Pages where "Apple" and "innovation" appear within 3 words of each other |
+| `"machine learning" AROUND(5) "healthcare"` | Pages where both phrases appear close together in context |
+| `"Bangladesh" AROUND(4) "economic growth"` | Pages discussing economic growth in close proximity to Bangladesh |
 
 ## Chapter 3 Quick Reference
 
----
-
-**Operator** **Purpose** **Example**
-
----
-
-OR or \| Either term (or both) Python OR Java tutorial
-
-AND Both terms required ML AND healthcare
-(default)
-
-\- Exclude a term recipe -meat
-
-\" \" Exact phrase match \"artificial intelligence\"
-
-\* Wildcard placeholder \"best \* for data
-science\"
-
-.. Numeric range laptop \$300..\$800
-
-location: Filter by geography location:Dhaka startup
-(news)
-
-inanchor: Phrase in link anchor inanchor:\"learn more\"
-text
-
-allinanchor: All words in link allinanchor:python tutorial
-anchor text
-
-before: Content before a date news before:2023-01-01
-
-after: Content after a date article after:2024-01-01
-
-AROUND(X) Two terms within X Apple AROUND(3) innovation
-words of each other
-
----
+| Operator | Purpose | Example |
+| :--- | :--- | :--- |
+| `OR` or `|` | Either term (or both) | `Python OR Java tutorial` |
+| `AND` | Both terms required (default) | `ML AND healthcare` |
+| `-` | Exclude a term | `recipe -meat` |
+| `" "` | Exact phrase match | `"artificial intelligence"` |
+| `*` | Wildcard placeholder | `"best * for data science"` |
+| `..` | Numeric range | `laptop $300..$800` |
+| `location:` | Filter by geography (news) | `location:Dhaka startup` |
+| `inanchor:` | Phrase in link anchor text | `inanchor:"learn more"` |
+| `allinanchor:` | All words in link anchor text | `allinanchor:python tutorial` |
+| `before:` | Content before a date | `news before:2023-01-01` |
+| `after:` | Content after a date | `article after:2024-01-01` |
+| `AROUND(X)` | Two terms within X words of each other | `Apple AROUND(3) innovation` |
 
 ## ⭐ Key Takeaways
 
@@ -1628,9 +1440,7 @@ words of each other
 - **✓** AROUND(X) finds conceptually related content where two terms
   appear close together in context.
 
-\*\*\
-\
-CHAPTER 4\*\*
+\*\*CHAPTER 4\*\*
 
 **Special Operators**
 

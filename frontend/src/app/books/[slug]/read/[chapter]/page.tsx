@@ -144,23 +144,23 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
   ),
   h4: ({ children }) => {
     const text = String(children ?? "").toLowerCase();
-    const isBeginner    = text.includes("beginner")   || text.includes("basic");
-    const isIntermediate= text.includes("intermediate");
-    const isAdvanced    = text.includes("advanced")   || text.includes("expert");
-    const isCountry     = text.includes("bangladesh") || text.includes("specific");
-    const isSecurity    = text.includes("security")   || text.includes("audit");
+    const isBeginner = text.includes("beginner") || text.includes("basic");
+    const isIntermediate = text.includes("intermediate");
+    const isAdvanced = text.includes("advanced") || text.includes("expert");
+    const isCountry = text.includes("bangladesh") || text.includes("specific");
+    const isSecurity = text.includes("security") || text.includes("audit");
 
     const style = isSecurity
       ? "border-rose-500/40 text-rose-600 dark:text-rose-400 bg-rose-500/5"
       : isBeginner
-      ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5"
-      : isIntermediate
-      ? "border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-500/5"
-      : isAdvanced
-      ? "border-violet-500/40 text-violet-600 dark:text-violet-400 bg-violet-500/5"
-      : isCountry
-      ? "border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5"
-      : "border-primary/40 text-primary bg-primary/5";
+        ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5"
+        : isIntermediate
+          ? "border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-500/5"
+          : isAdvanced
+            ? "border-violet-500/40 text-violet-600 dark:text-violet-400 bg-violet-500/5"
+            : isCountry
+              ? "border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/5"
+              : "border-primary/40 text-primary bg-primary/5";
 
     return (
       <div className={`flex items-center gap-2 mt-6 mb-3 px-3 py-1.5 rounded-lg border w-fit ${style}`}>
@@ -197,9 +197,14 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     // Inline code — detect if it looks like a search query
     const text = String(children).trim();
     const isQuery =
-      /^(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:)/.test(
-        text
-      );
+      // Starts with a recognized operator
+      /^(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|after:|before:)/.test(text) ||
+      // Contains boolean operators (OR / AND / pipe)
+      / OR | AND /.test(text) || / \| /.test(text) ||
+      // Contains operator keywords anywhere in the query
+      /\b(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:)/.test(text) ||
+      // Starts with a quoted phrase search
+      /^"[^"]{2,}/.test(text);
     if (isQuery) {
       return (
         <code className="px-2 py-1 rounded-md bg-primary/10 border border-primary/20 text-primary text-sm font-mono">
@@ -424,7 +429,7 @@ export default function ChapterReaderPage({
       <ReadingProgressBar />
       <SiteHeader />
 
-      <main className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 animate-fade-in-up">
           <Link href="/books" className="hover:text-foreground transition-colors">
@@ -504,7 +509,7 @@ export default function ChapterReaderPage({
               </h1>
             </div>
 
-            <Separator className="mb-10" />
+            <Separator className="mb-4" />
 
             {/* Markdown content */}
             <div

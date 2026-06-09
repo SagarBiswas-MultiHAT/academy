@@ -7,7 +7,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  safelist: ["text-right", "text-center", "text-left"],
+  safelist: ["text-right", "text-center", "text-left", "-mt-4", "-mt-6", "-mt-8", "mb-4", "mb-6", "mb-8", "italic", "text-muted-foreground"],
   theme: {
     extend: {
       colors: {

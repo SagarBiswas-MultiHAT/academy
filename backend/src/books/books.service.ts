@@ -6,23 +6,8 @@ import { getPremiumPdfProductBySlug, isPremiumPdfProduct } from '../common/utils
 
 type ChapterMeta = { index: number; title: string; isFree: boolean };
 
-// Chapter boundary line numbers (1-indexed) derived from the markdown structure.
-// Each entry is [startLine, endLine] inclusive.
-const CHAPTER_BOUNDARIES: Record<number, [number, number]> = {
-  1: [312, 489],
-  2: [490, 1060],
-  3: [1061, 1642],
-  4: [1643, 3340],
-  5: [3341, 3779],
-  6: [3780, 6078],
-  7: [6079, 6470],
-  8: [6471, 6677],
-  9: [6678, 6821],   // Appendix A
-  10: [6822, 6943],  // Appendix B
-  11: [6944, 7117],  // Appendix C
-  12: [7118, 7255],  // Appendix D
-  13: [7256, 7336],  // Appendix E
-};
+// Dynamic chapter boundaries are computed on the fly in getChapterContent
+// to prevent "bleeding" bugs when the markdown file is edited and line numbers shift.
 
 /**
  * Converts pandoc-style grid tables (ASCII art with dashes/pipes) into
@@ -335,10 +320,6 @@ export class BooksService {
       }
     }
 
-    // Read the markdown file and extract the chapter content
-    const boundaries = CHAPTER_BOUNDARIES[chapterIndex];
-    if (!boundaries) throw new NotFoundException('Chapter content not available');
-
     const bookDir = path.resolve(process.cwd(), '..', 'books', 'Google_Dorks_Complete_Handbook');
     const mdPath = path.join(bookDir, 'Google_Dorks_Complete_Handbook.md');
 
@@ -349,8 +330,49 @@ export class BooksService {
     const fileContent = fs.readFileSync(mdPath, 'utf-8');
     const lines = fileContent.split(/\r?\n/);
 
+    // Dynamically compute chapter boundaries to handle markdown edits gracefully
+    const chaptersOffsets: number[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (/^#\s+Chapter\s+\d+:|^APPENDIX\s+[A-E]\\\*\\\*/i.test(lines[i])) {
+        chaptersOffsets.push(i);
+      }
+    }
+
+    const starts: number[] = [];
+    for (let i = 0; i < chaptersOffsets.length; i++) {
+      const headerLine = chaptersOffsets[i]; // line index of `# Chapter N:`
+      let lookback = Math.max(0, headerLine - 25);
+      if (i > 0) lookback = Math.max(lookback, chaptersOffsets[i - 1] + 1);
+
+      // Scan backward from the `# Chapter N:` heading to find the pandoc decorative marker
+      // `\*\*CHAPTER N\*\*` — that is the true start of a chapter block.
+      // Stop as soon as we find it; do NOT treat other content (Key Takeaways, prose) as a boundary.
+      let actualStart = headerLine;
+      for (let j = headerLine - 1; j >= lookback; j--) {
+        const l = lines[j];
+        if (/^\\?\*\\?\*CHAPTER\s+\d+\\?\*\\?\*/.test(l) || l.includes('\\*\\*CHAPTER')) {
+          actualStart = j; // pandoc marker IS the first line of this chapter block
+          break;
+        }
+      }
+
+      starts.push(actualStart);
+    }
+
+    const boundaries: Record<number, [number, number]> = {};
+    for (let i = 0; i < starts.length; i++) {
+      const startIdx = starts[i];
+      // Chapter N ends one line before Chapter N+1's pandoc marker starts
+      const endIdx = i + 1 < starts.length ? starts[i + 1] - 1 : lines.length - 1;
+      boundaries[i + 1] = [startIdx + 1, endIdx + 1]; // 1-indexed to match legacy logic
+    }
+
+    // Read the markdown file and extract the chapter content
+    const bounds = boundaries[chapterIndex];
+    if (!bounds) throw new NotFoundException('Chapter content not available');
+
     // Extract lines (convert from 1-indexed to 0-indexed)
-    const [startLine, endLine] = boundaries;
+    const [startLine, endLine] = bounds;
     const chapterLines = lines.slice(startLine - 1, endLine);
 
     let content = chapterLines.join('\n');
@@ -360,32 +382,29 @@ export class BooksService {
 
 
     // ══════════════════════════════════════════════════════════════════
-    // STEP 1: Strip pandoc-generated chapter/appendix decorative headers // v135030
-    // These appear as: \*\*CHAPTER N\*\* followed by a bold title and
-    // optionally an italicised subtitle div or italic line.
+    // STEP 1: Strip pandoc-generated chapter/appendix decorative headers
+    // We precisely remove the redundant headers but PRESERVE the subtitles.
     // ══════════════════════════════════════════════════════════════════
 
-    // Remove the literal escape artifact form: \*\*CHAPTER N\*\*
-    content = content.replace(/^\\\*\\\*CHAPTER\s+\d+\\\*\\\*[\s\S]*?(?=^#\s)/m, '');
-    // Remove pandoc bold chapter headers: **CHAPTER N\**
-    content = content.replace(/^\*\*CHAPTER\s+\d+\\?\*\*\s*\n+\*\*[^\n]+\*\*\s*\n+(?:\*[^\n]+\*\s*\n+)?/gm, '');
-    content = content.replace(/^\*\*CHAPTER\s+\d+\\?\*\*\s*\n+/gm, '');
-    // Remove any residual standalone bold title lines that are pandoc artifacts (e.g., **Introduction to Google Dorks**)
-    // These appear right after a stripped CHAPTER header — we detect them as a bold line before the # Chapter heading
-    content = content.replace(/^\*\*[^\n]+\*\*\s*\n+(?=<div|#\s)/gm, '');
-    // Remove the right-aligned div subtitles inserted by pandoc: <div class="text-right ...">...</div>
-    content = content.replace(/<div[^>]*class="[^"]*text-right[^"]*"[^>]*>[\s\S]*?<\/div>/gm, '');
-    // Remove italicised chapter *CHAPTER N* markers
+    // Remove the redundant markdown chapter heading (frontend renders the gradient title)
+    content = content.replace(/^#\s+Chapter\s+\d+:[^\n]*\n+/gm, '');
+
+    // Remove `**CHAPTER N**`
+    content = content.replace(/^\\\*\\\*CHAPTER\s+\d+\\\*\\\*\s*\n+/gm, '');
+    content = content.replace(/^\*\*CHAPTER\s+\d+\*\*\s*\n+/gm, '');
     content = content.replace(/^\*CHAPTER\s+\d+\*\s*\n+/gm, '');
 
-    // ── Strip APPENDIX header artifact blocks ──
-    content = content.replace(/^\*\*\\?\n?\\?\n?APPENDIX [A-E]\\?\*\*\s*\n+\*\*[^\n]+\*\*\s*\n*/gm, '');
-    content = content.replace(/^APPENDIX [A-E]\\\*\*\s*\n+\*\*[^\n]+\*\*\s*\n*/gm, '');
+    // Remove the bold title that exactly matches the chapter title
+    const escapedTitle = chapter.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    content = content.replace(new RegExp(`^\\*\\*${escapedTitle}\\*\\*\\s*\\n+`, 'im'), '');
 
-    // ── Strip chapter-bleed: next chapter's decorative header leaking into this chapter ──
-    // Cut everything from the next \*\*CHAPTER N\*\* or **CHAPTER N** block onward
-    content = content.replace(/\n\\\*\\\*CHAPTER\s+\d+\\\*\\\*[\s\S]*$/, '');
-    content = content.replace(/\n\*\*CHAPTER\s+\d+\\?\*\*[\s\S]*$/, '');
+    // ── Strip APPENDIX header artifacts ──
+    content = content.replace(/^\*\*\\?\n?\\?\n?APPENDIX [A-E]\\?\*\*\s*\n+/gm, '');
+    content = content.replace(/^APPENDIX [A-E]\\\*\*\s*\n+/gm, '');
+    content = content.replace(/^APPENDIX [A-E]\*\*\s*\n+/gm, '');
+    
+    // Remove the bold title for Appendices
+    content = content.replace(new RegExp(`^\\*\\*${escapedTitle}\\*\\*\\s*\\n+`, 'im'), '');
 
     // ══════════════════════════════════════════════════════════════════
     // STEP 2a: Normalise escaped characters FIRST so they don't
