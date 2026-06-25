@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState, Suspense } from "react";
+import { use, useEffect, useMemo, useState, Suspense } from "react";
 import { CreditCard, ShieldCheck, Wallet, Crown } from "lucide-react";
 
 import api from "@/lib/api";
@@ -55,7 +55,8 @@ const formatBookPrice = (value: number | string) => {
   return formatUsdFromBdt(value);
 };
 
-function CheckoutContent({ params }: { params: { bookId: string } }) {
+function CheckoutContent({ params: paramsPromise }: { params: Promise<{ bookId: string }> }) {
+  const params = use(paramsPromise);
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
@@ -497,7 +498,7 @@ function CheckoutContent({ params }: { params: { bookId: string } }) {
   );
 }
 
-export default function CheckoutPage({ params }: { params: { bookId: string } }) {
+export default function CheckoutPage({ params }: { params: Promise<{ bookId: string }> }) {
   return (
     <Suspense fallback={<div className="min-h-screen bg-background text-foreground" />}>
       <CheckoutContent params={params} />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { ArrowRight, BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide-react";
 
 import api from "@/lib/api";
@@ -45,7 +45,8 @@ const formatPrice = (value: number | string) => {
   return formatUsdFromBdt(value);
 };
 
-export default function BookDetailPage({ params }: { params: { slug: string } }) {
+export default function BookDetailPage({ params: paramsPromise }: { params: Promise<{ slug: string }> }) {
+  const params = use(paramsPromise);
   const { user } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);

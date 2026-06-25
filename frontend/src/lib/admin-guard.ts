@@ -7,7 +7,7 @@ export type AdminSession = {
 };
 
 export async function requireAdmin(): Promise<AdminSession> {
-  const token = cookies().get("accessToken")?.value;
+  const token = (await cookies()).get("accessToken")?.value;
   if (!token) redirect("/dashboard");
 
   const baseUrl =

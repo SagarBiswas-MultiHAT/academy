@@ -65,6 +65,65 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 
 ---
 
+## How to Run Locally
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [Docker](https://www.docker.com/) & Docker Compose
+
+### 1. Database Setup
+Start the PostgreSQL database using the provided `docker-compose.yml`:
+```bash
+docker-compose up -d
+```
+
+### 2. Backend Setup
+Open a new terminal in the `backend` directory and set up the NestJS API:
+```bash
+# From the repo root:
+cd backend
+npm install
+```
+Copy the example env and update credentials to match the Docker container:
+```bash
+cp .env.example .env
+```
+Edit `.env` and set the following for local development:
+```
+DATABASE_URL="postgresql://postgres:localpassword123@localhost:5432/academy_db?schema=public"
+NODE_ENV="development"
+FRONTEND_URL="http://localhost:3000"
+JWT_ACCESS_SECRET="any-local-secret"
+JWT_REFRESH_SECRET="any-other-local-secret"
+```
+Then run migrations and start the server:
+```bash
+npx prisma migrate dev
+npx prisma db seed  # Optional: seed initial data
+npm run start:dev
+```
+The backend will be accessible at `http://localhost:5000`.
+
+### 3. Frontend Setup
+Open another terminal, navigate to the `frontend` directory, and start the Next.js app:
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+```
+Edit `.env.local` to point to the local backend:
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+Then start the development server:
+```bash
+npm run dev
+```
+The frontend will typically be accessible at `http://localhost:3000`.
+
+---
+
 ## Project Structure
 
 ```

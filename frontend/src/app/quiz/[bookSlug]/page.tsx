@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { AlertTriangle, BadgeCheck, Award } from "lucide-react";
 
 import api from "@/lib/api";
@@ -32,7 +32,8 @@ type QuizPayload = {
   questions: Question[];
 };
 
-export default function QuizPage({ params }: { params: { bookSlug: string } }) {
+export default function QuizPage({ params: paramsPromise }: { params: Promise<{ bookSlug: string }> }) {
+  const params = use(paramsPromise);
   const { user, loading: authLoading } = useAuth();
   const [payload, setPayload] = useState<QuizPayload | null>(null);
   const [loading, setLoading] = useState(true);

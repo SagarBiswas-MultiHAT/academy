@@ -1137,7 +1137,7 @@ structure.
 
 | Query | Result |
 | :--- | :--- |
-| `"Python is * programming language"` | Matches: "Python is a powerful programming language", "Python is an interpreted programming language", etc. |
+| `"Python is * programming language"` | Matches: "Python is a powerful programming language", "Python is a general-purpose high-level computer programming language", etc. |
 | `"best * for beginners"` | Matches: "best laptop for beginners", "best book for beginners" |
 | `"Bangladesh won the * match"` | Finds sports reports with different match types |
 | `"Elon Musk * *"` | Exactly 2 word groups — e.g. "Elon Musk **buys Twitter**" |
@@ -1248,19 +1248,19 @@ content]{.underline}.
 >
 > =\> Only Google\'s Support subdomain
 >
-> site:\*.gov \"climate data\" filetype:pdf
+> site:*.gov \"climate data\" filetype:pdf
 >
 > =\> PDFs on climate data from any government domain
 >
-> site:\*.microsoft.com \"privacy policy\"
+> site:*.microsoft.com \"privacy policy\"
 >
 > =\> Privacy pages across all Microsoft subdomains
 >
-> site:\*.bd \"annual report\" filetype:pdf
+> site:*.bd \"annual report\" filetype:pdf
 >
 > =\> Annual report PDFs from any .bd domain
 >
-> site:\*.edu.bd \"admission\" filetype:pdf
+> site:*.edu.bd \"admission\" filetype:pdf
 >
 > =\> Admission documents from Bangladeshi educational institutions
 
@@ -1332,22 +1332,11 @@ p[ossible results]{.underline}.
 | `allinanchor: cybersecurity training free` | Pages linked with all three words in anchor text |
 | `allinanchor: bug bounty guide 2024` | Bug bounty guide pages linked with all four words |
 
----
-
-**Use Case** **Operator Approach** **What You Learn**
-
----
-
-SEO Research inanchor:\"your brand\" How others describe your site
-when linking to it
-
-Competitor allinanchor: competitor Which competitor pages attract
-Analysis product feature the most backlinks
-
-OSINT inanchor:\"leaked Pages commonly cited as sources
-Investigation document\" for specific information
-
----
+| Use Case | Operator Approach | What You Learn |
+| :--- | :--- | :--- |
+| SEO Research | `inanchor:"your brand"` | How others describe your site when linking to it |
+| Competitor Analysis | `allinanchor: competitor product feature` | Which competitor pages attract the most backlinks |
+| OSINT Investigation | `inanchor:"leaked document"` | Pages commonly cited as sources for specific information |
 
 ## 3.7 before: and after: \-- Date-Based Filtering
 

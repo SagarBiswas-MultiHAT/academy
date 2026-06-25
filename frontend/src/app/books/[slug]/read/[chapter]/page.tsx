@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { use, useEffect, useState, useRef } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -280,7 +280,7 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
   ),
   img: ({ src, alt, ...props }) => {
     let resolvedSrc = src;
-    if (src && src.startsWith("media/")) {
+    if (src && typeof src === "string" && src.startsWith("media/")) {
       resolvedSrc = `${api.defaults.baseURL}/books/${bookSlug}/${src}`;
     }
     return (
@@ -373,10 +373,11 @@ function ReadingProgressBar() {
 }
 
 export default function ChapterReaderPage({
-  params,
+  params: paramsPromise,
 }: {
-  params: { slug: string; chapter: string };
+  params: Promise<{ slug: string; chapter: string }>;
 }) {
+  const params = use(paramsPromise);
   const [data, setData] = useState<ChapterData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

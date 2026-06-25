@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import SiteFooter from "@/components/site-footer";
@@ -8,7 +8,8 @@ import SiteHeader from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function ReferralPage({ params }: { params: { code: string } }) {
+export default function ReferralPage({ params: paramsPromise }: { params: Promise<{ code: string }> }) {
+  const params = use(paramsPromise);
   const router = useRouter();
 
   useEffect(() => {

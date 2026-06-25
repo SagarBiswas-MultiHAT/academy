@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { BadgeCheck, ShieldAlert, ShieldCheck } from "lucide-react";
 
 import api from "@/lib/api";
@@ -28,7 +28,8 @@ type VerificationResult = {
   certificateId: string;
 };
 
-export default function VerifyPage({ params }: { params: { certID: string } }) {
+export default function VerifyPage({ params: paramsPromise }: { params: Promise<{ certID: string }> }) {
+  const params = use(paramsPromise);
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
