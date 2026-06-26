@@ -1385,17 +1385,29 @@ somewhere on the same page.
 
 #### Examples
 
-| Query | Result |
+| Query | What it finds |
 | :--- | :--- |
-| `Apple AROUND(3) innovation` | Pages where "Apple" and "innovation" appear within 3 words of each other |
-| `"machine learning" AROUND(5) "healthcare"` | Pages where both phrases appear close together in context |
-| `"Bangladesh" AROUND(4) "economic growth"` | Pages discussing economic growth in close proximity to Bangladesh |
+| `Apple AROUND(3) innovation` | Pages where the two words sit **within 3 words** of each other |
+| `"machine learning" AROUND(5) "healthcare"` | Pages where both phrases appear in the **same sentence or clause** |
+| `"Bangladesh" AROUND(4) "economic growth"` | Pages tightly linking Bangladesh with economic growth in **close context** |
+
+**How the matching works in practice:**
+
+- ✅ `Apple AROUND(3) innovation`
+  - **matches** → *"Apple drives continuous innovation"* (2 words apart)
+  - ❌ **skips** → *"Apple launched a new phone. Innovation is key."* (different sentences)
+- ✅ `"machine learning" AROUND(5) "healthcare"`
+  - **matches** → *"machine learning transforms healthcare delivery"*
+  - ❌ **skips** → an article that covers ML in section 1 and healthcare in section 4
+- ✅ `"Bangladesh" AROUND(4) "economic growth"`
+  - **matches** → *"Bangladesh sees remarkable economic growth"*
+  - ❌ **skips** → a report that mentions Bangladesh in the intro and economic growth in the conclusion
 
 ## Chapter 3 Quick Reference
 
 | Operator | Purpose | Example |
 | :--- | :--- | :--- |
-| `OR` or `|` | Either term (or both) | `Python OR Java tutorial` |
+| `OR` or `\|` | Either term (or both) | `Python OR Java tutorial` |
 | `AND` | Both terms required (default) | `ML AND healthcare` |
 | `-` | Exclude a term | `recipe -meat` |
 | `" "` | Exact phrase match | `"artificial intelligence"` |
