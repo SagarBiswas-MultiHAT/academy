@@ -1365,7 +1365,7 @@ search term after:YYYY-MM-DD before:YYYY-MM-DD  (combined window)
 
 > **TIP:** Google's search interface also has a built-in time filter. After any search, click "Tools" below the search bar, then use the "Any time" dropdown to filter by past hour, day, week, month, year, or a custom date range. This achieves the same result **without** the operators.
 
-
+![Google's built-in time filter — click Tools → Any time to filter results by date range](media/image1.png)
 
 ## 3.8 The AROUND(X) Proximity Operator
 

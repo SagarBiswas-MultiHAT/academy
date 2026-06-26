@@ -455,7 +455,7 @@ export class BooksService {
     // ══════════════════════════════════════════════════════════════════
     // Pass 1 – multi-line aware: [any content]{.underline} → content
     for (let pass = 0; pass < 4; pass++) {
-      content = content.replace(/\[([\s\S]*?)\]\{[^}]*\.underline[^}]*\}/g, '$1');
+      content = content.replace(/\[([^\]]*)\]\{[^}]*\.underline[^}]*\}/g, '$1');
     }
     // Pass 2 – remove any remaining bare {.underline} annotation stubs
     content = content.replace(/\{[^}]*\.underline[^}]*\}/g, '');

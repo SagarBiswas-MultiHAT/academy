@@ -288,7 +288,7 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
       <img
         src={resolvedSrc}
         alt={alt}
-        className="my-6 rounded-xl border border-border/40 shadow-sm max-w-full"
+        className="my-6 block mx-auto rounded-xl border border-border/40 shadow-sm max-w-full"
         {...props}
       />
     );
