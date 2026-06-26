@@ -6,9 +6,21 @@ const api = axios.create({
 });
 
 // Inject auth token on every request
+// Falls back to the cookie that the SSR admin-guard uses, so
+// client-side requests stay authenticated even when localStorage
+// hasn't been seeded yet (e.g. fresh page load after SSR redirect).
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
+    let token = localStorage.getItem('accessToken');
+
+    // Fallback: read from cookie (set by auth-context on login)
+    if (!token) {
+      const match = document.cookie.match(/(?:^|;\s*)accessToken=([^;]+)/);
+      token = match ? decodeURIComponent(match[1]) : null;
+      // Sync cookie token back into localStorage so subsequent requests work
+      if (token) localStorage.setItem('accessToken', token);
+    }
+
     if (token) config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

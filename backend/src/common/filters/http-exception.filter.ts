@@ -1,8 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -14,6 +16,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const message = exception instanceof HttpException
       ? exception.getResponse()
       : 'Internal server error';
+
+    // Log non-HTTP errors (e.g. Prisma failures) so they are visible in the terminal
+    if (!(exception instanceof HttpException)) {
+      this.logger.error(
+        'Unhandled exception',
+        exception instanceof Error ? exception.stack : String(exception),
+      );
+    }
 
     response.status(status).json({
       data: null,
