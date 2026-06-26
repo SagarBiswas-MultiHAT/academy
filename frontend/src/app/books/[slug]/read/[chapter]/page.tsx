@@ -430,7 +430,7 @@ export default function ChapterReaderPage({
       <ReadingProgressBar />
       <SiteHeader />
 
-      <main className="mx-auto max-w-6xl px-4 sm:px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 animate-fade-in-up">
           <Link href="/books" className="hover:text-foreground transition-colors">
