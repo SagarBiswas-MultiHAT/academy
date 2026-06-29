@@ -1441,16 +1441,9 @@ somewhere on the same page.
 - **✓** AROUND(X) finds conceptually related content where two terms
   appear close together in context.
 
-\*\*CHAPTER 4\*\*
-
-**Special Operators**
-
-\*ONLY FOR DEEP DIVE (OTHERWISE SKIP THE CHAPTER)\*
-
-_Quick-lookup operators, price search, grouping symbols, and Google\'s
-hidden math engine_
-
 # Chapter 4: Special Operators, Google Tools, and the Built-in Calculator
+
+<div class="text-right text-muted-foreground italic mb-8 -mt-4"><em>*ONLY FOR DEEP DIVE (OTHERWISE SKIP THE CHAPTER)*<br>Quick-lookup operators, price search, grouping symbols, and Google's hidden math engine</em></div>
 
 > **Chapter Overview:** Not every useful Google operator is about
 > filtering web results. This chapter covers a second category:
@@ -1479,27 +1472,14 @@ websites.
 
 **Syntax:** define:word or define:\"multi-word phrase\"
 
-> **Examples**
->
-> define:privacy
->
-> =\> Google Knowledge Panel: definition, etymology, synonyms, usage
-> examples
->
-> =\> Compare to a plain search on privacy \-- notice how much richer
-> the panel is
->
-> define:\"open source\"
->
-> =\> Definition of the phrase, not just the individual words
->
-> define:phishing
->
-> =\> Cybersecurity context definition with usage examples
->
-> define:reconnaissance
->
-> =\> Military and cybersecurity dual-context definition
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `define:privacy` | Google Knowledge Panel: definition, etymology, synonyms, usage examples.<br>_Compare to a plain search on privacy -- notice how much richer the panel is._ |
+| `define:"open source"` | Definition of the phrase, not just the individual words |
+| `define:phishing` | Cybersecurity context definition with usage examples |
+| `define:reconnaissance` | Military and cybersecurity dual-context definition |
 
 **When to use it:** When you [need a definition]{.underline}
 q[uickl]{.underline}y [without clickin]{.underline}g
@@ -1518,23 +1498,19 @@ company\'s full name]{.underline}.
 
 **Syntax:** stocks:TICKER
 
-> **Examples**
->
-> stocks:META =\> Real-time data for Meta Platforms (Facebook)
->
-> stocks:GOOG =\> Alphabet / Google
->
-> stocks:MSFT =\> Microsoft
->
-> stocks:AMZN =\> Amazon
->
-> stocks:TSLA =\> Tesla
->
-> stocks:gm =\> General Motors
->
-> stocks:pfizer =\> Pfizer Inc.
->
-> _\# Note: ticker symbols are case-insensitive for this operator_
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `stocks:META` | Real-time data for Meta Platforms (Facebook) |
+| `stocks:GOOG` | Alphabet / Google |
+| `stocks:MSFT` | Microsoft |
+| `stocks:AMZN` | Amazon |
+| `stocks:TSLA` | Tesla |
+| `stocks:gm` | General Motors |
+| `stocks:pfizer` | Pfizer Inc. |
+
+> **Note:** Ticker symbols are **case-insensitive** for this operator.
 
 **When to use it:** For a quick price check without visiting a financial
 site; when monitoring multiple stocks during research.
@@ -1550,20 +1526,13 @@ review sites.
 
 **Syntax:** movie:\"film title\"
 
-> **Examples**
->
-> movie:\"phantom of the opera\"
->
-> =\> Structured panel with cast, director, ratings, synopsis
->
-> =\> Compare to: \"phantom of the opera\" (plain search \-- mixed
-> results)
->
-> movie:\"The Social Network\"
->
-> movie:\"Inception\" 2010
->
-> =\> Adding the year disambiguates films with the same title
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `movie:"phantom of the opera"` | Structured panel with cast, director, ratings, synopsis.<br>_Compare to: "phantom of the opera" (plain search -- mixed results)_ |
+| `movie:"The Social Network"` | Structured film data for The Social Network |
+| `movie:"Inception" 2010` | Adding the year disambiguates films with the same title |
 
 **When to use it:** Quickly retrieving film details, cast, and ratings
 without visiting IMDb or similar sites.
@@ -1579,39 +1548,21 @@ trusted outlet without navigating to that outlet\'s website.
 
 **Syntax:** topic source:outlet
 
-> **Examples**
->
-> \"interest rates\" source:reuters
->
-> =\> Reuters articles about interest rates
->
-> \"Bangladesh\" source:bbc
->
-> \"artificial intelligence\" source:nytimes
->
-> \"cybersecurity\" source:theguardian
->
-> \"startup\" source:techcrunch
->
-> _\# MultiTopics_
->
-> _\# OR_
->
-> \"startup\" **OR** \"funding\" source:techcrunch
->
-> =\> TechCrunch reports that mention either the words \"startup\" or
-> \"funding\". \"Bangladesh\" OR \"Dhaka\" source:thedailystar
->
-> =\> The Daily Star\'s news that mention Bangladesh or Dhaka.
->
-> _\# AND_
->
-> \"startup\" **AND** \"funding\" source:techcrunch
->
-> \"startup**\" \"**funding\" source:techcrunch
+#### Examples
 
-![](media/media/image2.png){width="7.268055555555556in"
-height="4.5368055555555555in"}
+| Query | Result |
+| :--- | :--- |
+| `"interest rates" source:reuters` | Reuters articles about interest rates |
+| `"Bangladesh" source:bbc` | BBC articles about Bangladesh |
+| `"artificial intelligence" source:nytimes` | NYTimes articles about AI |
+| `"cybersecurity" source:theguardian` | The Guardian articles about cybersecurity |
+| `"startup" source:techcrunch` | TechCrunch reports about startups |
+| `"startup" OR "funding" source:techcrunch` | TechCrunch reports that mention either the words "startup" or "funding" |
+| `"Bangladesh" OR "Dhaka" source:thedailystar` | The Daily Star's news that mention Bangladesh or Dhaka |
+| `"startup" AND "funding" source:techcrunch` | TechCrunch reports that mention both words |
+| `"startup" "funding" source:techcrunch` | Alternate syntax for AND |
+
+![Google News results filtered by source operator](media/image2.png)
 
 **When to use it:** When researching how a specific outlet covers a
 topic; when verifying whether a major outlet has reported on a specific
@@ -1625,23 +1576,18 @@ location]{.underline}. [The]{.underline} p[anel includes current
 temperature]{.underline}, [conditions]{.underline},
 [humidity]{.underline}, [wind speed]{.underline}, [and a multi-day
 forecast]{.underline}. It is **faster and cleaner than** visiting a
-dedicated weather site **for a quick check.**
-
+dedicated weather site **for a quick check.**<br><br>
 **Syntax:** weather:location
 
-> **Examples**
->
-> weather:london
->
-> weather:Dhaka
->
-> weather:\"New York City\"
->
-> weather:Tokyo
->
-> _\# For ambiguous locations, add the country:_
->
-> weather:Springfield United States
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `weather:london` | Live weather panel for London |
+| `weather:Dhaka` | Live weather panel for Dhaka |
+| `weather:"New York City"` | Live weather panel for NYC |
+| `weather:Tokyo` | Live weather panel for Tokyo |
+| `weather:Springfield United States` | Adds country for ambiguous locations |
 
 ### map: \-- Geographic Maps
 
@@ -1651,25 +1597,16 @@ instant geographic context without opening a separate application.
 
 **Syntax:** map:\"location\"
 
-> **Examples**
->
-> map:\"new york\"
->
-> map:\"Dhaka Bangladesh\"
->
-> map:\"London UK\"
->
-> map:\"Silicon Valley\"
->
-> _\# paste Geolocation in the search engine. Get the locationName.
-> weather:"locationName"_
->
-> 40.713851, -74.005811
->
-> _\# 40.713851, -74.005811 ≈ 58 Chambers St rm 320, New York, NY 10007,
-> United States_
->
-> _weather:\"New York, NY 10007, United States\"_
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `map:"new york"` | Google Maps panel for New York |
+| `map:"Dhaka Bangladesh"` | Google Maps panel for Dhaka |
+| `map:"London UK"` | Google Maps panel for London |
+| `map:"Silicon Valley"` | Google Maps panel for Silicon Valley |
+| `40.713851, -74.005811` | Paste Geolocation in the search engine to get the locationName; then weather:"locationName" |
+| `weather:"New York, NY 10007, United States"` | Using the resolved location name with weather operator |
 
 ### id: \-- Page Identifier (Experimental)
 
@@ -1688,16 +1625,22 @@ be relied upon in practice.
 > Do not rely on it for professional research. It is listed here for
 > awareness only.
 
-**\
-But** Google now treats "id" (possibly shorthand for "info") as a search
+**But** Google now treats "id" (possibly shorthand for "info") as a search
 term instead of a dork.
 
-![](media/media/image3.png){width="3.876388888888889in"
-height="3.2215277777777778in"}![](media/media/image4.png){width="3.995833333333333in"
-height="3.2083333333333335in"}
-
-![](media/media/image5.png){width="4.895833333333333in"
-height="4.295959098862642in"}
+<table style="border: none; width: 100%;">
+  <tr style="border: none;">
+    <td style="border: none; width: 50%; text-align: center;">
+      <img src="media/image3.png" alt="Plain search results" style="max-width: 100%;">
+    </td>
+    <td style="border: none; width: 50%; text-align: center;">
+      <img src="media/image4.png" alt="Search results with info operator" style="max-width: 100%;">
+    </td>
+  </tr>
+</table>
+<p align="center">
+  <img src="media/image5.png" alt="Search results with id operator" style="max-width: 80%;">
+</p>
 
 ## 4.2 allinurl: and allintext: \-- Multi-Word Versions
 
@@ -1711,73 +1654,29 @@ allinurl: with other operators in the same query.
 
 **Syntax:** allinurl: word1 word2 word3
 
-> **Examples**
->
-> allinurl:healthy eating
->
-> =\> Words(healthy, eating) treated as **AND tokens**
->
-> allinurl:admin login dashboard
->
-> =\> URLs containing all three words
->
-> allinurl:api v2 users
->
-> =\> API URLs with versioning and a users endpoint
->
-> _\# Key limitation: allinurl: cannot be combined with site: or other
-> operators_
->
-> _\# Use multiple inurl: instead when you need to combine with other
-> operators:_
->
-> inurl:healthy inurl:eating site:gov.uk
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `allinurl:healthy eating` | Words(healthy, eating) treated as **AND tokens** |
+| `allinurl:admin login dashboard` | URLs containing all three words |
+| `allinurl:api v2 users` | API URLs with versioning and a users endpoint |
+| `inurl:healthy inurl:eating site:gov.uk` | Use multiple inurl: instead when combining with other operators |
+
+> **Key limitation:** `allinurl:` cannot be combined with `site:` or other operators.
 
 ### allinurl: Query Equivalence Table
 
-+-------------------+--------------------+------------------------------------------+
-| **Query | **Equivalent to ** | **Explanation & Parser Behavior** |
-| Variation** | | |
-| | **allinurl:healthy | |
-| | eating?** | |
-+===================+:==================:+==========================================+
-| allinurl: healthy | ✅ Yes | **Tolerated syntax.** Google\'s parser |
-| eating | | trims the space after the colon. |
-| | | Functionally identical to the base |
-| | | query, though strict syntax omits the |
-| | | space. |
-+-------------------+--------------------+------------------------------------------+
-| allinurl:healthy | ✅ **Yes (Base | **Correct strict syntax.** No space |
-| eating | Case)** | between colon and first term. This is |
-| | | the canonical form per Google |
-| | | documentation. |
-+-------------------+--------------------+------------------------------------------+
-| inurl:healthy | ✅ Yes | Functionally identical. This is the |
-| inurl:eating | | recommended workaround if you need to |
-| | | combine with site: or filetype:. |
-+-------------------+--------------------+------------------------------------------+
-| inurl:healthy AND | ✅ Yes | Explicit AND is redundant but valid. |
-| inurl:eating | | Google\'s default logic is AND, so |
-| | | results are identical to the line above. |
-+-------------------+--------------------+------------------------------------------+
-| allinurl: | ❌ No | **Broken Syntax.** allinurl: treats |
-| \"healthy\" AND | | quotes and AND as **literal |
-| \"eating\" | | characters**. [It searches |
-| | | for \"healthy\", AND, and \"eating\" in |
-| | | the URL]{.underline}. This fails and |
-| | | falls back to a standard text search. |
-+-------------------+--------------------+------------------------------------------+
-| allinurl: | ❌ No | **Broken |
-| \"healthy | | Syntax.** allinurl: does **not** support |
-| eating\" | | phrase grouping. [It treats the quotes |
-| | | as literal characters and searches |
-| | | for \"healthy and eating\" in the |
-| | | URL]{.underline}. This fails and falls |
-| | | back to a standard text search. |
-+-------------------+--------------------+------------------------------------------+
+| Query Variation | Equivalent to allinurl:healthy eating? | Explanation & Parser Behavior |
+| :--- | :---: | :--- |
+| <code>allinurl:&nbsp;healthy&nbsp;eating</code> | ☑ Yes | **Tolerated syntax.** Google's parser trims the space after the colon. Functionally identical to the base query, though strict syntax omits the space. |
+| <code>allinurl:healthy&nbsp;eating</code> | ☑ Yes (Base Case) | **Correct strict syntax.** No space between colon and first term. This is the canonical form per Google documentation. |
+| <code>inurl:healthy&nbsp;inurl:eating</code> | ☑ Yes | Functionally identical. This is the recommended workaround if you need to combine with `site:` or `filetype:`. |
+| <code>inurl:healthy&nbsp;AND&nbsp;inurl:eating</code> | ☑ Yes | Explicit AND is redundant but valid. Google's default logic is AND, so results are identical to the line above. |
+| <code>allinurl:&nbsp;"healthy"&nbsp;AND&nbsp;"eating"</code> | ❌ No | **Broken Syntax.** allinurl: treats quotes and AND as **literal characters**. <u>It searches for "healthy", AND, and "eating" in the URL.</u> This fails and falls back to a standard text search. |
+| <code>allinurl:&nbsp;"healthy&nbsp;eating"</code> | ❌ No | **Broken Syntax.** allinurl: does **not** support phrase grouping. <u>It treats the quotes as literal characters and searches for "healthy and eating" in the URL.</u> This fails and falls back to a standard text search. |
 
-**\*\*
-🔐 Security Practitioner\'s Note(**The \"Failing Silently\" Trap\*\*)
+**🔐 Security Practitioner's Note (The "Failing Silently" Trap)**
 
 As demonstrated in the table above, allinurl: \"admin\" AND
 \"login\" does **not** throw an error. It simply [stops filtering by
@@ -1787,8 +1686,8 @@ are actually looking at blog posts and news articles. [Always verify the
 green URL text in your results to ensure your operator is
 active]{.underline}.
 
-**Syntax Precision:** While both allinurl:healthy eating (no space)
-and allinurl: healthy eating (with space) work in practice,
+**Syntax Precision:** While both **allinurl:healthy eating** (no space)
+and **allinurl: healthy eating** (with space) work in practice,
 the **canonical form** omits the space. This aligns with Google\'s
 official documentation and instils good habits for other command-line
 tools that do not forgive errant spaces.
@@ -1803,59 +1702,34 @@ operators.
 
 **Syntax:** allintext: word1 word2 word3
 
-> **Examples**
->
-> allintext: sql injection vulnerability disclosure
->
-> =\> Pages where all four words appear in the body text
->
-> allintext: machine learning python tutorial
->
-> =\> Pages discussing all three concepts in body content
->
-> _\# Equivalent using intext: (but allows adding site: and other
-> operators):_
->
-> intext:machine intext:learning intext:python intext:tutorial
-> site:github.com
+#### Examples
 
-Critical Operational Note (**Same as allinurl:**)
+| Query | Result |
+| :--- | :--- |
+| `allintext: sql injection vulnerability disclosure` | Pages where all four words appear in the body text |
+| `allintext: machine learning python tutorial` | Pages discussing all three concepts in body content |
+| `intext:machine intext:learning intext:python intext:tutorial site:github.com` | Equivalent using `intext:` (but allows adding `site:` and other operators) |
+
+**Critical Operational Note (Same as allinurl:)**
 
 The allintext: operator is **exclusive/greedy**. It applies
 to *all* subsequent search terms and [cannot be reliably
 combined]{.underline} with other operators (e.g., site:, intitle:).
 
-**Example of Failure:**\
-allintext:healthy eating site:gov → **Unreliable.** The parser may
-ignore the site: filter or apply allintext: to the word site and gov.
+| Scenario | Query | Result |
+| :--- | :--- | :--- |
+| **Example of Failure** | `allintext:healthy eating site:gov` | ❌ **Unreliable.** The parser may ignore the `site:` filter or apply `allintext:` to the word `site` and `gov`. |
+| **Correct OSINT Workaround** | `intext:healthy intext:eating site:gov` | ✅ **Reliable.** This restricts both terms to the body text while properly respecting the domain filter. |
 
-**Correct OSINT Workaround:**\
-intext:healthy intext:eating site:gov → **Reliable.** This restricts
-both terms to the body text while properly respecting the domain filter.
+**Example: (`allinurl:` / `allintext:` VS multiple `inurl:`/`intext:`)**
 
-**allinurl: / allintext: VS multiple inurl:/intext:**
-
----
-
-**Feature** **allinurl: / **Multiple
-allintext:** inurl:/intext:**
-
----
-
-All words required Yes Yes
-
-Can combine with No Yes
-site:
-
-Can combine with No Yes
-filetype:
-
-Syntax conciseness More concise More flexible
-
-Best used when Simple standalone Compound
-query multi-operator query
-
----
+| Feature | `allinurl:` / `allintext:` | Multiple `inurl:`/`intext:` |
+| :--- | :---: | :---: |
+| **All words required** | Yes | Yes |
+| **Can combine with `site:`** | No | Yes |
+| **Can combine with `filetype:`** | No | Yes |
+| **Syntax conciseness** | More concise | More flexible |
+| **Best used when** | Simple standalone query | Compound multi-operator query |
 
 **4.3 Grouping and Modifier Symbols**
 
@@ -1871,38 +1745,15 @@ intend.
 
 **Syntax:** (term1 OR term2) AND term3
 
-> **Examples**
->
-> (Python OR JavaScript) tutorial site:github.com
->
-> =\> GitHub tutorials on EITHER Python OR JavaScript
->
-> =\> Without parentheses: Python OR (JavaScript tutorial
-> site:github.com)
->
-> =\> \-- which is NOT the same query
->
-> site:example.com (filetype:env OR filetype:sql OR filetype:bak)
->
-> =\> Group multiple filetype alternatives under one site: filter
->
-> (\"machine learning\" OR \"deep learning\") site:arxiv.org
-> after:2024-01-01 filetype:pdf
->
-> =\> ArXiv PDFs mentioning either ML or DL phrase, published in 2024
->
-> (\"data breach\" OR \"security incident\") site:.gov (filetype:pdf OR
-> filetype:docx)
->
-> =\> Government documents on either topic in either format
->
-> (site:client.com OR site:subsidiary.net OR site:clientdev.com)
-> (filetype:env OR filetype:sql OR filetype:bak OR filetype:config OR
-> filetype:yml) after:2025-01-01
->
-> =\> Searches across **three distinct domains simultaneously** for any
-> of **five high-risk file extensions** that were indexed by
-> Google **within the current year**.
+#### Examples
+
+| Query | Result |
+| :--- | :--- |
+| `(Python OR JavaScript) tutorial site:github.com` | GitHub tutorials on EITHER Python OR JavaScript. <br><br> _Without parentheses, it becomes `Python OR (JavaScript tutorial site:github.com)` which is NOT the same query._ |
+| `site:example.com (filetype:env OR filetype:sql OR filetype:bak)` | Group multiple filetype alternatives under one `site:` filter. |
+| `("machine learning" OR "deep learning") site:arxiv.org after:2024-01-01 filetype:pdf` | ArXiv PDFs mentioning either ML or DL phrase, published in 2024. |
+| `("data breach" OR "security incident") site:.gov (filetype:pdf OR filetype:docx)` | Government documents on either topic in either format. |
+| `(site:client.com OR site:subsidiary.net OR site:clientdev.com) (filetype:env OR filetype:sql OR filetype:bak OR filetype:config OR filetype:yml) after:2025-01-01` | Searches across **three distinct domains simultaneously** for any of **five high-risk file extensions** that were indexed by Google **within the current year**. |
 
 ### + \-- Force Inclusion of a Term
 
@@ -1913,41 +1764,21 @@ q[uery]{.underline}. Google called these **stop words**. [The + operator
 was a way to tell Google: *\"No, don\'t skip this word; I actually need
 it in the results.\"*]{.underline}
 
-**Example:** If you searched for what is XSS, Google might silently drop
-_\"what\"_ and _\"is\"_ and just search for XSS. Prepending a + like
-+what +is XSS forced Google to include those words literally.
+**Example:** If you searched for what is XSS, Google might silently drop _"what"_ and _"is"_ and just search for XSS. Prepending a `+` like `+what +is XSS` forced Google to include those words literally.
 
-**Why it no longer matters:** Google officially removed this behaviour
-in **2011**. Their search engine became smart enough that it no longer
-arbitrarily drops words from queries; so, the problem the + operator
-solved essentially stopped existing.
+**Why it no longer matters:** Google officially removed this behaviour in **2011**. Their search engine became smart enough that it no longer arbitrarily drops words from queries; so, the problem the `+` operator solved essentially stopped existing.
 
-**The modern equivalent:** If you genuinely need to force exact
-inclusion of a specific term today, wrap it in **double quotes**. Quotes
-lock the word into the search as-is, with no interpretation or
-substitution.
+**The modern equivalent:** If you genuinely need to force exact inclusion of a specific term today, wrap it in **double quotes**. Quotes lock the word into the search as-is, with no interpretation or substitution.
 
-> **Historical vs modern approach**
->
-> _\# Old approach (deprecated in 2011, no longer reliable):_
->
-> +security +audit Bangladesh
->
-> _\# Modern equivalent (reliable):_
->
-> \"security\" \"audit\" Bangladesh
->
-> _\# Or even more precisely:_
->
-> \"security audit\" Bangladesh
->
-> **NOTE:** The + operator is no longer officially supported by Google.
-> Listing it here for completeness
->
-> as it still appears in older OSINT guides. If you see + in a dork from
-> an older source,
->
-> replace it with quotes around the forced term for reliable results.
+#### Historical vs modern approach
+
+| Approach | Query |
+| :--- | :--- |
+| **Old approach** *(deprecated in 2011, no longer reliable)* | `+security +audit Bangladesh` |
+| **Modern equivalent** *(reliable)* | `"security" "audit" Bangladesh` |
+| **Or even more precisely** | `"security audit" Bangladesh` |
+
+> **NOTE:** The `+` operator is no longer officially supported by Google. Listing it here for completeness as it still appears in older OSINT guides. If you see `+` in a dork from an older source, replace it with quotes around the forced term for reliable results.
 
 ### \_ \-- Google Autocomplete Wildcard
 
