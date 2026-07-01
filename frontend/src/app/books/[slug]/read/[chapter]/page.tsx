@@ -443,10 +443,10 @@ function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }
               onClick={() => setOpen(false)}
               className={`flex items-start gap-2 px-3 py-1.5 rounded-lg text-sm transition-all duration-150 ${
                 item.level === 1 ? "font-medium" : item.level === 2 ? "ml-3 text-[0.82rem]" : "ml-6 text-[0.78rem]"
-              } ${activeId === item.id ? "bg-primary/10 text-primary" : "text-foreground/70 hover:bg-muted/50 hover:text-foreground"}`}
+              } ${activeId === item.id ? "bg-muted/50 text-foreground" : "text-foreground/70 hover:bg-muted/50 hover:text-foreground"}`}
             >
               {item.level > 1 && (
-                <span className={`mt-[5px] shrink-0 ${item.level === 2 ? "size-1.5" : "size-1"} rounded-full ${activeId === item.id ? "bg-primary" : "bg-muted-foreground/40"}`} />
+                <span className={`mt-[5px] shrink-0 ${item.level === 2 ? "size-1.5" : "size-1"} rounded-full ${activeId === item.id ? "bg-foreground/70" : "bg-muted-foreground/40"}`} />
               )}
               <span className="leading-snug">{item.text}</span>
             </a>
