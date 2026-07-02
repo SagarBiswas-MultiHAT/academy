@@ -513,47 +513,29 @@ effectively turns any large website into your own private search engine.
 
 **Syntax:** site:domain.com \"optional search term\"
 
-> **Beginner Examples**
->
-> site:wikipedia.org \"artificial intelligence\"
->
-> =\> Only Wikipedia pages about artificial intelligence
->
-> site:who.int \"malaria vaccine\"
->
-> =\> Only WHO pages mentioning malaria vaccine
->
-> site:docs.python.org \"for loop\"
->
-> =\> Only Python official documentation mentioning \"for loop\"
->
-> **Intermediate Examples**
->
-> site:.gov \"climate change report\" filetype:pdf
->
-> =\> PDFs about climate change from any government domain
->
-> site:.edu \"machine learning\" after:2023-01-01
->
-> =\> Academic content on machine learning published since 2023
->
-> site:\*.microsoft.com \"security advisory\"
->
-> =\> Security advisories across all Microsoft subdomains
->
-> **Bangladesh-Specific Examples**
->
-> site:gov.bd filetype:pdf \"annual report\"
->
-> =\> Bangladeshi government annual reports in PDF format
->
-> site:.bd \"tender notice\" filetype:pdf
->
-> =\> Tender notices from any .bd domain
->
-> site:brac.net \"research\" filetype:pdf
->
-> =\> Research documents from BRAC
+**Beginner Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `site:wikipedia.org "artificial intelligence"` | Only Wikipedia pages about artificial intelligence |
+| `site:who.int "malaria vaccine"` | Only WHO pages mentioning malaria vaccine |
+| `site:docs.python.org "for loop"` | Only Python official documentation mentioning "for loop" |
+
+**Intermediate Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `site:.gov "climate change report" filetype:pdf` | PDFs about climate change from any government domain |
+| `site:.edu "machine learning" after:2023-01-01` | Academic content on machine learning published since 2023 |
+| `site:*.microsoft.com "security advisory"` | Security advisories across all Microsoft subdomains |
+
+**Bangladesh-Specific Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `site:gov.bd filetype:pdf "annual report"` | Bangladeshi government annual reports in PDF format |
+| `site:.bd "tender notice" filetype:pdf` | Tender notices from any .bd domain |
+| `site:brac.net "research" filetype:pdf` | Research documents from BRAC |
 
 **Pro Tip:** Use site: with a top-level domain extension such as
 site:.bd to search all websites on Bangladesh\'s national domain,
@@ -577,28 +559,15 @@ passin]{.underline}g.
 
 **Syntax:** intitle:\"keyword phrase\"
 
-> **Examples**
->
-> intitle:\"getting started\" site:docs.github.com
->
-> =\> GitHub docs pages specifically titled \"Getting Started\"
->
-> intitle:\"annual report\" site:tesla.com
->
-> =\> Tesla pages specifically about annual reports
->
-> intitle:\"scholarship deadline\" site:.edu
->
-> =\> University pages where scholarship deadlines are the primary
-> subject
->
-> intitle:\"index of\" site:yourdomain.com
->
-> =\> Directory listings on your domain (should return zero results)
->
-> intitle:\"budget 2024-2025\" site:gov.bd
->
-> =\> Bangladeshi government budget pages for 2024-2025
+**Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `intitle:"getting started" site:docs.github.com` | GitHub docs pages specifically titled "Getting Started" |
+| `intitle:"annual report" site:tesla.com` | Tesla pages specifically about annual reports |
+| `intitle:"scholarship deadline" site:.edu` | University pages where scholarship deadlines are the primary subject |
+| `intitle:"index of" site:yourdomain.com` | Directory listings on your domain (should return zero results) |
+| `intitle:"budget 2024-2025" site:gov.bd` | Bangladeshi government budget pages for 2024-2025 |
 
 **Why page titles matter:** Web developers title pages to reflect the
 main topic. A page titled \"Getting Started with Docker\" is almost
@@ -622,33 +591,21 @@ tool and a securit]{.underline}y [audit tool]{.underline}.
 
 **Syntax:** inurl:keyword
 
-> **Research Examples**
->
-> inurl:blog site:openai.com
->
-> =\> Only OpenAI blog posts
->
-> inurl:careers \"data scientist\" site:microsoft.com
->
-> =\> Microsoft career pages for data scientists
->
-> inurl:press-release site:un.org
->
-> =\> UN press releases directly
->
-> **Security Audit Examples (own domain only)**
->
-> inurl:admin site:yourdomain.com
->
-> =\> Admin pages indexed from your domain
->
-> inurl:login site:yourdomain.com
->
-> =\> Login pages visible in Google\'s index
->
-> inurl:dashboard site:yourdomain.com
->
-> =\> Any dashboard pages that have been indexed
+**Research Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `inurl:blog site:openai.com` | Only OpenAI blog posts |
+| `inurl:careers "data scientist" site:microsoft.com` | Microsoft career pages for data scientists |
+| `inurl:press-release site:un.org` | UN press releases directly |
+
+**Security Audit Examples (own domain only)**
+
+| Dork Query | Expected Result |
+|---|---|
+| `inurl:admin site:yourdomain.com` | Admin pages indexed from your domain |
+| `inurl:login site:yourdomain.com` | Login pages visible in Google's index |
+| `inurl:dashboard site:yourdomain.com` | Any dashboard pages that have been indexed |
 
 **When to use it:** When URLs reveal page type; when navigating large
 sites faster than menus; when auditing your own site for unexpectedly
@@ -665,23 +622,14 @@ resource in a]{.underline} p[articular format]{.underline}.
 
 **Syntax:** filetype:extension \"search term\"
 
-> **Research Examples**
->
-> filetype:pdf \"machine learning\" site:.edu
->
-> =\> Academic machine learning PDFs from universities
->
-> filetype:pptx \"cybersecurity awareness\" site:.gov
->
-> =\> Government cybersecurity awareness presentations
->
-> filetype:xlsx \"population data\" site:worldbank.org
->
-> =\> World Bank population data in Excel format
->
-> filetype:csv \"road accident\" site:gov.bd
->
-> =\> Road accident data from Bangladeshi government sources
+**Research Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `filetype:pdf "machine learning" site:.edu` | Academic machine learning PDFs from universities |
+| `filetype:pptx "cybersecurity awareness" site:.gov` | Government cybersecurity awareness presentations |
+| `filetype:xlsx "population data" site:worldbank.org` | World Bank population data in Excel format |
+| `filetype:csv "road accident" site:gov.bd` | Road accident data from Bangladeshi government sources |
 
 | Extension      | File Type              | Best Used For                  |
 | -------------- | ---------------------- | ------------------------------ |
@@ -704,29 +652,20 @@ servers.]{.underline}
 
 **Syntax:** ext:extension keyword
 
-> **Examples**
->
-> ext:csv \"population data\" site:worldbank.org
->
-> =\> World Bank CSV population datasets
->
-> ext:sql site:github.com \"CREATE TABLE\"
->
-> =\> SQL files on GitHub containing table definitions
->
+**Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `ext:csv "population data" site:worldbank.org` | World Bank CSV population datasets |
+| `ext:sql site:github.com "CREATE TABLE"` | SQL files on GitHub containing table definitions |
+
 #### Security Audit (own site only)
 
-> ext:env site:yourdomain.com
->
-> =\> Check for exposed .env files (should return ZERO results)
->
-> ext:log site:yourdomain.com
->
-> =\> Check for exposed log files (should return ZERO results)
->
-> ext:bak site:yourdomain.com
->
-> =\> Check for exposed backup files (should return ZERO results)
+| Dork Query | Expected Result |
+|---|---|
+| `ext:env site:yourdomain.com` | Check for exposed .env files (should return ZERO results) |
+| `ext:log site:yourdomain.com` | Check for exposed log files (should return ZERO results) |
+| `ext:bak site:yourdomain.com` | Check for exposed backup files (should return ZERO results) |
 
 > **CRITICAL:** If ext:env, ext:sql, ext:log, or ext:bak returns any
 > results for your own domain, those files are publicly accessible and
@@ -749,14 +688,12 @@ major websites.
 
 **Syntax:** cache:url.com
 
-> **Current Reality**
->
-> cache:wikipedia.org 
->=\> Often returns: \"did not match any documents\"
->
-> cache:who.int/news
->
-> =\> Often returns: \"did not match any documents\"
+**Current Reality**
+
+| Dork Query | Expected Result |
+|---|---|
+| `cache:wikipedia.org` | Often returns: "did not match any documents" |
+| `cache:who.int/news` | Often returns: "did not match any documents" |
 
 > **Result:** Google cache links are no longer reliably available. Use the Wayback Machine instead (see below).
 
@@ -833,13 +770,13 @@ popular services, and mapping a content category comprehensively.
 
 **Syntax:** related:domain.com
 
-> **Examples**
->
-> related:wikipedia.org =\> No reliable similarity results
->
-> related:unsplash.com =\> Inconsistent or unrelated matches
->
-> related:stackoverflow.com =\> Often ignored or replaced with normal search results
+**Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `related:wikipedia.org` | No reliable similarity results |
+| `related:unsplash.com` | Inconsistent or unrelated matches |
+| `related:stackoverflow.com` | Often ignored or replaced with normal search results |
 
 However, Google officially **deprecated** the related**:** operator in
 2023, and it no longer returns reliable or consistent results. In many
@@ -856,22 +793,15 @@ patterns, and web relationships.
 
 **SimilarSites URL Pattern:** https://www.similarsites.com/site/{targetDomain}
 
-> **Examples**
->
-> https://www.similarsites.com/site/wikipedia.org 
-> =\> No reliable similarity results
->
-> https://www.similarsites.com/site/unsplash.com 
-> =\> Free image sites like Pexels, Pixabay, or Freepik
->
-> https://www.similarsites.com/site/stackoverflow.com 
-> =\> Coding Q&A sites like Stack Exchange or Dev.to
->
-> https://www.similarsites.com/site/coursera.org 
-> =\> Other online learning platforms
->
-> https://www.similarsites.com/site/prothomalo.com 
-> =\> Other major Bangladeshi news portals
+**Examples**
+
+| URL | Expected Result |
+|---|---|
+| `https://www.similarsites.com/site/wikipedia.org` | No reliable similarity results |
+| `https://www.similarsites.com/site/unsplash.com` | Free image sites like Pexels, Pixabay, or Freepik |
+| `https://www.similarsites.com/site/stackoverflow.com` | Coding Q&A sites like Stack Exchange or Dev.to |
+| `https://www.similarsites.com/site/coursera.org` | Other online learning platforms |
+| `https://www.similarsites.com/site/prothomalo.com` | Other major Bangladeshi news portals |
 
 ### When to use it:
 
@@ -907,18 +837,14 @@ indexed.
 
 **Syntax:** info:url.com
 
-> **Examples**
->
-> info:openai.com 
-> =\> Google\'s stored data about OpenAI\'s website
->
-> info:bbc.com 
-> =\> Cached link, related sites, pages referencing BBC
->
-> info:yourdomain.com 
-> =\> Quick check of how Google sees your own site
-> info:reservexbd.com 
-> =\> similar sites (if any), and pages linking to ReserveXBD; help centre page, etc.
+**Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `info:openai.com` | Google's stored data about OpenAI's website |
+| `info:bbc.com` | Cached link, related sites, pages referencing BBC |
+| `info:yourdomain.com` | Quick check of how Google sees your own site |
+| `info:reservexbd.com` | similar sites (if any), and pages linking to ReserveXBD; help centre page, etc. |
 
 ## 2.9 intext: \-- Searching in Page Body Content
 
@@ -930,26 +856,19 @@ elements.
 
 **Syntax:** intext:\"exact phrase\"
 
-> **Examples**
->
-> intext:\"return policy\" site:amazon.com
->
-> =\> Amazon pages that explicitly mention return policy in their body
-> text
->
-> intext:\"scholarship deadline\" site:mit.edu
->
-> =\> MIT pages with scholarship deadline information in the body
->
-> intext:\"admission requirements\" site:du.ac.bd
->
-> =\> Dhaka University pages with admission requirements in body text
+**Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `intext:"return policy" site:amazon.com` | Amazon pages that explicitly mention return policy in their body text |
+| `intext:"scholarship deadline" site:mit.edu` | MIT pages with scholarship deadline information in the body |
+| `intext:"admission requirements" site:du.ac.bd` | Dhaka University pages with admission requirements in body text |
 
 #### Security Audit (own site only)
 
-> intext:\"DB_PASSWORD\" ext:env site:yourdomain.com
->
-> =\> Environment files containing database password variables
+| Dork Query | Expected Result |
+|---|---|
+| `intext:"DB_PASSWORD" ext:env site:yourdomain.com` | Environment files containing database password variables |
 
 **intext: vs intitle::** Use intitle: when you want pages whose primary
 topic is your keyword. Use intext: when you need pages that contain a
@@ -965,23 +884,14 @@ and eliminates most irrelevant pages.
 
 **Syntax:** allintitle:word1 word2 word3
 
-> **Examples**
->
-> allintitle:python tutorial beginners 2024
->
-> =\> Pages with Python, Tutorial, Beginners, AND 2024 all in the title
->
-> allintitle:cybersecurity best practices checklist
->
-> =\> Highly focused checklist pages only
->
-> allintitle:machine learning interview questions answers
->
-> =\> ML interview prep resources
->
-> allintitle:SSC result 2024 Bangladesh
->
-> =\> Bangladesh SSC result pages from 2024
+**Examples**
+
+| Dork Query | Expected Result |
+|---|---|
+| `allintitle:python tutorial beginners 2024` | Pages with Python, Tutorial, Beginners, AND 2024 all in the title |
+| `allintitle:cybersecurity best practices checklist` | Highly focused checklist pages only |
+| `allintitle:machine learning interview questions answers` | ML interview prep resources |
+| `allintitle:SSC result 2024 Bangladesh` | Bangladesh SSC result pages from 2024 |
 
 **When to use it:** When broad searches are producing too much noise and
 you need laser-focused results.
@@ -4480,24 +4390,11 @@ These dorks reveal vulnerabilities in websites, and their contents may be newswo
 - **✓** Academic researchers can find papers, datasets, and lecture notes far faster with `filetype:` and `site:` combinations.
 - **✓** Bug bounty hunters use dorks as a rapid, low-noise first pass to map an attack surface.
 
-\*\*CHAPTER 7\*\*
-
-**Defending Against Google Dorks**
-
-_Auditing, protecting, and monitoring your digital footprint_
-
 # Chapter 7: Defending Against Google Dorks
 
-> **Chapter Overview:** This chapter is your defensive playbook.
-> Everything you have learned about finding sensitive information
-> applies equally to your own organisation. This chapter teaches you how
-> to audit
->
-> your own website, configure protective measures, monitor your digital
-> footprint, and train
->
-> your team so that attackers find nothing when they run the same
-> queries against you.
+<div align="right"><em>Auditing, protecting, and monitoring your digital footprint</em></div>
+
+> **Chapter Overview:** This chapter is your defensive playbook. Everything you have learned about finding sensitive information applies equally to your own organisation. This chapter teaches you how to audit your own website, configure protective measures, monitor your digital footprint, and train your team so that attackers find nothing when they run the same queries against you.
 
 ## 7.1 Auditing Your Own Website
 
@@ -4507,43 +4404,18 @@ cycle, ideally monthly. Treat any result as a finding that requires
 immediate action. [The goal is to find problems before attackers
 do]{.underline}.
 
----
-
-**Audit Query** **Immediate Action If Results Appear**
-
----
-
-site:yourdomain.com Review each PDF. Remove any containing
-filetype:pdf sensitive data.
-
-site:yourdomain.com inurl:admin Add noindex. Restrict by IP. Enable MFA
-immediately.
-
-site:yourdomain.com Remove log files from web root. Block
-filetype:log file type at server level.
-
-site:yourdomain.com ext:env CRITICAL: Remove files. Rotate ALL
-exposed credentials now.
-
-site:yourdomain.com ext:sql Remove SQL files. Assess whether schema
-or data was exposed.
-
-site:yourdomain.com Disable directory listings in web
-intitle:\"index of\" server configuration.
-
-site:yourdomain.com Delete or move backup directories
-inurl:backup outside the web root.
-
-site:yourdomain.com Remove config files. They almost always
-filetype:cfg contain credentials.
-
-site:yourdomain.com ext:bak Remove all backup files. They may
-expose your source code.
-
-site:yourdomain.com inurl:/.git CRITICAL: Block access to .git. Rotate
-all repository secrets.
-
----
+| Audit Query | Immediate Action If Results Appear |
+|---|---|
+| `site:yourdomain.com filetype:pdf` | Review each PDF. Remove any containing sensitive data. |
+| `site:yourdomain.com inurl:admin` | Add noindex. Restrict by IP. Enable MFA immediately. |
+| `site:yourdomain.com filetype:log` | Remove log files from web root. Block file type at server level. |
+| `site:yourdomain.com ext:env` | **CRITICAL:** Remove files. Rotate ALL exposed credentials now. |
+| `site:yourdomain.com ext:sql` | Remove SQL files. Assess whether schema or data was exposed. |
+| `site:yourdomain.com intitle:"index of"` | Disable directory listings in web server configuration. |
+| `site:yourdomain.com inurl:backup` | Delete or move backup directories outside the web root. |
+| `site:yourdomain.com filetype:cfg` | Remove config files. They almost always contain credentials. |
+| `site:yourdomain.com ext:bak` | Remove all backup files. They may expose your source code. |
+| `site:yourdomain.com inurl:/.git` | **CRITICAL:** Block access to `.git`. Rotate all repository secrets. |
 
 ## 7.2 Configuring robots.txt
 
@@ -4551,38 +4423,28 @@ The robots.txt file is a plain text file placed at the root of your
 website that instructs search engine crawlers which pages or directories
 not to index. It is your first and cheapest line of defence.
 
-> **IMPORTANT:** Critical caveat: robots.txt only tells crawlers what
-> not to index. It does not prevent anyone
->
-> from accessing those pages directly by typing the URL. For true access
-> control, you must combine robots.txt with server-level authentication,
-> covered in Section 6.3.
->
-> **robots.txt Example**
->
-> User-agent: \* \# Applies to all search engine crawlers
->
-> Disallow: /admin/ \# Block crawling of admin folder
->
-> Disallow: /backup/ \# Block crawling of backup folder
->
-> Disallow: /config/ \# Block crawling of config files
->
-> Disallow: /logs/ \# Block crawling of log files
->
-> Disallow: /.env \# Block crawling of .env file
->
-> Disallow: /.git/ \# Block crawling of git repository
->
-> _\# Block only a specific crawler by name:_
->
-> User-agent: Googlebot
->
-> Disallow: /internal/
->
-> _\# Allow everything else:_
->
-> Allow: /
+<div data-callout="important">
+**Critical caveat:** `robots.txt` only tells crawlers what not to index. It does not prevent anyone from accessing those pages directly by typing the URL. For true access control, you must combine `robots.txt` with server-level authentication, covered in Section 7.3.
+</div>
+
+**robots.txt Example**
+
+```text
+User-agent: *           # Applies to all search engine crawlers
+Disallow: /admin/       # Block crawling of admin folder
+Disallow: /backup/      # Block crawling of backup folder
+Disallow: /config/      # Block crawling of config files
+Disallow: /logs/        # Block crawling of log files
+Disallow: /.env         # Block crawling of .env file
+Disallow: /.git/        # Block crawling of git repository
+
+# Block only a specific crawler by name:
+User-agent: Googlebot
+Disallow: /internal/
+
+# Allow everything else:
+Allow: /
+```
 
 To deploy: create a plain text file named robots.txt and place it at
 https://yourdomain.com/robots.txt. Search engines check this file
@@ -4590,53 +4452,43 @@ automatically. Verify it is working by visiting the URL in your browser.
 
 ## 7.3 Password-Protecting Sensitive Directories
 
-For directories that must remain inaccessible to unauthorised users,
-robots.txt is **insufficient**. [You need server-level authentication
-that challenges every visitor with a username and password]{.underline}
-p[rom]{.underline}p[t before serving an]{.underline}y
-[content.]{.underline}
+For directories that must remain inaccessible to unauthorised users, `robots.txt` is **insufficient**. You need server-level authentication that challenges every visitor with a username and password prompt before serving any content.
 
 ### Apache: Using .htaccess and .htpasswd
 
-> **.htaccess content (place in the directory to protect)**
->
-> AuthType Basic
->
-> AuthName \"Restricted Area\"
->
-> AuthUserFile /full/absolute/server/path/.htpasswd
->
-> Require valid-user
->
-> _\# Note: AuthUserFile must be an absolute path._
->
-> _\# Store .htpasswd OUTSIDE the web root for security._
->
-> **Creating the .htpasswd password file**
->
-> _\# From the command line:_
->
-> htpasswd -c /full/path/to/.htpasswd yourusername
->
-> =\> You will be prompted to set and confirm a password.
->
-> _\# Add additional users (without -c, which would overwrite):_
->
-> htpasswd /full/path/to/.htpasswd seconduser
+**`.htaccess` content (place in the directory to protect)**
+
+```apacheconf
+AuthType Basic
+AuthName "Restricted Area"
+AuthUserFile /full/absolute/server/path/.htpasswd
+Require valid-user
+# Note: AuthUserFile must be an absolute path.
+# Store .htpasswd OUTSIDE the web root for security.
+```
+
+**Creating the `.htpasswd` password file**
+
+```bash
+# From the command line:
+htpasswd -c /full/path/to/.htpasswd yourusername
+# => You will be prompted to set and confirm a password.
+
+# Add additional users (without -c, which would overwrite):
+htpasswd /full/path/to/.htpasswd seconduser
+```
 
 ### Nginx: Using auth_basic
 
-> **Nginx server block**
->
-> location /admin/ {
->
-> auth_basic \"Restricted Area\";
->
-> auth_basic_user_file /etc/nginx/.htpasswd;
->
-> }
->
-> _\# The .htpasswd file is created the same way as for Apache._
+**Nginx server block**
+
+```nginx
+location /admin/ {
+    auth_basic "Restricted Area";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+}
+# The .htpasswd file is created the same way as for Apache.
+```
 
 ## 7.4 Using Google Search Console
 
@@ -4645,27 +4497,15 @@ exactly which pages of your site are indexed. It also lets you request
 the temporary removal of URLs from search results while you implement
 permanent fixes.
 
-1.  Go to search.google.com/search-console and add your website
-    property.
+1. Go to search.google.com/search-console and add your website property.
+2. Verify ownership via DNS TXT record, HTML file upload, or meta tag method.
+3. Navigate to Indexing > Pages to see all pages Google has indexed.
+4. For any page that should not be indexed, go to Removals > New Request and submit the URL.
+5. While the removal is pending (it lasts approximately 6 months), implement a permanent fix: delete the page, add a noindex meta tag, or block it in robots.txt.
 
-2.  Verify ownership via DNS TXT record, HTML file upload, or meta tag
-    method.
-
-3.  Navigate to Indexing \> Pages to see all pages Google has indexed.
-
-4.  For any page that should not be indexed, go to Removals \> New
-    Request and submit the URL.
-
-5.  While the removal is pending (it lasts approximately 6 months),
-    implement a permanent fix: delete the page, add a noindex meta tag,
-    or block it in robots.txt.
-
-> **TIP:** A GSC removal request is temporary. It gives you a window of
-> approximately six months to implement the permanent solution. The
-> permanent fix must be one of: delete the page, add a noindex meta tag
-> to the page, or block it in robots.txt. Without a permanent fix, the
-> page will reappear in search results once the temporary removal
-> expires.
+<div data-callout="tip">
+**Tip:** A GSC removal request is temporary. It gives you a window of approximately six months to implement the permanent solution. The permanent fix must be one of: delete the page, add a noindex meta tag to the page, or block it in `robots.txt`. Without a permanent fix, the page will reappear in search results once the temporary removal expires.
+</div>
 
 ## 7.5 Keeping Software Updated
 
@@ -4675,20 +4515,11 @@ combine Google Dorks with public vulnerability databases (such as the
 CVE database at cve.mitre.org) to find sites running specific outdated
 software versions.
 
-- Update your CMS core (WordPress, Joomla, Drupal) immediately when
-  security patches are released.
-
-- Remove unused plugins and themes. Inactive plugins remain attack
-  surfaces even when disabled.
-
-- Keep your web server, PHP, MySQL, and framework versions on supported,
-  actively maintained releases.
-
-- Enable automatic security updates wherever your hosting environment
-  supports them.
-
-- Always create a full backup before applying any update, so you can
-  restore if anything breaks.
+- Update your CMS core (WordPress, Joomla, Drupal) immediately when security patches are released.
+- Remove unused plugins and themes. Inactive plugins remain attack surfaces even when disabled.
+- Keep your web server, PHP, MySQL, and framework versions on supported, actively maintained releases.
+- Enable automatic security updates wherever your hosting environment supports them.
+- Always create a full backup before applying any update, so you can restore if anything breaks.
 
 ## 7.6 Enabling Two-Factor Authentication
 
@@ -4697,50 +4528,35 @@ beyond your password. Even if an attacker discovers your admin panel via
 a Google Dork and obtains your password through a separate breach, 2FA
 stops them from logging in without the second factor.
 
-1.  Enable 2FA on your CMS admin account, hosting control panel, domain
-    registrar, and all cloud service accounts.
-
-2.  Use an authenticator app (Google Authenticator, Authy, or Microsoft
-    Authenticator) rather than SMS. SMS-based 2FA is vulnerable to
-    SIM-swapping attacks.
-
-3.  Consider hardware keys (YubiKey or FIDO2 security keys) for the
-    highest level of protection on critical accounts.
-
-4.  Store backup codes in an encrypted password manager or printed in a
-    physically secure location.
+1. Enable 2FA on your CMS admin account, hosting control panel, domain registrar, and all cloud service accounts.
+2. Use an authenticator app (Google Authenticator, Authy, or Microsoft Authenticator) rather than SMS. SMS-based 2FA is vulnerable to SIM-swapping attacks.
+3. Consider hardware keys (YubiKey or FIDO2 security keys) for the highest level of protection on critical accounts.
+4. Store backup codes in an encrypted password manager or printed in a physically secure location.
 
 ## 7.7 Monitoring Your Digital Footprint with Google Alerts
 
-Proactive monitoring means you discover problems before attackers do.
-Google Alerts sends you an email whenever new search results matching
-your query appear in Google\'s index. Set up the following alerts and
-configure them to run daily.
+Proactive monitoring means you discover problems before attackers do. Google Alerts sends you an email whenever new search results matching your query appear in Google's index. Set up the following alerts and configure them to run daily.
 
-> **Recommended Google Alert Queries**
->
-> site:yourdomain.com intitle:admin
->
-> =\> Notifies you if any admin page gets indexed
->
-> \"yourcompanyname\" filetype:xls password
->
-> =\> Alerts if spreadsheets containing passwords appear online
->
-> site:yourdomain.com confidential
->
-> =\> Tracks accidentally exposed confidential documents
->
-> \"yourcompanyname\" \"data breach\" OR \"leaked\"
->
-> =\> Monitors your organisation\'s name in breach contexts
->
-> site:yourdomain.com ext:env OR ext:sql OR ext:log
->
-> =\> Alerts if any high-risk file types get indexed
+**Recommended Google Alert Queries**
 
-Set up alerts at google.com/alerts. Configure frequency to \"As it
-happens\" or at minimum \"Once a day\" for security-related queries.
+```
+site:yourdomain.com intitle:admin
+# => Notifies you if any admin page gets indexed
+
+"yourcompanyname" filetype:xls password
+# => Alerts if spreadsheets containing passwords appear online
+
+site:yourdomain.com confidential
+# => Tracks accidentally exposed confidential documents
+
+"yourcompanyname" "data breach" OR "leaked"
+# => Monitors your organisation's name in breach contexts
+
+site:yourdomain.com ext:env OR ext:sql OR ext:log
+# => Alerts if any high-risk file types get indexed
+```
+
+Set up alerts at [google.com/alerts](https://google.com/alerts). Configure frequency to **"As it happens"** or at minimum **"Once a day"** for security-related queries.
 
 ## 7.8 Securing Cloud Storage
 
@@ -4748,28 +4564,21 @@ Misconfigured cloud storage buckets (AWS S3, Google Cloud Storage, Azure
 Blob) are a major source of accidental data exposure. When files are set
 to public, Google can index them and anyone can find them.
 
-- Always default to private access when creating new storage buckets.
-  Change permissions deliberately.
+- Always default to private access when creating new storage buckets. Change permissions deliberately.
+- Review bucket permissions quarterly. Remove "anyone with the link" sharing when no longer needed.
+- Enable bucket access logging to detect unusual download or access activity.
+- Use IAM roles and least-privilege principles instead of making entire buckets publicly accessible.
 
-- Review bucket permissions quarterly. Remove \"anyone with the link\"
-  sharing when no longer needed.
+<div data-callout="critical">
+**Critical:** Run these dorks to check for exposed cloud storage belonging to your organisation:
 
-- Enable bucket access logging to detect unusual download or access
-  activity.
+```
+inurl:s3.amazonaws.com "your-company-name" OR inurl:s3.amazonaws.com "your-bucket-name"
+site:storage.googleapis.com "your-project-name"
+```
 
-- Use IAM roles and least-privilege principles instead of making entire
-  buckets publicly accessible.
-
-> **CRITICAL:** Run these dorks to check for exposed cloud storage
-> belonging to your organisation:
->
-> inurl:s3.amazonaws.com \"your-company-name\" OR inurl:s3.amazonaws.com
-> \"your-bucket-name\"
->
-> site:storage.googleapis.com \"your-project-name\"
->
-> If any results appear, your storage bucket is misconfigured. Fix the
-> permissions immediately.
+If any results appear, your storage bucket is misconfigured. Fix the permissions immediately.
+</div>
 
 ## 7.9 Regular Encrypted Backups
 
@@ -4777,19 +4586,11 @@ Backups are your recovery mechanism when every other defence fails. An
 encrypted, tested, off-site backup ensures that even a successful
 ransomware attack or data breach does not have to be catastrophic.
 
-1.  Automate daily backups of your database and all web files.
-
-2.  Store backups in at least two locations: one on-premises and one
-    off-site (a different cloud provider or physical location).
-
-3.  Encrypt all backup files so they are useless to anyone who obtains
-    them without the decryption key.
-
-4.  Test your restore process at least quarterly. An untested backup
-    cannot be trusted in an emergency.
-
-5.  Keep multiple versions (at least 30 days of daily backups) so you
-    can roll back past a recent compromise or corruption event.
+1. Automate daily backups of your database and all web files.
+2. Store backups in at least two locations: one on-premises and one off-site (a different cloud provider or physical location).
+3. Encrypt all backup files so they are useless to anyone who obtains them without the decryption key.
+4. Test your restore process at least quarterly. An untested backup cannot be trusted in an emergency.
+5. Keep multiple versions (at least 30 days of daily backups) so you can roll back past a recent compromise or corruption event.
 
 ## 7.10 Team Education
 
@@ -4799,20 +4600,11 @@ spreadsheet containing passwords to a public folder. Regular, concrete
 training is consistently the highest-ROI security investment available
 to organisations of any size.
 
-- Conduct quarterly security awareness sessions that include concrete
-  examples of how data gets exposed.
-
-- Teach and mandate the use of a password manager for all organisational
-  accounts.
-
-- Train team members to recognise phishing emails, fake login pages, and
-  social engineering attempts.
-
-- Run simulated phishing exercises to measure team readiness and
-  reinforce awareness over time.
-
-- Establish a blame-free, clear process for reporting suspected
-  incidents. If people fear blame, incidents go unreported.
+- Conduct quarterly security awareness sessions that include concrete examples of how data gets exposed.
+- Teach and mandate the use of a password manager for all organisational accounts.
+- Train team members to recognise phishing emails, fake login pages, and social engineering attempts.
+- Run simulated phishing exercises to measure team readiness and reinforce awareness over time.
+- Establish a blame-free, clear process for reporting suspected incidents. If people fear blame, incidents go unreported.
 
 ## 7.11 Defence-in-Depth Checklist
 
@@ -4821,80 +4613,33 @@ overlapping layers of protection, so that when any one layer fails, the
 others contain the damage. Use this checklist as your minimum security
 baseline:
 
----
-
-**\#** **Defensive Measure** **Priority** **Frequency**
-
----
-
-1 Run Google Dork audits against your Critical Monthly
-own domain
-
-2 Configure robots.txt to block High Once + on change
-sensitive directories
-
-3 Password-protect admin and internal Critical Once + review
-directories quarterly
-
-4 Monitor indexed pages via Google High Weekly
-Search Console
-
-5 Enable 2FA on all administrative Critical Immediately
-accounts
-
-6 Keep all software, plugins, and High Weekly
-dependencies updated
-
-7 Set up Google Alerts for your domain Medium Once + ongoing
-and brand name
-
-8 Audit cloud storage bucket High Quarterly
-permissions
-
-9 Maintain encrypted, tested, versioned Critical Daily backup,
-off-site backups monthly restore
-test
-
-10 Conduct team security awareness High Quarterly
-training
-
----
+| # | Defensive Measure | Priority | Frequency |
+|---|---|---|---|
+| 1 | Run Google Dork audits against your own domain | Critical | Monthly |
+| 2 | Configure `robots.txt` to block sensitive directories | High | Once + on change |
+| 3 | Password-protect admin and internal directories | Critical | Once + review quarterly |
+| 4 | Monitor indexed pages via Google Search Console | High | Weekly |
+| 5 | Enable 2FA on all administrative accounts | Critical | Immediately |
+| 6 | Keep all software, plugins, and dependencies updated | High | Weekly |
+| 7 | Set up Google Alerts for your domain and brand name | Medium | Once + ongoing |
+| 8 | Audit cloud storage bucket permissions | High | Quarterly |
+| 9 | Maintain encrypted, tested, versioned off-site backups | Critical | Daily backup, monthly restore test |
+| 10 | Conduct team security awareness training | High | Quarterly |
 
 **⭐ Key Takeaways**
 
-- **✓** Use Google Dorks on your own domain monthly. Any result is a
-  security finding requiring immediate action.
-
-- **✓** robots.txt tells crawlers what not to index, but does not
-  restrict direct URL access. Pair it with authentication.
-
-- **✓** Password-protect all sensitive directories using .htaccess
-  (Apache) or auth_basic (Nginx).
-
-- **✓** Google Search Console shows you what is indexed and lets you
-  submit temporary URL removal requests.
-
-- **✓** Two-factor authentication is the single most effective way to
-  protect admin accounts from credential theft.
-
-- **✓** Defence-in-depth means multiple overlapping layers: no single
-  measure is enough on its own.
-
-\*\*CHAPTER 8\*\*
-
-**Legal and Ethical Guidelines**
-
-_The framework that makes Google Dorking responsible and legitimate_
+- **✓** Use Google Dorks on your own domain monthly. Any result is a security finding requiring immediate action.
+- **✓** `robots.txt` tells crawlers what not to index, but does not restrict direct URL access. Pair it with authentication.
+- **✓** Password-protect all sensitive directories using `.htaccess` (Apache) or `auth_basic` (Nginx).
+- **✓** Google Search Console shows you what is indexed and lets you submit temporary URL removal requests.
+- **✓** Two-factor authentication is the single most effective way to protect admin accounts from credential theft.
+- **✓** Defence-in-depth means multiple overlapping layers: no single measure is enough on its own.
 
 # Chapter 8: Legal and Ethical Guidelines
 
-> **Chapter Overview:** This chapter defines the clear legal and ethical
-> boundaries of Google Dorking. It covers what is allowed, what is
-> prohibited, how to disclose vulnerabilities responsibly, and the legal
-> context across different jurisdictions. It closes with the
-> researcher\'s code: the professional standards
->
-> that the most respected practitioners hold themselves to.
+<div align="right"><em>The framework that makes Google Dorking responsible and legitimate</em></div>
+
+> **Chapter Overview:** This chapter defines the clear legal and ethical boundaries of Google Dorking. It covers what is allowed, what is prohibited, how to disclose vulnerabilities responsibly, and the legal context across different jurisdictions. It closes with the researcher's code: the professional standards that the most respected practitioners hold themselves to.
 
 This chapter is not a disclaimer appended as an afterthought. It is the
 chapter that determines whether everything else in this handbook is used
@@ -4904,104 +4649,46 @@ character.
 
 ## 8.1 What Is Allowed
 
-- Searching for publicly indexed information to support research,
-  education, or analysis.
-
-- Auditing your own websites and digital infrastructure to find and fix
-  vulnerabilities.
-
-- Using dorks to find open-access datasets, academic papers, and public
-  government records.
-
-- Conducting security research on systems you own or have explicit
-  written permission to test.
-
-- Reporting security vulnerabilities responsibly through official bug
-  bounty programs or direct disclosure.
-
-- Competitive research using publicly available information about
-  competitor websites.
-
-- Investigative journalism and research using publicly available
-  information.
-
-- Academic study and educational demonstrations using publicly
-  documented techniques.
+- Searching for publicly indexed information to support research, education, or analysis.
+- Auditing your own websites and digital infrastructure to find and fix vulnerabilities.
+- Using dorks to find open-access datasets, academic papers, and public government records.
+- Conducting security research on systems you own or have explicit written permission to test.
+- Reporting security vulnerabilities responsibly through official bug bounty programs or direct disclosure.
+- Competitive research using publicly available information about competitor websites.
+- Investigative journalism and research using publicly available information.
+- Academic study and educational demonstrations using publicly documented techniques.
 
 ## 8.2 What Is Not Allowed
 
-- Accessing systems, files, or data without authorisation, even if a
-  Google Dork reveals them.
+- Accessing systems, files, or data without authorisation, even if a Google Dork reveals them.
+- Downloading, storing, or distributing private data found through Google Dorks.
+- Using dorks to identify targets for phishing, harassment, blackmail, or any form of exploitation.
+- Ignoring "Authorised Users Only" or "Restricted Access" warnings on any login page or system.
+- Running security tests on systems you do not own without explicit written authorisation.
+- Accessing out-of-scope domains during bug bounty research. Read the programme scope carefully.
+- Publicly disclosing a vulnerability before giving the affected organisation reasonable time to fix it.
+- Sharing specific dork queries designed to find vulnerable systems belonging to others.
 
-- Downloading, storing, or distributing private data found through
-  Google Dorks.
-
-- Using dorks to identify targets for phishing, harassment, blackmail,
-  or any form of exploitation.
-
-- Ignoring \"Authorised Users Only\" or \"Restricted Access\" warnings
-  on any login page or system.
-
-- Running security tests on systems you do not own without explicit
-  written authorisation.
-
-- Accessing out-of-scope domains during bug bounty research. Read the
-  programme scope carefully.
-
-- Publicly disclosing a vulnerability before giving the affected
-  organisation reasonable time to fix it.
-
-- Sharing specific dork queries designed to find vulnerable systems
-  belonging to others.
-
-> **IMPORTANT:** THE CRITICAL DISTINCTION: There is a clear legal and
-> ethical boundary between finding information that is publicly indexed
-> (legal) and accessing, using, or exploiting that information without
-> permission (potentially illegal). A misconfigured server that exposes
-> a database backup file is a security failure by the site owner. That
-> does not mean you have permission to open, download, or read the data
-> inside. Finding and reporting is ethical. Accessing and using is not.
+<div data-callout="important">
+<strong>The Critical Distinction:</strong> There is a clear legal and ethical boundary between <em>finding</em> information that is publicly indexed (legal) and <em>accessing, using, or exploiting</em> that information without permission (potentially illegal). A misconfigured server that exposes a database backup file is a security failure by the site owner. That does not mean you have permission to open, download, or read the data inside. <strong>Finding and reporting is ethical. Accessing and using is not.</strong>
+</div>
 
 ## 8.3 The Responsible Disclosure Process
 
-If your Google Dork research uncovers a genuine security vulnerability
-on a site you did not intend to audit and do not have authorisation to
-test, responsible disclosure is the correct and professional path
-forward.
+If your Google Dork research uncovers a genuine security vulnerability on a site you did not intend to audit and do not have authorisation to test, responsible disclosure is the correct and professional path forward.
 
-6.  **Step 1: Stop immediately.** Do not access, copy, exploit, or probe
-    further. Stop exactly at discovery.
+1. **Stop immediately.** Do not access, copy, exploit, or probe further. Stop exactly at discovery.
+2. **Document the finding.** Record the dork query used, the URL returned, and a clear, factual description of what was exposed. Take a screenshot if appropriate, stored securely.
+3. **Find the right contact.** Look for a `security.txt` file at `/security.txt` or `/.well-known/security.txt` on the affected domain. Check for a bug bounty programme page. Look for a security contact in the site's privacy policy or footer.
+4. **Report clearly and professionally.** Describe what you found, how you found it, and the potential impact. Do not demand payment, make threats, or set ultimatums. Be factual and helpful.
+5. **Allow a reasonable remediation window.** Standard practice is 30 to 90 days before any public disclosure. The more severe the vulnerability, the more urgency is justified in following up.
+6. **If no response, consider escalation.** If the organisation does not respond after multiple attempts, you may report to a national CERT (Computer Emergency Response Team) or a third-party coordination organisation such as CERT/CC.
 
-7.  **Step 2: Document the finding.** Record the dork query used, the
-    URL returned, and a clear, factual description of what was exposed.
-    Take a screenshot if appropriate, stored securely.
-
-8.  **Step 3: Find the right contact.** Look for a security.txt file at
-    /security.txt or /.well-known/security.txt on the affected domain.
-    Check for a bug bounty programme page. Look for a security contact
-    in the site\'s privacy policy or footer.
-
-9.  **Step 4: Report clearly and professionally.** Describe what you
-    found, how you found it, and the potential impact. Do not demand
-    payment, make threats, or set ultimatums. Be factual and helpful.
-
-10. **Step 5: Allow a reasonable remediation window.** Standard practice
-    is 30 to 90 days before any public disclosure. The more severe the
-    vulnerability, the more urgency is justified in following up.
-
-11. **Step 6: If no response, consider escalation.** If the organisation
-    does not respond after multiple attempts, you may report to a
-    national CERT (Computer Emergency Response Team) or a third-party
-    coordination organisation such as CERT/CC.
-
-> **TIP:** The security.txt standard (securitytxt.org) is a proposed
-> standard that allows organisations
->
-> to define how they want security researchers to contact them. Check
-> for it first at
->
-> https://yourtarget.com/security.txt and
-> https://yourtarget.com/.well-known/security.txt
+<div data-callout="tip">
+<strong>Tip:</strong> The <code>security.txt</code> standard (<a href="https://securitytxt.org">securitytxt.org</a>) is a proposed standard that allows organisations to define how they want security researchers to contact them. Check for it first at:<br/>
+<code>https://yourtarget.com/security.txt</code><br/>
+<code>https://yourtarget.com/.well-known/security.txt</code>
+</div>
 
 ## 8.4 Legal Context by Jurisdiction
 
@@ -5009,99 +4696,41 @@ Laws governing computer access and data privacy vary significantly by
 country. A general awareness of the legal landscape is important for any
 researcher working in this field.
 
----
+| Jurisdiction | Relevant Legal Framework |
+|---|---|
+| **United States** | Computer Fraud and Abuse Act (CFAA): broadly prohibits unauthorised access to computers. Even well-intentioned research without explicit permission can create CFAA exposure. |
+| **European Union** | General Data Protection Regulation (GDPR): imposes obligations on anyone handling personal data. Incidental access to personal data through research may trigger GDPR obligations. |
+| **United Kingdom** | Computer Misuse Act 1990: criminalises unauthorised access to computer systems. Penalties include fines and imprisonment. |
+| **Bangladesh** | Digital Security Act 2018 and ICT Act: contain provisions against unauthorised computer access and cybercrime. Research without authorisation carries legal risk. |
+| **General Principle** | In virtually every jurisdiction: explicit written authorisation from the system owner is the clearest path to lawful security research. When in doubt, obtain written permission first. |
 
-**Jurisdiction** **Relevant Legal Framework**
-
----
-
-United States Computer Fraud and Abuse Act (CFAA): broadly prohibits
-unauthorised access to computers. Even well-intentioned
-research without explicit permission can create CFAA
-exposure.
-
-European Union General Data Protection Regulation (GDPR): imposes
-obligations on anyone handling personal data.
-Incidental access to personal data through research may
-trigger GDPR obligations.
-
-United Kingdom Computer Misuse Act 1990: criminalises unauthorised
-access to computer systems. Penalties include fines and
-imprisonment.
-
-Bangladesh Digital Security Act 2018 and ICT Act: contain
-provisions against unauthorised computer access and
-cybercrime. Research without authorisation carries
-legal risk.
-
-General Principle In virtually every jurisdiction: explicit written
-authorisation from the system owner is the clearest
-path to lawful security research. When in doubt, obtain
-written permission first.
-
----
-
-> **IMPORTANT:** PRACTICAL RULE: When in doubt, do not proceed. The
-> downside of being overly cautious is that you miss a research finding.
-> The downside of proceeding without authorisation is potential criminal
-> liability and reputational damage. These are not equivalent risks.
+<div data-callout="important">
+<strong>Practical Rule:</strong> When in doubt, do not proceed. The downside of being overly cautious is that you miss a research finding. The downside of proceeding without authorisation is potential criminal liability and reputational damage. <strong>These are not equivalent risks.</strong>
+</div>
 
 ## 8.5 The Researcher\'s Code
 
-The most respected practitioners in the security and OSINT communities
-hold themselves to a simple, consistent code of conduct. These
-principles are not externally imposed rules. They are the professional
-standards that define the field.
+The most respected practitioners in the security and OSINT communities hold themselves to a simple, consistent code of conduct. These principles are not externally imposed rules. They are the professional standards that define the field.
 
----
-
-**Principle** **What It Means in Practice**
-
----
-
-Permission Always confirm explicit written authorisation before
-first testing any system that is not your own.
-
-Document Keep clear, timestamped records of your methodology,
-everything queries used, URLs found, and findings.
-
-Report Disclose findings to those who can fix them, not to
-responsibly the public first. Give organisations a fair window
-to respond.
-
-Do no harm Research should improve security. Stop at discovery.
-Never exploit, modify, or exfiltrate data.
-
-Respect privacy Publicly available does not mean ethically
-appropriate to republish, redistribute, or act upon.
-
-Credit others Acknowledge the tools, researchers, and prior work
-that made your research possible.
-
-Stay current Laws and tools evolve. Stay informed about legal
-developments in your jurisdiction and the OSINT
-community.
-
----
+| Principle | What It Means in Practice |
+|---|---|
+| **Permission** | Always confirm explicit written authorisation before testing any system that is not your own. |
+| **Document everything** | Keep clear, timestamped records of your methodology, queries used, URLs found, and findings. |
+| **Report responsibly** | Disclose findings to those who can fix them, not to the public first. Give organisations a fair window to respond. |
+| **Do no harm** | Research should improve security. Stop at discovery. Never exploit, modify, or exfiltrate data. |
+| **Respect privacy** | Publicly available does not mean ethically appropriate to republish, redistribute, or act upon. |
+| **Credit others** | Acknowledge the tools, researchers, and prior work that made your research possible. |
+| **Stay current** | Laws and tools evolve. Stay informed about legal developments in your jurisdiction and the OSINT community. |
 
 **⭐ Key Takeaways**
 
-- **✓** Finding publicly indexed information is legal. Accessing systems
-  or data without authorisation is not.
+- **✓** Finding publicly indexed information is legal. Accessing systems or data without authorisation is not.
+- **✓** The critical distinction: finding a misconfigured file is not permission to open, read, or download it.
+- **✓** Follow the six-step responsible disclosure process whenever you find a vulnerability in a system you do not own.
+- **✓** Laws vary by jurisdiction, but explicit written authorisation is the clearest path to lawful research everywhere.
+- **✓** The researcher's code: permission first, document everything, report responsibly, do no harm.
 
-- **✓** The critical distinction: finding a misconfigured file is not
-  permission to open, read, or download it.
 
-- **✓** Follow the six-step responsible disclosure process whenever you
-  find a vulnerability in a system you do not own.
-
-- **✓** Laws vary by jurisdiction, but explicit written authorisation is
-  the clearest path to lawful research everywhere.
-
-- **✓** The researcher\'s code: permission first, document everything,
-  report responsibly, do no harm.
-
-\*\*\
 \
 APPENDIX A\*\*
 
@@ -5109,685 +4738,319 @@ APPENDIX A\*\*
 
 ## All Operators in One Place
 
----
-
-**Operator** **Function** **Quick Example**
-
----
-
-site: Restrict to a domain or TLD site:wikipedia.org AI
-
-intitle: Keyword must be in page title intitle:\"login\"
-inurl:admin
-
-allintitle: All words must be in title allintitle:python tutorial
-2024
-
-inurl: Keyword must be in URL inurl:careers \"data
-scientist\"
-
-intext: Keyword must be in body text intext:\"API key\"
-site:github.com
-
-filetype: Filter by document format filetype:pdf \"annual
-report\"
-
-ext: Filter by file extension ext:env site:yourdomain.com
-
-cache: View cached copy (unreliable; cache:example.com
-use Wayback)
-
-related: Find similar websites related:stackoverflow.com
-
-info: Get Google\'s info about a info:github.com
-domain
-
-inanchor: Phrase in backlink anchor text inanchor:\"learn more\"
-
-allinanchor: All words in backlink anchor allinanchor:best python
-text tutorial
-
-OR or \| Either term is acceptable Python OR Java tutorial
-
-AND Both terms required (default) ML AND healthcare
-
-\- Exclude a term from results Jaguar -car
-
-\" \" Exact phrase match \"machine learning
-tutorial\"
-
-\* Wildcard for any word \"best \* for beginners\"
-
-.. Numeric range laptop \$500..\$1000
-
-before: Content before a publication news before:2023-01-01
-date
-
-after: Content after a publication article after:2024-06-01
-date
-
-location: Filter by geography location:Dhaka startup
-(news/local)
-
-AROUND(X) Two terms within X words of Apple AROUND(3) innovation
-each other
-
----
+| Operator | Function | Quick Example |
+|---|---|---|
+| `site:` | Restrict to a domain or TLD | `site:wikipedia.org AI` |
+| `intitle:` | Keyword must be in page title | `intitle:"login" inurl:admin` |
+| `allintitle:` | All words must be in title | `allintitle:python tutorial 2024` |
+| `inurl:` | Keyword must be in URL | `inurl:careers "data scientist"` |
+| `intext:` | Keyword must be in body text | `intext:"API key" site:github.com` |
+| `filetype:` | Filter by document format | `filetype:pdf "annual report"` |
+| `ext:` | Filter by file extension | `ext:env site:yourdomain.com` |
+| `cache:` | View cached copy (unreliable; use Wayback) | `cache:example.com` |
+| `related:` | Find similar websites | `related:stackoverflow.com` |
+| `info:` | Get Google's info about a domain | `info:github.com` |
+| `inanchor:` | Phrase in backlink anchor text | `inanchor:"learn more"` |
+| `allinanchor:` | All words in backlink anchor text | `allinanchor:best python tutorial` |
+| `OR` or <code>&#124;</code> | Either term is acceptable | `Python OR Java tutorial` |
+| `AND` | Both terms required (default) | `ML AND healthcare` |
+| `-` | Exclude a term from results | `Jaguar -car` |
+| `""` | Exact phrase match | `"machine learning tutorial"` |
+| `*` | Wildcard for any word | `"best * for beginners"` |
+| `..` | Numeric range | `laptop $500..$1000` |
+| `before:` | Content before a publication date | `news before:2023-01-01` |
+| `after:` | Content after a publication date | `article after:2024-06-01` |
+| `location:` | Filter by geography (news/local) | `location:Dhaka startup` |
+| `AROUND(X)` | Two terms within X words of each other | `Apple AROUND(3) innovation` |
 
 ## Power Query Templates
 
 _Replace bracketed placeholders with your own values._
 
----
-
-**Research **Template Query**
-Goal**
-
----
-
-Academic PDFs site:\[university.edu\] filetype:pdf \"\[topic\]\"
-from a after:YYYY-01-01
-university
-
-Audit own site site:yourdomain.com (filetype:env OR ext:sql OR
-for exposure intitle:\"index of\" OR ext:bak)
-
-Authoritative \"\[exact topic\]\" site:.edu OR site:.gov
-research on a filetype:pdf after:YYYY-01-01
-topic
-
-Remote job intitle:\"\[job title\]\" inurl:careers \"remote\"
-listings site:\*.com -internship
-
-Competitor site:competitor.com inurl:blog \"\[topic\]\"
-content analysis -inurl:author after:YYYY-01-01
-
-Open datasets filetype:csv OR filetype:xlsx \"\[dataset name\]\"
-site:data.gov
-
-Presentation filetype:pptx \"\[topic\]\" site:\[source.com\]
-slides after:YYYY-01-01
-
-Bug bounty recon site:target.com (inurl:admin OR inurl:api OR ext:env
-OR intitle:\"index of\")
-
-Bangladesh site:gov.bd OR site:bbs.gov.bd filetype:pdf
-government data \"\[topic\]\" after:YYYY-01-01
-
----
+| Research Goal | Template Query |
+|---|---|
+| Academic PDFs from a university | `site:[university.edu] filetype:pdf "[topic]" after:YYYY-01-01` |
+| Audit own site for exposure | `site:yourdomain.com (filetype:env OR ext:sql OR intitle:"index of" OR ext:bak)` |
+| Authoritative research on a topic | `"[exact topic]" site:.edu OR site:.gov filetype:pdf after:YYYY-01-01` |
+| Remote job listings | `intitle:"[job title]" inurl:careers "remote" site:*.com -internship` |
+| Competitor content analysis | `site:competitor.com inurl:blog "[topic]" -inurl:author after:YYYY-01-01` |
+| Open datasets | `filetype:csv OR filetype:xlsx "[dataset name]" site:data.gov` |
+| Presentation slides | `filetype:pptx "[topic]" site:[source.com] after:YYYY-01-01` |
+| Bug bounty recon | `site:target.com (inurl:admin OR inurl:api OR ext:env OR intitle:"index of")` |
+| Bangladesh government data | `site:gov.bd OR site:bbs.gov.bd filetype:pdf "[topic]" after:YYYY-01-01` |
 
 ## Security Audit Quick Reference
 
 _Run all of these with site:yourdomain.com. Zero results is the target
 for every row._
 
----
+| Audit Query Suffix | Risk Level | Fix If Found |
+|---|---|---|
+| `ext:env` | **CRITICAL** | Remove file. Rotate ALL credentials. |
+| `ext:sql` | **CRITICAL** | Remove file. Assess data exposure. |
+| `inurl:/.git` | **CRITICAL** | Block access at server. Rotate secrets. |
+| `filetype:log` | **HIGH** | Remove file. Block file type at server. |
+| `intitle:"index of"` | **HIGH** | Disable directory listings. |
+| `inurl:admin` | **HIGH** | Add noindex. Restrict by IP. Enable MFA. |
+| `filetype:cfg` OR `ext:bak` | **HIGH** | Remove files from web root. |
+| `inurl:backup` | **MEDIUM** | Move backups outside web root. |
+| `filetype:pdf "confidential"` | **MEDIUM** | Review and remove sensitive PDFs. |
 
-**Audit Query **Risk Level\*\* **Fix If Found**
-Suffix\*\*
+## Appendix B: Glossary of Key Terms
 
----
+| Term | Definition |
+|---|---|
+| **Anchor Text** | The visible, clickable text in a hyperlink. If a link says "click here", that phrase is its anchor text. |
+| **Attack Surface** | The total set of points where an unauthorised user can attempt to enter data into or extract data from a system. |
+| **Boolean Operator** | A logical keyword (AND, OR, NOT) used to define relationships between search terms. Derived from Boolean algebra. |
+| **Bug Bounty** | A programme offered by organisations that rewards security researchers for finding and responsibly reporting vulnerabilities. |
+| **Cache** | A stored copy of a web page saved by a search engine when its crawler last visited the page. |
+| **CERT** | Computer Emergency Response Team. Organisations that handle security incidents and coordinate responsible disclosure. |
+| **CFAA** | Computer Fraud and Abuse Act. The primary US federal law governing unauthorised computer access and cybercrime. |
+| **CSRF** | Cross-Site Request Forgery. A web attack that tricks a user's browser into performing unintended actions on a trusted site. |
+| **CVE** | Common Vulnerabilities and Exposures. A publicly maintained database of known security vulnerabilities at cve.mitre.org. |
+| **Directory Listing** | A server feature that displays folder contents when no index file is present. Dangerous when publicly accessible. |
+| **Dork** | A clever, unconventional search query using special operators to find highly specific information that regular searches miss. |
+| **GHDB** | Google Hacking Database. A searchable collection of Google Dork queries maintained at exploit-db.com/google-hacking-database. |
+| **Google Dorking** | The practice of using Google's advanced search operators to find specific, filtered information with precision. |
+| **Googlebot** | Google's automated web crawler that visits web pages, downloads content, and sends it to Google's servers for indexing. |
+| **IAM** | Identity and Access Management. A framework of policies and technologies for managing digital identities and access permissions. |
+| **Index** | A giant database maintained by search engines, containing stored copies of web page content, metadata, and URLs. |
+| **IoT** | Internet of Things. Physical devices (cameras, routers, sensors) connected to the internet, often with web management interfaces. |
+| **MFA / 2FA** | Multi-Factor / Two-Factor Authentication. A security mechanism requiring two or more verification factors to log in. |
+| **noindex** | A directive in a page's HTML meta tags or HTTP headers instructing crawlers not to include that page in search results. |
+| **OSINT** | Open-Source Intelligence. The collection and analysis of information gathered exclusively from publicly available sources. |
+| **Penetration Test** | An authorised, simulated cyberattack on a system performed to evaluate its security posture. |
+| **Reconnaissance** | The first phase of a security test or OSINT investigation: gathering public information about a target system or organisation. |
+| **Responsible Disclosure** | Reporting security vulnerabilities privately to the affected organisation before any public disclosure. |
+| **robots.txt** | A text file at a website's root that instructs crawlers which pages not to index. Does not block direct URL access. |
+| **security.txt** | A proposed standard file (at /security.txt or /.well-known/security.txt) that defines how to report security issues to an organisation. |
+| **SQL Injection** | A vulnerability allowing an attacker to interfere with the queries an application sends to its database. |
+| **TLD** | Top-Level Domain. The final segment of a domain name (.com, .org, .bd, .gov, .edu). Used with site: to search entire domain categories. |
+| **WAF** | Web Application Firewall. Monitors, filters, and blocks HTTP traffic to a web application based on security rules. |
+| **Wayback Machine** | A digital archive at web.archive.org, maintained by the Internet Archive. Stores web page snapshots going back to 1996. |
 
-ext:env CRITICAL Remove file. Rotate ALL
-credentials.
-
-ext:sql CRITICAL Remove file. Assess
-data exposure.
-
-inurl:/.git CRITICAL Block access at server.
-Rotate secrets.
-
-filetype:log HIGH Remove file. Block file
-type at server.
-
-intitle:\"index of\" HIGH Disable directory
-listings.
-
-inurl:admin HIGH Add noindex. Restrict
-by IP. Enable MFA.
-
-filetype:cfg OR HIGH Remove files from web
-ext:bak root.
-
-inurl:backup MEDIUM Move backups outside
-web root.
-
-filetype:pdf MEDIUM Review and remove
-\"confidential\" sensitive PDFs.
-
----
-
-\*\*\
 \
-APPENDIX B\*\*
+## Appendix C: Practice Exercise Answer Key
 
-**Glossary of Key Terms**
+The following answers correspond to the ten practice exercises in Chapter 4. Rather than providing exact expected URLs (which change as Google's index updates), each answer describes what types of results you should expect to find, what to do if you get too many or too few results, and how you could improve the query further.
 
----
+### Exercise 1: Study Materials from MIT
 
-**Term** **Definition**
+```text
+site:mit.edu filetype:pdf "linear algebra"
+```
 
----
+**Expected findings:** Lecture note PDFs from MIT OpenCourseWare (ocw.mit.edu), problem set PDFs, textbook excerpts, and course syllabi. You should see results from courses like 18.06 (Linear Algebra) with Gilbert Strang's materials frequently appearing.
 
-Anchor Text The visible, clickable text in a hyperlink. If a link
-says \"click here\", that phrase is its anchor text.
+- **If too many results:** Add `after:2020-01-01` to filter for more recent materials, or add `intitle:"lecture notes"` to target only lecture PDFs.
+- **If too few results:** Remove the `filetype:` restriction or try `filetype:pdf "linear algebra" site:ocw.mit.edu` specifically.
+- **Next level:** Try `site:.edu filetype:pdf "linear algebra" "Gilbert Strang"` to find materials referencing the most famous linear algebra textbook author.
 
-Attack Surface The total set of points where an unauthorised user can
-attempt to enter data into or extract data from a
-system.
+### Exercise 2: Content Marketing Without Tutorials
 
-Boolean Operator A logical keyword (AND, OR, NOT) used to define
-relationships between search terms. Derived from
-Boolean algebra.
+```text
+inurl:blog site:hubspot.com "content marketing" -tutorial -beginner
+```
 
-Bug Bounty A programme offered by organisations that rewards
-security researchers for finding and responsibly
-reporting vulnerabilities.
+**Expected findings:** HubSpot blog posts that discuss content marketing strategy, industry trends, case studies, or advanced techniques, with tutorial-style introductory posts filtered out.
 
-Cache A stored copy of a web page saved by a search engine
-when its crawler last visited the page.
+- **If too many results:** Add `after:2023-01-01` to restrict to recent content, or add `intitle:"content marketing"` to target posts where it is the main subject.
+- **If too few results:** Remove one exclusion at a time. Start by removing `-beginner`, then try removing `-tutorial`.
+- **Next level:** Try the same query against a competitor: `inurl:blog site:neilpatel.com "content marketing" -tutorial`
 
-CERT Computer Emergency Response Team. Organisations that
-handle security incidents and coordinate responsible
-disclosure.
+### Exercise 3: Government Reports on Renewable Energy
 
-CFAA Computer Fraud and Abuse Act. The primary US federal
-law governing unauthorised computer access and
-cybercrime.
+```text
+site:.gov "renewable energy" filetype:pdf after:2022-01-01
+```
 
-CSRF Cross-Site Request Forgery. A web attack that tricks a
-user\'s browser into performing unintended actions on
-a trusted site.
+**Expected findings:** US government PDFs from agencies such as the Department of Energy (energy.gov), EPA (epa.gov), and NREL (nrel.gov). You should find policy documents, research reports, and statistics.
 
-CVE Common Vulnerabilities and Exposures. A publicly
-maintained database of known security vulnerabilities
-at cve.mitre.org.
+- **Bangladesh version:** Try `site:gov.bd "renewable energy" OR "solar energy" filetype:pdf` to find Bangladeshi government documents on the topic. Results may be sparse; try removing `filetype:pdf` if so.
+- **Next level:** Combine with `site:.edu OR site:.gov` to include academic sources alongside government reports.
 
-Directory A server feature that displays folder contents when no
-Listing index file is present. Dangerous when publicly
-accessible.
+### Exercise 4: Machine Learning Projects on GitHub
 
-Dork A clever, unconventional search query using special
-operators to find highly specific information that
-regular searches miss.
+```text
+site:github.com "machine learning" (Python OR R) -tutorial -fork
+```
 
-GHDB Google Hacking Database. A searchable collection of
-Google Dork queries maintained at
-exploit-db.com/google-hacking-database.
+**Expected findings:** GitHub repository pages containing machine learning projects implemented in Python or R, excluding tutorials and forks of other projects. You should see original project repositories.
 
-Google Dorking The practice of using Google\'s advanced search
-operators to find specific, filtered information with
-precision.
+- **If too many results:** Add `filetype:py` to target Python source files directly, or add `-beginner -example` to further filter.
+- **If too few results:** Remove `-fork` first (forks are still valid projects), then try removing `-tutorial`.
+- **Next level:** Add `after:2023-01-01` and `inurl:deep-learning` to find recent deep learning repositories specifically.
 
-Googlebot Google\'s automated web crawler that visits web pages,
-downloads content, and sends it to Google\'s servers
-for indexing.
+### Exercise 5: Auditing Your Own Website
 
-IAM Identity and Access Management. A framework of
-policies and technologies for managing digital
-identities and access permissions.
+```text
+site:yourdomain.com intitle:admin
+site:yourdomain.com filetype:pdf
+site:yourdomain.com inurl:login
+```
 
-Index A giant database maintained by search engines,
-containing stored copies of web page content,
-metadata, and URLs.
+**Expected findings:** The correct answer depends entirely on your own domain. The goal is zero results for admin and login queries, and only expected PDF files in the `filetype:pdf` results. Any unexpected result is a real security finding.
 
-IoT Internet of Things. Physical devices (cameras,
-routers, sensors) connected to the internet, often
-with web management interfaces.
+- **If you find admin pages:** Add a `noindex` meta tag to those pages and restrict access by IP. Submit a removal request in Google Search Console.
+- **If you find unexpected PDFs:** Open each one. If it contains sensitive information (internal documents, pricing, personnel data), remove it from the server and request removal from Search Console.
 
-MFA / 2FA Multi-Factor / Two-Factor Authentication. A security
-mechanism requiring two or more verification factors
-to log in.
+### Exercise 6: Bangladesh Research Deep Dive
 
-noindex A directive in a page\'s HTML meta tags or HTTP
-headers instructing crawlers not to include that page
-in search results.
+```text
+site:bb.org.bd OR site:bbs.gov.bd filetype:pdf "economic" after:2023-01-01
+```
 
-OSINT Open-Source Intelligence. The collection and analysis
-of information gathered exclusively from publicly
-available sources.
+**Expected findings:** Economic reports and statistics from Bangladesh Bank (bb.org.bd) and the Bangladesh Bureau of Statistics (bbs.gov.bd). You should find monetary policy statements, inflation reports, GDP data, and trade statistics.
 
-Penetration Test An authorised, simulated cyberattack on a system
-performed to evaluate its security posture.
+- **Next level:** Try `site:finance.gov.bd filetype:pdf "budget"` to find official budget documents from the Ministry of Finance.
 
-Reconnaissance The first phase of a security test or OSINT
-investigation: gathering public information about a
-target system or organisation.
+### Exercise 7: Finding Competitors to a Bangladeshi Service
 
-Responsible Reporting security vulnerabilities privately to the
-Disclosure affected organisation before any public disclosure.
+```text
+related:bdjobs.com
+```
 
-robots.txt A text file at a website\'s root that instructs
-crawlers which pages not to index. Does not block
-direct URL access.
+**Expected findings:** Google should identify similar job portal websites operating in Bangladesh, such as chakri.com, jobbd.com, and potentially LinkedIn's Bangladesh presence. If `related:` returns limited results, this is normal as its reliability has decreased over time.
 
-security.txt A proposed standard file (at /security.txt or
-/.well-known/security.txt) that defines how to report
-security issues to an organisation.
+- **Alternative approach:** If `related:` returns nothing useful, try `site:bdjobs.com -inurl:www` to map their subdomains and content structure instead.
 
-SQL Injection A vulnerability allowing an attacker to interfere with
-the queries an application sends to its database.
+### Exercise 8: Product Reviews in a Price Range
 
-TLD Top-Level Domain. The final segment of a domain name
-(.com, .org, .bd, .gov, .edu). Used with site: to
-search entire domain categories.
+```text
+"laptop review" 2023..2025 $500..$1000 -sponsored -ad
+```
 
-WAF Web Application Firewall. Monitors, filters, and
-blocks HTTP traffic to a web application based on
-security rules.
+**Expected findings:** Laptop review articles and pages from tech publications that mention price ranges between $500 and $1,000, published between 2023 and 2025. The exclusions should help filter out obviously sponsored or advertisement content.
 
-Wayback Machine A digital archive at web.archive.org, maintained by
-the Internet Archive. Stores web page snapshots going
-back to 1996.
+- **If too many results:** Add `site:pcmag.com OR site:rtings.com OR site:notebookcheck.net` to restrict to trusted review sources.
+- **Next level:** Add `inurl:review` to ensure you are getting actual review pages rather than mention pages.
 
----
+### Exercise 9: Song Lyrics with a Wildcard
 
-\*\*\
-APPENDIX C\*\*
+```text
+"I will always * you" lyrics
+```
 
-**Practice Exercise Answer Key**
+**Expected findings:** The wildcard should resolve to "love" in most results, confirming this is the Whitney Houston song "I Will Always Love You" (originally written by Dolly Parton). You should also see some variation results where the wildcard matches other words.
 
-The following answers correspond to the ten practice exercises in
-Chapter 4. Rather than providing exact expected URLs (which change as
-Google\'s index updates), each answer describes what types of results
-you should expect to find, what to do if you get too many or too few
-results, and how you could improve the query further.
+- **What this demonstrates:** The wildcard `*` fills in any single word or phrase. This is especially useful when you partially remember a lyric, quote, or title but cannot recall one specific word.
 
-## Exercise 1: Study Materials from MIT
+### Exercise 10: The All-in-One Query
 
-> site:mit.edu filetype:pdf \"linear algebra\"
+```text
+site:github.com "machine learning" (Python OR R) filetype:py -tutorial after:2023-01-01
+```
 
-Expected findings: Lecture note PDFs from MIT OpenCourseWare
-(ocw.mit.edu), problem set PDFs, textbook excerpts, and course syllabi.
-You should see results from courses like 18.06 (Linear Algebra) with
-Gilbert Strang\'s materials frequently appearing.
+**Expected findings:** This query combines six different dimensions simultaneously: domain (GitHub), content phrase (machine learning), language alternatives (Python or R), file format (Python source files), exclusion (`-tutorial`), and date window (2023 onward). You should find relatively few but highly relevant results.
 
-**If too many results:** Add after:2020-01-01 to filter for more recent
-materials, or add intitle:\"lecture notes\" to target only lecture PDFs.
+- **What this demonstrates:** Each additional operator acts as a filter. The more operators you add, the fewer but more precisely targeted results you get. This is the core principle of compound query design.
+- **Next level:** Add `inurl:deep-learning OR inurl:nlp` to target repositories with specific topic tags in their URLs.
 
-**If too few results:** Remove the filetype: restriction or try
-filetype:pdf \"linear algebra\" site:ocw.mit.edu specifically.
+## Appendix D: Further Resources and Tools
 
-**Next level:** Try site:.edu filetype:pdf \"linear algebra\" \"Gilbert
-Strang\" to find materials referencing the most famous linear algebra
-textbook author.
+The following resources extend and complement what you have learned in this handbook. Each entry is verified and recommended based on its quality and relevance to Google Dorking, OSINT, and security research.
 
-## Exercise 2: Content Marketing Without Tutorials
+### Core Reference Resources
 
-> inurl:blog site:hubspot.com \"content marketing\" -tutorial -beginner
+| Resource | URL and Description |
+|---|---|
+| **Google Hacking Database (GHDB)** | `exploit-db.com/google-hacking-database` -- The definitive, community-maintained database of thousands of verified Google Dork queries, categorised by exposure type. |
+| **Google Search Help** | `support.google.com/websearch/answer/2466433` -- Google's official documentation of all supported search operators. |
+| **taksec Bug Bounty Dorks** | `taksec.github.io/google-dorks-bug-bounty/` -- A curated, searchable collection of dorks specifically for bug bounty reconnaissance. Enter a domain to generate tailored queries. |
+| **Wayback Machine** | `web.archive.org` -- The Internet Archive's Wayback Machine. Archive, retrieve, and compare historical snapshots of any public web page. |
+| **SecurityHeaders.io** | `securityheaders.com` -- Analyse the security headers of any website, including headers relevant to caching and indexing control (X-Robots-Tag, etc.). |
+| **security.txt Standard** | `securitytxt.org` -- The proposed standard for how organisations publish their security contact information and vulnerability disclosure policy. |
 
-Expected findings: HubSpot blog posts that discuss content marketing
-strategy, industry trends, case studies, or advanced techniques, with
-tutorial-style introductory posts filtered out.
+### OSINT Tools and Platforms
 
-**If too many results:** Add after:2023-01-01 to restrict to recent
-content, or add intitle:\"content marketing\" to target posts where it
-is the main subject.
+| Tool / Platform | URL and Purpose |
+|---|---|
+| **Shodan** | `shodan.io` -- A search engine for internet-connected devices. The OSINT complement to Google Dorking for discovering exposed IoT devices and services. |
+| **Censys** | `censys.io` -- Internet-wide scanning platform for discovering exposed hosts, certificates, and services. |
+| **theHarvester** | `github.com/laramies/theHarvester` -- Open-source tool for gathering emails, subdomains, and open ports from public sources including Google. |
+| **Maltego** | `maltego.com` -- Visual link analysis and data mining tool used extensively in professional OSINT investigations. |
+| **IntelTechniques** | `inteltechniques.com` -- Michael Bazzell's OSINT resource site with custom search tools, podcasts, and training. |
+| **OSINT Framework** | `osintframework.com` -- A comprehensive mind-map of OSINT tools and resources categorised by source type. |
 
-**If too few results:** Remove one exclusion at a time. Start by
-removing -beginner, then try removing -tutorial.
+### Security Audit and Defence Tools
 
-**Next level:** Try the same query against a competitor: inurl:blog
-site:neil patel.com \"content marketing\" -tutorial
+| Tool | URL and Purpose |
+|---|---|
+| **Google Search Console** | `search.google.com/search-console` -- Monitor what Google has indexed from your domain and submit URL removal requests. |
+| **Google Alerts** | `google.com/alerts` -- Set up email notifications for any Google search query. Essential for monitoring your digital footprint. |
+| **Have I Been Pwned** | `haveibeenpwned.com` -- Check whether your email address or domain has been exposed in a publicly known data breach. |
+| **SSL Labs** | `ssllabs.com/ssltest` -- Analyse the TLS/SSL configuration of any public web server. |
+| **robots.txt Validator** | `en.ryte.com/free-tools/robots-txt` -- Validate and test your robots.txt file for correct syntax and logic. |
+| **CVE Database** | `cve.mitre.org` -- The official database of publicly known cybersecurity vulnerabilities. Cross-reference with software versions on your stack. |
 
-## Exercise 3: Government Reports on Renewable Energy
+### Learning and Community Resources
 
-> site:.gov \"renewable energy\" filetype:pdf after:2022-01-01
+| Resource | URL and Description |
+|---|---|
+| **SANS Reading Room** | `sans.org/white-papers` -- Free whitepapers on security topics including OSINT, reconnaissance, and Google Dorking techniques. |
+| **HackerOne Hacktivity** | `hackerone.com/hacktivity` -- Publicly disclosed bug bounty reports. Reading these builds an intuition for what real vulnerabilities look like. |
+| **Bugcrowd University** | `bugcrowd.com/university` -- Free educational content on bug bounty hunting methodology, including reconnaissance techniques. |
+| **OWASP** | `owasp.org` -- The Open Worldwide Application Security Project. Definitive reference for web application vulnerabilities. |
+| **TryHackMe** | `tryhackme.com` -- Hands-on cybersecurity training platform with rooms specifically covering OSINT and Google Dorking. |
+| **Original Notebook** | `github.com/SagarBiswas-MultiHAT` -- The original Google Dorks beginner's notebook (v1.0.0) on which this handbook is based. |
 
-Expected findings: US government PDFs from agencies such as the
-Department of Energy (energy.gov), EPA (epa.gov), and NREL (nrel.gov).
-You should find policy documents, research reports, and statistics.
+## Appendix E: About the Author
 
-**Bangladesh version:** Try site:gov.bd \"renewable energy\" OR \"solar
-energy\" filetype:pdf to find Bangladeshi government documents on the
-topic. Results may be sparse; try removing filetype:pdf if so.
+<div data-callout="important">
+<strong>Sagar Biswas</strong><br/>
+<em>Student &nbsp;•&nbsp; Developer &nbsp;•&nbsp; Security Enthusiast &nbsp;•&nbsp; Researcher</em><br/><br/>
+🎓 &nbsp;Computer Science & Engineering — American International University Bangladesh (AIUB)<br/>
+🌐 &nbsp;<a href="https://github.com/SagarBiswas-MultiHAT">github.com/SagarBiswas-MultiHAT</a>
+</div>
 
-**Next level:** Combine with site:.edu OR site:.gov to include academic
-sources alongside government reports.
+Sagar Biswas is a Computer Science and Engineering (CSE) student at American International University Bangladesh (AIUB) with a deep interest in cybersecurity, OSINT research, software architecture, and full-stack development.
 
-## Exercise 4: Machine Learning Projects on GitHub
+This handbook began as a personal study notebook on Google Dorking techniques, written to document and share the most practical aspects of advanced web searching with fellow students, researchers, and anyone curious about how information is found on the internet. The original notebook (*Google_Dorks-v1.0.0*) was published freely on GitHub to make these techniques accessible to everyone — particularly to students and researchers in Bangladesh who may not have access to expensive commercial training.
 
-> site:github.com \"machine learning\" (Python OR R) -tutorial -fork
+Beyond this handbook, the author is engaged in building production-grade, AI-powered software platforms for the Bangladesh market, combining local payment infrastructure, regional language support, and machine learning features. The intersection of practical software development and security research informs the perspective throughout this handbook: **security is not an afterthought; it is a foundational engineering discipline.**
 
-Expected findings: GitHub repository pages containing machine learning
-projects implemented in Python or R, excluding tutorials and forks of
-other projects. You should see original project repositories.
+### A Note on Why This Handbook Was Written
 
-**If too many results:** Add filetype:py to target Python source files
-directly, or add -beginner -example to further filter.
+Most resources on Google Dorking fall into one of two categories: they are either extremely brief one-page cheat sheets with no context, or they are long, technical penetration testing guides that assume significant prior security knowledge. There was a clear gap for something in between: a comprehensive, beginner-friendly, professionally written guide that teaches not just the operators but the *thinking* behind them.
 
-**If too few results:** Remove -fork first (forks are still valid
-projects), then try removing -tutorial.
-
-**Next level:** Add after:2023-01-01 and inurl:deep-learning to find
-recent deep learning repositories specifically.
-
-## Exercise 5: Auditing Your Own Website
-
-> site:yourdomain.com intitle:admin
->
-> site:yourdomain.com filetype:pdf
->
-> site:yourdomain.com inurl:login
-
-Expected findings: The correct answer depends entirely on your own
-domain. The goal is zero results for admin and login queries, and only
-expected PDF files in the filetype:pdf results. Any unexpected result is
-a real security finding.
-
-**If you find admin pages:** Add a noindex meta tag to those pages and
-restrict access by IP. Submit a removal request in Google Search
-Console.
-
-**If you find unexpected PDFs:** Open each one. If it contains sensitive
-information (internal documents, pricing, personnel data), remove it
-from the server and request removal from Search Console.
-
-## Exercise 6: Bangladesh Research Deep Dive
-
-> site:bb.org.bd OR site:bbs.gov.bd filetype:pdf \"economic\"
-> after:2023-01-01
-
-Expected findings: Economic reports and statistics from Bangladesh Bank
-(bb.org.bd) and the Bangladesh Bureau of Statistics (bbs.gov.bd). You
-should find monetary policy statements, inflation reports, GDP data, and
-trade statistics.
-
-**Next level:** Try site:finance.gov.bd filetype:pdf \"budget\" to find
-official budget documents from the Ministry of Finance.
-
-## Exercise 7: Finding Competitors to a Bangladeshi Service
-
-> related:bdjobs.com
-
-Expected findings: Google should identify similar job portal websites
-operating in Bangladesh, such as chakri.com, jobbd.com, and potentially
-LinkedIn\'s Bangladesh presence. If related: returns limited results,
-this is normal as its reliability has decreased over time.
-
-**Alternative approach:** If related: returns nothing useful, try
-site:bdjobs.com -inurl:www to map their subdomains and content structure
-instead.
-
-## Exercise 8: Product Reviews in a Price Range
-
-> \"laptop review\" 2023..2025 \$500..\$1000 -sponsored -ad
-
-Expected findings: Laptop review articles and pages from tech
-publications that mention price ranges between \$500 and \$1,000,
-published between 2023 and 2025. The exclusions should help filter out
-obviously sponsored or advertisement content.
-
-**If too many results:** Add site:pcmag.com OR site:rtings.com OR
-site:notebookcheck.net to restrict to trusted review sources.
-
-**Next level:** Add inurl:review to ensure you are getting actual review
-pages rather than mention pages.
-
-## Exercise 9: Song Lyrics with a Wildcard
-
-> \"I will always \* you\" lyrics
-
-Expected findings: The wildcard should resolve to \"love\" in most
-results, confirming this is the Whitney Houston song \"I Will Always
-Love You\" (originally written by Dolly Parton). You should also see
-some variation results where the wildcard matches other words.
-
-**What this demonstrates:** The wildcard \* fills in any single word or
-phrase. This is especially useful when you partially remember a lyric,
-quote, or title but cannot recall one specific word.
-
-## Exercise 10: The All-in-One Query
-
-> site:github.com \"machine learning\" (Python OR R) filetype:py
-> -tutorial after:2023-01-01
-
-Expected findings: This query combines six different dimensions
-simultaneously: domain (GitHub), content phrase (machine learning),
-language alternatives (Python or R), file format (Python source files),
-exclusion (-tutorial), and date window (2023 onward). You should find
-relatively few but highly relevant results.
-
-**What this demonstrates:** Each additional operator acts as a filter.
-The more operators you add, the fewer but more precisely targeted
-results you get. This is the core principle of compound query design.
-
-**Next level:** Add inurl:deep-learning OR inurl:nlp to target
-repositories with specific topic tags in their URLs.
-
-\*\*\
-\
-APPENDIX D\*\*
-
-**Further Resources and Tools**
-
-The following resources extend and complement what you have learned in
-this handbook. Each entry is verified and recommended based on its
-quality and relevance to Google Dorking, OSINT, and security research.
-
-## Core Reference Resources
-
----
-
-**Resource** **URL and Description**
-
----
-
-Google Hacking Database exploit-db.com/google-hacking-database \-- The
-(GHDB) definitive, community-maintained database of
-thousands of verified Google Dork queries,
-categorised by exposure type.
-
-Google Search Help support.google.com/websearch/answer/2466433 \--
-Google\'s official documentation of all
-supported search operators.
-
-taksec Bug Bounty Dorks taksec.github.io/google-dorks-bug-bounty/ \-- A
-curated, searchable collection of dorks
-specifically for bug bounty reconnaissance.
-Enter a domain to generate tailored queries.
-
-Wayback Machine web.archive.org \-- The Internet Archive\'s
-Wayback Machine. Archive, retrieve, and compare
-historical snapshots of any public web page.
-
-SecurityHeaders.io securityheaders.com \-- Analyse the security
-headers of any website, including headers
-relevant to caching and indexing control
-(X-Robots-Tag, etc.).
-
-security.txt Standard securitytxt.org \-- The proposed standard for
-how organisations publish their security
-contact information and vulnerability
-disclosure policy.
-
----
-
-## OSINT Tools and Platforms
-
----
-
-**Tool / Platform** **URL and Purpose**
-
----
-
-Shodan shodan.io \-- A search engine for
-internet-connected devices. The OSINT
-complement to Google Dorking for discovering
-exposed IoT devices and services.
-
-Censys censys.io \-- Internet-wide scanning platform
-for discovering exposed hosts, certificates,
-and services.
-
-theHarvester github.com/laramies/theHarvester \--
-Open-source tool for gathering emails,
-subdomains, and open ports from public sources
-including Google.
-
-Maltego maltego.com \-- Visual link analysis and data
-mining tool used extensively in professional
-OSINT investigations.
-
-IntelTechniques inteltechniques.com \-- Michael Bazzell\'s
-OSINT resource site with custom search tools,
-podcasts, and training.
-
-OSINT Framework osintframework.com \-- A comprehensive mind-map
-of OSINT tools and resources categorised by
-source type.
-
----
-
-## Security Audit and Defence Tools
-
----
-
-**Tool** **URL and Purpose**
-
----
-
-Google Search Console search.google.com/search-console \-- Monitor
-what Google has indexed from your domain and
-submit URL removal requests.
-
-Google Alerts google.com/alerts \-- Set up email
-notifications for any Google search query.
-Essential for monitoring your digital
-footprint.
-
-Have I Been Pwned haveibeenpwned.com \-- Check whether your email
-address or domain has been exposed in a
-publicly known data breach.
-
-SSL Labs ssllabs.com/ssltest \-- Analyse the TLS/SSL
-configuration of any public web server.
-
-robots.txt Validator en.ryte.com/free-tools/robots-txt \-- Validate
-and test your robots.txt file for correct
-syntax and logic.
-
-CVE Database cve.mitre.org \-- The official database of
-publicly known cybersecurity vulnerabilities.
-Cross-reference with software versions on your
-stack.
-
----
-
-## Learning and Community Resources
-
----
-
-**Resource** **URL and Description**
-
----
-
-SANS Reading Room sans.org/white-papers \-- Free whitepapers on
-security topics including OSINT,
-reconnaissance, and Google Dorking techniques.
-
-HackerOne Hacktivity hackerone.com/hacktivity \-- Publicly
-disclosed bug bounty reports. Reading these
-builds an intuition for what real
-vulnerabilities look like.
-
-Bugcrowd University bugcrowd.com/university \-- Free educational
-content on bug bounty hunting methodology,
-including reconnaissance techniques.
-
-OWASP owasp.org \-- The Open Worldwide Application
-Security Project. Definitive reference for web
-application vulnerabilities.
-
-TryHackMe tryhackme.com \-- Hands-on cybersecurity
-training platform with rooms specifically
-covering OSINT and Google Dorking.
-
-Original Notebook github.com/SagarBiswas-MultiHAT \-- The
-original Google Dorks beginner\'s notebook
-(v1.0.0) on which this handbook is based.
-
----
-
-\*\*\
-\
-APPENDIX E\*\*
-
-**About the Author**
-
-+-------------------------------------------------------------+
-| **Sagar Biswas** |
-| |
-| _Student • Developer • Security Enthusiast • Researcher_ |
-| |
-| github.com/SagarBiswas-MultiHAT |
-+=============================================================+
-
-SagarBiswas is a Computer Science and Engineering (CSE) student at
-American International University Bangladesh (AIUB) based in Bangladesh
-with a deep interest in cybersecurity, OSINT research, software
-architecture, and full-stack development.
-
-This handbook began as a personal study notebook on Google Dorking
-techniques, written to document and share the most practical aspects of
-advanced web searching with fellow students, researchers, and anyone
-curious about how information is found on the internet. The original
-notebook (Google_Dorks-v1.0.0) was published freely on GitHub to make
-these techniques accessible to everyone, particularly to students and
-researchers in Bangladesh who may not have access to expensive
-commercial training.
-
-Beyond this handbook, the author is engaged in building
-production-grade, AI-powered software platforms for the Bangladesh
-market, combining local payment infrastructure, regional language
-support, and machine learning features. The intersection of practical
-software development and security research informs the perspective
-throughout this handbook: security is not an afterthought; it is a
-foundational engineering discipline.
-
-## A Note on Why This Handbook Was Written
-
-Most resources on Google Dorking fall into one of two categories: they
-are either extremely brief one-page cheat sheets with no context, or
-they are long, technical penetration testing guides that assume
-significant prior security knowledge. There was a clear gap for
-something in between: a comprehensive, beginner-friendly, professionally
-written guide that teaches not just the operators but the thinking
-behind them.
-
-If this handbook helps even one student find a scholarship deadline
-faster, one developer audit their own site before an attacker does, or
-one researcher locate a dataset that changes their analysis, then it has
-achieved its purpose.
+If this handbook helps even one student find a scholarship deadline faster, one developer audit their own site before an attacker does, or one researcher locate a dataset that changes their analysis — then it has achieved its purpose.
 
 Feedback, corrections, and contributions are welcome via GitHub.
 
-_\"The goal of security research is not to break things. It is to
-understand how things break, so that we can build them better.\"_
+<br/>
 
-_--- A guiding principle for every responsible practitioner in this
-field._
+<div data-callout="tip">
+<em>"The goal of security research is not to break things. It is to understand how things break, so that we can build them better."</em><br/>
+<br/>
+— A guiding principle for every responsible practitioner in this field.
+</div>
+
+<br/>
+
+<div align="center">
 
 **Happy Dorking!**
 
-_Permission First, Always. • Stay Ethical. • Stay Curious._
+*Permission First, Always &nbsp;•&nbsp; Stay Ethical &nbsp;•&nbsp; Stay Curious*
 
-+---------------------------------------------------------------------------------------------------------------+
-| **Original Notebook** |
-| |
-| <https://sagarbiswas-multihat.github.io/Cybersecurity-Notebooks/Google_Dorks_A_Beginners_Notebook-v1.0.0.pdf> |
-| |
-| **Bug Bounty Dork Collection** |
-| |
-| taksec.github.io/google-dorks-bug-bounty/ |
-| |
-| **Internet Archive / Wayback Machine** |
-| |
-| web.archive.org |
-+===============================================================================================================+
+</div>
 
-_This handbook is for educational use only._
+<br/>
+
+| Additional Links | |
+|---|---|
+| **Bug Bounty Dork Collection** | <a href="https://taksec.github.io/google-dorks-bug-bounty/">taksec.github.io/google-dorks-bug-bounty/</a> |
+| **Internet Archive / Wayback Machine** | <a href="https://web.archive.org">web.archive.org</a> |
+
+<br/>
+
+<div align="center">
+
+*This handbook is for educational use only.*
 
 **Never access systems or data without explicit authorisation.**
 
-© 2025 SagarBiswas-MultiHAT • Version 2.0
+© 2025 SagarBiswas-MultiHAT &nbsp;•&nbsp; Version 2.0
+
+</div>

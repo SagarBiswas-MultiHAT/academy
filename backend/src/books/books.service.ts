@@ -333,7 +333,7 @@ export class BooksService {
     // Dynamically compute chapter boundaries to handle markdown edits gracefully
     const chaptersOffsets: number[] = [];
     for (let i = 0; i < lines.length; i++) {
-      if (/^#\s+Chapter\s+\d+:|^APPENDIX\s+[A-E]\\\*\\\*/i.test(lines[i])) {
+      if (/^#\s+Chapter\s+\d+:|^APPENDIX\s+[A-E]\\\*\\\*|^##?\s+Appendix\s+[A-E]:/i.test(lines[i])) {
         chaptersOffsets.push(i);
       }
     }
@@ -399,12 +399,15 @@ export class BooksService {
     content = content.replace(new RegExp(`^\\*\\*${escapedTitle}\\*\\*\\s*\\n+`, 'im'), '');
 
     // ── Strip APPENDIX header artifacts ──
-    content = content.replace(/^\*\*\\?\n?\\?\n?APPENDIX [A-E]\\?\*\*\s*\n+/gm, '');
-    content = content.replace(/^APPENDIX [A-E]\\\*\*\s*\n+/gm, '');
-    content = content.replace(/^APPENDIX [A-E]\*\*\s*\n+/gm, '');
+    content = content.replace(/^APPENDIX\s+[A-E]\\\*\\\*\s*\n+/gm, '');
+    content = content.replace(/^APPENDIX\s+[A-E]\s*\n+/gm, '');
+    content = content.replace(/^APPENDIX\s+[A-E]\*\*\s*\n+/gm, '');
+    content = content.replace(/^##?\s+Appendix\s+[A-E]:[^\n]*\n+/igm, '');
     
     // Remove the bold title for Appendices
     content = content.replace(new RegExp(`^\\*\\*${escapedTitle}\\*\\*\\s*\\n+`, 'im'), '');
+
+    // ══════════════════════════════════════════════════════════════════
 
     // ══════════════════════════════════════════════════════════════════
     // STEP 2a: Normalise escaped characters FIRST so they don't
