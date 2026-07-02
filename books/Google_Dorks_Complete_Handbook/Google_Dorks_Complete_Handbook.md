@@ -2971,9 +2971,9 @@ For `link:url.com`, the search results list will show a limited sample of web pa
 
 **Real-World Applications**
 
-_Ethical hacking, OSINT, SEO, academic research, and bug bounty_
-
 # Chapter 6: Real-World Applications
+
+<div class="text-right text-muted-foreground italic mb-8 -mt-4"><em>Ethical hacking, OSINT, SEO, academic research, and bug bounty</em></div>
 
 > **Chapter Overview:** This chapter covers the five primary
 > professional domains where Google Dorks deliver the most practical
@@ -3042,9 +3042,9 @@ immediately. Add server rules to block these file types.
 >
 > intitle:\"index of\" inurl:backup site:yourdomain.com
 >
-> intitle:\"index of\" \"backup\" OR \"db_backup\" OR \".sql\"
-> site:yourdomain.com site:yourdomain.com intitle:\"index of\"
-> (\"backup\" OR \"db_backup\" OR \".sql\")
+> intitle:"index of" "backup" OR "db_backup" OR ".sql"
+>
+> site:yourdomain.com intitle:"index of" ("backup" OR "db_backup" OR ".sql")
 >
 > intitle:\"index of\" site:yourdomain.com
 >
@@ -3106,8 +3106,7 @@ Security**. Use a secrets manager for key storage.
 >
 > =\> Pages with query parameters commonly targeted by SQL injection
 >
-> inurl:\".php?id=\" intitle:\"error\" OR \"mysql_fetch\"
-> site:yourdomain.com
+> inurl:".php?id=" intitle:"error" OR "mysql_fetch" site:yourdomain.com
 >
 > =\> Pages producing database error strings (critical vulnerability
 > indicator)
@@ -3119,19 +3118,15 @@ production. Apply input validation and WAF rules.
 ### The Comprehensive One-Shot Audit Query
 
 > **Run this monthly on your own domain**
->
-> site:yourdomain.com (
->
-> filetype:env OR filetype:sql OR filetype:bak OR filetype:log OR
->
-> intitle:\"index of\" OR inurl:admin OR inurl:/.git OR
->
-> filetype:cfg OR filetype:conf OR ext:swp OR ext:old
->
-> )
->
-> _\# Any result from this query is a finding requiring immediate
-> remediation._
+
+```text
+site:yourdomain.com (
+  filetype:env OR filetype:sql OR filetype:bak OR filetype:log OR
+  intitle:"index of" OR inurl:admin OR inurl:/.git OR
+  filetype:cfg OR filetype:conf OR ext:swp OR ext:old
+)
+```
+> *# Any result from this query is a finding requiring immediate remediation.*
 
 ## 6.2 OSINT Research
 
@@ -3141,38 +3136,16 @@ investigators, researchers, and security analysts all use OSINT. Google
 Dorks are a foundational OSINT tool because they turn Google\'s enormous
 index into a structured, filterable research database.
 
----
-
-**Research **Example Query**
-Scenario**
-
----
-
-Bangladesh site:gov.bd filetype:pdf \"annual report\"
-Government after:2023-01-01
-Documents
-
-Corporate Reports filetype:pdf intitle:\"annual report\"
-site:company.com
-
-Academic Research site:arxiv.org \"natural language processing\"
-after:2024-01-01 filetype:pdf
-
-News Archive \"whistleblower\" site:theguardian.com
-Research before:2020-01-01
-
-Data Breach Reports intitle:\"data breach\" OR intitle:\"security
-incident\" site:.gov filetype:pdf
-
-Conference filetype:pptx \"cybersecurity\" site:defcon.org OR
-Presentations site:blackhat.com OR \*.gov
-
-OSINT Investigation inanchor:\"leaked document\"
-
-Bangladesh NGO Data filetype:pdf \"impact report\" site:brac.net OR
-site:grameen.com
-
----
+| Research Scenario | Example Query |
+| :--- | :--- |
+| **Bangladesh Government Documents** | `site:gov.bd filetype:pdf "annual report" after:2023-01-01` |
+| **Corporate Reports** | `filetype:pdf intitle:"annual report" site:company.com` |
+| **Academic Research** | `site:arxiv.org "natural language processing" after:2024-01-01 filetype:pdf` |
+| **News Archive Research** | `"whistleblower" site:theguardian.com before:2020-01-01` |
+| **Data Breach Reports** | `intitle:"data breach" OR intitle:"security incident" site:.gov filetype:pdf` |
+| **Conference Presentations** | `filetype:pptx "cybersecurity" (site:defcon.org OR site:blackhat.com OR site:.gov)` |
+| **OSINT Investigation** | `inanchor:"leaked document"` |
+| **Bangladesh NGO Data** | `filetype:pdf "impact report" (site:brac.net OR site:grameen.com)` |
 
 ### OSINT Best Practices
 
@@ -3212,7 +3185,7 @@ positioning.
 >
 > =\> Reveals non-www subdomains (blog., shop., api., etc.)
 >
-> site:\*. yourCompetitor.com
+> site:\*.yourCompetitor.com
 >
 > =\> All indexed pages across all competitor subdomains
 
@@ -3220,20 +3193,19 @@ positioning.
 
 > **Queries**
 >
-> inurl:blog site:yourCompetitor.com \"content marketing\"
-> after:2024-01-01
+> inurl:blog site:yourCompetitor.com "content marketing" after:2024-01-01
 >
-> intitle:\"case study\" site:yourCompetitor.com
+> intitle:"case study" site:yourCompetitor.com
 >
-> site: yourCompetitor.com inurl:pricing
+> site:yourCompetitor.com inurl:pricing
 >
-> site: yourCompetitor.com filetype:pdf
+> site:yourCompetitor.com filetype:pdf
 >
 > =\> What downloadable resources does your competitor publish?
 >
-> allinanchor: competitor product feature
+> allinanchor:"competitor product feature"
 >
-> =\> Which competitor pages attract the most backlinks
+> =\> Which competitor pages attract the most backlinks?
 
 ### Auditing Your Own SEO
 
@@ -3263,15 +3235,13 @@ websites.
 
 > **Queries**
 >
-> site:arxiv.org filetype:pdf \"transformer architecture\"
-> after:2023-01-01
+> site:arxiv.org filetype:pdf \"transformer architecture\" after:2023-01-01
 >
 > \"deep learning\" site:.edu filetype:pdf \"lecture notes\"
 >
 > allintitle:machine learning interview questions site:github.com
 >
-> site:scholar.google.com \"Bangladesh\" \"economic development\"
-> after:2022-01-01
+> site:scholar.google.com \"Bangladesh\" \"economic development\" after:2022-01-01
 
 ### Locating Public Datasets
 
@@ -3337,27 +3307,21 @@ exclude known benign subdomains.
 
 > **Queries**
 >
-> _\# Broad search, excluding common benign subdomains:_
->
 > site:example.com -www -shop -share -ir -mfa
 >
-> _\# PHP pages with query parameters (potential injection points):_
+> \=> Broad search, excluding common benign subdomains
 >
 > site:example.com ext:php inurl:?
 >
-> _\# API endpoints across REST versions:_
+> \=> PHP pages with query parameters (potential injection points)
 >
-> site:example.com inurl:api \| site:example.com/rest \|
-> site:example.com/v1
+> site:example.com inurl:api OR site:example.com/rest OR site:example.com/v1 OR site:example.com/v2 OR site:example.com/v3
 >
-> \| site:example.com/v2 \| site:example.com/v3
+> \=> API endpoints across REST versions
 >
-> _\# Comprehensive Sensitive Endpoint Discovery (The \"All-in-One\"
-> Recon Dork):_
+> site:example.com (inurl:admin OR inurl:login OR inurl:config OR inurl:backup OR inurl:.git OR inurl:.env OR intitle:"index of" OR ext:bak OR ext:sql OR ext:zip OR ext:tar OR ext:gz)
 >
-> site:example.com (inurl:admin OR inurl:login OR inurl:config OR
-> inurl:backup OR inurl:.git OR inurl:.env OR intitle:\"index of\" OR
-> ext:bak OR ext:sql OR ext:zip OR ext:tar OR ext:gz)
+> \=> Comprehensive Sensitive Endpoint Discovery (The "All-in-One" Recon Dork)
 
 ### Juicy Extensions \-- High-Value File Types
 
@@ -3367,55 +3331,24 @@ frequently contain sensitive information.
 
 > **Juicy Extensions Query**
 >
-> site:\"example.com\" ext:log \| ext:txt \| ext:conf \| ext:cnf \|
-> ext:ini \| ext:env
->
-> \| ext:sh \| ext:bak \| ext:backup \| ext:swp \| ext:old \| ext:git \|
-> ext:svn
->
-> \| ext:htpasswd \| ext:htaccess \| ext:json
+> site:"example.com" ext:log OR ext:txt OR ext:conf OR ext:cnf OR ext:ini OR ext:env OR ext:sh OR ext:bak OR ext:backup OR ext:swp OR ext:old OR ext:git OR ext:svn OR ext:htpasswd OR ext:htaccess OR ext:json
 
----
-
-**Extension** **Why It Matters**
-
----
-
-.env Environment files almost always contain DB passwords, API
-keys, and app secrets.
-
-.log Application and server logs may expose internal paths,
-usernames, IP addresses, and error traces.
-
-.bak / .old Backup copies of source files or config files, often
-containing credentials.
-
-.swp Vim swap files left behind during editing. May contain
-source code fragments or config.
-
-.git / .svn Source control directories containing full project
-history, credentials, and logic.
-
-.htpasswd Apache password files. Contains hashed credentials for
-HTTP basic authentication.
-
-ssssss.htaccess Apache configuration files that may reveal rewrite rules,
-protected paths, or security policies.
-
-.conf / .ini Server and application configuration files frequently
-containing connection strings and keys.
-
----
+| **Extension** | **Why It Matters** |
+| ------------- | ------------------ |
+| `.env` | Environment files almost always contain DB passwords, API keys, and app secrets. |
+| `.log` | Application and server logs may expose internal paths, usernames, IP addresses, and error traces. |
+| `.bak` / `.old` | Backup copies of source files or config files, often containing credentials. |
+| `.swp` | Vim swap files left behind during editing. May contain source code fragments or config. |
+| `.git` / `.svn` | Source control directories containing full project history, credentials, and logic. |
+| `.htpasswd` | Apache password files. Contains hashed credentials for HTTP basic authentication. |
+| `.htaccess` | Apache configuration files that may reveal rewrite rules, protected paths, or security policies. |
+| `.conf` / `.ini` | Server and application configuration files frequently containing connection strings and keys. |
 
 ### High-Value inurl Keywords
 
 > **Query**
 >
-> inurl:conf \| inurl:env \| inurl:cgi \| inurl:bin \| inurl:etc \|
-> inurl:root
->
-> \| inurl:sql \| inurl:backup \| inurl:admin \| inurl:php
-> site:example.com
+> site:example.com inurl:conf OR inurl:env OR inurl:cgi OR inurl:bin OR inurl:etc OR inurl:root OR inurl:sql OR inurl:backup OR inurl:admin OR inurl:php
 
 ### Server Error and Stack Trace Pages
 
@@ -3424,14 +3357,7 @@ and stack traces that are invaluable for understanding a target\'s
 technology stack.
 
 > **Query**
->
-> inurl:\"error\" \| intitle:\"exception\" \| intitle:\"failure\" \|
-> intitle:\"server at\"
->
-> \| inurl:exception \| \"database error\" \| \"SQL syntax\" \|
-> \"undefined index\"
->
-> \| \"unhandled exception\" \| \"stack trace\" site:example.com
+> site:example.com (inurl:"error" OR intitle:"exception" OR intitle:"failure" OR intitle:"server at" OR inurl:exception OR "database error" OR "SQL syntax" OR "undefined index" OR "unhandled exception" OR "stack trace")
 
 ### Vulnerability-Prone URL Parameters
 
@@ -3439,105 +3365,55 @@ The following queries identify URL parameter patterns statistically
 associated with specific vulnerability classes. Each finding is a
 candidate for manual testing, not a confirmed vulnerability.
 
----
-
-**Vulnerability **Google Dork Query**
-Class**
-
----
-
-XSS (Cross-Site inurl:q= \| inurl:s= \| inurl:search= \| inurl:query= \|
-Scripting) inurl:keyword= \| inurl:lang= inurl:& site:example.com
-
-Open Redirect inurl:url= \| inurl:return= \| inurl:next= \|
-inurl:redirect= \| inurl:redir= \| inurl:ret= \|
-inurl:r2= \| inurl:page= inurl:& inurl:http
-site:example.com
-
-SQL Injection inurl:id= \| inurl:pid= \| inurl:category= \| inurl:cat=
-\| inurl:action= \| inurl:sid= \| inurl:dir= inurl:&
-site:example.com
-
-SSRF inurl:http \| inurl:url= \| inurl:path= \| inurl:dest=
-\| inurl:html= \| inurl:data= \| inurl:domain= \|
-inurl:page= inurl:& site:example.com
-
-LFI (Local File inurl:include \| inurl:dir \| inurl:detail= \|
-Inclusion) inurl:file= \| inurl:folder= \| inurl:inc= \|
-inurl:locate= \| inurl:doc= \| inurl:conf= inurl:&
-site:example.com
-
-RCE (Remote Code inurl:cmd \| inurl:exec= \| inurl:query= \| inurl:code=
-Execution) \| inurl:do= \| inurl:run= \| inurl:read= \| inurl:ping=
-inurl:& site:example.com
-
----
+| **Vulnerability Class** | **Google Dork Query** |
+| ----------------------- | --------------------- |
+| XSS (Cross-Site Scripting) | `site:example.com inurl:& (inurl:q= OR inurl:s= OR inurl:search= OR inurl:query= OR inurl:keyword= OR inurl:lang=)` |
+| Open Redirect | `site:example.com inurl:& inurl:http (inurl:url= OR inurl:return= OR inurl:next= OR inurl:redirect= OR inurl:redir= OR inurl:ret= OR inurl:r2= OR inurl:page=)` |
+| SQL Injection | `site:example.com inurl:& (inurl:id= OR inurl:pid= OR inurl:category= OR inurl:cat= OR inurl:action= OR inurl:sid= OR inurl:dir=)` |
+| SSRF | `site:example.com inurl:& inurl:http (inurl:url= OR inurl:path= OR inurl:dest= OR inurl:html= OR inurl:data= OR inurl:domain= OR inurl:page=)` |
+| LFI (Local File Inclusion) | `site:example.com inurl:& (inurl:include OR inurl:dir OR inurl:detail= OR inurl:file= OR inurl:folder= OR inurl:inc= OR inurl:locate= OR inurl:doc= OR inurl:conf=)` |
+| RCE (Remote Code Execution) | `site:example.com inurl:& (inurl:cmd OR inurl:exec= OR inurl:query= OR inurl:code= OR inurl:do= OR inurl:run= OR inurl:read= OR inurl:ping=)` |
 
 ### Specific High-Value Functionality
 
-> **File Upload Endpoints**
+> site:example.com (intext:"choose file" OR intext:"select file" OR intext:"upload PDF")
 >
-> site:example.com intext:\"choose file\" \| intext:\"select file\" \|
-> intext:\"upload PDF\"
+> \=> File Upload Endpoints
 >
-> **API Documentation Pages**
+> site:example.com (inurl:apidocs OR inurl:api-docs OR inurl:swagger OR inurl:api-explorer OR inurl:redoc OR inurl:openapi OR intitle:"Swagger UI")
 >
-> inurl:apidocs \| inurl:api-docs \| inurl:swagger \| inurl:api-explorer
+> \=> API Documentation Pages
 >
-> \| inurl:redoc \| inurl:openapi \| intitle:\"Swagger UI\"
-> site:example.com
+> site:example.com (inurl:login OR inurl:signin OR intitle:login OR intitle:signin OR inurl:secure)
 >
-> **Login and Authentication Pages**
+> \=> Login and Authentication Pages
 >
-> inurl:login \| inurl:signin \| intitle:login \| intitle:signin \|
-> inurl:secure site:example.com
+> site:example.com (inurl:test OR inurl:env OR inurl:dev OR inurl:staging OR inurl:sandbox OR inurl:debug OR inurl:temp OR inurl:internal OR inurl:demo)
 >
-> **Test and Development Environments**
->
-> inurl:test \| inurl:env \| inurl:dev \| inurl:staging \| inurl:sandbox
->
-> \| inurl:debug \| inurl:temp \| inurl:internal \| inurl:demo
-> site:example.com
+> \=> Test and Development Environments
 
 ### Sensitive Documents and Exposed Parameters
 
-> **Sensitive Document Formats**
+> site:example.com (ext:txt OR ext:pdf OR ext:xml OR ext:xls OR ext:xlsx OR ext:ppt OR ext:pptx OR ext:doc OR ext:docx)
 >
-> site:example.com ext:txt \| ext:pdf \| ext:xml \| ext:xls \| ext:xlsx
-> \| ext:ppt \| ext:pptx \| ext:doc \| ext:docx
+> \=> Sensitive Document Formats
 >
-> _\# Combine with content markers:_
+> site:example.com (intext:"confidential" OR intext:"Not for Public Release" OR intext:"internal use only" OR intext:"do not distribute")
 >
-> intext:\"confidential\" \| intext:\"Not for Public Release\"
+> \=> Combine with content markers
 >
-> \| intext:\"internal use only\" \| intext:\"do not distribute\"
-> site:example.com
+> site:example.com inurl:& (inurl:email= OR inurl:phone= OR inurl:name= OR inurl:user=)
 >
-> **Sensitive URL Parameters**
->
-> inurl:email= \| inurl:phone= \| inurl:name= \| inurl:user= inurl:&
-> site:example.com
+> \=> Sensitive URL Parameters
 
 ### CMS and Framework-Specific Dorks
 
----
-
-**Technology** **Dork Query**
-
----
-
-WordPress inurl:/wp-admin/admin-ajax.php site:example.com
-
-Drupal intext:\"Powered by\" intext:Drupal inurl:user
-site:example.com
-
-Joomla inurl:joomla/login site:example.com
-
-Adobe AEM inurl:/content/usergenerated \| inurl:/content/dam \|
-inurl:/jcr:content \| inurl:/libs/granite \|
-inurl:/crx/de site:example.com
-
----
+| **Technology** | **Dork Query** |
+| -------------- | -------------- |
+| WordPress | `site:example.com inurl:/wp-admin/admin-ajax.php` |
+| Drupal | `site:example.com intext:"Powered by" intext:Drupal inurl:user` |
+| Joomla | `site:example.com inurl:joomla/login` |
+| Adobe AEM | `site:example.com (inurl:/content/usergenerated OR inurl:/content/dam OR inurl:/jcr:content OR inurl:/libs/granite OR inurl:/crx/de)` |
 
 ### Third-Party Platform Leaks
 
@@ -3617,21 +3493,17 @@ These queries do not require a specific target domain. They are useful
 for finding vulnerable instances across the entire internet or for
 discovering bug bounty programmes.
 
-> **Discovering Bug Bounty and VDP Programmes**
+> "submit vulnerability report" OR "powered by bugcrowd" OR "powered by hackerone"
 >
-> \"submit vulnerability report\" \| \"powered by bugcrowd\" \|
-> \"powered by hackerone\"
+> \=> Discovering Bug Bounty and VDP Programmes via footers
 >
-> site:\*/security.txt \"bounty\"
+> site:*/security.txt "bounty"
 >
-> =\> Finds security.txt files that mention a bounty programme
+> \=> Finds security.txt files that mention a bounty programme
 >
-> **Exposed Server Status Pages**
+> site:*/server-status apache
 >
-> site:\*/server-status apache
->
-> =\> Apache server-status pages showing live request data \-- often
-> exposed accidentally
+> \=> Apache server-status pages showing live request data -- often exposed accidentally
 
 ### Curated Bug Bounty Dork Resources
 
@@ -3645,6 +3517,8 @@ discovering bug bounty programmes.
 - <https://github.com/lutfumertceylan/top25-parameter> \-- The top 25
   most vulnerable parameters used by security researchers. Essential
   reading alongside parameter-based dorks.
+
+<br>
 
 **⭐ Key Takeaways**
 
@@ -3668,10 +3542,9 @@ discovering bug bounty programmes.
 Google dorks are special search terms that can help you find hidden
 information or vulnerabilities on websites.
 
-1.  My Favourite Google dork
+### My Favourite Google dork
 
-Start with "site:\<domain\>". Then, exclude boring pages with "-www" or
-other terms until you get to the juicy stuff:
+Start with "site:\<domain\>". Then, exclude boring pages with "-www" or other terms until you get to the juicy stuff:
 
 > **Queries**
 >
@@ -3679,10 +3552,9 @@ other terms until you get to the juicy stuff:
 >
 > site:tesla.com -www -shop -share -ir -mfa -crossdock -sign
 
-2.  Pastebin Leaks
+### Pastebin Leaks
 
-Check out sites like pastebin, jsfiddle, and codebeautify for code left
-over from developers:
+Check out sites like pastebin, jsfiddle, and codebeautify for code left over from developers:
 
 > **Queries**
 >
@@ -3692,14 +3564,13 @@ over from developers:
 >
 > site:codebeautify.org
 >
-> site:codepen.io \"tesla.com\"
+> site:codepen.io "tesla.com"
 >
-> site: pastebin.com \".tesla.com\" api
+> site:pastebin.com ".tesla.com" api
 
-3.  PHP extension w/ parameters
+### PHP extension w/ parameters
 
-Use "ext:php" and "inurl:?" along with the domain to find .php files
-with a question mark in the url:
+Use "ext:php" and "inurl:?" along with the domain to find .php files with a question mark in the url:
 
 > **Queries**
 >
@@ -3707,22 +3578,19 @@ with a question mark in the url:
 >
 > site:\*.\*.yahoo.com ext:php inurl:? -stock
 
-4.  Combine your dorks
+### Combine your dorks
 
-Use the "\|" operator to include both queries or the "&" operator to
-require both queries. Here's an example of attempting to search for file
-upload endpoints across multiple domains:
+Use the "|" operator to include both queries or the "&" operator to require both queries. Here's an example of attempting to search for file upload endpoints across multiple domains:
 
 > **Queries**
 >
-> (site:tesla.com \| site:teslamotors.com) & "choose file"
+> (site:tesla.com | site:teslamotors.com) & "choose file"
 >
 > site:\*.\*.yahoo.com ext:php inurl:? -stock
 
-5.  Disclosed XSS and Open Redirect Bug Bounties
+### Disclosed XSS and Open Redirect Bug Bounties
 
-Look through both fixed and unfixed bug bounties publicly disclosed
-through OpenBugBounty:
+Look through both fixed and unfixed bug bounties publicly disclosed through OpenBugBounty:
 
 > **Queries**
 >
@@ -3730,15 +3598,14 @@ through OpenBugBounty:
 >
 > site:openbugbounty.org inurl:reports intext:\"yahoo.com\" cross
 
-**Bonus Dork:** **Alternative search engines**
+### Bonus Dork: Alternative search engines
 
 Try other search engines like DuckDuckGo, Bing, Baidu, and Dogpile to
 further expand your findings.
 
 ## 6.7 Reveal the Cloud with Google Dorks
 
-_Find sensitive data in Amazon AWS, Google Cloud, Azure, Firebase, and
-more_
+<div class="text-right text-muted-foreground italic text-sm mb-6">Find sensitive data in Amazon AWS, Google Cloud, Azure, Firebase, and more</div>
 
 Cloud storage services have transformed how organisations share and
 store data. They have also [introduced an enormous
@@ -3773,222 +3640,89 @@ and become discoverable.
 > \"not for public release\" to narrow results to the most sensitive
 > documents.
 
-\*\*Primary Cloud Storage Dorks\*\*
+### Primary Cloud Storage Dorks
 
-\# Amazon S3 --- the most common cloud exposure vector:
-
-site:s3.amazonaws.com \"example.com\"
-
-\# Microsoft Azure Blob Storage:
-
-site:blob.core.windows.net \"example.com\"
-
-\# Google Cloud Storage:
-
-site:googleapis.com \"example.com\"
-
-\# Google Drive shared files:
-
-site:drive.google.com \"example.com\"
-
-\# Narrow results to sensitive content:
-
-site:s3.amazonaws.com \"example.com\" \"confidential\" OR \"internal\"
-OR \"privileged\"
+> site:s3.amazonaws.com "example.com"
+>
+> \=> Amazon S3 -- the most common cloud exposure vector
+>
+> site:blob.core.windows.net "example.com"
+>
+> \=> Microsoft Azure Blob Storage
+>
+> site:googleapis.com "example.com"
+>
+> \=> Google Cloud Storage
+>
+> site:drive.google.com "example.com"
+>
+> \=> Google Drive shared files
+>
+> site:s3.amazonaws.com "example.com" "confidential" OR "internal" OR "privileged"
+>
+> \=> Narrow results to sensitive content
 
 #### Amazon S3 --- Real-World Exposures
 
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Capital One (2019)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">An attacker used Server-Side Request Forgery (SSRF) to access an S3 bucket containing ~106 million customer records including SSNs, bank account numbers, and credit scores. The breach was discovered because the attacker posted the data publicly. Total regulatory fine: $80 million (OCC/Federal Reserve settlement). This class of exposure is reachable by a researcher who identifies Capital One's S3 namespaces first via Google Dork and then probes for misconfigured ACLs.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:s3.amazonaws.com "capitalone.com"<br/>site:s3.amazonaws.com "capitalone" "data" OR "customers" OR "backup"</div>
+</div>
 
-**★ Real-Life Example: Capital One (2019)**
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Twitch Source Code Leak (2021)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A misconfigured S3 bucket exposed the platform's entire source code (125 GB), internal security tools, creator payout data, and unreleased projects. The data was posted to 4chan. The exposure was traced to an incorrectly set bucket ACL during a server migration. Researchers identify Twitch's bucket namespace via:</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:s3.amazonaws.com "twitch.tv" OR "twitchsvc"<br/>site:s3.amazonaws.com "twitch" "source" OR "internal" OR "backup"</div>
+</div>
 
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Accenture 4-Bucket Exposure (2017)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">The global consulting firm accidentally left four S3 buckets publicly accessible, exposing 137 GB of data including authentication credentials, certificates, decryption keys, and internal API data. Discovered by security firm UpGuard. A researcher targeting Accenture would begin with the following dorks:</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:s3.amazonaws.com "accenture.com"<br/>site:s3.amazonaws.com "accenture" "credentials" OR "certificates" OR "keys"</div>
+</div>
 
-An attacker used Server-Side Request Forgery (SSRF) to access an S3
-bucket containing \~106 million customer records including SSNs, bank
-account numbers, and credit scores. The breach was discovered because
-the attacker posted the data publicly. Total regulatory fine: \$80
-million (OCC/Federal Reserve settlement). This class of exposure is
-reachable by a researcher who identifies Capital One\'s S3 namespaces
-first via Google Dork and then probes for misconfigured ACLs.
-
-**🔍 Google Dork Used:**
-
-**site:s3.amazonaws.com \"capitalone.com\"**
-
-**site:s3.amazonaws.com \"capitalone\" \"data\" OR \"customers\" OR
-\"backup\"**
-
----
-
----
-
-**★ Real-Life Example: Twitch Source Code Leak (2021)**
-
----
-
-A misconfigured S3 bucket exposed the platform\'s entire source code
-(125 GB), internal security tools, creator payout data, and unreleased
-projects. The data was posted to 4chan. The exposure was traced to an
-incorrectly set bucket ACL during a server migration.\
- Researchers identify Twitch\'s bucket namespace via:
-
-**🔍 Google Dork Used:**
-
-**site:s3.amazonaws.com \"twitch.tv\" OR \"twitchsvc\"**
-
-**site:s3.amazonaws.com \"twitch\" \"source\" OR \"internal\" OR
-\"backup\"**
-
----
-
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example: Accenture 4-Bucket Exposure (2017)** |
-+=======================================================================+
-| The global consulting firm accidentally left four S3 buckets publicly |
-| accessible, exposing 137 GB of data including authentication |
-| credentials, certificates, decryption keys, and internal API data. |
-| Discovered by security firm UpGuard. |
-| |
-| A researcher targeting Accenture would begin with the following |
-| dorks: |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"accenture.com\"** |
-+-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"accenture\" \"credentials\" OR |
-| \"certificates\" OR \"keys\"** |
-+-----------------------------------------------------------------------+
-
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- GrayhatWarfare --- Ongoing S3 Index** |
-+=======================================================================+
-| The public tool at grayhatwarfare.com indexes public S3 buckets and |
-| their contents. Researchers routinely find production database |
-| backups, private key files, and internal application configs |
-| discoverable through a combination of this tool and Google Dorks |
-| targeting s3.amazonaws.com. |
-| |
-| To replicate the same discovery method purely via Google Dork without |
-| the GrayhatWarfare tool: |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"database\" OR \"backup\" filetype:sql OR |
-| filetype:bak** |
-+-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \".env\" OR \"credentials\" OR \"config\" OR |
-| \"secret\"** |
-+-----------------------------------------------------------------------+
-| **site:s3.amazonaws.com \"example.com\" \"db_password\" OR |
-| \"api_key\" OR \"private_key\"** |
-+-----------------------------------------------------------------------+
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: GrayhatWarfare — Ongoing S3 Index</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">The public tool at grayhatwarfare.com indexes public S3 buckets and their contents. Researchers routinely find production database backups, private key files, and internal application configs discoverable through a combination of this tool and Google Dorks targeting s3.amazonaws.com. To replicate the same discovery method purely via Google Dork without the GrayhatWarfare tool:</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:s3.amazonaws.com "database" OR "backup" filetype:sql OR filetype:bak<br/>site:s3.amazonaws.com ".env" OR "credentials" OR "config" OR "secret"<br/>site:s3.amazonaws.com "example.com" "db_password" OR "api_key" OR "private_key"</div>
+</div>
 
 #### Microsoft Azure Blob Storage --- Real-World Exposures
 
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Microsoft Power Apps (2021) --- 38M |
-| Government Records** |
-+=======================================================================+
-| A researcher discovered that six US state government agencies and 47 |
-| other organisations had exposed 38 million records in misconfigured |
-| Azure Blob Storage tables including COVID-19 vaccination data, |
-| employee SSNs, and contact tracing details. Microsoft subsequently |
-| changed the default Power Apps setting from public to private. |
-| |
-| The exposure was discoverable through the following dorks targeting |
-| government domains: |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:blob.core.windows.net \"gov\" \"covid\" OR \"vaccination\" OR |
-| \"contact tracing\"** |
-+-----------------------------------------------------------------------+
-| **site:blob.core.windows.net \"powerapps\" \"state.gov\" OR |
-| \".gov\"** |
-+-----------------------------------------------------------------------+
-| **site:blob.core.windows.net \"example.com\" \"health\" OR |
-| \"employee\" OR \"ssn\"** |
-+-----------------------------------------------------------------------+
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Microsoft Power Apps (2021) — 38M Government Records</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A researcher discovered that six US state government agencies and 47 other organisations had exposed 38 million records in misconfigured Azure Blob Storage tables including COVID-19 vaccination data, employee SSNs, and contact tracing details. Microsoft subsequently changed the default Power Apps setting from public to private. The exposure was discoverable through the following dorks targeting government domains:</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:blob.core.windows.net "gov" "covid" OR "vaccination" OR "contact tracing"<br/>site:blob.core.windows.net "powerapps" "state.gov" OR ".gov"<br/>site:blob.core.windows.net "example.com" "health" OR "employee" OR "ssn"</div>
+</div>
 
----
-
-**★ Real-Life Example --- SharePoint-to-Azure Migration Leaks
-(Ongoing)**
-
----
-
-Researchers using site:blob.core.windows.net \"company.com\" have
-repeatedly found internal SharePoint migrations, HR system exports, and
-financial report PDFs accidentally transferred to public Azure Blob
-containers during cloud migrations. Migration projects routinely leave
-temporary public containers uncleaned.
-
-**🔍 Google Dork Used:**
-
-**site:blob.core.windows.net \"example.com\" \"sharepoint\" OR
-\"migration\"**
-
-**site:blob.core.windows.net \"example.com\" \"internal\" OR
-\"confidential\" OR \"hr\"**
-
-**site:blob.core.windows.net \"example.com\" filetype:pdf OR
-filetype:xlsx**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: SharePoint-to-Azure Migration Leaks (Ongoing)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers using site:blob.core.windows.net "company.com" have repeatedly found internal SharePoint migrations, HR system exports, and financial report PDFs accidentally transferred to public Azure Blob containers during cloud migrations. Migration projects routinely leave temporary public containers uncleaned.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:blob.core.windows.net "example.com" "sharepoint" OR "migration"<br/>site:blob.core.windows.net "example.com" "internal" OR "confidential" OR "hr"<br/>site:blob.core.windows.net "example.com" filetype:pdf OR filetype:xlsx</div>
+</div>
 
 #### Google Drive and Google Cloud --- Real-World Exposures
 
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Google Docs Misconfiguration (Ongoing)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers routinely find internal company documents, pitch decks, and HR records by searching for Google Docs shared with "anyone with the link." When the organisation's domain appears in the document content, Google indexes the link and it becomes discoverable. Documents are often shared for a meeting and never reverted to private.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:docs.google.com inurl:"/d/" "example.com" "confidential"<br/>site:docs.google.com inurl:"/d/" "example.com" "internal use only"<br/>site:docs.google.com inurl:"/d/" "example.com" "not for distribution"</div>
+</div>
 
-**★ Real-Life Example --- Google Docs Misconfiguration (Ongoing)**
-
----
-
-Researchers routinely find internal company documents, pitch decks, and
-HR records by searching for Google Docs shared with \"anyone with the
-link.\" When the organisation\'s domain appears in the document
-content, Google indexes the link and it becomes discoverable. Documents
-are often shared for a meeting and never reverted to private.
-
-**🔍 Google Dork Used:**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"confidential\"**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"internal use
-only\"**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"not for
-distribution\"**
-
----
-
----
-
-**★ Real-Life Example --- HackerOne Bug Bounty Submissions --- Google
-Drive Finds (2019--2024)**
-
----
-
-Researchers on HackerOne and Bugcrowd have submitted reports where
-internal API documentation, employee PII, and unreleased product
-roadmaps were found in publicly readable Google Drive folders belonging
-to target organisations. Rewards ranged from \$500 to \$5,000 depending
-on data sensitivity and programme scope.
-
-**🔍 Google Dork Used:**
-
-**site:drive.google.com \"example.com\" \"api\" OR \"roadmap\" OR
-\"unreleased\"**
-
-**site:drive.google.com \"example.com\" \"internal\" OR \"employees\"
-OR \"confidential\"**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR
-\"board\" OR \"acquisition\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: HackerOne Bug Bounty Submissions — Google Drive Finds (2019–2024)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers on HackerOne and Bugcrowd have submitted reports where internal API documentation, employee PII, and unreleased product roadmaps were found in publicly readable Google Drive folders belonging to target organisations. Rewards ranged from $500 to $5,000 depending on data sensitivity and programme scope.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:drive.google.com "example.com" "api" OR "roadmap" OR "unreleased"<br/>site:drive.google.com "example.com" "internal" OR "employees" OR "confidential"<br/>site:docs.google.com inurl:"/d/" "example.com" "Q4" OR "board" OR "acquisition"</div>
+</div>
 
 ### Bug Bounty Programme Discovery Dorks
 
@@ -3998,19 +3732,14 @@ organisations that have explicitly invited security research.
 
 **Programme Discovery Dorks**
 
-\# Find organisations running bug bounty programmes:
+> "submit vulnerability report" | "powered by bugcrowd" | "powered by hackerone"
+> \=> Find organisations running bug bounty programmes
 
-\"submit vulnerability report\" \| \"powered by bugcrowd\" \| \"powered
-by hackerone\"
+> site:*/security.txt "bounty"
+> \=> Find security.txt files that mention a bounty
 
-\# Find security.txt files that mention a bounty:
-
-site:\*/security.txt \"bounty\"
-
-\# Find VDP pages directly:
-
-inurl:security \"vulnerability disclosure policy\" OR \"responsible
-disclosure\"
+> inurl:security "vulnerability disclosure policy" OR "responsible disclosure"
+> \=> Find VDP pages directly
 
 > **TIP:** Always read the full programme scope before running any recon
 > query. Bug bounty programmes define exactly which domains are
@@ -4026,57 +3755,33 @@ relevant CVE database and known attack vectors.
 
 **WordPress**
 
-inurl:/wp-admin/admin-ajax.php site:example.com
+> inurl:/wp-admin/admin-ajax.php site:example.com
+> \=> admin-ajax.php is a common target for privilege escalation and auth bypass in plugins.
 
-=\> admin-ajax.php is a common target for privilege escalation and auth
-bypass in plugins.
-
-inurl:/wp-content/uploads/ site:example.com
-
-=\> May reveal user-uploaded files including sensitive docs and backup
-archives.
+> inurl:/wp-content/uploads/ site:example.com
+> \=> May reveal user-uploaded files including sensitive docs and backup archives.
 
 **Drupal**
 
-intext:\"Powered by\" intext:Drupal inurl:user site:example.com
+> intext:"Powered by" intext:Drupal inurl:user site:example.com
+> \=> Identifies Drupal sites. The /user endpoint is sensitive in older Drupal versions.
 
-=\> Identifies Drupal sites. The /user endpoint is sensitive in older
-Drupal versions.
-
-inurl:/sites/default/files/ site:example.com
-
-=\> Drupal\'s default public file storage path. May expose uploaded
-documents.
+> inurl:/sites/default/files/ site:example.com
+> \=> Drupal's default public file storage path. May expose uploaded documents.
 
 **Joomla**
 
-inurl:joomla/login site:example.com
+> inurl:joomla/login site:example.com
 
-inurl:/administrator/ site:example.com
+> inurl:/administrator/ site:example.com
+> \=> Joomla administrator panel --- a common brute-force target.
 
-=\> Joomla administrator panel --- a common brute-force target.
-
----
-
-**★ Real-Life Example --- Drupalgeddon --- CVE-2018-7600 (Mass
-Exploitation)**
-
----
-
-A critical SQL injection vulnerability in Drupal\'s core affected all
-Drupal 6, 7, and 8 sites. Google Dorks identifying Drupal sites were
-actively used by attackers within 24 hours of CVE disclosure to find
-and mass-exploit vulnerable installations before administrators could
-patch. Identifying CMS versions through Google Dorks is now a standard
-step in defensive auditing to catch unpatched deployments.
-
-**🔍 Google Dork Used:**
-
-**intext:\"Powered by\" intext:Drupal inurl:user**
-
-**intext:\"Drupal\" inurl:/user/login**
-
-**inurl:/sites/default/files/ intext:\"Drupal\"**
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Drupalgeddon — CVE-2018-7600 (Mass Exploitation)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A critical SQL injection vulnerability in Drupal's core affected all Drupal 6, 7, and 8 sites. Google Dorks identifying Drupal sites were actively used by attackers within 24 hours of CVE disclosure to find and mass-exploit vulnerable installations before administrators could patch. Identifying CMS versions through Google Dorks is now a standard step in defensive auditing to catch unpatched deployments.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">intext:"Powered by" intext:Drupal inurl:user<br/>intext:"Drupal" inurl:/user/login<br/>inurl:/sites/default/files/ intext:"Drupal"</div>
+</div>
 
 ---
 
@@ -4090,86 +3795,32 @@ is a candidate for manual testing, not a confirmed vulnerability.
 
 **XSS-Prone Parameter Dork**
 
-inurl:q= \| inurl:s= \| inurl:search= \| inurl:query= inurl:&
-site:example.com
+> inurl:q= | inurl:s= | inurl:search= | inurl:query= inurl:& site:example.com
+> \=> Identifies basic XSS parameters
 
-\# Extended version covering more high-frequency parameters:
+> inurl:q= | inurl:s= | inurl:search= | inurl:query= | inurl:keyword= | inurl:lang= | inurl:page= | inurl:view= inurl:& site:example.com
+> \=> Extended version covering more high-frequency parameters
 
-inurl:q= \| inurl:s= \| inurl:search= \| inurl:query= \| inurl:keyword=
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Reflected XSS via /?s= (WordPress Search Parameter)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">The /?s= parameter is the most common XSS vector across millions of WordPress sites. Security researchers have found this class of XSS on government websites, university portals, and major e-commerce platforms. Payload: <code>?s=&lt;script&gt;alert(1)&lt;/script&gt;</code> frequently succeeds on unpatched themes.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:target.com inurl:?s=<br/>inurl:?s= site:target.gov<br/>inurl:/?s= site:example.com</div>
+</div>
 
-\| inurl:lang= \| inurl:page= \| inurl:view= inurl:& site:example.com
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Language Parameter XSS via /index.php?lang=</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">The lang= parameter is the 5th most vulnerable parameter in the XSS frequency table (1.4% of scanned sites). Researchers have found reflected XSS on multilingual CMS sites where the language code is reflected directly into the page without sanitisation. Payload for HTML context: <code>/index.php?lang="&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code> Payload for JS context: <code>/index.php?lang=";alert(document.domain); //</code> HackerOne reports in this class: $500–$2,000 reward range.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:?lang= site:target.com<br/>inurl:index.php?lang= site:example.com<br/>inurl:/?lang= inurl:& site:example.com</div>
+</div>
 
----
-
-**★ Real-Life Example --- Reflected XSS via /?s= (WordPress Search
-Parameter)**
-
----
-
-The /?s= parameter is the most common XSS vector across millions of
-WordPress sites. Security researchers have found this class of XSS on
-government websites, university portals, and major e-commerce
-platforms. Payload: ?s=\<script\>alert(1)\</script\> frequently
-succeeds on unpatched themes.
-
-**🔍 Google Dork Used:**
-
-**site:target.com inurl:?s=**
-
-**inurl:?s= site:target.gov**
-
-**inurl:/?s= site:example.com**
-
----
-
----
-
-**★ Real-Life Example --- Language Parameter XSS via /index.php?lang=**
-
----
-
-The lang= parameter is the 5th most vulnerable parameter in the XSS
-frequency table (1.4% of scanned sites). Researchers have found
-reflected XSS on multilingual CMS sites where the language code is
-reflected directly into the page without sanitisation. Payload for HTML
-context:
-/index.php?lang=\"\>\<script\>alert(document.cookie)\</script\> Payload
-for JS context: /index.php?lang=\";alert(document.domain); // HackerOne
-reports in this class: \$500--\$2,000 reward range.
-
-**🔍 Google Dork Used:**
-
-**inurl:?lang= site:target.com**
-
-**inurl:index.php?lang= site:example.com**
-
-**inurl:/?lang= inurl:& site:example.com**
-
----
-
----
-
-**★ Real-Life Example --- redirect_uri Parameter --- XSS Escalation
-Chain**
-
----
-
-The redirect_uri parameter appears in OAuth login flows on thousands of
-sites. When the redirect destination is reflected in an error page or
-confirmation screen without encoding, it escalates from open redirect
-to stored or reflected XSS. This chained vulnerability class has earned
-rewards of \$3,000--\$10,000+ on major programmes. Escalation payload
-test: /login?redirect_uri=javascript:alert(document.cookie)
-
-**🔍 Google Dork Used:**
-
-**inurl:redirect_uri= \| inurl:redirect= site:example.com**
-
-**inurl:/login?redirect_uri= site:target.com**
-
-**inurl:oauth2?redirect_uri= site:example.com**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: redirect_uri Parameter — XSS Escalation Chain</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">The redirect_uri parameter appears in OAuth login flows on thousands of sites. When the redirect destination is reflected in an error page or confirmation screen without encoding, it escalates from open redirect to stored or reflected XSS. This chained vulnerability class has earned rewards of $3,000–$10,000+ on major programmes. Escalation payload test: <code>/login?redirect_uri=javascript:alert(document.cookie)</code></div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:redirect_uri= | inurl:redirect= site:example.com<br/>inurl:/login?redirect_uri= site:target.com<br/>inurl:oauth2?redirect_uri= site:example.com</div>
+</div>
 
 ### Open Redirect Dorks
 
@@ -4180,11 +3831,8 @@ to bypass IP whitelists and access internal resources.
 
 **Open Redirect Dorks**
 
-inurl:url= \| inurl:return= \| inurl:next= \| inurl:redirect=
-
-\| inurl:redir= \| inurl:ret= \| inurl:r2= \| inurl:page=
-
-inurl:& inurl:http site:example.com
+> inurl:url= | inurl:return= | inurl:next= | inurl:redirect= | inurl:redir= | inurl:ret= | inurl:r2= | inurl:page= inurl:& inurl:http site:example.com
+> \=> Identifies common open redirect parameters
 
 Once you find an open redirect candidate, test escalation paths before
 reporting. An open redirect that accepts javascript:alert() as the
@@ -4194,82 +3842,35 @@ server-side request can enable SSRF.
 
 **Escalation test payloads (only on authorised targets)**
 
-\# Test for XSS escalation:
+> `?redirect=javascript:alert(document.domain)`
+> \=> Test for XSS escalation
 
-?redirect=javascript:alert(document.domain)
+> `?next=//evil.com/phishing-page`
+> \=> Test for protocol-relative redirect
 
-\# Test for protocol-relative redirect:
-
-?next=//evil.com/phishing-page
-
-\# Test for SSRF via redirect:
-
-?url=http://169.254.169.254/latest/meta-data/
-
-=\> AWS EC2 metadata endpoint --- if the server fetches this, SSRF is
-confirmed
+> `?url=http://169.254.169.254/latest/meta-data/`
+> \=> Test for SSRF via redirect (AWS EC2 metadata endpoint)
 
 ---
 
-**★ Real-Life Example --- OAuth Token Theft via Open Redirect
-(HackerOne, 2019--2024)**
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: OAuth Token Theft via Open Redirect (HackerOne, 2019–2024)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers using <code>inurl:next=</code> and <code>inurl:return=</code> dorks against OAuth login flows found that many social login implementations redirect users to an attacker-controlled domain after authentication if the next parameter is manipulated. Chain: open redirect in login flow + social engineering = OAuth token theft. Rewards in this class typically range from $500 to $4,500.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:next= | inurl:return= | inurl:redirect= inurl:http site:target.com<br/>inurl:/login?next= site:example.com<br/>inurl:/auth?return= | inurl:/signin?redirect= site:example.com</div>
+</div>
 
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: SSRF via Open Redirect — AWS EC2 Metadata Chain</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A well-documented critical-severity attack chain:<br/><br/>1. Find an open redirect endpoint via the <code>inurl:url=</code> dork.<br/>2. Set the redirect target to <code>http://169.254.169.254/latest/meta-data/</code><br/>3. The server-side fetch follows the redirect, returning AWS EC2 instance metadata.<br/>4. The metadata response includes temporary IAM credentials usable to access S3.<br/><br/>Multiple HackerOne P1 reports have used this exact chain. Rewards: $5,000–$50,000+.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:url= inurl:http site:target.com<br/>inurl:url= | inurl:fetch= | inurl:load= inurl:http site:example.com<br/>inurl:proxy= | inurl:dest= | inurl:forward= inurl:http site:example.com</div>
+</div>
 
-Researchers using inurl:next= and inurl:return= dorks against OAuth
-login flows found that many social login implementations redirect users
-to an attacker-controlled domain after authentication if the next=
-parameter is manipulated. Chain: open redirect in login flow + social
-engineering = OAuth token theft. Rewards in this class typically range
-from \$500 to \$4,500.
+### Curated Bug Bounty Dork Resources
 
-**🔍 Google Dork Used:**
-
-**inurl:next= \| inurl:return= \| inurl:redirect= inurl:http
-site:target.com**
-
-**inurl:/login?next= site:example.com**
-
-**inurl:/auth?return= \| inurl:/signin?redirect= site:example.com**
-
----
-
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- SSRF via Open Redirect --- AWS EC2 Metadata |
-| Chain** |
-+=======================================================================+
-| A well-documented critical-severity attack chain: |
-| |
-| 1. Find an open redirect endpoint via the inurl:url= dork. |
-| |
-| 2. Set the redirect target to |
-| <http://169.254.169.254/latest/meta-data/> |
-| |
-| 3. The server-side fetch follows the redirect, returning AWS EC2 |
-| instance metadata. |
-| |
-| 4. The metadata response includes temporary IAM credentials usable |
-| to access S3. |
-| |
-| Multiple HackerOne P1 reports have used this exact chain. Rewards: |
-| \$5,000--\$50,000+. |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **inurl:url= inurl:http site:target.com** |
-+-----------------------------------------------------------------------+
-| **inurl:url= \| inurl:fetch= \| inurl:load= inurl:http |
-| site:example.com** |
-+-----------------------------------------------------------------------+
-| **inurl:proxy= \| inurl:dest= \| inurl:forward= inurl:http |
-| site:example.com** |
-+-----------------------------------------------------------------------+
-
-### Curated Resources
-
-- <https://github.com/Proviesec/google-dorks>
-
-- <https://github.com/sushiwushi/bug-bounty-dorks/blob/master/dorks.txt>
+- <https://github.com/Proviesec/google-dorks> – A curated collection of Google Dorks for web security research and bug bounties.
+- <https://github.com/sushiwushi/bug-bounty-dorks/blob/master/dorks.txt> – An extensive raw text list of dorks specifically tailored for bug bounty hunting.
 
 ### Top 100 XSS Dorks
 
@@ -4280,140 +3881,75 @@ associated with exploitable XSS vulnerabilities. This is one of the most
 actionable dork references available for bug bounty hunters and
 penetration testers.
 
-> **CRITICAL:**
->
-> Use these dorks only on domains you own or are explicitly authorised
-> to test. Finding a vulnerable parameter is not permission to exploit
-> it. Test in a non-destructive way (e.g. a harmless alert payload) and
-> report responsibly through the programme channel.
+<div data-callout="critical">
+Use these dorks only on domains you own or are explicitly authorised to test. Finding a vulnerable parameter is not permission to exploit it. Test in a non-destructive way (e.g. a harmless alert payload) and report responsibly through the programme channel.
+</div>
 
 #### **How to Use This List**
 
-1.  Pick a parameter from the frequency table below (e.g. q, s, search,
-    lang).
-
-2.  Construct a Google Dork: inurl:q= inurl:& site:target.com
-
-3.  For each URL returned, append a test payload:
-    ?q=\<script\>alert(1)\</script\>
-
-4.  Observe the response in Burp Suite or browser DevTools. Look for
-    unescaped output.
-
-5.  If the payload reflects, confirm in a clean browser session before
-    reporting.
-
-6.  Report through the official bug bounty channel. Include reproduction
-    steps.
+1. Pick a parameter from the frequency table below (e.g. `q`, `s`, `search`, `lang`).
+2. Construct a Google Dork: `inurl:q= inurl:& site:target.com`
+3. For each URL returned, append a test payload: `?q=<script>alert(1)</script>`
+4. Observe the response in Burp Suite or browser DevTools. Look for unescaped output.
+5. If the payload reflects, confirm in a clean browser session before reporting.
+6. Report through the official bug bounty channel. Include reproduction steps.
 
 #### **Table 1: Most Vulnerable Parameters by Frequency**
 
 Parameters listed by the percentage of scanned sites where XSS was
 confirmed through that parameter.
 
----
-
-**Parameter** **Frequency** **Parameter** **Frequency**
-
----
-
-?q= 5.5% ?text= 0.3%
-
-?s= 4.5% ?handler= 0.2%
-
-?search= 1.9% ?myord= 0.2%
-
-?id= 1.7% ?myshownums= 0.2%
-
-?lang= 1.4% ?id_site= 0.2%
-
-?keyword= 1.2% ?city= 0.2%
-
-?query= 1.1% ?search_query= 0.2%
-
-?page= 1.0% ?msg= 0.2%
-
-?keywords= 0.8% ?sortby= 0.2%
-
-?year= 0.8% ?mode= 0.2%
-
-?view= 0.8% ?CODE= 0.2%
-
-?email= 0.8% ?location= 0.2%
-
-?type= 0.7% ?v= 0.2%
-
-?name= 0.7% ?order= 0.2%
-
-?p= 0.7% ?n= 0.2%
-
-?month= 0.6% ?term= 0.2%
-
-?immagine= 0.6% ?start= 0.2%
-
-?list_type= 0.5% ?k= 0.2%
-
-?url= 0.5% ?redirect= 0.2%
-
-?terms= 0.5% ?ref= 0.2%
-
-?categoryid= 0.5% ?file= 0.2%
-
-?key= 0.5% ?country= 0.2%
-
-?l= 0.5% ?from= 0.1%
-
-?begindate= 0.4% ?r= 0.1%
-
-?enddate= 0.4% ?f= 0.1%
-
-?categoryid2= 0.4% ?field%5B%5D= 0.1%
-
-?t= 0.4% ?searchScope= 0.1%
-
-?cat= 0.4% ?state= 0.1%
-
-?category= 0.4% ?phone= 0.1%
-
-?action= 0.4% ?Itemid= 0.1%
-
-?bukva= 0.4% ?lng= 0.1%
-
-?redirect_uri= 0.4% ?place= 0.1%
-
-?firstname= 0.4% ?bedrooms= 0.1%
-
-?c= 0.4% ?expand= 0.1%
-
-?lastname= 0.3% ?e= 0.1%
-
-?uid= 0.3% ?price= 0.1%
-
-?startTime= 0.3% ?d= 0.1%
-
-?eventSearch= 0.3% ?path= 0.1%
-
-?categoryids2= 0.3% ?address= 0.1%
-
-?categoryids= 0.3% ?day= 0.1%
-
-?sort= 0.3% ?display= 0.1%
-
-?positiontitle= 0.3% ?a= 0.1%
-
-?groupid= 0.3% ?error= 0.1%
-
-?m= 0.3% ?form= 0.1%
-
-?message= 0.3% ?language= 0.1%
-
-?tag= 0.3% ?mls= 0.1%
-
-?pn= 0.3% ?kw= 0.1%
-
-?title= 0.3% ?u= 0.1%
-
-?orgId= 0.3%
+| Parameter | Frequency | Parameter | Frequency |
+|---|---|---|---|
+| `?q=` | 5.5% | `?text=` | 0.3% |
+| `?s=` | 4.5% | `?handler=` | 0.2% |
+| `?search=` | 1.9% | `?myord=` | 0.2% |
+| `?id=` | 1.7% | `?myshownums=` | 0.2% |
+| `?lang=` | 1.4% | `?id_site=` | 0.2% |
+| `?keyword=` | 1.2% | `?city=` | 0.2% |
+| `?query=` | 1.1% | `?search_query=` | 0.2% |
+| `?page=` | 1.0% | `?msg=` | 0.2% |
+| `?keywords=` | 0.8% | `?sortby=` | 0.2% |
+| `?year=` | 0.8% | `?mode=` | 0.2% |
+| `?view=` | 0.8% | `?CODE=` | 0.2% |
+| `?email=` | 0.8% | `?location=` | 0.2% |
+| `?type=` | 0.7% | `?v=` | 0.2% |
+| `?name=` | 0.7% | `?order=` | 0.2% |
+| `?p=` | 0.7% | `?n=` | 0.2% |
+| `?month=` | 0.6% | `?term=` | 0.2% |
+| `?immagine=` | 0.6% | `?start=` | 0.2% |
+| `?list_type=` | 0.5% | `?k=` | 0.2% |
+| `?url=` | 0.5% | `?redirect=` | 0.2% |
+| `?terms=` | 0.5% | `?ref=` | 0.2% |
+| `?categoryid=` | 0.5% | `?file=` | 0.2% |
+| `?key=` | 0.5% | `?country=` | 0.2% |
+| `?l=` | 0.5% | `?from=` | 0.1% |
+| `?begindate=` | 0.4% | `?r=` | 0.1% |
+| `?enddate=` | 0.4% | `?f=` | 0.1% |
+| `?categoryid2=` | 0.4% | `?field%5B%5D=` | 0.1% |
+| `?t=` | 0.4% | `?searchScope=` | 0.1% |
+| `?cat=` | 0.4% | `?state=` | 0.1% |
+| `?category=` | 0.4% | `?phone=` | 0.1% |
+| `?action=` | 0.4% | `?Itemid=` | 0.1% |
+| `?bukva=` | 0.4% | `?lng=` | 0.1% |
+| `?redirect_uri=` | 0.4% | `?place=` | 0.1% |
+| `?firstname=` | 0.4% | `?bedrooms=` | 0.1% |
+| `?c=` | 0.4% | `?expand=` | 0.1% |
+| `?lastname=` | 0.3% | `?e=` | 0.1% |
+| `?uid=` | 0.3% | `?price=` | 0.1% |
+| `?startTime=` | 0.3% | `?d=` | 0.1% |
+| `?eventSearch=` | 0.3% | `?path=` | 0.1% |
+| `?categoryids2=` | 0.3% | `?address=` | 0.1% |
+| `?categoryids=` | 0.3% | `?day=` | 0.1% |
+| `?sort=` | 0.3% | `?display=` | 0.1% |
+| `?positiontitle=` | 0.3% | `?a=` | 0.1% |
+| `?groupid=` | 0.3% | `?error=` | 0.1% |
+| `?m=` | 0.3% | `?form=` | 0.1% |
+| `?message=` | 0.3% | `?language=` | 0.1% |
+| `?tag=` | 0.3% | `?mls=` | 0.1% |
+| `?pn=` | 0.3% | `?kw=` | 0.1% |
+| `?title=` | 0.3% | `?u=` | 0.1% |
+| `?orgId=` | 0.3% | | |
 
 ---
 
@@ -4423,126 +3959,65 @@ These are the most statistically vulnerable path+parameter combinations.
 More specific than Table 1, they represent exact URL structures found to
 be exploitable across millions of scanned websites.
 
----
-
-**Path + Parameter** **Frequency
-Score**
-
----
-
-/?s= 3.6
-
-/search?q= 2.5
-
-/index.php?lang= 0.6
-
-/pplay/info_prenotazioni.asp?immagine= 0.6
-
-/shared/lgflsearch.php?terms= 0.5
-
-/index.php?page= 0.4
-
-/search?query= 0.4
-
-/index.php?bukva= 0.4
-
-/pro/events_print_setup.cfm?list_type= 0.3
-
-/pro/events_print_setup.cfm?categoryid= 0.3
-
-/pro/events_print_setup.cfm?categoryid2= 0.3
-
-/?eventSearch= 0.3
-
-/?startTime= 0.3
-
-/pro/events_ical.cfm?categoryids= 0.3
-
-/pro/events_ical.cfm?categoryids2= 0.3
-
-/pro/events_print_setup.cfm?month= 0.3
-
-/pro/events_print_setup.cfm?year= 0.3
-
-/pro/events_print_setup.cfm?begindate= 0.3
-
-/pro/events_print_setup.cfm?enddate= 0.3
-
-/search?keyword= 0.3
-
-/?q= 0.3
-
-/search/?q= 0.3
-
-/index.php?pn= 0.3
-
-/?lang= 0.3
-
-/property/search?uid= 0.3
-
-/index.php?id= 0.3
-
-/search?orgId= 0.3
-
-/products?handler= 0.2
-
-/login?redirect_uri= 0.2
-
-/connexion?redirect_uri= 0.2
-
-/index.php?action= 0.2
-
-/search/?search= 0.2
-
-/news/class/index.php?myshownums= 0.2
-
-/news/class/index.php?myord= 0.2
-
-/servlet/com.jsbsoft.jtf.core.SG?CODE= 0.2
-
-/index.php?mebel_id= 0.2
-
-/search.html?searchScope= 0.1
-
-/videos?tag= 0.1
-
-/videos?place= 0.1
-
-/videos?search= 0.1
-
-/?email= 0.1
-
-/?cat= 0.1
-
-/content.php?expand= 0.1
-
-/?page= 0.1
-
-/search/?s= 0.1
-
-/apps/email/index.jsp?n= 0.1
-
-/?name= 0.1
-
-/?sort= 0.1
-
-/search-results?q= 0.1
-
-/plan_du_site.php?lang= 0.1
-
-/index.php?Itemid= 0.1
-
-/?view= 0.1
-
-/?t= 0.1
-
-/firms/?text= 0.1
-
-/servlet/com.jsbsoft.jtf.core.SG?OBJET= 0.1
-
-/?bathrooms= / /?bedrooms= / /?price= 0.1
-
-/?minprice= / /?maxprice= / /?mls= 0.1
+| Path + Parameter | Frequency Score |
+|---|---|
+| `/?s=` | 3.6 |
+| `/search?q=` | 2.5 |
+| `/index.php?lang=` | 0.6 |
+| `/pplay/info_prenotazioni.asp?immagine=` | 0.6 |
+| `/shared/lgflsearch.php?terms=` | 0.5 |
+| `/index.php?page=` | 0.4 |
+| `/search?query=` | 0.4 |
+| `/index.php?bukva=` | 0.4 |
+| `/pro/events_print_setup.cfm?list_type=` | 0.3 |
+| `/pro/events_print_setup.cfm?categoryid=` | 0.3 |
+| `/pro/events_print_setup.cfm?categoryid2=` | 0.3 |
+| `/?eventSearch=` | 0.3 |
+| `/?startTime=` | 0.3 |
+| `/pro/events_ical.cfm?categoryids=` | 0.3 |
+| `/pro/events_ical.cfm?categoryids2=` | 0.3 |
+| `/pro/events_print_setup.cfm?month=` | 0.3 |
+| `/pro/events_print_setup.cfm?year=` | 0.3 |
+| `/pro/events_print_setup.cfm?begindate=` | 0.3 |
+| `/pro/events_print_setup.cfm?enddate=` | 0.3 |
+| `/search?keyword=` | 0.3 |
+| `/?q=` | 0.3 |
+| `/search/?q=` | 0.3 |
+| `/index.php?pn=` | 0.3 |
+| `/?lang=` | 0.3 |
+| `/property/search?uid=` | 0.3 |
+| `/index.php?id=` | 0.3 |
+| `/search?orgId=` | 0.3 |
+| `/products?handler=` | 0.2 |
+| `/login?redirect_uri=` | 0.2 |
+| `/connexion?redirect_uri=` | 0.2 |
+| `/index.php?action=` | 0.2 |
+| `/search/?search=` | 0.2 |
+| `/news/class/index.php?myshownums=` | 0.2 |
+| `/news/class/index.php?myord=` | 0.2 |
+| `/servlet/com.jsbsoft.jtf.core.SG?CODE=` | 0.2 |
+| `/index.php?mebel_id=` | 0.2 |
+| `/search.html?searchScope=` | 0.1 |
+| `/videos?tag=` | 0.1 |
+| `/videos?place=` | 0.1 |
+| `/videos?search=` | 0.1 |
+| `/?email=` | 0.1 |
+| `/?cat=` | 0.1 |
+| `/content.php?expand=` | 0.1 |
+| `/?page=` | 0.1 |
+| `/search/?s=` | 0.1 |
+| `/apps/email/index.jsp?n=` | 0.1 |
+| `/?name=` | 0.1 |
+| `/?sort=` | 0.1 |
+| `/search-results?q=` | 0.1 |
+| `/plan_du_site.php?lang=` | 0.1 |
+| `/index.php?Itemid=` | 0.1 |
+| `/?view=` | 0.1 |
+| `/?t=` | 0.1 |
+| `/firms/?text=` | 0.1 |
+| `/servlet/com.jsbsoft.jtf.core.SG?OBJET=` | 0.1 |
+| `/?bathrooms= / /?bedrooms= / /?price=` | 0.1 |
+| `/?minprice= / /?maxprice= / /?mls=` | 0.1 |
 
 ---
 
@@ -4562,28 +4037,12 @@ findings were initially discovered through Google Dork recon.
 **Example payload:** /?s=\"\>\<img src=x
 onerror=alert(document.domain)\>
 
----
-
-**★ Real-Life Example --- WordPress /?s= XSS --- 400+ Vulnerable
-Plugins (2022 Wordfence Audit)**
-
----
-
-Wordfence identified 400+ WordPress plugins where the ?s= search
-parameter was reflected without output encoding, enabling reflected XSS
-across millions of sites. Government portals, university websites, and
-major e-commerce platforms were affected. Payload: /?s=\"\>\<img src=x
-onerror=alert(document.domain)\>
-
-**🔍 Google Dork Used:**
-
-**inurl:?s= site:target.gov**
-
-**site:target.com inurl:?s=**
-
-**inurl:/?s= inurl:& site:example.com**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: WordPress /?s= XSS — 400+ Vulnerable Plugins (2022 Wordfence Audit)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Wordfence identified 400+ WordPress plugins where the <code>?s=</code> search parameter was reflected without output encoding, enabling reflected XSS across millions of sites. Government portals, university websites, and major e-commerce platforms were affected. Payload: <code>/?s=">&lt;img src=x onerror=alert(document.domain)&gt;</code></div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:?s= site:target.gov<br/>site:target.com inurl:?s=<br/>inurl:/?s= inurl:& site:example.com</div>
+</div>
 
 ##### **2. Reflected XSS via /search?q= (Universal Search Parameter)**
 
@@ -4592,29 +4051,12 @@ frequency score (2.5). It is the single most dangerous parameter class
 after WordPress\'s /?s=, found across frameworks, custom CMS platforms,
 and enterprise portals.
 
----
-
-**★ Real-Life Example --- University Portal XSS via /search?q= ---
-\$1,500 Reward (2021)**
-
----
-
-A researcher discovered that a major South Asian university\'s student
-portal reflected the ?q= parameter directly into a JavaScript string
-without escaping single quotes. Payload:
-/search?q=\'-alert(document.cookie)-\' This resulted in a stored cookie
-exfiltration PoC. The university\'s bug bounty programme paid a \$1,500
-reward after remediation.
-
-**🔍 Google Dork Used:**
-
-**inurl:/search?q= site:target.edu**
-
-**inurl:search?q= site:\*.edu**
-
-**inurl:?q= inurl:& site:example.com**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: University Portal XSS via /search?q= — $1,500 Reward (2021)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A researcher discovered that a major South Asian university's student portal reflected the <code>?q=</code> parameter directly into a JavaScript string without escaping single quotes. Payload: <code>/search?q='-alert(document.cookie)-'</code> This resulted in a stored cookie exfiltration PoC. The university's bug bounty programme paid a $1,500 reward after remediation.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:/search?q= site:target.edu<br/>inurl:search?q= site:*.edu<br/>inurl:?q= inurl:& site:example.com</div>
+</div>
 
 ##### **3. XSS via ?lang= (Language Parameter Injection)**
 
@@ -4626,30 +4068,12 @@ attributes, JavaScript variables, or meta tags for i18n purposes.
 
 **JS context payload:** ?lang=\";alert(document.domain);//
 
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Language Parameter XSS --- Travel & SaaS |
-| Platforms (\$750--\$3,000 Rewards)** |
-+=======================================================================+
-| Multiple HackerOne reports in the \$750--\$3,000 range used the |
-| ?lang= vector against travel booking platforms, SaaS dashboards, and |
-| government multilingual portals. |
-| |
-| Common vulnerable pattern: |
-| |
-| \<html lang=\"\[user_input\]\"\> OR \<script\>var lang = |
-| \"\[user_input\]\";\</script\> |
-| |
-| Both HTML and JS context variants have been confirmed on production |
-| targets. |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **inurl:?lang= site:target.com** |
-+-----------------------------------------------------------------------+
-| **inurl:index.php?lang= site:example.com** |
-+-----------------------------------------------------------------------+
-| **inurl:/?lang= inurl:& site:example.com** |
-+-----------------------------------------------------------------------+
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Language Parameter XSS — Travel & SaaS Platforms ($750–$3,000 Rewards)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Multiple HackerOne reports in the $750–$3,000 range used the <code>?lang=</code> vector against travel booking platforms, SaaS dashboards, and government multilingual portals.<br/><br/>Common vulnerable pattern:<br/><br/><code>&lt;html lang="[user_input]"&gt;</code> OR <code>&lt;script&gt;var lang = "[user_input]";&lt;/script&gt;</code><br/><br/>Both HTML and JS context variants have been confirmed on production targets.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:?lang= site:target.com<br/>inurl:index.php?lang= site:example.com<br/>inurl:/?lang= inurl:& site:example.com</div>
+</div>
 
 ##### **4. XSS via ?redirect_uri= --- OAuth Escalation Chain**
 
@@ -4658,28 +4082,12 @@ impact because it sits in OAuth authentication flows. An unvalidated
 redirect_uri is simultaneously: (a) an open redirect, (b) an OAuth token
 theft vector, and (c) an XSS if the javascript: protocol is accepted.
 
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Fintech Platform XSS via redirect_uri= --- |
-| \$4,200 HackerOne Reward** |
-+=======================================================================+
-| A disclosed HackerOne report on a major fintech platform used: |
-| |
-| /login?redirect_uri=javascript:alert(document.cookie) |
-| |
-| This successfully executed XSS in the context of the login origin, |
-| bypassing the Same-Origin Policy. The redirect_uri was not validated |
-| against an allowlist of permitted redirect destinations. Severity: |
-| High \| Reward: \$4,200 \| Fix: server-side allowlist enforcement. |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **inurl:/login?redirect_uri= \| inurl:/connexion?redirect_uri= |
-| site:target.com** |
-+-----------------------------------------------------------------------+
-| **inurl:/oauth2/authorize?redirect_uri= site:example.com** |
-+-----------------------------------------------------------------------+
-| **inurl:/auth/callback?redirect_uri= site:example.com** |
-+-----------------------------------------------------------------------+
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Fintech Platform XSS via redirect_uri= — $4,200 HackerOne Reward</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A disclosed HackerOne report on a major fintech platform used:<br/><br/><code>/login?redirect_uri=javascript:alert(document.cookie)</code><br/><br/>This successfully executed XSS in the context of the login origin, bypassing the Same-Origin Policy. The redirect_uri was not validated against an allowlist of permitted redirect destinations.<br/><br/>Severity: High | Reward: $4,200 | Fix: server-side allowlist enforcement.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">inurl:/login?redirect_uri= | inurl:/connexion?redirect_uri= site:target.com<br/>inurl:/oauth2/authorize?redirect_uri= site:example.com<br/>inurl:/auth/callback?redirect_uri= site:example.com</div>
+</div>
 
 ##### **5. XSS via ColdFusion Event Management Parameters**
 
@@ -4688,29 +4096,12 @@ month, year, etc.) appear repeatedly in the Top 100 list because they
 belong to a widely-deployed ColdFusion event management system used by
 government agencies and conference platforms.
 
----
-
-**★ Real-Life Example --- ColdFusion events_print_setup.cfm --- US
-Government Portals (Reported to CISA 2020--2021)**
-
----
-
-Researchers found that multiple US county and city government websites
-using this exact ColdFusion module reflected all listed parameters
-without HTML encoding. The vulnerability was reported to CISA and
-patched across affected deployments in 2020--2021. Bug bounty rewards
-for this class: \$500--\$2,000 (government VDPs). All six path variants
-from Table 2 were confirmed vulnerable across different targets.
-
-**🔍 Google Dork Used:**
-
-**site:target.gov inurl:/pro/events_print_setup.cfm**
-
-**site:\*.gov inurl:/pro/events_print_setup.cfm**
-
-**site:\*.gov inurl:/pro/events_ical.cfm**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: ColdFusion events_print_setup.cfm — US Government Portals (Reported to CISA 2020–2021)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers found that multiple US county and city government websites using this exact ColdFusion module reflected all listed parameters without HTML encoding. The vulnerability was reported to CISA and patched across affected deployments in 2020–2021. Bug bounty rewards for this class: $500–$2,000 (government VDPs). All six path variants from Table 2 were confirmed vulnerable across different targets.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:target.gov inurl:/pro/events_print_setup.cfm<br/>site:*.gov inurl:/pro/events_print_setup.cfm<br/>site:*.gov inurl:/pro/events_ical.cfm</div>
+</div>
 
 ## 6.9 Top Google Dorks for Sensitive Data
 
@@ -4737,70 +4128,32 @@ discoverable.
 
 **Primary Dork**
 
-site:docs.google.com inurl:\"/d/\" \"example.com\"
+```
+site:docs.google.com inurl:"/d/" "example.com"
+```
 
 **Narrowing Variations**
 
-site:docs.google.com inurl:\"/d/\" \"example.com\" \"confidential\"
+```
+site:docs.google.com inurl:"/d/" "example.com" "confidential"
+site:docs.google.com inurl:"/d/" "example.com" "internal use only"
+site:docs.google.com inurl:"/d/" "example.com" "Q4" OR "board" OR "acquisition"
+site:docs.google.com inurl:"/d/" "example.com" "salary" OR "performance review"
+```
 
-site:docs.google.com inurl:\"/d/\" \"example.com\" \"internal use only\"
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Fortune 500 M&A Target List Exposed — $3,500 HackerOne Reward</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A researcher targeting a Fortune 500 technology company discovered a Google Doc shared "anyone with the link" containing the company's internal acquisition target list for the upcoming fiscal year, including valuation figures and due diligence timelines. The programme classified it as "Unintended Data Exposure" and awarded $3,500. The document was immediately restricted and the company implemented Google Workspace DLP.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:docs.google.com inurl:"/d/" "companyname" "acquisition"<br/>site:docs.google.com inurl:"/d/" "example.com" "Q4" OR "board" OR "M&A"</div>
+</div>
 
-site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR \"board\"
-OR \"acquisition\"
-
-site:docs.google.com inurl:\"/d/\" \"example.com\" \"salary\" OR
-\"performance review\"
-
----
-
-**★ Real-Life Example --- Fortune 500 M&A Target List Exposed ---
-\$3,500 HackerOne Reward**
-
----
-
-A researcher targeting a Fortune 500 technology company discovered a
-Google Doc shared \"anyone with the link\" containing the company\'s
-internal acquisition target list for the upcoming fiscal year,
-including valuation figures and due diligence timelines. The programme
-classified it as \"Unintended Data Exposure\" and awarded \$3,500. The
-document was immediately restricted and the company implemented Google
-Workspace DLP.
-
-**🔍 Google Dork Used:**
-
-**site:docs.google.com inurl:\"/d/\" \"companyname\" \"acquisition\"**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"Q4\" OR
-\"board\" OR \"M&A\"**
-
----
-
----
-
-**★ Real-Life Example --- Employee Salary Bands & M&A Negotiations in
-Public Google Docs (Ongoing)**
-
----
-
-Researchers have repeatedly found employee salary bands, HR performance
-review templates, and M&A negotiation documents in public Google Docs
-belonging to major consulting firms, banks, and government contractors.
-Exposure pattern: document created for a team, sharing set to \"anyone
-with the link\" for convenience, then never reverted to private after
-the meeting.
-
-**🔍 Google Dork Used:**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"salary\" OR
-\"compensation\"**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"performance\" OR
-\"review\"**
-
-**site:docs.google.com inurl:\"/d/\" \"example.com\" \"nda\" OR
-\"negotiation\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Employee Salary Bands & M&A Negotiations in Public Google Docs (Ongoing)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers have repeatedly found employee salary bands, HR performance review templates, and M&A negotiation documents in public Google Docs belonging to major consulting firms, banks, and government contractors. Exposure pattern: document created for a team, sharing set to "anyone with the link" for convenience, then never reverted to private after the meeting.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:docs.google.com inurl:"/d/" "example.com" "salary" OR "compensation"<br/>site:docs.google.com inurl:"/d/" "example.com" "performance" OR "review"<br/>site:docs.google.com inurl:"/d/" "example.com" "nda" OR "negotiation"</div>
+</div>
 
 ### 2. Microsoft OneDrive
 
@@ -4811,60 +4164,31 @@ commonly found.
 
 **Primary Dork**
 
-site:onedrive.live.com \"example.com\"
+```
+site:onedrive.live.com "example.com"
+```
 
 **Narrowing Variations**
 
-site:onedrive.live.com \"example.com\" \"password\" OR \"credentials\"
+```
+site:onedrive.live.com "example.com" "password" OR "credentials"
+site:onedrive.live.com "example.com" "internal" OR "confidential"
+site:onedrive.live.com "example.com" filetype:pdf OR filetype:pptx
+```
 
-site:onedrive.live.com \"example.com\" \"internal\" OR \"confidential\"
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: OneDrive Research Scan — 12% of Indexed Links Contained Internal Files (2023)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A 2023 research scan found that approximately 12% of OneDrive links indexed by Google contained files that appeared to be internal-only based on their filenames and content. Common finds: employee onboarding guides containing default passwords, proprietary training materials, and internal process documentation.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:onedrive.live.com "internal" OR "confidential" filetype:pdf OR filetype:pptx<br/>site:onedrive.live.com "example.com" "onboarding" OR "procedure" OR "policy"</div>
+</div>
 
-site:onedrive.live.com \"example.com\" filetype:pdf OR filetype:pptx
-
----
-
-**★ Real-Life Example --- OneDrive Research Scan --- 12% of Indexed
-Links Contained Internal Files (2023)**
-
----
-
-A 2023 research scan found that approximately 12% of OneDrive links
-indexed by Google contained files that appeared to be internal-only
-based on their filenames and content. Common finds: employee onboarding
-guides containing default passwords, proprietary training materials,
-and internal process documentation.
-
-**🔍 Google Dork Used:**
-
-**site:onedrive.live.com \"internal\" OR \"confidential\" filetype:pdf
-OR filetype:pptx**
-
-**site:onedrive.live.com \"example.com\" \"onboarding\" OR
-\"procedure\" OR \"policy\"**
-
----
-
----
-
-**★ Real-Life Example --- Former Employee OneDrive --- Production API
-Docs & DB Schema Leaked**
-
----
-
-A penetration tester on an authorised engagement found a presentation
-uploaded by a former employee containing API endpoint documentation,
-internal credential formats, and the schema for the company\'s
-production database. The employee had uploaded it during a workshop and
-never revoked the public link.
-
-**🔍 Google Dork Used:**
-
-**site:onedrive.live.com \"targetcompany\"**
-
-**site:onedrive.live.com \"example.com\" \"api\" OR \"schema\" OR
-\"database\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Former Employee OneDrive — Production API Docs & DB Schema Leaked</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A penetration tester on an authorised engagement found a presentation uploaded by a former employee containing API endpoint documentation, internal credential formats, and the schema for the company's production database. The employee had uploaded it during a workshop and never revoked the public link.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:onedrive.live.com "targetcompany"<br/>site:onedrive.live.com "example.com" "api" OR "schema" OR "database"</div>
+</div>
 
 ### 3. Dropbox
 
@@ -4874,58 +4198,31 @@ all been found through this dork.
 
 **Primary Dork**
 
-site:dropbox.com/s \"example.com\"
+```
+site:dropbox.com/s "example.com"
+```
 
 **Narrowing Variations**
 
-site:dropbox.com/s \"example.com\" \".sql\" OR \".csv\" OR \".env\"
+```
+site:dropbox.com/s "example.com" ".sql" OR ".csv" OR ".env"
+site:dropbox.com/s "example.com" "source code" OR "config"
+site:dropbox.com/s "example.com" "backup" OR "export" OR "dump"
+```
 
-site:dropbox.com/s \"example.com\" \"source code\" OR \"config\"
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Dropbox Credential Breach (2012) — Reused Password via LinkedIn</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Dropbox itself suffered a breach where employee credentials were stolen via a reused password from the LinkedIn breach. 68M accounts were exposed. Though not a Google Dork attack, researchers use Dropbox dorks to find forgotten public shares containing credentials, database exports, and client contract PDFs.<br/><br/>The dork below is what a researcher targeting post-breach Dropbox exposure would use:</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:dropbox.com/s "example.com" "password" OR "credentials" OR "auth"<br/>site:dropbox.com/s "company" filetype:sql OR filetype:csv OR filetype:env</div>
+</div>
 
-site:dropbox.com/s \"example.com\" \"backup\" OR \"export\" OR \"dump\"
-
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Dropbox Credential Breach (2012) --- Reused |
-| Password via LinkedIn** |
-+=======================================================================+
-| Dropbox itself suffered a breach where employee credentials were |
-| stolen via a reused password from the LinkedIn breach. 68M accounts |
-| were exposed. Though not a Google Dork attack, researchers use |
-| Dropbox dorks to find forgotten public shares containing credentials, |
-| database exports, and client contract PDFs. |
-| |
-| The dork below is what a researcher targeting post-breach Dropbox |
-| exposure would use: |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:dropbox.com/s \"example.com\" \"password\" OR \"credentials\" |
-| OR \"auth\"** |
-+-----------------------------------------------------------------------+
-| **site:dropbox.com/s \"company\" filetype:sql OR filetype:csv OR |
-| filetype:env** |
-+-----------------------------------------------------------------------+
-
----
-
-**★ Real-Life Example --- SaaS Customer DB Export Found on Dropbox ---
-\$5,000 Bugcrowd Critical**
-
----
-
-A bug bounty researcher found a Dropbox folder link containing a
-complete export of a SaaS company\'s customer database in CSV format:
-14,000 records with email addresses, subscription details, and hashed
-passwords. Reported on Bugcrowd. Severity: Critical. Reward: \$5,000.
-
-**🔍 Google Dork Used:**
-
-**site:dropbox.com/s \"companyname\"**
-
-**site:dropbox.com/s \"companyname\" \".csv\" OR \".sql\" OR
-\"export\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: SaaS Customer DB Export Found on Dropbox — $5,000 Bugcrowd Critical</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A bug bounty researcher found a Dropbox folder link containing a complete export of a SaaS company's customer database in CSV format: 14,000 records with email addresses, subscription details, and hashed passwords. Reported on Bugcrowd. Severity: Critical. Reward: $5,000.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:dropbox.com/s "companyname"<br/>site:dropbox.com/s "companyname" ".csv" OR ".sql" OR "export"</div>
+</div>
 
 ### 4. Box
 
@@ -4935,38 +4232,24 @@ most commonly found through Box-specific dorks.
 
 **Primary Dork**
 
-site:box.com/s \"example.com\"
+```
+site:box.com/s "example.com"
+```
 
 **Narrowing Variations**
 
-site:box.com/s \"example.com\" \"contract\" OR \"agreement\" OR \"nda\"
+```
+site:box.com/s "example.com" "contract" OR "agreement" OR "nda"
+site:box.com/s "example.com" "audit" OR "financial"
+site:box.com/s "example.com" "confidential" OR "privileged"
+```
 
-site:box.com/s \"example.com\" \"audit\" OR \"financial\"
-
-site:box.com/s \"example.com\" \"confidential\" OR \"privileged\"
-
----
-
-**★ Real-Life Example --- Enterprise Audit --- Client Contracts
-Publicly Accessible via Box**
-
----
-
-Enterprise security auditors using site:box.com/s \"clientname\" during
-authorised assessments have consistently found client-facing shared
-folders containing internal financial reports, legal contracts, and M&A
-due diligence packs. Configured with public link access instead of
-restricted sharing in all cases found.
-
-**🔍 Google Dork Used:**
-
-**site:box.com/s \"clientname\" \"contract\" OR \"nda\" OR
-\"agreement\"**
-
-**site:box.com/s \"example.com\" \"audit\" OR \"due diligence\" OR
-\"financial\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Enterprise Audit — Client Contracts Publicly Accessible via Box</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Enterprise security auditors using <code>site:box.com/s "clientname"</code> during authorised assessments have consistently found client-facing shared folders containing internal financial reports, legal contracts, and M&A due diligence packs. Configured with public link access instead of restricted sharing in all cases found.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:box.com/s "clientname" "contract" OR "nda" OR "agreement"<br/>site:box.com/s "example.com" "audit" OR "due diligence" OR "financial"</div>
+</div>
 
 ### 5. Azure DevOps
 
@@ -4977,39 +4260,24 @@ complete source code repositories.
 
 **Primary Dork**
 
-site:dev.azure.com \"example.com\"
+```
+site:dev.azure.com "example.com"
+```
 
 **Narrowing Variations**
 
-site:dev.azure.com \"example.com\" \"api_key\" OR \"token\" OR
-\"secret\"
+```
+site:dev.azure.com "example.com" "api_key" OR "token" OR "secret"
+site:dev.azure.com "example.com" "connection string"
+site:dev.azure.com "example.com" "password" OR "private_key"
+```
 
-site:dev.azure.com \"example.com\" \"connection string\"
-
-site:dev.azure.com \"example.com\" \"password\" OR \"private_key\"
-
----
-
-**★ Real-Life Example --- Public Azure DevOps Repos --- Hardcoded
-Secrets (\$1,500--\$8,000 Rewards)**
-
----
-
-Multiple HackerOne reports (2020--2024) describe researchers finding
-Azure DevOps repositories set to \"Public\" by a developer during a
-demo and never reverted. Contents found: production .env files in git
-history, hardcoded API keys for Twilio, Stripe, and AWS, and complete
-infrastructure-as-code files revealing internal topology. Rewards in
-this class: \$1,500--\$8,000 depending on severity of exposed secrets.
-
-**🔍 Google Dork Used:**
-
-**site:dev.azure.com \"example.com\"**
-
-**site:dev.azure.com \"company\" \"api_key\" OR \"token\" OR \"secret\"
-OR \"password\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Public Azure DevOps Repos — Hardcoded Secrets ($1,500–$8,000 Rewards)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Multiple HackerOne reports (2020–2024) describe researchers finding Azure DevOps repositories set to "Public" by a developer during a demo and never reverted. Contents found: production .env files in git history, hardcoded API keys for Twilio, Stripe, and AWS, and complete infrastructure-as-code files revealing internal topology. Rewards in this class: $1,500–$8,000 depending on severity of exposed secrets.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:dev.azure.com "example.com"<br/>site:dev.azure.com "company" "api_key" OR "token" OR "secret" OR "password"</div>
+</div>
 
 ### 6. Microsoft SharePoint
 
@@ -5020,40 +4288,24 @@ treasure trove of internal data.
 
 **Primary Dork**
 
-site:sharepoint.com \"example.com\"
+```
+site:sharepoint.com "example.com"
+```
 
 **Narrowing Variations**
 
-site:sharepoint.com \"example.com\" \"internal\" OR \"policy\" OR
-\"procedure\"
+```
+site:sharepoint.com "example.com" "internal" OR "policy" OR "procedure"
+site:sharepoint.com "example.com" "employee" OR "HR" OR "salary"
+site:sharepoint.com "example.com" "network" OR "infrastructure" OR "topology"
+```
 
-site:sharepoint.com \"example.com\" \"employee\" OR \"HR\" OR \"salary\"
-
-site:sharepoint.com \"example.com\" \"network\" OR \"infrastructure\" OR
-\"topology\"
-
----
-
-**★ Real-Life Example --- Government Agency SharePoint --- IT
-Infrastructure Diagrams Publicly Accessible**
-
----
-
-A government agency\'s SharePoint site was found by a researcher via
-the dork below. The site was configured with \"external sharing\"
-enabled, allowing anyone with a Microsoft account to view the
-documents. Contents included internal security audit reports, IT
-procurement plans, and network infrastructure diagrams. Reported to the
-agency\'s CERT; the site was taken private within 48 hours.
-
-**🔍 Google Dork Used:**
-
-**site:sharepoint.com \"agency-name\"**
-
-**site:sharepoint.com \"example.gov\" \"internal\" OR \"security\" OR
-\"infrastructure\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Government Agency SharePoint — IT Infrastructure Diagrams Publicly Accessible</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A government agency's SharePoint site was found by a researcher via the dork below. The site was configured with "external sharing" enabled, allowing anyone with a Microsoft account to view the documents. Contents included internal security audit reports, IT procurement plans, and network infrastructure diagrams. Reported to the agency's CERT; the site was taken private within 48 hours.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:sharepoint.com "agency-name"<br/>site:sharepoint.com "example.gov" "internal" OR "security" OR "infrastructure"</div>
+</div>
 
 ### 7. DigitalOcean Spaces
 
@@ -5063,38 +4315,23 @@ exposed database backups, configuration files, and application logs.
 
 **Primary Dork**
 
-site:digitaloceanspaces.com \"example.com\"
+```
+site:digitaloceanspaces.com "example.com"
+```
 
 **Narrowing Variations**
 
-site:digitaloceanspaces.com \"example.com\" \".sql\" OR \".bak\" OR
-\".env\"
+```
+site:digitaloceanspaces.com "example.com" ".sql" OR ".bak" OR ".env"
+site:digitaloceanspaces.com "example.com" "backup" OR "config" OR "dump"
+```
 
-site:digitaloceanspaces.com \"example.com\" \"backup\" OR \"config\" OR
-\"dump\"
-
----
-
-**★ Real-Life Example --- PostgreSQL Backups & Redis Credentials on
-Public DigitalOcean Spaces**
-
----
-
-Researchers using site:digitaloceanspaces.com in authorised engagements
-have found full PostgreSQL database backups, application configuration
-files with Redis credentials, and user-generated content including
-documents containing PII. DigitalOcean Spaces defaults to private, so
-public buckets represent a deliberate but often forgotten configuration
-change made during development and never reverted.
-
-**🔍 Google Dork Used:**
-
-**site:digitaloceanspaces.com \"example.com\"**
-
-**site:digitaloceanspaces.com \"example.com\" filetype:sql OR
-filetype:bak OR filetype:env**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: PostgreSQL Backups & Redis Credentials on Public DigitalOcean Spaces</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Researchers using <code>site:digitaloceanspaces.com</code> in authorised engagements have found full PostgreSQL database backups, application configuration files with Redis credentials, and user-generated content including documents containing PII. DigitalOcean Spaces defaults to private, so public buckets represent a deliberate but often forgotten configuration change made during development and never reverted.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:digitaloceanspaces.com "example.com"<br/>site:digitaloceanspaces.com "example.com" filetype:sql OR filetype:bak OR filetype:env</div>
+</div>
 
 ### 8. Firebase
 
@@ -5106,58 +4343,31 @@ highest-impact bug bounty findings in recent years.
 
 **Primary Dork**
 
-site:firebaseio.com \"example\"
+```
+site:firebaseio.com "example"
+```
 
 **Verification Step (append .json to the database URL)**
 
+```
 https://company-name-default-rtdb.firebaseio.com/.json
+```
 
-=\> If it returns data without authentication, the database is publicly
-readable.
+=> If it returns data without authentication, the database is publicly readable.
 
-+-----------------------------------------------------------------------+
-| **⚠ HackerOne Report #1065134** --- |
-| https://hackerone.com/reports/1065134 |
-+=======================================================================+
-| A researcher used site:firebaseio.com \"targetapp\" to find a |
-| Firebase Realtime Database belonging to a mobile app with over 5 |
-| million installs. Appending /.json to the database URL returned ALL |
-| user records (emails, phone numbers, profile photos, location |
-| history) without any authentication. |
-| |
-| Severity: Critical \| Reward: \$2,500 \| Time to fix: 6 hours after |
-| report. |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:firebaseio.com \"targetapp\"** |
-+-----------------------------------------------------------------------+
-| **site:firebaseio.com \"example\" \"-default-rtdb\"** |
-+-----------------------------------------------------------------------+
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">⚠ HackerOne Report #1065134 — https://hackerone.com/reports/1065134</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A researcher used <code>site:firebaseio.com "targetapp"</code> to find a Firebase Realtime Database belonging to a mobile app with over 5 million installs. Appending <code>/.json</code> to the database URL returned ALL user records (emails, phone numbers, profile photos, location history) without any authentication.<br/><br/>Severity: Critical | Reward: $2,500 | Time to fix: 6 hours after report.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:firebaseio.com "targetapp"<br/>site:firebaseio.com "example" "-default-rtdb"</div>
+</div>
 
----
-
-**★ Real-Life Example --- Appknox Research --- 2,300 Publicly Readable
-Firebase Databases (2021)**
-
----
-
-Security researchers found 2,300 publicly readable Firebase databases
-exposing user data from iOS and Android apps. Many belonged to apps
-with millions of users. The researchers used site:firebaseio.com
-combined with app names from the Apple App Store and Google Play to
-construct targeted dorks for each app package.
-
-**🔍 Google Dork Used:**
-
-**site:firebaseio.com \"appname\"**
-
-**site:firebaseio.com \"com.company.appname\"**
-
-**site:firebaseio.com \"example\" (combined with App Store / Google
-Play app names)**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Appknox Research — 2,300 Publicly Readable Firebase Databases (2021)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Security researchers found 2,300 publicly readable Firebase databases exposing user data from iOS and Android apps. Many belonged to apps with millions of users. The researchers used <code>site:firebaseio.com</code> combined with app names from the Apple App Store and Google Play to construct targeted dorks for each app package.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:firebaseio.com "appname"<br/>site:firebaseio.com "com.company.appname"<br/>site:firebaseio.com "example" (combined with App Store / Google Play app names)</div>
+</div>
 
 ### 9. JFrog Artifactory
 
@@ -5168,56 +4378,30 @@ scripts, and software packages containing hardcoded credentials.
 
 **Primary Dork**
 
-site:jfrog.io \"example\"
+```
+site:jfrog.io "example"
+```
 
 **Narrowing Variations**
 
-site:jfrog.io \"companyname\"
+```
+site:jfrog.io "companyname"
+site:jfrog.io "example" "npm" OR "pypi" OR "docker" OR "maven"
+```
 
-site:jfrog.io \"example\" \"npm\" OR \"pypi\" OR \"docker\" OR \"maven\"
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">⚠ HackerOne Report #911606 — https://hackerone.com/reports/911606</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A researcher discovered an exposed JFrog Artifactory instance via the dork below. The instance was configured with anonymous read access, revealing internal build artefacts including a Docker image containing hardcoded AWS credentials in the build scripts. The AWS keys provided read access to 14 S3 buckets.<br/><br/>Severity: Critical | Reward: $1,000 (initial) + escalation bonus | Chain: JFrog → AWS.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:jfrog.io "targetcompany"<br/>site:jfrog.io "example" "docker" OR "aws" OR "credentials"</div>
+</div>
 
-+-----------------------------------------------------------------------+
-| **⚠ HackerOne Report #911606** --- |
-| https://hackerone.com/reports/911606 |
-+=======================================================================+
-| A researcher discovered an exposed JFrog Artifactory instance via the |
-| dork below. The instance was configured with anonymous read access, |
-| revealing internal build artefacts including a Docker image |
-| containing hardcoded AWS credentials in the build scripts. The AWS |
-| keys provided read access to 14 S3 buckets. |
-| |
-| Severity: Critical \| Reward: \$1,000 (initial) + escalation bonus \| |
-| Chain: JFrog → AWS. |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:jfrog.io \"targetcompany\"** |
-+-----------------------------------------------------------------------+
-| **site:jfrog.io \"example\" \"docker\" OR \"aws\" OR |
-| \"credentials\"** |
-+-----------------------------------------------------------------------+
-
----
-
-**★ Real-Life Example --- Internal npm / PyPI Packages with Connection
-Strings on JFrog (Ongoing)**
-
----
-
-A common JFrog Artifactory finding is the discovery of internal npm or
-Python packages published to the internal registry that contain
-connection strings, API tokens, or private encryption keys. These
-become accessible when the registry is misconfigured as publicly
-readable.
-
-**🔍 Google Dork Used:**
-
-**site:jfrog.io \"company\" \"npm\" OR \"pypi\" OR \"maven\"**
-
-**site:jfrog.io \"example\" \"token\" OR \"secret\" OR \"api_key\" OR
-\"connection_string\"**
-
----
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Internal npm / PyPI Packages with Connection Strings on JFrog (Ongoing)</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A common JFrog Artifactory finding is the discovery of internal npm or Python packages published to the internal registry that contain connection strings, API tokens, or private encryption keys. These become accessible when the registry is misconfigured as publicly readable.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:jfrog.io "company" "npm" OR "pypi" OR "maven"<br/>site:jfrog.io "example" "token" OR "secret" OR "api_key" OR "connection_string"</div>
+</div>
 
 ### 10. Lesser-Known Amazon S3 Subdomains
 
@@ -5228,171 +4412,73 @@ that only check the primary endpoint.
 
 **Primary Dorks**
 
-\# Regional and legacy S3 endpoints:
+```
+# Regional and legacy S3 endpoints:
+site:s3-external-1.amazonaws.com "example.com"
+site:s3.dualstack.us-east-1.amazonaws.com "example.com"
 
-site:s3-external-1.amazonaws.com \"example.com\"
+# Combined search across all S3 variants:
+site:s3.amazonaws.com OR site:s3-external-1.amazonaws.com OR site:s3.dualstack.us-east-1.amazonaws.com "example.com"
+```
 
-site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Legacy Buckets in AWS Security Assessments — Pre-2023 Public ACLs</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">Penetration testers on authorised AWS security assessments have found that <code>s3-external-1.amazonaws.com</code> and the dualstack endpoints frequently host legacy buckets created during early AWS migrations that were never included in subsequent bucket policy review cycles. These buckets retain the old public ACLs from before AWS made private-by-default the standard in 2023.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:s3-external-1.amazonaws.com "example.com"<br/>site:s3.dualstack.us-east-1.amazonaws.com "example.com"</div>
+</div>
 
-\# Combined search across all S3 variants:
-
-site:s3.amazonaws.com OR site:s3-external-1.amazonaws.com
-
-OR site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"
-
----
-
-**★ Real-Life Example --- Legacy Buckets in AWS Security Assessments
---- Pre-2023 Public ACLs**
-
----
-
-Penetration testers on authorised AWS security assessments have found
-that s3-external-1.amazonaws.com and the dualstack endpoints frequently
-host legacy buckets created during early AWS migrations that were never
-included in subsequent bucket policy review cycles. These buckets
-retain the old public ACLs from before AWS made private-by-default the
-standard in 2023.
-
-**🔍 Google Dork Used:**
-
-**site:s3-external-1.amazonaws.com \"example.com\"**
-
-**site:s3.dualstack.us-east-1.amazonaws.com \"example.com\"**
-
----
-
-+-----------------------------------------------------------------------+
-| **★ Real-Life Example --- Media Company Legacy S3 Bucket --- |
-| HackerOne High Severity, \$2,000 Reward** |
-+=======================================================================+
-| A bug bounty researcher targeting a major media company found a |
-| publicly accessible bucket at s3-external-1.amazonaws.com containing |
-| full video production assets, unedited interview footage, and |
-| broadcast scheduling spreadsheets. The bucket had been created in |
-| 2015 for a CDN migration and was never locked down. |
-| |
-| Reported via HackerOne: Severity High, Reward \$2,000. |
-+-----------------------------------------------------------------------+
-| **🔍 Google Dork Used:** |
-+-----------------------------------------------------------------------+
-| **site:s3-external-1.amazonaws.com \"mediacompany.com\"** |
-+-----------------------------------------------------------------------+
-| **site:s3-external-1.amazonaws.com \"company\" \"video\" OR \"media\" |
-| OR \"cdn\"** |
-+-----------------------------------------------------------------------+
+<div style="border:1px solid hsl(var(--border));border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+<div style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));padding:0.6rem 1rem;font-weight:700;font-size:0.97rem;">★ Real-Life Example: Media Company Legacy S3 Bucket — HackerOne High Severity, $2,000 Reward</div>
+<div style="padding:1rem;font-size:0.93rem;line-height:1.7;background:hsl(var(--card));color:hsl(var(--card-foreground));">A bug bounty researcher targeting a major media company found a publicly accessible bucket at <code>s3-external-1.amazonaws.com</code> containing full video production assets, unedited interview footage, and broadcast scheduling spreadsheets. The bucket had been created in 2015 for a CDN migration and was never locked down.<br/><br/>Reported via HackerOne: Severity High, Reward $2,000.</div>
+<div style="background:hsl(var(--accent));color:hsl(var(--accent-foreground));padding:0.5rem 1rem;font-weight:700;font-size:0.9rem;border-top:1px solid hsl(var(--border));">🔍 Google Dork Used:</div>
+<div style="padding:0.75rem 1rem;background:hsl(var(--muted));color:hsl(var(--muted-foreground));font-family:monospace;font-size:0.88rem;line-height:2;">site:s3-external-1.amazonaws.com "mediacompany.com"<br/>site:s3-external-1.amazonaws.com "company" "video" OR "media" OR "cdn"</div>
+</div>
 
 ### Consolidated Cloud Storage Dork Reference
 
----
-
-**Platform** **Google Dork** **Common Finding**
-
----
-
-Google Docs site:docs.google.com inurl:\"/d/\" Internal presentations, M&A
-\"target\" docs, HR files
-
-OneDrive site:onedrive.live.com \"target\" Process docs, credentials,
-project files
-
-Dropbox site:dropbox.com/s \"target\" DB exports, source code,
-client data
-
-Box site:box.com/s \"target\" Contracts, audit reports,
-legal docs
-
-Azure DevOps site:dev.azure.com \"target\" Source code, API keys,
-pipeline configs
-
-SharePoint site:sharepoint.com \"target\" Policy docs, HR records,
-audit reports
-
-DigitalOcean site:digitaloceanspaces.com DB backups, config files,
-\"target\" app logs
-
-Firebase site:firebaseio.com \"target\" User PII, app secrets, API
-endpoints
-
-JFrog site:jfrog.io \"target\" Build artefacts,
-Artifactory credentials, Docker images
-
-AWS S3 site:s3-external-1.amazonaws.com Legacy buckets, media
-(legacy) \"target\" assets, DBs
-
----
+| Platform | Google Dork | Common Finding |
+|---|---|---|
+| Google Docs | `site:docs.google.com inurl:"/d/" "target"` | Internal presentations, M&A docs, HR files |
+| OneDrive | `site:onedrive.live.com "target"` | Process docs, credentials, project files |
+| Dropbox | `site:dropbox.com/s "target"` | DB exports, source code, client data |
+| Box | `site:box.com/s "target"` | Contracts, audit reports, legal docs |
+| Azure DevOps | `site:dev.azure.com "target"` | Source code, API keys, pipeline configs |
+| SharePoint | `site:sharepoint.com "target"` | Policy docs, HR records, audit reports |
+| DigitalOcean | `site:digitaloceanspaces.com "target"` | DB backups, config files, app logs |
+| Firebase | `site:firebaseio.com "target"` | User PII, app secrets, API endpoints |
+| JFrog Artifactory | `site:jfrog.io "target"` | Build artefacts, credentials, Docker images |
+| AWS S3 (legacy) | `site:s3-external-1.amazonaws.com "target"` | Legacy buckets, media assets, DBs |
 
 ### Resources
 
-- <https://hackerone.com/reports/1065134>
+- https://hackerone.com/reports/1065134
+- https://hackerone.com/reports/911606
 
-- <https://hackerone.com/reports/911606>
+<div data-callout="critical">
+<div align="center"><strong>For Educational Use Only • Permission First, Always • Stay Ethical</strong></div><br/>
 
-+-----------------------------------------------------------------------+
-| **CRITICAL** |
-+:=====================================================================:+
-| \*For Educational Use Only • Permission First, Always • Stay Ethical\* |
-| |
-| Keep in mind that using Google Dorks for malicious purposes is |
-| illegal and unethical. Use them for security testing and bug bounty |
-| hunting only, against targets you are explicitly authorised to test. |
-| The security community relies on ethical researchers to keep these |
-| techniques available for defensive use. |
-+-----------------------------------------------------------------------+
+Keep in mind that using Google Dorks for malicious purposes is illegal and unethical. Use them for security testing and bug bounty hunting only, against targets you are explicitly authorised to test. The security community relies on ethical researchers to keep these techniques available for defensive use.
+</div>
 
 ## 6.10 Examples of Creepy Dorks
 
-These dorks reveal vulnerabilities in websites, and their contents may
-be newsworthy
+These dorks reveal vulnerabilities in websites, and their contents may be newsworthy depending on the zeitgeist.
 
-depending on the zeitgeist.
-
-+---------------------------------+------------------------------------+
-| **Example Query** | **Research Scenario** |
-+=================================+====================================+
-| inurl:\"view.shtml\" \"Network | Get web applications showing live |
-| Camera\", | webcam |
-| | |
-| \"Camera Live Image\", | (online camera) footage. |
-| | |
-| inurl:\"guestimage.html\", | |
-| | |
-| intitle:\"webcamXP5'\" | |
-+---------------------------------+------------------------------------+
-| \"Not for Public Release\" + | Get links to documents meant to be |
-| \"Confidential\" ext:pdf \| | |
-| ext:doc \| ext:xlsx | classified. Some come from |
-| | governmental |
-| | |
-| | websites. |
-+---------------------------------+------------------------------------+
-| site:.hk & inurl:wp-login | Get login pages of WordPress sites |
-| | ending |
-| | |
-| | in the notoriously unsafe domain |
-| | ".hk" |
-+---------------------------------+------------------------------------+
-| "index of" inurl:ftp secret | Get FTP servers you want to access |
-| | |
-| | containing the keyword "secret" |
-+---------------------------------+------------------------------------+
+| Example Query | Research Scenario |
+|---|---|
+| `inurl:"view.shtml" "Network Camera"`, `"Camera Live Image"`, `inurl:"guestimage.html"`, `intitle:"webcamXP5'"` | Get web applications showing live webcam (online camera) footage. |
+| `"Not for Public Release" + "Confidential" ext:pdf | ext:doc | ext:xlsx` | Get links to documents meant to be classified. Some come from governmental websites. |
+| `site:.hk & inurl:wp-login` | Get login pages of WordPress sites ending in the notoriously unsafe domain ".hk" |
+| `"index of" inurl:ftp secret` | Get FTP servers you want to access containing the keyword "secret" |
 
 **⭐ Key Takeaways**
 
-- **✓** Security recon dorks must only be used on domains you own or are
-  explicitly authorised to test.
-
-- **✓** OSINT research using publicly available data is legal; accessing
-  restricted systems is not.
-
-- **✓** Competitor SEO analysis with Google Dorks reveals content
-  strategy and subdomain structure.
-
-- **✓** Academic researchers can find papers, datasets, and lecture
-  notes far faster with filetype: and site: combinations.
-
-- **✓** Bug bounty hunters use dorks as a rapid, low-noise first pass to
-  map an attack surface.
+- **✓** Security recon dorks must only be used on domains you own or are explicitly authorised to test.
+- **✓** OSINT research using publicly available data is legal; accessing restricted systems is not.
+- **✓** Competitor SEO analysis with Google Dorks reveals content strategy and subdomain structure.
+- **✓** Academic researchers can find papers, datasets, and lecture notes far faster with `filetype:` and `site:` combinations.
+- **✓** Bug bounty hunters use dorks as a rapid, low-noise first pass to map an attack surface.
 
 \*\*CHAPTER 7\*\*
 

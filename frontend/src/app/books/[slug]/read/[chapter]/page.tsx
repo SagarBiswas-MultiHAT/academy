@@ -275,9 +275,9 @@ const getMarkdownComponents = (bookSlug: string): Components => ({
     }
     const text = String(children).trim();
     const isQuery =
-      /^(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|after:|before:)/.test(text) ||
+      /^(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|allinanchor:|inanchor:|after:|before:|\?[a-zA-Z0-9_]+=)/.test(text) ||
       / OR | AND /.test(text) || / \| /.test(text) ||
-      /\b(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:)/.test(text) ||
+      /\b(site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|allinanchor:|inanchor:)/.test(text) ||
       /^"[^"]{2,}/.test(text);
     if (isQuery) {
       return (

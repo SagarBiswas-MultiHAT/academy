@@ -415,6 +415,8 @@ export class BooksService {
     content = content.replace(/\\"/g, '"');           // escaped quotes
     content = content.replace(/^\\\s*$/gm, '');      // lone backslash lines
     content = content.replace(/\\-{2,}/g, '--');     // escaped dashes \--
+    content = content.replace(/(\d+)\\\./g, '$1.');  // escaped ordered list periods
+    content = content.replace(/\\\*/g, '*');         // escaped asterisks
     content = content.replace(/[\\\\](?=\r?\n)/g, ''); // trailing backslash at end of line (pandoc)
 
     // ══════════════════════════════════════════════════════════════════
@@ -497,7 +499,7 @@ export class BooksService {
     // (no narrative text, just operator syntax) → promote to code fence
     // ══════════════════════════════════════════════════════════════════
     content = content.replace(
-      /^> ((?:site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|https?:\/\/)[^\n]+)$/gm,
+      /^> ((?:\\?"|\(?(?:site:|intitle:|inurl:|filetype:|ext:|cache:|related:|info:|intext:|allintitle:|allinanchor:|inanchor:|https?:\/\/))[^\n]+)$/gm,
       '```\n$1\n```\n'
     );
 
