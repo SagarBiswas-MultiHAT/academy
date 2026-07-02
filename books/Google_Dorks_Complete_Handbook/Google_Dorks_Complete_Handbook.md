@@ -2493,7 +2493,7 @@ Google misinterprets the query as a web search.
 
 **Combining Operators for Power Searches**
 
-_Stacking operators to build precise, multi-layered queries_
+<div class="text-right text-muted-foreground italic mb-8 -mt-4"><em>Stacking operators to build precise, multi-layered queries</em></div>
 
 # Chapter 5: Combining Operators for Power Searches
 
@@ -2533,386 +2533,421 @@ query, ask yourself these questions in order:
 
 **Query-Building Workflow**
 
-> **\[ Define Your Research Goal Clearly \]**
+<div style="display:flex;flex-direction:column;align-items:center;gap:0;font-family:inherit;margin:1.5rem 0;">
 
-▼
+  <div style="background:linear-gradient(135deg,var(--gradient-start),var(--gradient-mid));color:#fff;font-weight:700;font-size:0.95rem;padding:0.7rem 2rem;border-radius:0.75rem;box-shadow:0 4px 18px rgba(var(--glow-primary),0.25);text-align:center;width:100%;max-width:480px;letter-spacing:0.01em;">
+    🎯 Step 1 [ Define Your Research Goal Clearly ]
+  </div>
 
-> \[ Start with a Simple Two-Word Search \]
+  <div style="font-size:1.4rem;color:var(--gradient-start);line-height:1;margin:2px 0;">▼</div>
 
-▼
+  <div style="background:var(--glass-bg);backdrop-filter:blur(12px);border:1.5px solid var(--glass-border);color:inherit;font-size:0.9rem;padding:0.6rem 1.5rem;border-radius:0.65rem;text-align:center;width:100%;max-width:480px;">
+    🔍 Step 2 [ Start with a Simple Two-Word Search ]
+  </div>
 
-> \[ Too Broad? Add site: or filetype: \]
+  <div style="font-size:1.4rem;color:var(--gradient-start);line-height:1;margin:2px 0;">▼</div>
 
-▼
+  <div style="background:var(--glass-bg);backdrop-filter:blur(12px);border:1.5px solid var(--glass-border);color:inherit;font-size:0.9rem;padding:0.6rem 1.5rem;border-radius:0.65rem;text-align:center;width:100%;max-width:480px;">
+    ⚠️ [ Too Broad? Add <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">site:</code> or <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">filetype:</code> ]
+  </div>
 
-> \[ Still Too Broad? Add intitle: or inurl: \]
+  <div style="font-size:1.4rem;color:var(--gradient-start);line-height:1;margin:2px 0;">▼</div>
 
-▼
+  <div style="background:var(--glass-bg);backdrop-filter:blur(12px);border:1.5px solid var(--glass-border);color:inherit;font-size:0.9rem;padding:0.6rem 1.5rem;border-radius:0.65rem;text-align:center;width:100%;max-width:480px;">
+    ⚠️ [ Still Too Broad? Add <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">intitle:</code> or <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">inurl:</code> ]
+  </div>
 
-> \[ Still Too Broad? Use \" \" for Exact Matching \]
+  <div style="font-size:1.4rem;color:var(--gradient-start);line-height:1;margin:2px 0;">▼</div>
 
-▼
+  <div style="background:var(--glass-bg);backdrop-filter:blur(12px);border:1.5px solid var(--glass-border);color:inherit;font-size:0.9rem;padding:0.6rem 1.5rem;border-radius:0.65rem;text-align:center;width:100%;max-width:480px;">
+    ⚠️ [ Still Too Broad? Use <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">" "</code> for Exact Matching ]
+  </div>
 
-> \[ Noise? Use - to Exclude Unwanted Terms \]
+  <div style="font-size:1.4rem;color:var(--gradient-start);line-height:1;margin:2px 0;">▼</div>
 
-▼
+  <div style="background:var(--glass-bg);backdrop-filter:blur(12px);border:1.5px solid var(--glass-border);color:inherit;font-size:0.9rem;padding:0.6rem 1.5rem;border-radius:0.65rem;text-align:center;width:100%;max-width:480px;">
+    🔇 [ Noise? Use <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">-</code> to Exclude Unwanted Terms ]
+  </div>
 
-> \[ Need Recency? Add after:YYYY-MM-DD \]
+  <div style="font-size:1.4rem;color:var(--gradient-start);line-height:1;margin:2px 0;">▼</div>
 
-▼
+  <div style="background:var(--glass-bg);backdrop-filter:blur(12px);border:1.5px solid var(--glass-border);color:inherit;font-size:0.9rem;padding:0.6rem 1.5rem;border-radius:0.65rem;text-align:center;width:100%;max-width:480px;">
+    📅 [ Need Recency? Add <code style="background:rgba(var(--glow-primary),0.1);padding:0.1em 0.4em;border-radius:0.3em;font-size:0.85em;">after:YYYY-MM-DD</code> ]
+  </div>
 
-> **\[ Evaluate Results. If Still Off, Adjust One Operator at a Time
-> \]**
+  <div style="font-size:1.4rem;color:var(--gradient-mid);line-height:1;margin:2px 0;">▼</div>
+
+  <div style="background:linear-gradient(135deg,var(--gradient-mid),var(--gradient-end));color:#fff;font-weight:700;font-size:0.95rem;padding:0.7rem 2rem;border-radius:0.75rem;box-shadow:0 4px 18px rgba(var(--glow-accent),0.25);text-align:center;width:100%;max-width:480px;">
+    ✅ [ Evaluate Results — If Still Off, Adjust One Operator at a Time ]
+  </div>
+
+</div>
 
 ## 5.2 Worked Examples by Use Case
 
 ### Example 1: Academic Research
 
-> **Query**
->
-> site:harvard.edu filetype:pdf \"climate change\" after:2023-01-01
+**Goal:** Find recent, authoritative academic PDFs on climate change from Harvard.
 
-**Breakdown:** Restrict to Harvard (site:) + PDF only (filetype:) +
-exact phrase (\"climate change\") + published after 2023 (after:).
-Result: a tight list of recent Harvard-hosted academic PDFs.
+```
+site:harvard.edu filetype:pdf "climate change" after:2023-01-01
+```
+
+| Operator | Purpose |
+| :--- | :--- |
+| `site:harvard.edu` | Restrict results to Harvard's domain only |
+| `filetype:pdf` | Return only downloadable PDF documents |
+| `"climate change"` | Require the exact phrase in the document |
+| `after:2023-01-01` | Only pages published or indexed after Jan 2023 |
+
+**What you get:** A tight, curated list of recent Harvard-hosted academic PDFs — no blog posts, no news articles.
+
+---
 
 ### Example 2: Job Hunting
 
-> **Queries**
->
-> intitle:\"software developer\" inurl:career after:2024-01-01
->
-> intitle:\"software engineer\" inurl:careers site:\*.com \"remote\"
-> -internship
->
-> =\> **Breakdown:** Job title in title (intitle:) + careers section in
-> URL (inurl:) + any .com domain + remote mentioned in text + excluding
-> internships.
->
-> _\# Bangladesh-specific:_
->
-> inurl:jobs \"junior developer\" site:bd.linkedin.com OR
-> site:bdjobs.com
+**Goal:** Find software developer job listings, including Bangladesh-specific results.
+
+```
+intitle:"software developer" inurl:career after:2024-01-01
+```
+
+```
+intitle:"software engineer" inurl:careers site:*.com "remote" -internship
+```
+
+| Operator | Purpose |
+| :--- | :--- |
+| `intitle:"software developer"` | Page title must contain the job role |
+| `inurl:career` | URL must contain "career" — targets jobs sections |
+| `after:2024-01-01` | Only recent listings from 2024 onwards |
+| `site:*.com "remote"` | Any .com domain with "remote" mentioned in the page |
+| `-internship` | Exclude pages that mention internships |
+
+**Bangladesh-specific:**
+
+```
+inurl:jobs "junior developer" site:bd.linkedin.com OR site:bdjobs.com
+```
+
+**What you get:** Direct links to active job listings from career pages and major Bangladeshi job platforms.
+
+---
 
 ### Example 3: Competitive Analysis
 
-> **Queries**
->
-> site:yourCompetitor.com inurl:blog -inurl:author \"content marketing\"
-> after:2024-01-01
->
-> site:yourCompetitor.com -inurl:www
->
-> =\> Reveals subdomains (blog.yourCompetitor.com,
-> shop.yourCompetitor.com)
+**Goal:** Spy on a competitor's published content strategy and discover their subdomains.
+
+```
+site:yourCompetitor.com inurl:blog -inurl:author "content marketing" after:2024-01-01
+```
+
+```
+site:yourCompetitor.com -inurl:www
+```
+
+| Operator | Purpose |
+| :--- | :--- |
+| `site:yourCompetitor.com` | Limit results to the competitor's domain |
+| `inurl:blog` | Target their blog section |
+| `-inurl:author` | Exclude author profile pages (noise) |
+| `"content marketing"` | Find posts explicitly about this topic |
+| `after:2024-01-01` | Only recent content |
+| `-inurl:www` | Exclude the main www subdomain — **reveals hidden subdomains** like `blog.`, `shop.`, `api.` |
+
+**What you get:** Their recent content marketing playbook + a map of their entire subdomain infrastructure.
+
+---
 
 ### Example 4: Security Audit of Your Own Site
 
-> **Query**
->
-> site:yourdomain.com (
->
-> filetype:env OR filetype:sql OR filetype:bak OR
->
-> filetype:log OR intitle:\"index of\" OR inurl:/.git OR
->
-> filetype:cfg OR filetype:conf OR ext:swp
->
-> )
+**Goal:** Find accidentally exposed sensitive files on your domain before attackers do.
 
-**Best practice:** Run this monthly as part of your external
-attack-surface monitoring. Any result is a finding that needs immediate
-action.
+```
+site:yourdomain.com (
+  filetype:env OR filetype:sql OR filetype:bak OR
+  filetype:log OR intitle:"index of" OR inurl:/.git OR
+  filetype:cfg OR filetype:conf OR ext:swp
+)
+```
+
+| File Type | What It Exposes |
+| :--- | :--- |
+| `.env` | API keys, database passwords, secret tokens |
+| `.sql` | Full database dumps |
+| `.bak` | Backup files — often old versions of config or source |
+| `.log` | Server logs with user activity, IP addresses, errors |
+| `intitle:"index of"` | Open directory listings |
+| `inurl:/.git` | Exposed Git repositories (source code leak) |
+| `.cfg` / `.conf` | Application configuration files |
+| `.swp` | Vim swap files — temporary copies of source code |
+
+> **Best practice:** Run this query monthly as part of your external attack-surface monitoring. **Any result returned is a finding that needs immediate action.**
+
+---
 
 ### Example 5: Fact-Checking with Authoritative Sources
 
-> **Query**
->
-> \"climate change\" site:.edu OR site:.gov filetype:pdf
-> after:2022-01-01
+**Goal:** Find peer-reviewed or government-backed sources for a specific topic.
 
-**Breakdown:** Exact topic + educational or government sources only +
-PDF + published since 2022. Produces authoritative, citable sources.
+```
+"climate change" (site:.edu OR site:.gov) filetype:pdf after:2022-01-01
+```
+
+| Operator | Purpose |
+| :--- | :--- |
+| `"climate change"` | Exact topic phrase — no loosely related results |
+| `site:.edu OR site:.gov` | Only educational institutions or government agencies |
+| `filetype:pdf` | Formal documents, not blog posts |
+| `after:2022-01-01` | Recent enough to be relevant |
+
+**What you get:** Authoritative, citable academic or government sources — ideal for research papers, journalism, or debunking misinformation.
+
+---
 
 ### Example 6: Finding Open Datasets
 
-> **Queries**
->
-> filetype:csv \"covid 19\" site:data.gov
->
-> site:worldbank.org (filetype:xls OR filetype:xlsx OR filetype:csv)
-> \"Bangladesh GDP\"
->
-> site:data.gov.bd filetype:csv OR filetype:xlsx
->
-> =\> Open data from the Bangladesh government data portal
+**Goal:** Locate publicly available data files for analysis.
+
+```
+filetype:csv "covid 19" site:data.gov
+```
+
+```
+site:worldbank.org (filetype:xls OR filetype:xlsx OR filetype:csv) "Bangladesh GDP"
+```
+
+```
+site:data.gov.bd filetype:csv OR filetype:xlsx
+```
+
+| Operator | Purpose |
+| :--- | :--- |
+| `filetype:csv / xls / xlsx` | Target spreadsheet and data files only |
+| `site:data.gov` | US government open data portal |
+| `site:worldbank.org` | World Bank public datasets |
+| `site:data.gov.bd` | Bangladesh government open data portal |
+| `"Bangladesh GDP"` | Exact phrase to zero-in on the specific dataset |
+
+**What you get:** Raw, downloadable data files ready for analysis — no scraping required.
+
+---
 
 ### Example 7: Bangladesh-Specific Research
 
-> **Queries**
->
-> site:gov.bd filetype:pdf \"tender notice\" after:2024-01-01
->
-> =\> Recent government tender notices
->
-> site:.edu.bd filetype:pdf \"research paper\" after:2023-01-01
->
-> =\> Recent academic research from Bangladeshi universities
->
-> site:bb.org.bd filetype:pdf \"monetary policy\"
->
-> =\> Bangladesh Bank monetary policy documents
->
-> intitle:\"HSC result\" OR intitle:\"SSC result\" site:.bd
-> after:2024-01-01
->
-> =\> Official exam result pages from 2024
+**Goal:** Find official government, academic, and financial documents from Bangladeshi sources.
+
+```
+site:gov.bd filetype:pdf "tender notice" after:2024-01-01
+```
+> Recent government procurement and tender notices.
+
+```
+site:.edu.bd filetype:pdf "research paper" after:2023-01-01
+```
+> Recent academic research published by Bangladeshi universities.
+
+```
+site:bb.org.bd filetype:pdf "monetary policy"
+```
+> Bangladesh Bank official monetary policy documents.
+
+```
+intitle:"HSC result" OR intitle:"SSC result" site:.bd after:2024-01-01
+```
+> Official public exam result pages from 2024.
+
+| Domain Suffix | What It Targets |
+| :--- | :--- |
+| `site:gov.bd` | Bangladesh government agencies |
+| `site:.edu.bd` | Bangladeshi universities and colleges |
+| `site:bb.org.bd` | Bangladesh Bank (central bank) |
+| `site:.bd` | Any Bangladeshi domain |
+
+---
 
 ### Example 8: OSINT Investigation
 
-> **Queries**
->
-> site:.gov.bd \"audit report\" filetype:pdf after:2023-01-01
->
-> =\> Government audit reports (Bangladesh)
->
-> \"whistleblower\" site:theguardian.com OR site:reuters.com
-> before:2020-01-01
->
-> =\> Historical international whistleblower coverage
->
-> intitle:\"annual report\" \"BRAC\" OR \"Grameen\" filetype:pdf
->
-> =\> Annual reports from major Bangladeshi NGOs
+**Goal:** Gather intelligence from public records, journalism, and NGO reports.
+
+```
+site:.gov.bd "audit report" filetype:pdf after:2023-01-01
+```
+> Government audit reports — useful for accountability investigations.
+
+```
+"whistleblower" (site:theguardian.com OR site:reuters.com) before:2020-01-01
+```
+> Historical whistleblower coverage from major international outlets before 2020.
+
+```
+intitle:"annual report" ("BRAC" OR "Grameen") filetype:pdf
+```
+> Annual reports from BRAC and Grameen Bank — two of the world's largest NGOs.
+
+| Operator | Purpose |
+| :--- | :--- |
+| `site:.gov.bd` | Bangladesh government sources only |
+| `before:2020-01-01` | Only historical coverage (pre-2020) |
+| `"BRAC" OR "Grameen"` | Match either NGO name |
+| `intitle:"annual report"` | Target formal annual report documents |
+
+**What you get:** A structured intelligence picture built entirely from publicly indexed, verifiable sources.
 
 ## 5.3 Multi-Dimensional Query Design Framework
 
----
-
-**Dimension** **Operator(s)** **Example Use**
-
----
-
-Source / Domain site: Limit results to a trusted or
-specific website
-
-Format filetype: / ext: Get only downloadable documents in
-a specific format
-
-Title Focus intitle: / Target pages dedicated to the
-allintitle: **topic**
-
-URL Pattern inurl: Find specific sections of a website
-by URL structure
-
-Exact Content \" \" / intext: [Find a specific]{.underline}
-p[hrase in title **or**
-bod]{.underline}y
-[content]{.underline}
-
-Time Window after: / before: Restrict results to a relevant date
-range
-
-Exclusions -term / -site: Remove noise and irrelevant sources
-from results
-
-Alternatives OR / \| Accept multiple valid values,
-formats, or synonyms
-
-Proximity AROUND(X) Find pages where two terms appear
-close together
-
----
+| Dimension | Operator(s) | Example Use |
+| :--- | :--- | :--- |
+| **Source / Domain** | `site:` | Limit results to a trusted or specific website |
+| **Format** | `filetype:` / `ext:` | Get only downloadable documents in a specific format |
+| **Title Focus** | `intitle:` / `allintitle:` | Target pages dedicated to the **topic** |
+| **URL Pattern** | `inurl:` | Find specific sections of a website by URL structure |
+| **Exact Content** | `" "` / `intext:` | Find a specific phrase in title **or** body content |
+| **Time Window** | `after:` / `before:` | Restrict results to a relevant date range |
+| **Exclusions** | `-term` / `-site:` | Remove noise and irrelevant sources from results |
+| **Alternatives** | `OR` / `\|` | Accept multiple valid values, formats, or synonyms |
+| **Proximity** | `AROUND(X)` | Find pages where two terms appear close together |
 
 ## 5.4 Practice Exercises
 
-Work through each of these exercises in Google. Then check your results
-against [Appendix C (located at the end of the book)]{.underline}, which
-contains expected findings, refinement tips, and alternative approaches
-for each exercise.
+Work through each of these exercises in Google. Then check your results against **Appendix C** (located at the end of the book), which contains expected findings, refinement tips, and alternative approaches for each exercise.
 
-> **Exercise 1: Study Materials from MIT**
->
-> site:mit.edu filetype:pdf \"linear algebra\"
->
-> =\> What types of documents appear? Lecture notes? Problem sets?
-> Textbooks?
->
-> **Exercise 2: Content Marketing Without Tutorials**
->
-> inurl:blog site:hubspot.com \"content marketing\" -tutorial -beginner
->
-> =\> How do results differ from the same query without the exclusions?
->
-> **Exercise 3: Government Reports on Renewable Energy**
->
-> site:.gov \"renewable energy\" filetype:pdf after:2022-01-01
->
-> =\> Try site:.gov.bd for Bangladesh-specific results.
->
-> **Exercise 4: Machine Learning Projects on GitHub**
->
-> site:github.com \"machine learning\" (Python OR R) -tutorial -fork
->
-> =\> How many repositories appear? Try adding filetype:py to narrow
-> further.
->
-> **Exercise 5: Audit Your Own Website**
->
-> site:yourdomain.com intitle:admin
->
-> site:yourdomain.com filetype:pdf
->
-> site:yourdomain.com inurl:login
->
-> =\> Did anything unexpected show up?
->
-> **Exercise 6: Bangladesh Research Deep Dive**
->
-> site:bb.org.bd OR site:bbs.gov.bd filetype:pdf \"economic\"
-> after:2023-01-01
->
-> =\> What official economic data can you find from Bangladeshi
-> government sources?
->
-> **Exercise 7: Find Competitors to a Bangladeshi Service**
->
-> related:bdjobs.com
->
-> =\> What similar job portals does Google identify?
->
-> **Exercise 8: Product Reviews in a Price Range -- NOT reliable**
->
-> \"laptop review\" 2023..2025 \$500..\$1000 -sponsored -ad
->
-> =\> How does adding the price range change the results?
->
-> **Exercise 9: Song Lyrics with a Wildcard**
->
-> \"I will always \* you\" lyrics
->
-> =\> What does Google fill in for the wildcard?
->
-> **Exercise 10: The All-in-One Query**
->
-> site:github.com \"machine learning\" (Python OR R) filetype:py
-> -tutorial after:2023-01-01
->
-> =\> Combine six dimensions: domain, language, format, content,
-> exclusion, and date.
+### Exercise 1: Study Materials from MIT
+
+```
+site:mit.edu filetype:pdf "linear algebra"
+```
+> **Question:** What types of documents appear? Lecture notes? Problem sets? Textbooks?
+
+### Exercise 2: Content Marketing Without Tutorials
+
+```
+inurl:blog site:hubspot.com "content marketing" -tutorial -beginner
+```
+> **Question:** How do results differ from the same query without the exclusions?
+
+### Exercise 3: Government Reports on Renewable Energy
+
+```
+site:.gov "renewable energy" filetype:pdf after:2022-01-01
+```
+> **Tip:** Try `site:.gov.bd` for Bangladesh-specific results.
+
+### Exercise 4: Machine Learning Projects on GitHub
+
+```
+site:github.com "machine learning" (Python OR R) -tutorial -fork
+```
+> **Question:** How many repositories appear? Try adding `filetype:py` to narrow further.
+
+### Exercise 5: Audit Your Own Website
+
+Run these three queries separately:
+```
+site:yourdomain.com intitle:admin
+```
+```
+site:yourdomain.com filetype:pdf
+```
+```
+site:yourdomain.com inurl:login
+```
+> **Question:** Did anything unexpected show up?
+
+### Exercise 6: Bangladesh Research Deep Dive
+
+```
+(site:bb.org.bd OR site:bbs.gov.bd) filetype:pdf "economic" after:2023-01-01
+```
+> **Question:** What official economic data can you find from Bangladeshi government sources?
+
+### Exercise 7: Find Competitors to a Bangladeshi Service
+
+```
+related:bdjobs.com
+```
+> **Question:** What similar job portals does Google identify?
+
+### Exercise 8: Product Reviews in a Price Range (NOT reliable)
+
+```
+"laptop review" 2023..2025 $500..$1000 -sponsored -ad
+```
+> **Question:** How does adding the price range change the results? *(Note: Google's number range operator is notoriously unreliable for prices).*
+
+### Exercise 9: Song Lyrics with a Wildcard
+
+```
+"I will always * you" lyrics
+```
+> **Question:** What does Google fill in for the wildcard?
+
+### Exercise 10: The All-in-One Query
+
+```
+site:github.com "machine learning" (Python OR R) filetype:py -tutorial after:2023-01-01
+```
+> **Breakdown:** Combine six dimensions: domain, language, format, content, exclusion, and date.
 
 ## 5.5 Examples of Complex Google Dorks
 
-You can combine Google dorking commands and operations for specific
-results.
+You can combine Google dorking commands and operations for specific results.
 
-+-------------------------+------------------------------------------------+
-| **Example Query** | **Research Scenario** |
-+=========================+================================================+
-| inurl:zoom.us/j | Get links to publicly shared Zoom meetings you |
-| intext:scheduled | may want to access. |
-+-------------------------+------------------------------------------------+
-| \"index of\" | Get unsecured SQL dumps. Data from improperly |
-| \"database.sql.zip\" | configured SQL |
-| | |
-| | servers will show up on this page. |
-+-------------------------+------------------------------------------------+
-| filetype:doc | StationX with the .doc extension. This looks |
-| site:stationx.net | for legacy Microsoft Word files containing the |
-| nathan | keyword "nathan" (founder's name). |
-+-------------------------+------------------------------------------------+
-| filetype:yaml | Get YAML configuration files specific to |
-| inurl:cassandra | |
-| | Apache Cassandra databases |
-+-------------------------+------------------------------------------------+
-| \@youtube trending | Find short clips trending on YouTube |
-| shorts | |
-+-------------------------+------------------------------------------------+
-| \@reddit memes -dark | Find memes on Reddit that are not dark |
-+-------------------------+------------------------------------------------+
-| site:cdn.cloudflare.net | Find PDFs on the \*.cdn.cloudflare.net domain |
-| filetype:pdf | |
-+-------------------------+------------------------------------------------+
-| secret in spanish | Translate the word "secret" to Spanish and |
-| inurl:dict | limit results to URLs containing "dict" |
-+-------------------------+------------------------------------------------+
-| link:ox.ac.uk PhD math | Find information on "PhD" and "math" that link |
-| | to the University of Oxford's official |
-| | website. Compare with ox.ac.uk PhD math |
-+-------------------------+------------------------------------------------+
+| Example Query | Research Scenario |
+| :--- | :--- |
+| `inurl:zoom.us/j intext:scheduled` | Get links to publicly shared Zoom meetings you may want to access. |
+| `"index of" "database.sql.zip"` | Get unsecured SQL dumps. Data from improperly configured SQL servers will show up on this page. |
+| `filetype:doc site:stationx.net nathan` | Looks for legacy Microsoft Word files containing the keyword "nathan" on StationX. |
+| `filetype:yaml inurl:cassandra` | Get YAML configuration files specific to Apache Cassandra databases. |
+| `@youtube trending shorts` | Find short clips trending on YouTube. |
+| `@reddit memes -dark` | Find memes on Reddit that are not dark. |
+| `site:cdn.cloudflare.net filetype:pdf` | Find PDFs on the `*.cdn.cloudflare.net` domain. |
+| `secret in spanish inurl:dict` | Translate the word "secret" to Spanish and limit results to URLs containing "dict". |
+| `link:ox.ac.uk PhD math` | Find information on "PhD" and "math" that link to the University of Oxford's official website. |
 
-**Deep Dive With @ and link:**
+---
 
-**@ Operator: Searching Social Media**
+### Deep Dive: Searching Social Media with `@`
 
-The @ operator restricts search results to content originating from a
-specific social media platform. Use it to find public posts, trending
-topics, or user-generated content directly within a given network.
+The `@` operator restricts search results to content originating from a specific social media platform. Use it to find public posts, trending topics, or user-generated content directly within a given network.
 
-**Syntax:** @\[platform\] \[search terms\]
+**Syntax:** `@platform [search terms]`
 
-> **Bangladesh-Specific Examples**
->
-> \@twitter \"breaking news\" Bangladesh
->
-> =\> Finds tweets mentioning breaking news related to Bangladesh
+**Bangladesh-Specific Example:**
+```
+@twitter "breaking news" Bangladesh
+```
+> Finds tweets mentioning breaking news related to Bangladesh.
 
-**When to use it:** When you want to bypass general web results and see
-only what is being
+**When to use it:** When you want to bypass general web results and see only what is being discussed on a particular social network.
 
-discussed on a particular social network.
+---
 
-**@ link: Operator: Finding Pages That Link to a URL**
+### Deep Dive: Finding Backlinks with `link:`
 
-The link: operator returns a sample of web pages that contain hyperlinks
-pointing to a specified
+The `link:` operator returns a sample of web pages that contain hyperlinks pointing to a specified URL. It is useful for basic backlink research and understanding who references a particular domain.
 
-URL. It is useful for basic backlink research and understanding who
-references a particular
+**Syntax:** `link:URL [optional additional terms]`
 
-domain.
+**Examples:**
+```
+link:bdjobs.com
+```
+> A sample of pages linking to the BDJobs homepage.
 
-**Syntax:** link:\[URL\] \[optional additional terms\]
+```
+link:stationx.net "cybersecurity"
+```
+> Pages linking to StationX and discussing cybersecurity.
 
-> **Bangladesh-Specific Examples**
->
-> link:bdjobs.com
->
-> =\> A sample of pages linking to the BDJobs homepage
->
-> link:stationx.net \"cybersecurity\"
->
-> =\> Pages linking to StationX and discussing cybersecurity
+For `link:url.com`, the search results list will show a limited sample of web pages that contain a hyperlink pointing to the specified URL (`url.com`).
 
-For link:url.com the **search results** list will show a [limited
-sample]{.underline} of web **pages that contain a**
+> [!WARNING]
+> **Important:** The `link:` operator is deprecated and severely limited. Google intentionally withholds the vast majority of known backlinks from this operator. Research indicates it may return as little as 0.1% to 4.4% of a site's actual link profile.
 
-**hyperlink pointing to the specified URL (url.com)**.
+**Reliable Alternative:** For accurate and comprehensive backlink analysis, use dedicated SEO tools such as Ahrefs, Semrush, Moz Link Explorer, or Google Search Console (for your own verified websites).
 
-**Important:**
-
-The link: operator [is de]{.underline}p[recated and
-severel]{.underline}y [limited]{.underline}. Google intentionally
-withholds the vast
-
-majority of known backlinks from this operator. Research indicates it
-may return as little as 0.1% to
-
-4.4% of a site\'s actual link profile.
-
-**Reliable Alternative:** For accurate and comprehensive backlink
-analysis, use dedicated SEO
-
-tools such as Ahrefs, Semrush, Moz Link Explorer, or Google Search
-Console (for your own
-
-verified websites).
-
-**When to use it:** For a quick, informal glance at who might be linking
-to a site. Do not
-
-rely on it for any serious SEO audit, competitive analysis, or security
-assessment.
+**When to use it:** For a quick, informal glance at who might be linking to a site. **Do not** rely on it for any serious SEO audit, competitive analysis, or security assessment.
 
 ## ⭐ Key Takeaways
 
