@@ -483,41 +483,6 @@ function drawVerificationQr(
   });
 }
 
-function drawCornerAccent(
-  page: PDFPage,
-  x: number,
-  y: number,
-  xDirection: 1 | -1,
-  yDirection: 1 | -1,
-) {
-  const gold = rgb(0.93, 0.78, 0.35);
-  const teal = rgb(0.04, 0.32, 0.42);
-  page.drawLine({
-    start: { x, y },
-    end: { x: x + 58 * xDirection, y },
-    thickness: 1.2,
-    color: gold,
-  });
-  page.drawLine({
-    start: { x, y },
-    end: { x, y: y + 42 * yDirection },
-    thickness: 1.2,
-    color: gold,
-  });
-  page.drawLine({
-    start: { x: x + 9 * xDirection, y: y + 9 * yDirection },
-    end: { x: x + 42 * xDirection, y: y + 9 * yDirection },
-    thickness: 0.6,
-    color: teal,
-  });
-  page.drawLine({
-    start: { x: x + 9 * xDirection, y: y + 9 * yDirection },
-    end: { x: x + 9 * xDirection, y: y + 30 * yDirection },
-    thickness: 0.6,
-    color: teal,
-  });
-}
-
 function drawPill(
   page: PDFPage,
   text: string,
@@ -646,11 +611,6 @@ function drawCertificateDesign(
     borderColor: rgb(0.74, 0.84, 0.9),
     borderWidth: 0.6,
   });
-
-  drawCornerAccent(page, 50, height - 50, 1, -1);
-  drawCornerAccent(page, width - 50, height - 50, -1, -1);
-  drawCornerAccent(page, 50, 50, 1, 1);
-  drawCornerAccent(page, width - 50, 50, -1, 1);
 
   page.drawRectangle({
     x: railX,
