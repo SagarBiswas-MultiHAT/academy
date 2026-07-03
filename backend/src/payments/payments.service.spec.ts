@@ -30,6 +30,7 @@ describe('PaymentsService', () => {
 
     expect(service.verifyIpnSignature({ ...payload, signature })).toBe(true);
     expect(service.verifyIpnSignature({ ...payload, signature: 'bad' })).toBe(false);
+    expect(service.verifyIpnSignature({ amount: '100', signature })).toBe(false);
   });
 
   it('initiates an aamarPay payment and returns the payment URL', async () => {

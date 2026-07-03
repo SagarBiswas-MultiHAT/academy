@@ -5,7 +5,8 @@ jest.mock('../common/utils/certificate-generator', () => ({
   generateCertificatePdf: jest.fn(),
 }));
 
-const mockedGenerateCertificatePdf = generateCertificatePdf as jest.MockedFunction<typeof generateCertificatePdf>;
+const mockedGenerateCertificatePdf =
+  generateCertificatePdf as jest.MockedFunction<typeof generateCertificatePdf>;
 
 describe('CertificatesService', () => {
   function createService() {
@@ -16,10 +17,16 @@ describe('CertificatesService', () => {
         findUnique: jest.fn(),
       },
     } as any;
-    const config = { get: jest.fn((_key: string, fallback: string) => fallback) } as any;
+    const config = {
+      get: jest.fn((_key: string, fallback: string) => fallback),
+    } as any;
     const emailService = { sendCertificateEmail: jest.fn() } as any;
 
-    return { service: new CertificatesService(prisma, config, emailService), prisma, emailService };
+    return {
+      service: new CertificatesService(prisma, config, emailService),
+      prisma,
+      emailService,
+    };
   }
 
   beforeEach(() => {
@@ -32,7 +39,13 @@ describe('CertificatesService', () => {
     mockedGenerateCertificatePdf.mockResolvedValue(Buffer.from('pdf'));
 
     await expect(
-      service.issueCertificate('user-1', 'attempt-1', 'User', 'user@example.com', 'Course'),
+      service.issueCertificate(
+        'user-1',
+        'attempt-1',
+        'User',
+        'user@example.com',
+        'Course',
+      ),
     ).resolves.toEqual({ certificateId: 'CERT-1' });
 
     expect(mockedGenerateCertificatePdf).toHaveBeenCalledWith(
@@ -69,6 +82,37 @@ describe('CertificatesService', () => {
       courseTitle: 'Course',
       issueDate,
       certificateId: 'CERT-1',
+      certificatePdfUrl:
+        'https://api.multihat.dev/api/v1/certificates/CERT-1/pdf',
     });
+  });
+
+  it('generates a printable certificate for download', async () => {
+    const { service, prisma } = createService();
+    const issueDate = new Date('2026-01-01T00:00:00.000Z');
+    prisma.certificate.findUnique.mockResolvedValue({
+      isValid: true,
+      holderName: 'User',
+      courseTitle: 'Course',
+      issueDate,
+      certificateId: 'CERT-1',
+    });
+    mockedGenerateCertificatePdf.mockResolvedValue(Buffer.from('pdf'));
+
+    await expect(
+      service.generatePrintableCertificate('CERT-1'),
+    ).resolves.toEqual({
+      buffer: Buffer.from('pdf'),
+      filename: 'multihat-certificate-CERT-1.pdf',
+    });
+    expect(mockedGenerateCertificatePdf).toHaveBeenCalledWith(
+      'User',
+      'Course',
+      'CERT-1',
+      'templates',
+      'generated/certificates',
+      'https://academy.multihat.dev',
+      issueDate,
+    );
   });
 });

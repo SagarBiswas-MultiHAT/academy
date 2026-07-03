@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
-import { BadgeCheck, ShieldAlert, ShieldCheck } from "lucide-react";
+import { BadgeCheck, Download, ShieldAlert, ShieldCheck } from "lucide-react";
 
 import api from "@/lib/api";
 import AuroraBackground from "@/components/aurora-background";
@@ -33,6 +33,7 @@ export default function VerifyPage({ params: paramsPromise }: { params: Promise<
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -57,6 +58,26 @@ export default function VerifyPage({ params: paramsPromise }: { params: Promise<
       active = false;
     };
   }, [params.certID]);
+
+  const handleDownload = async () => {
+    if (!result) return;
+
+    try {
+      setDownloading(true);
+      const response = await api.get(`/certificates/${result.certificateId}/pdf`, { responseType: "blob" });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `multihat-certificate-${result.certificateId}.pdf`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -139,6 +160,10 @@ export default function VerifyPage({ params: paramsPromise }: { params: Promise<
             </CardContent>
             <CardContent className="flex flex-wrap gap-3">
               <Badge variant="success">Status: {result.valid ? "Valid" : "Invalid"}</Badge>
+              <Button type="button" onClick={handleDownload} disabled={downloading}>
+                <Download className="mr-2 size-4" />
+                {downloading ? "Preparing PDF..." : "Download printable PDF"}
+              </Button>
               <Button asChild variant="outline">
                 <Link href="/books">Start a course</Link>
               </Button>

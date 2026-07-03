@@ -5,6 +5,7 @@ import { use, useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
+  Award,
   BookOpen,
   ChevronLeft,
   Copy,
@@ -457,7 +458,19 @@ function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }
   );
 }
 
-function ChapterNavCard({ direction, href, label }: { direction: "prev" | "next"; href: string; label: string }) {
+function ChapterNavCard({
+  direction,
+  href,
+  label,
+  eyebrow,
+  icon: Icon,
+}: {
+  direction: "prev" | "next";
+  href: string;
+  label: string;
+  eyebrow?: string;
+  icon?: React.ElementType;
+}) {
   const isPrev = direction === "prev";
   return (
     <Link
@@ -469,9 +482,12 @@ function ChapterNavCard({ direction, href, label }: { direction: "prev" | "next"
       </div>
       <div className="min-w-0">
         <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5">
-          {isPrev ? "Previous" : "Next"}
+          {eyebrow ?? (isPrev ? "Previous" : "Next")}
         </p>
-        <p className="text-sm font-medium text-foreground leading-tight truncate">{label}</p>
+        <p className="flex items-center gap-1.5 text-sm font-medium text-foreground leading-tight truncate">
+          {Icon && <Icon className="size-3.5 text-primary" />}
+          {label}
+        </p>
       </div>
     </Link>
   );
@@ -658,7 +674,13 @@ export default function ChapterReaderPage({
               {hasNext ? (
                 <ChapterNavCard direction="next" href={`/books/${data.bookSlug}/read/${chapterIndex + 1}`} label={`Chapter ${chapterIndex + 1}`} />
               ) : (
-                <ChapterNavCard direction="next" href={`/books/${data.bookSlug}`} label="Finish reading" />
+                <ChapterNavCard
+                  direction="next"
+                  href={`/quiz/${data.bookSlug}`}
+                  label="Take certification quiz"
+                  eyebrow="Certification"
+                  icon={Award}
+                />
               )}
             </div>
           </article>

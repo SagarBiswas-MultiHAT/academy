@@ -125,10 +125,74 @@ The frontend will typically be accessible at `http://localhost:3000`.
 
 ---
 
+## Converting Notebooks (.docx → Markdown)
+
+Source notebooks are authored in Word (`.docx`) and converted to Markdown with [Pandoc](https://pandoc.org/) before being published on the platform. See [FinalTechStack&Tools.md](./FinalTechStack&Tools.md) and the [content pipeline diagram](./diagrams/08-course-lesson-management.md) for the full workflow.
+
+### Folder layout
+
+Each book lives under `books/<BookName>/`:
+
+```
+books/Google_Dorks_Complete_Handbook/
+├── Google_Dorks_Complete_Handbook.docx   # source
+├── Google_Dorks_Complete_Handbook.md     # converted
+└── media/
+    ├── image1.png
+    └── ...
+```
+
+### Pandoc command
+
+From the book folder, run:
+
+```powershell
+cd books\YourBookFolder
+
+pandoc "YourBook.docx" `
+  -f docx `
+  -t gfm `
+  --wrap=none `
+  --extract-media=media `
+  -o "YourBook.md"
+```
+
+| Flag | Purpose |
+|:-----|:--------|
+| `-t gfm` | GitHub-flavored Markdown (matches frontend `remark-gfm`) |
+| `--wrap=none` | Avoids hard line breaks mid-sentence |
+| `--extract-media=media` | Extracts images into `media/` |
+
+Example for the existing handbook:
+
+```powershell
+cd books\Google_Dorks_Complete_Handbook
+
+pandoc "Google_Dorks_Complete_Handbook.docx" `
+  -f docx -t gfm --wrap=none --extract-media=media `
+  -o "Google_Dorks_Complete_Handbook.md"
+```
+
+Install Pandoc if needed: `winget install JohnMacFarlane.Pandoc` (Windows) or `brew install pandoc` (macOS).
+
+### After conversion
+
+1. Review formatting — fix broken tables, callouts, and code blocks.
+2. Ensure chapter headings use `# Chapter N: Title` (the reader splits on these).
+3. Define `chapterMetadata` in the DB seed or admin (`index`, `title`, `isFree`).
+4. Add quiz questions for the book.
+
+The backend post-processes common Pandoc artifacts at render time (grid tables, `{.underline}` spans, trailing backslashes) in `backend/src/books/books.service.ts`.
+
+---
+
 ## Project Structure
 
 ```
 academy/
+├── backend/                  # NestJS REST API
+├── frontend/                 # Next.js web application
+├── books/                    # Source notebooks (.docx) and converted Markdown
 ├── CaseStudy.md              # Business case study & technical architecture
 ├── FinalTechStack&Tools.md   # Complete tech stack inventory
 ├── README.md                 # This file

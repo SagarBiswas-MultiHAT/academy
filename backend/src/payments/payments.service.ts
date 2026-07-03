@@ -56,10 +56,20 @@ export class PaymentsService {
   }
 
   verifyIpnSignature(payload: any): boolean {
+    if (!payload?.mer_txnid || !payload?.amount || !payload?.signature) {
+      return false;
+    }
+
     const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
     const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
     const raw = `${storeId}${signatureKey}${payload.mer_txnid}${payload.amount}BDT`;
     const computed = crypto.createHash('md5').update(raw).digest('hex');
-    return computed === payload.signature;
+    const provided = String(payload.signature);
+
+    if (!/^[a-fA-F0-9]{32}$/.test(provided)) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(Buffer.from(computed, 'hex'), Buffer.from(provided, 'hex'));
   }
 }

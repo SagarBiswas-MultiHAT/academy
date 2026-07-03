@@ -1,6 +1,6 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Res, StreamableFile, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CertificatesService } from './certificates.service';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
@@ -16,7 +16,21 @@ export class CertificatesController {
     return this.certificatesService.getMyCertificates(userId);
   }
 
-  @Get('verify/:certId')  // Public — no auth required
+  @Get(':certId/pdf')
+  async downloadCertificate(
+    @Param('certId') certId: string,
+    @Res({ passthrough: true }) res: any,
+  ) {
+    const { buffer, filename } = await this.certificatesService.generatePrintableCertificate(certId);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length': buffer.length,
+    });
+    return new StreamableFile(buffer);
+  }
+
+  @Get('verify/:certId')
   verifyCertificate(@Param('certId') certId: string) {
     return this.certificatesService.verifyCertificate(certId);
   }

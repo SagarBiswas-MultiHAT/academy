@@ -7,6 +7,7 @@ import { EmailService } from '../email/email.service';
 import { WalletService } from '../wallet/wallet.service';
 import { ReferralsService } from '../referrals/referrals.service';
 import { ensurePremiumPdfFile, getPremiumPdfProductBySlug, getPremiumPdfShortRef } from '../common/utils/premium-pdf';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -25,17 +26,22 @@ export class PaymentsController {
   @Post('ipn')
   @HttpCode(200)
   async handleIpn(@Body() payload: any) {
+    const tranId = typeof payload?.mer_txnid === 'string' ? payload.mer_txnid : '';
+    if (!tranId) {
+      return { status: 'INVALID_TRANSACTION' };
+    }
+
     // 1. Verify signature
     if (!this.paymentsService.verifyIpnSignature(payload)) {
       return { status: 'INVALID_SIGNATURE' };
     }
 
-    const tranId = payload.mer_txnid;
+    const isSuccessfulPayment = String(payload.pay_status || '').toLowerCase() === 'successful';
 
     // ─── WALLET TOP-UP FLOW ───
     // Top-up transactions use the "TOPUP-" prefix (see WalletService.initiateTopUp)
     if (tranId.startsWith('TOPUP-')) {
-      if (payload.pay_status === 'Successful') {
+      if (isSuccessfulPayment) {
         // Find user by email from the IPN payload
         const user = await this.prisma.user.findUnique({
           where: { email: payload.cus_email },
@@ -59,7 +65,22 @@ export class PaymentsController {
     }
 
     // 3. Update order status
-    if (payload.pay_status === 'Successful') {
+    if (isSuccessfulPayment) {
+      let paidAmount: Decimal;
+      try {
+        paidAmount = new Decimal(payload.amount);
+      } catch {
+        paidAmount = new Decimal(-1);
+      }
+
+      if (!paidAmount.equals(order.amount)) {
+        await this.prisma.order.update({
+          where: { id: order.id },
+          data: { status: 'FAILED', gatewayResponse: payload },
+        });
+        return { status: 'AMOUNT_MISMATCH' };
+      }
+
       await this.prisma.order.update({
         where: { id: order.id },
         data: { status: 'PAID', gatewayResponse: payload },

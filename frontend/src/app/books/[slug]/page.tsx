@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
-import { ArrowRight, BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide-react";
+import { ArrowRight, Award, BookOpen, Lock, ShieldCheck, Sparkles, Crown } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -307,9 +307,20 @@ export default function BookDetailPage({ params: paramsPromise }: { params: Prom
                 <CardFooter className="flex flex-col gap-3">
                   {book ? (
                     book.isOwned ? (
-                      <Button asChild size="lg" className="w-full">
-                        <Link href={`/books/${book.slug}/read/1`}>Start Reading</Link>
-                      </Button>
+                      <>
+                        <Button asChild size="lg" className="w-full">
+                          <Link href={`/quiz/${book.slug}`}>
+                            <Award className="mr-2 size-4" />
+                            Take certification quiz
+                          </Link>
+                        </Button>
+                        <Button asChild variant="outline" className="w-full">
+                          <Link href={`/books/${book.slug}/read/1`}>
+                            <BookOpen className="mr-2 size-4" />
+                            Continue reading
+                          </Link>
+                        </Button>
+                      </>
                     ) : (
                       <Button asChild size="lg" className="w-full">
                         <Link href={`/checkout/${book.id}`}>Unlock full book</Link>

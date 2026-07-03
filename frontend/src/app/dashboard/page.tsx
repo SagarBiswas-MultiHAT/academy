@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Award, CreditCard, PackageCheck, TrendingUp, ArrowRight, Users } from "lucide-react";
+import { Award, BookOpen, CreditCard, Download, PackageCheck, TrendingUp, ArrowRight, Users } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -61,6 +61,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [downloadingOrderId, setDownloadingOrderId] = useState<string | null>(null);
+  const [downloadingCertificateId, setDownloadingCertificateId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -103,6 +104,16 @@ export default function DashboardPage() {
     [orders]
   );
 
+  const certificateByCourseTitle = useMemo(() => {
+    const entries = certificates.map((cert) => [cert.courseTitle.trim().toLowerCase(), cert] as const);
+    return new Map(entries);
+  }, [certificates]);
+
+  const nextCertificationOrder = useMemo(
+    () => paidOrders.find((order) => !certificateByCourseTitle.has(order.book.title.trim().toLowerCase())),
+    [certificateByCourseTitle, paidOrders]
+  );
+
   const handlePdfDownload = async (order: Order) => {
     try {
       setDownloadingOrderId(order.id);
@@ -118,6 +129,24 @@ export default function DashboardPage() {
       window.URL.revokeObjectURL(url);
     } finally {
       setDownloadingOrderId(null);
+    }
+  };
+
+  const handleCertificateDownload = async (certificate: Certificate) => {
+    try {
+      setDownloadingCertificateId(certificate.certificateId);
+      const response = await api.get(`/certificates/${certificate.certificateId}/pdf`, { responseType: "blob" });
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `multihat-certificate-${certificate.certificateId}.pdf`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setDownloadingCertificateId(null);
     }
   };
 
@@ -183,6 +212,14 @@ export default function DashboardPage() {
             <Button asChild variant="outline">
               <Link href="/dashboard/wallet">Manage wallet</Link>
             </Button>
+            {nextCertificationOrder && (
+              <Button asChild variant="secondary">
+                <Link href={`/quiz/${nextCertificationOrder.book.slug}`}>
+                  <Award className="mr-2 size-4" />
+                  Continue certification
+                </Link>
+              </Button>
+            )}
             <Button asChild>
               <Link href="/books">Browse books</Link>
             </Button>
@@ -249,7 +286,7 @@ export default function DashboardPage() {
                   </div>
                   Purchased items
                 </CardTitle>
-                <CardDescription>Books you already own.</CardDescription>
+                <CardDescription>Books you own and certification actions.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {loading ? (
@@ -262,27 +299,48 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 ) : paidOrders.length ? (
-                  paidOrders.slice(0, 3).map((order) => (
-                    <div
-                      key={order.id}
-                      className="group relative space-y-2 rounded-lg border border-border/40 p-3 text-sm transition-all hover:bg-muted/50 hover:border-primary/50 hover:shadow-md active:scale-[0.98]"
-                    >
-                      <Link
-                        href={`/books/${order.book.slug}`}
-                        className="absolute inset-0 z-0 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                        aria-label={`View ${order.book.title}`}
-                      />
-                      <div className="relative z-10 flex items-center justify-between gap-3 pointer-events-none">
-                        <div>
-                          <p className="font-medium group-hover:text-primary transition-colors">{order.book.title}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </p>
+                  paidOrders.slice(0, 3).map((order) => {
+                    const certificate = certificateByCourseTitle.get(order.book.title.trim().toLowerCase());
+                    return (
+                      <div
+                        key={order.id}
+                        className="space-y-3 rounded-lg border border-border/40 p-3 text-sm transition-all hover:bg-muted/50 hover:border-primary/50 hover:shadow-md"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-medium">{order.book.title}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Purchased {new Date(order.createdAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <Badge variant={certificate ? "success" : "secondary"}>
+                            {certificate ? "Certified" : "Owned"}
+                          </Badge>
                         </div>
-                        <Badge variant="success">Owned</Badge>
-                      </div>
-                      {order.canDownloadPdf && (
-                        <div className="relative z-10">
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          <Button asChild variant="outline" size="sm">
+                            <Link href={`/books/${order.book.slug}/read/1`}>
+                              <BookOpen className="mr-1.5 size-3.5" />
+                              Read
+                            </Link>
+                          </Button>
+                          {certificate ? (
+                            <Button asChild size="sm">
+                              <Link href={`/verify/${certificate.certificateId}`}>
+                                <Award className="mr-1.5 size-3.5" />
+                                Certificate
+                              </Link>
+                            </Button>
+                          ) : (
+                            <Button asChild size="sm">
+                              <Link href={`/quiz/${order.book.slug}`}>
+                                <Award className="mr-1.5 size-3.5" />
+                                Take quiz
+                              </Link>
+                            </Button>
+                          )}
+                        </div>
+                        {order.canDownloadPdf && (
                           <Button
                             type="button"
                             variant="outline"
@@ -293,10 +351,10 @@ export default function DashboardPage() {
                           >
                             {downloadingOrderId === order.id ? "Preparing PDF..." : "Download PDF"}
                           </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))
+                        )}
+                      </div>
+                    );
+                  })
                 ) : (
                   <p className="text-sm text-muted-foreground">No purchases yet.</p>
                 )}
@@ -344,6 +402,19 @@ export default function DashboardPage() {
                       >
                         View verification link
                       </Link>
+                      <div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => handleCertificateDownload(cert)}
+                          disabled={downloadingCertificateId === cert.certificateId}
+                        >
+                          <Download className="mr-1.5 size-3.5" />
+                          {downloadingCertificateId === cert.certificateId ? "Preparing..." : "Download PDF"}
+                        </Button>
+                      </div>
                     </div>
                   ))
                 ) : (

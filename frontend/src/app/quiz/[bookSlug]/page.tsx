@@ -141,8 +141,23 @@ export default function QuizPage({ params: paramsPromise }: { params: Promise<{ 
               ))}
             </CardContent>
           </Card>
-        ) : payload ? (
+        ) : payload && payload.questions.length > 0 ? (
           <QuizRenderer bookSlug={params.bookSlug} questions={payload.questions} />
+        ) : payload ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Quiz not available yet</CardTitle>
+              <CardDescription>This book does not have certification questions ready.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-3">
+              <Button asChild>
+                <Link href={`/books/${params.bookSlug}`}>Back to book</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/dashboard">Open dashboard</Link>
+              </Button>
+            </CardContent>
+          </Card>
         ) : (
           <Card><CardHeader><CardTitle>Quiz unavailable</CardTitle><CardDescription>Please try again later.</CardDescription></CardHeader></Card>
         )}
