@@ -157,7 +157,7 @@ export class OrdersService {
           couponId,
           amount: finalAmount,
           discountApplied: actualDiscount,
-          status: 'PAID',
+          status: 'PENDING',
           paymentMethod: 'WALLET',
           includesPdf: includePremiumPdfAddon,
         },
@@ -165,6 +165,11 @@ export class OrdersService {
 
       // Debit wallet (throws if insufficient balance)
       await this.walletService.debitForPurchase(userId, finalAmount, order.id);
+
+      await this.prisma.order.update({
+        where: { id: order.id },
+        data: { status: 'PAID' },
+      });
 
       // Update coupon usage
       if (couponId) {

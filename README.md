@@ -16,14 +16,14 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 
 | Layer | Technology | Purpose |
 |:------|:-----------|:--------|
-| **Frontend** | Next.js 14 · TypeScript · Tailwind CSS | SSG/SSR web application |
+| **Frontend** | Next.js 15 · React 19 · TypeScript · Tailwind CSS | SSG/SSR web application |
 | **Backend** | NestJS 11 · TypeScript | RESTful API server |
 | **Database** | PostgreSQL · Prisma ORM | Relational data storage |
 | **API** | REST (JSON/HTTPS) | Frontend ↔ Backend communication |
 | **Payments** | aamarPay | bKash · Nagad · Cards |
 | **Auth** | JWT + Passport.js | Stateless authentication |
 | **Email** | Resend | Transactional email delivery |
-| **PDFs** | PDFKit + pdf-lib | Watermarked e-books + certificates |
+| **PDFs** | pdf-lib | Watermarked e-books + certificates |
 | **Scheduling** | @nestjs/schedule | Cron jobs (showcase verification, referral checks) |
 | **Hosting** | Vercel + DigitalOcean Droplet | Frontend CDN + backend VPS |
 | **DNS/CDN** | Cloudflare (free plan) | DNS · DDoS protection · CDN |
@@ -34,7 +34,7 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 ## Infrastructure
 
 ```
-  User → Cloudflare → Vercel (Next.js 14)
+  User → Cloudflare → Vercel (Next.js 15)
                     ↘
               DigitalOcean Droplet (1 vCPU · 1 GB · 25 GB)
               ├── Nginx (Reverse Proxy + Cloudflare Origin SSL)
@@ -68,7 +68,7 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 ## How to Run Locally
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [Node.js](https://nodejs.org/) 20 LTS
 - [Docker](https://www.docker.com/) & Docker Compose
 
 ### 1. Database Setup
@@ -103,6 +103,7 @@ npx prisma db seed  # Optional: seed initial data
 npm run start:dev
 ```
 The backend will be accessible at `http://localhost:5000`.
+Swagger will be accessible at `http://localhost:5000/api/docs`.
 
 ### 3. Frontend Setup
 Open another terminal, navigate to the `frontend` directory, and start the Next.js app:
@@ -167,6 +168,8 @@ academy/
 | | `GET` | `/api/v1/books/:slug` | No |
 | Orders | `POST` | `/api/v1/orders` | Yes |
 | | `GET` | `/api/v1/orders/my` | Yes |
+| | `GET` | `/api/v1/orders/:orderId/pdf` | Yes |
+| | `GET` | `/api/v1/orders` | Admin |
 | Payments | `POST` | `/api/v1/payments/ipn` | Webhook |
 | Quizzes | `GET` | `/api/v1/quizzes/:bookSlug/questions` | Yes |
 | | `POST` | `/api/v1/quizzes/:bookSlug/submit` | Yes |
@@ -174,13 +177,31 @@ academy/
 | | `GET` | `/api/v1/certificates/verify/:certId` | No |
 | Users | `GET` | `/api/v1/users/me` | Yes |
 | | `PATCH` | `/api/v1/users/me` | Yes |
+| | `GET` | `/api/v1/users` | Admin |
+| | `PATCH` | `/api/v1/users/:id/role` | Admin |
 | Wallet | `GET` | `/api/v1/wallet/balance` | Yes |
 | | `POST` | `/api/v1/wallet/topup` | Yes |
+| | `POST` | `/api/v1/wallet/topup/confirm` | Yes |
 | | `GET` | `/api/v1/wallet/transactions` | Yes |
+| Coupons | `GET` | `/api/v1/coupons/verify/:code` | No |
+| | `POST` | `/api/v1/coupons` | Admin |
+| | `GET` | `/api/v1/coupons` | Admin |
+| | `PATCH` | `/api/v1/coupons/:id` | Admin |
+| | `DELETE` | `/api/v1/coupons/:id` | Admin |
 | Referrals | `GET` | `/api/v1/referrals/code` | Yes |
 | | `GET` | `/api/v1/referrals/stats` | Yes |
 | Showcases | `POST` | `/api/v1/showcases/submit` | Yes |
 | | `GET` | `/api/v1/showcases/my` | Yes |
+
+---
+
+## Verification Status
+
+- Local backend tests: `npm test -- --runInBand`
+- Backend build: `npm run build`
+- Frontend build: `npm run build`
+- DNS audit on July 3, 2026: `academy.multihat.dev` and `api.multihat.dev` returned NXDOMAIN via `nslookup`; configure Cloudflare records before production deployment.
+- Production-only checks still require live access to Cloudflare, Vercel, the DigitalOcean droplet, aamarPay, and Resend.
 
 ---
 

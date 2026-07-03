@@ -91,8 +91,6 @@ export class WalletService {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
     if (!wallet) throw new NotFoundException('Wallet not found');
 
-    const topUpDescription = `Wallet top-up via aamarPay (${tranId})`;
-
     const existingTopUp = await this.prisma.walletTransaction.findFirst({
       where: {
         walletId: wallet.id,

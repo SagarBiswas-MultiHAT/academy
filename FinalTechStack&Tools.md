@@ -1,7 +1,7 @@
 # MultiHAT Academy — Final Tech Stack & Tools Inventory
 
 **Platform Type:** Full‑stack micro‑credential & e‑commerce platform  
-**Core Frameworks:** Next.js 14 (frontend) + NestJS 11 (backend)  
+**Core Frameworks:** Next.js 15 (frontend) + React 19 + NestJS 11 (backend)
 **Database:** PostgreSQL with Prisma ORM  
 **API Style:** RESTful API (JSON over HTTPS)  
 **Payment Gateway:** aamarPay  
@@ -15,13 +15,14 @@
 
 | Tool / Library                  | Version         | Role                                                                                                                                 | Cost         |
 | :------------------------------ | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------- | :----------- |
-| **Next.js**                     | 14 (App Router) | Entire frontend: book chapters, blog, user dashboard, checkout flow, certificate verification. Uses Server Components, SSG, and SSR. | Free         |
+| **Next.js**                     | 15.x (App Router) | Entire frontend: book chapters, blog, user dashboard, checkout flow, certificate verification. Uses Server Components, SSG, and SSR. | Free         |
+| **React**                       | 19.x            | UI runtime for the Next.js App Router frontend.                                                                                      | Free         |
 | **Tailwind CSS**                | 3.x             | Utility‑first CSS framework for fast, consistent, responsive styling.                                                                | Free         |
 | **TypeScript**                  | 5.x             | Type safety across the entire frontend codebase.                                                                                     | Free         |
 | **next‑themes**                 | latest          | Dark/light mode support with system preference detection.                                                                            | Free         |
 | **next‑seo**                    | latest          | Open Graph, Twitter Cards, JSON‑LD structured data, and sitemap generation for SEO.                                                  | Free         |
 | **React Hook Form**             | 7.x             | Performant form handling (login, registration, quiz submission, checkout).                                                            | Free         |
-| **Zod**                         | 3.x             | Schema validation for forms and API request/response types.                                                                          | Free         |
+| **Zod**                         | 4.x             | Schema validation for forms and API request/response types.                                                                          | Free         |
 | **Recharts / Shadcn/ui Charts** | latest          | Dashboard visualizations: quiz score history, purchase timeline, progress charts.                                                    | Free         |
 | **Axios**                       | 1.x             | HTTP client for REST API calls from the frontend to the NestJS backend.                                                              | Free         |
 | **Vercel**                      | –               | Frontend hosting for `academy.multihat.dev`: automatic HTTPS, global CDN, CI/CD from GitHub.                                         | Free (Hobby) |
@@ -37,9 +38,8 @@
 | **Prisma**           | 6.x     | PostgreSQL ORM: type‑safe queries, auto‑generated client, declarative schema, migration management.    | Free |
 | **Passport.js**      | 0.7.x   | JWT authentication strategy for user login and protected route guards.                                  | Free |
 | **@nestjs/swagger**  | latest  | Auto‑generates OpenAPI 3.0 documentation served at `/api/docs`.                                         | Free |
-| **aamarpay.v2**      | latest  | Node.js SDK for aamarPay payment gateway — initiate payment, handle IPN webhooks.                       | Free |
-| **PDFKit**           | 0.15.x  | Generate watermarked e‑book PDFs on the fly for each buyer.                                             | Free |
-| **pdf‑lib**          | 1.17.x  | Overlay dynamic text (name, date, cert ID) on a pre‑designed certificate PDF template.                  | Free |
+| **Axios**            | 1.x     | Direct HTTP integration with aamarPay for payment initiation, transaction search, and IPN webhook handling. | Free |
+| **pdf‑lib**          | 1.17.x  | Generate buyer-watermarked e-book PDFs and overlay dynamic text on certificate templates.               | Free |
 | **Resend**           | latest  | Transactional email delivery: PDF attachments, purchase receipts, certificate emails.                   | Free (100/day) |
 | **class‑validator**  | 0.14.x  | DTO validation in NestJS — ensures all incoming request data meets expected schemas.                    | Free |
 | **class‑transformer**| 0.5.x   | DTO serialization and transformation — controls which fields are exposed in API responses.              | Free |
@@ -131,7 +131,7 @@
 
 | Technique             | Implementation                                                                                     | Cost |
 | :-------------------- | :------------------------------------------------------------------------------------------------- | :--- |
-| **Dynamic Watermark** | PDFKit inserts buyer's email as tiled text (opacity 0.05) on every page + footer "Licensed to: …". | Free |
+| **Dynamic Watermark** | pdf-lib inserts buyer's email as tiled text (opacity 0.05) on every page + footer "Licensed to: …". | Free |
 | **UTM‑Tracked Link**  | A bonus link inside the PDF with UTM parameters tracked by Google Analytics 4.                     | Free |
 | **Google Alerts**     | Automated monitoring for `"Google Dorks Complete Handbook" filetype:pdf` to detect leaks.          | Free |
 | **CSS Content Traps** | Author credit boxes inside chapter pages that copy‑paste along with main text.                     | Free |
@@ -206,7 +206,7 @@
                                               ▼
                               ┌──────────────────────────────────┐
                               │       Vercel (Frontend CDN)      │
-                              │         Next.js 14 (SSG/SSR)     │
+                              │         Next.js 15 (SSG/SSR)     │
                               │      Tailwind CSS · TypeScript   │
                               └───────────────┬──────────────────┘
                                               │  REST API calls
@@ -284,14 +284,14 @@
 
 | Layer          | Technology                     | Purpose                                    |
 | :------------- | :----------------------------- | :----------------------------------------- |
-| **Frontend**   | Next.js 14, TypeScript, Tailwind CSS | SSG/SSR web application                  |
+| **Frontend**   | Next.js 15, React 19, TypeScript, Tailwind CSS | SSG/SSR web application           |
 | **Backend**    | NestJS 11, TypeScript          | RESTful API server                         |
 | **Database**   | PostgreSQL, Prisma ORM         | Relational data storage with type‑safe ORM |
 | **API**        | REST (JSON/HTTPS)              | Frontend ↔ Backend communication           |
 | **Payments**   | aamarPay                       | Bangladesh local payments (bKash, Nagad, cards) |
 | **Auth**       | JWT + Passport.js              | Stateless authentication                   |
 | **Email**      | Resend                         | Transactional email delivery               |
-| **PDFs**       | PDFKit + pdf‑lib               | Watermarked e‑books + certificates         |
+| **PDFs**       | pdf‑lib                        | Watermarked e-books + certificates         |
 | **Domain**     | `academy.multihat.dev`         | Subdomain of existing `multihat.dev` via Cloudflare |
 | **Hosting**    | Vercel + DigitalOcean Droplet (existing) | Frontend CDN + backend VPS (1 vCPU · 1 GB · 25 GB) |
 | **CI/CD**      | GitHub Actions                 | Automated testing and deployment           |
@@ -300,4 +300,4 @@
 
 ---
 
-This stack gives you complete ownership of every piece of your platform, aligns perfectly with your university course, and sets you up for long‑term growth with a production‑proven, type‑safe architecture. The combination of Next.js 14 + NestJS 11 + PostgreSQL + Prisma + REST API provides a robust foundation that scales from a student project to a profitable business. The Wallet, Referral, and Certification Showcase systems create self‑sustaining growth loops that reduce customer acquisition costs over time. Build boldly!
+This stack gives you complete ownership of every piece of your platform, aligns perfectly with your university course, and sets you up for long-term growth with a production-proven, type-safe architecture. The combination of Next.js 15 + React 19 + NestJS 11 + PostgreSQL + Prisma + REST API provides a robust foundation that scales from a student project to a profitable business. The Wallet, Referral, and Certification Showcase systems create self-sustaining growth loops that reduce customer acquisition costs over time. Build boldly!

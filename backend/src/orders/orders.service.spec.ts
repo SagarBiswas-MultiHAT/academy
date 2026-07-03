@@ -24,6 +24,7 @@ function createService() {
     order: {
       findFirst: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
       findMany: jest.fn(),
       count: jest.fn(),
       findUnique: jest.fn(),
@@ -91,8 +92,9 @@ describe('OrdersService premium PDF flow', () => {
       isPublished: true,
       price: new Decimal(1200),
     });
-    prisma.order.findFirst.mockResolvedValue(null);
+    prisma.order.findMany.mockResolvedValue([]);
     prisma.order.create.mockResolvedValue({ id: 'order-1' });
+    prisma.order.update.mockResolvedValue({ id: 'order-1', status: 'PAID' });
     prisma.user.findUnique.mockResolvedValue({ id: 'user-1', email: 'buyer@example.com', name: 'Buyer' });
 
     await expect(service.createOrder('user-1', 'book-1', 'WALLET', undefined, false)).resolves.toEqual({
@@ -110,6 +112,7 @@ describe('OrdersService premium PDF flow', () => {
       isPublished: true,
       price: new Decimal(1200),
     });
+    prisma.order.findMany.mockResolvedValue([]);
 
     await expect(service.createOrder('user-1', 'book-1', 'WALLET', undefined, true)).rejects.toBeInstanceOf(BadRequestException);
   });

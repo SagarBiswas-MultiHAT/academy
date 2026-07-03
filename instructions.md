@@ -58,7 +58,7 @@ academy/
 │   ├── ecosystem.config.js   # PM2 process config
 │   ├── .env                  # Environment variables (gitignored)
 │   └── package.json
-├── frontend/                 # Next.js 14 Client Web App
+├── frontend/                 # Next.js 15 Client Web App
 │   ├── src/
 │   │   ├── app/              # App Router pages & layouts
 │   │   ├── components/       # Reusable UI components
@@ -199,11 +199,11 @@ npm install --save-dev prisma @types/bcrypt @types/passport-jwt @types/node
 
 > **Note:** We use `pdf-lib` for both watermarking and certificate generation (consistent library). We use `axios` for aamarPay HTTP calls (direct API integration rather than the `aamarpay.v2` SDK for full control over the payment flow). `resend` is the official Node.js SDK for transactional email.
 
-### 1.3 Frontend Scaffold (Next.js 14)
+### 1.3 Frontend Scaffold (Next.js 15)
 
 ```bash
 # Run from: academy/
-npx -y create-next-app@14 frontend --typescript --tailwind --eslint --app --src-dir --use-npm --import-alias "@/*"
+npx -y create-next-app@15 frontend --typescript --tailwind --eslint --app --src-dir --use-npm --import-alias "@/*"
 ```
 
 Install all frontend dependencies:
@@ -575,7 +575,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_GA_ID=
 ```
 
-> Note: The backend listens on port 5000 (from `backend/.env`). Use `http://localhost:5000/api` for Swagger. If any local docs mention `localhost:3001`, update them to `localhost:5000`.
+> Note: The backend listens on port 5000 (from `backend/.env`). Use `http://localhost:5000/api/docs` for Swagger. If any local docs mention `localhost:3001`, update them to `localhost:5000`.
 
 ### 2.4 Run Migration & Generate Client
 
@@ -2850,7 +2850,7 @@ export async function generateCertificatePdf(
 
 ---
 
-## Step 7: Frontend Architecture (Next.js 14)
+## Step 7: Frontend Architecture (Next.js 15)
 
 ### 7.1 Global Styles & Theme System
 
@@ -3117,6 +3117,17 @@ The following App Router pages must be implemented. Each maps to the [User Journ
 | `/verify/[certID]`     | `app/verify/[certID]/page.tsx`     | No   | Public certificate verification (SSR)                                      |
 | `/ref/[code]`          | `app/ref/[code]/page.tsx`          | No   | Referral landing page — redirects to `/auth/register?ref=CODE`             |
 
+Current implementation additions in this repo:
+
+| Route | File | Auth | Purpose |
+| :---- | :--- | :--- | :------ |
+| `/books/[slug]/read/[chapter]` | `app/books/[slug]/read/[chapter]/page.tsx` | Mixed | Chapter reader: free chapters public, paid chapters require purchase |
+| `/admin` | `app/admin/page.tsx` | Admin | Admin dashboard entry point |
+| `/admin/books` | `app/admin/books/page.tsx` | Admin | Book and chapter metadata management |
+| `/admin/coupons` | `app/admin/coupons/page.tsx` | Admin | Coupon creation and activation management |
+| `/admin/orders` | `app/admin/orders/page.tsx` | Admin | Order review |
+| `/admin/users` | `app/admin/users/page.tsx` | Admin | User and role management |
+
 ### 7.6 Interactive Quiz Component
 
 Create `frontend/src/components/quiz/QuizRenderer.tsx`:
@@ -3267,7 +3278,7 @@ export default function QuizRenderer({
 
 ### 7.7 SEO Configuration
 
-In each page, use Next.js 14 `metadata` export for per-page SEO:
+In each page, use the Next.js `metadata` export for per-page SEO:
 
 ```typescript
 // Example: app/books/[slug]/page.tsx
@@ -3635,6 +3646,7 @@ Execute these verification steps after deployment to confirm everything is produ
 
 ### Wallet & Referrals
 
+- [ ] `POST /api/v1/wallet/topup/confirm` verifies the aamarPay transaction search result before crediting wallet balance
 - [ ] `GET /api/v1/wallet/balance` returns correct BDT balance, lifetime earned, lifetime spent
 - [ ] `POST /api/v1/wallet/topup` enforces minimum ৳50 top-up and returns aamarPay URL
 - [ ] Wallet top-up IPN correctly credits wallet balance and logs transaction
@@ -3656,6 +3668,8 @@ Execute these verification steps after deployment to confirm everything is produ
 
 ### PDF & Email
 
+- [ ] Premium PDF add-on is gateway-only unless a valid coupon explicitly includes the PDF
+- [ ] Dashboard PDF download endpoint only serves paid orders that include the printable PDF entitlement
 - [ ] Watermarked PDF generates with buyer's email visible at 5% opacity on every page
 - [ ] Certificate PDF generates with correct name, course title, date, and verification URL
 - [ ] Resend delivers purchase receipt email within 30 seconds of payment confirmation

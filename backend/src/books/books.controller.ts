@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards, Req, Res, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Query, UseGuards, Req, Res } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
 import { AuthGuard } from '@nestjs/passport';

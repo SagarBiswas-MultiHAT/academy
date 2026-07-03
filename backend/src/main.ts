@@ -56,4 +56,4 @@ async function bootstrap() {
   console.log(`ðŸš€ Academy API running on http://localhost:${port}`);
   console.log(`ðŸ“„ Swagger docs at http://localhost:${port}/api/docs`);
 }
-bootstrap();
+void bootstrap();

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CertificatesService } from '../certificates/certificates.service';
 
@@ -31,8 +31,16 @@ export class QuizzesService {
     const book = await this.prisma.book.findUnique({ where: { slug: bookSlug } });
     if (!book) throw new NotFoundException('Book not found');
 
+    const order = await this.prisma.order.findFirst({
+      where: { userId, bookId: book.id, status: 'PAID' },
+    });
+    if (!order) throw new ForbiddenException('Purchase required to take the quiz');
+
     const questions = await this.prisma.quizQuestion.findMany({ where: { bookId: book.id } });
     const totalQuestions = questions.length;
+    if (totalQuestions === 0) {
+      throw new BadRequestException('Quiz is not available for this book yet');
+    }
 
     // Score the quiz
     let score = 0;
@@ -50,9 +58,21 @@ export class QuizzesService {
     // Generate certificate on pass
     let certId: string | undefined;
     if (result === 'PASS') {
-      const user = await this.prisma.user.findUnique({ where: { id: userId } });
-      const cert = await this.certificatesService.issueCertificate(userId, attempt.id, user!.name, book.title);
-      certId = cert.certificateId;
+      const existingCert = await this.prisma.certificate.findFirst({
+        where: {
+          userId,
+          isValid: true,
+          quizAttempt: { bookId: book.id },
+        },
+      });
+
+      if (existingCert) {
+        certId = existingCert.certificateId;
+      } else {
+        const user = await this.prisma.user.findUnique({ where: { id: userId } });
+        const cert = await this.certificatesService.issueCertificate(userId, attempt.id, user!.name, user!.email, book.title);
+        certId = cert.certificateId;
+      }
     }
 
     return { score, total: totalQuestions, outcome: result, certId };

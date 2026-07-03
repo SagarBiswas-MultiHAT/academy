@@ -6,7 +6,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { WalletService } from '../wallet/wallet.service';
 import { ReferralsService } from '../referrals/referrals.service';
-import { Decimal } from '@prisma/client/runtime/library';
 import { ensurePremiumPdfFile, getPremiumPdfProductBySlug, getPremiumPdfShortRef } from '../common/utils/premium-pdf';
 
 @ApiTags('Payments')

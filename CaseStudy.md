@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-MultiHAT Academy is a full‑stack digital education platform that converts individual technical notebooks into a scalable, revenue‑generating micro‑credential system. Built on a modern **Next.js 14 + NestJS 11** architecture communicating via a **RESTful API**, backed by **PostgreSQL** with **Prisma ORM**, and integrated with Bangladesh's **aamarPay** payment gateway, the platform sells premium e‑books with dynamic watermarks, offers paid web chapters and interactive quizzes, issues verifiable certificates, and features a **User Wallet** ecosystem with **Referral** and **Certification Showcase Rewards** for organic growth. The project serves a dual purpose: it creates a sustainable income stream for the founder while simultaneously fulfilling the requirements of an advanced web development university course. With zero upfront infrastructure cost (beyond a modest hosting fee) and a razor‑sharp focus on localized content, MultiHAT Academy demonstrates how a student can bootstrap a profitable ed‑tech brand from a simple habit of self‑study.
+MultiHAT Academy is a full‑stack digital education platform that converts individual technical notebooks into a scalable, revenue‑generating micro‑credential system. Built on a modern **Next.js 15 + React 19 + NestJS 11** architecture communicating via a **RESTful API**, backed by **PostgreSQL** with **Prisma ORM**, and integrated with Bangladesh's **aamarPay** payment gateway, the platform sells premium e‑books with dynamic watermarks, offers paid web chapters and interactive quizzes, issues verifiable certificates, and features a **User Wallet** ecosystem with **Referral** and **Certification Showcase Rewards** for organic growth. The project serves a dual purpose: it creates a sustainable income stream for the founder while simultaneously fulfilling the requirements of an advanced web development university course. With zero upfront infrastructure cost (beyond a modest hosting fee) and a razor‑sharp focus on localized content, MultiHAT Academy demonstrates how a student can bootstrap a profitable ed‑tech brand from a simple habit of self‑study.
 
 ---
 
@@ -157,7 +157,7 @@ The academy is built as a **full‑stack application** using modern JavaScript/T
 │                        ARCHITECTURE OVERVIEW                        │
 │                                                                     │
 │  ┌──────────────┐    REST API (JSON)    ┌──────────────────────┐    │
-│  │  Next.js 14  │ ◄──────────────────►  │    NestJS 11 API     │    │
+│  │  Next.js 15  │ ◄──────────────────►  │    NestJS 11 API     │    │
 │  │  (Frontend)  │   /api/v1/*           │    (Backend)         │    │
 │  │  Vercel      │                       │  DigitalOcean Droplet│    │
 │  └──────────────┘                       └──────────┬───────────┘    │
@@ -181,7 +181,7 @@ The academy is built as a **full‑stack application** using modern JavaScript/T
 
 | Feature   | Implementation                                                                                                                                                        |
 | :-------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework | **Next.js 14** with App Router                                                                                                                                        |
+| Framework | **Next.js 15** with App Router                                                                                                                                        |
 | Language  | **TypeScript 5.x** — full type safety across the entire frontend codebase                                                                                             |
 | Styling   | **Tailwind CSS 3.x** — utility‑first CSS framework for consistent, responsive design                                                                                  |
 | Rendering | Static Generation (SSG) for book chapters and marketing pages; Server‑Side Rendering (SSR) for user dashboard and dynamic, authenticated pages                        |
@@ -202,7 +202,7 @@ The academy is built as a **full‑stack application** using modern JavaScript/T
 | API Style      | **RESTful API** (JSON over HTTPS) with versioned endpoints (e.g., `/api/v1/*`)                                                                                                      |
 | Authentication | **JWT‑based** authentication via Passport.js strategy with access and refresh token rotation                                                                                        |
 | Core Modules   | `PaymentsModule` (aamarPay integration), `BooksModule` (product CRUD), `CertificatesModule` (quiz scoring, PDF generation, verification), `UsersModule` (profile, purchase history), `WalletModule` (balance, top‑up, transactions), `ReferralsModule` (referral tracking, reward crediting), `ShowcasesModule` (social post submission, 10‑day verification) |
-| PDF Generation | **PDFKit** for watermarked e‑books; **pdf‑lib** for certificate overlay                                                                                                             |
+| PDF Generation | **pdf-lib** for buyer-watermarked e‑books and certificate overlay                                                                                                             |
 | Email          | **Resend** (transactional emails, PDF delivery, purchase receipts)                                                                                                                  |
 | Validation     | **class‑validator** and **class‑transformer** for DTO validation and serialization                                                                                                  |
 | Configuration  | **@nestjs/config** for environment variables and secrets management                                                                                                                 |
@@ -291,7 +291,7 @@ Showcases:     POST /api/v1/showcases/submit (submit social post URL)
 | Component    | Tool / Approach                                                                                                                                                                                                                                                                                                      |
 | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Gateway      | **aamarPay** — supports bKash, Nagad, Rocket, cards, and 15+ local Bangladeshi payment methods                                                                                                                                                                                                                       |
-| SDK          | `aamarpay.v2` npm package                                                                                                                                                                                                                                                                                            |
+| Integration  | Direct aamarPay HTTP integration through Axios for payment initiation, transaction search, and IPN handling                                                                                                                                                                                                           |
 | Coupon Logic | Custom discount calculation in NestJS `CouponsService` before initiating payment; validated server‑side and applied to the order total                                                                                                                                                                               |
 | Flow         | 1. User clicks "Buy" → NestJS creates `order` row (status: `PENDING`) in PostgreSQL → calls aamarPay Initiate API → returns payment URL → redirects user. 2. After payment, aamarPay hits **IPN webhook** → NestJS verifies signature → updates order status to `PAID` → triggers PDF generation and email delivery. |
 | Security     | IPN signature verification, idempotent webhook handling (prevents duplicate processing), server‑side amount validation                                                                                                                                                                                               |
@@ -373,7 +373,7 @@ User (Browser)          Next.js           NestJS API          PostgreSQL        
 - **Bangladesh‑First Content:** The Google Dorks handbook contains exclusive examples like `site:gov.bd "annual report" filetype:pdf`. No other OSINT guide provides this localized knowledge.
 - **Affordable Micro‑Credentials:** In a market where international certifications cost hundreds of dollars, MultiHAT Academy offers a verifiable badge for under $30.
 - **Dynamic Watermark Deterrence:** Psychological effect of seeing one's own email on every page drastically reduces casual piracy.
-- **Full‑Stack Showcase:** For the founder, the platform is a living portfolio piece demonstrating production‑grade Next.js 14 + NestJS 11 + PostgreSQL + REST API skills.
+- **Full‑Stack Showcase:** For the founder, the platform is a living portfolio piece demonstrating production‑grade Next.js 15 + React 19 + NestJS 11 + PostgreSQL + REST API skills.
 - **Local Payment First:** Native aamarPay integration means zero friction for Bangladeshi customers paying via bKash, Nagad, or local cards.
 - **Wallet‑Driven Retention:** The non‑withdrawable Wallet creates a sticky ecosystem — once users top up or earn credits, they are incentivized to spend within the platform, boosting lifetime value.
 - **Built‑In Growth Loops:** The Referral Program and Certification Showcase Rewards create organic, viral acquisition channels. Every certificate earned becomes a potential marketing asset across LinkedIn, Twitter/X, Facebook, and Instagram.
@@ -429,14 +429,14 @@ User (Browser)          Next.js           NestJS API          PostgreSQL        
 - **Content Is Already Written:** The notebooks are complete; the only work is building the platform around them.
 - **Founder‑Market Fit:** Sagar is both a security researcher and a developer; he understands the audience's pain points intimately.
 - **Dual Purpose:** The project serves as both a business and an academic requirement, guaranteeing dedicated effort.
-- **Battle‑Tested Stack:** Next.js 14 + NestJS 11 + PostgreSQL + Prisma is a widely adopted, production‑proven stack with extensive community support and long‑term viability.
+- **Battle‑Tested Stack:** Next.js 15 + React 19 + NestJS 11 + PostgreSQL + Prisma is a widely adopted, production‑proven stack with extensive community support and long‑term viability.
 - **Self‑Sustaining Growth Engine:** The Wallet, Referral, and Certification Showcase systems form a closed‑loop growth flywheel — users earn credits → spend credits → share achievements → attract new users → repeat. This reduces customer acquisition cost to near zero over time.
 
 ---
 
 ## 9. Conclusion
 
-MultiHAT Academy is a meticulously planned fusion of content, technology, and business. It takes the founder's existing intellectual property and transforms it into a scalable, secure, and profitable platform that addresses genuine needs in the Bangladeshi and global developer communities. With a full‑stack architecture built on **Next.js 14** and **NestJS 11**, communicating via a well‑structured **REST API**, backed by **PostgreSQL** with **Prisma ORM**, secured by industry‑standard practices, monetized through **aamarPay** local payment integration, and enhanced by a **User Wallet** ecosystem with **Referral** and **Certification Showcase Rewards**, the academy is poised to generate revenue from day one while standing as a testament to the power of self‑education and disciplined technical execution.
+MultiHAT Academy is a meticulously planned fusion of content, technology, and business. It takes the founder's existing intellectual property and transforms it into a scalable, secure, and profitable platform that addresses genuine needs in the Bangladeshi and global developer communities. With a full‑stack architecture built on **Next.js 15 + React 19** and **NestJS 11**, communicating via a well‑structured **REST API**, backed by **PostgreSQL** with **Prisma ORM**, secured by industry‑standard practices, monetized through **aamarPay** local payment integration, and enhanced by a **User Wallet** ecosystem with **Referral** and **Certification Showcase Rewards**, the academy is poised to generate revenue from day one while standing as a testament to the power of self‑education and disciplined technical execution.
 
 ---
 

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getPremiumPdfProductBySlug, isPremiumPdfProduct } from '../common/utils/premium-pdf';
+import { isPremiumPdfProduct } from '../common/utils/premium-pdf';
 
 type ChapterMeta = { index: number; title: string; isFree: boolean };
 
@@ -433,7 +433,6 @@ export class BooksService {
         const stepPattern = /\[\s*([^\]]+?)\s*\]/g;
         const steps: string[] = [];
         let m: RegExpExecArray | null;
-        // eslint-disable-next-line no-cond-assign
         while ((m = stepPattern.exec(match)) !== null) {
           steps.push(m[1].trim().replace(/\\/g, '').trim());
         }
