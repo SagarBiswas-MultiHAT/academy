@@ -8,6 +8,7 @@ export async function generateCertificatePdf(
   certificateId: string,
   templateDir: string,
   outputDir: string,
+  frontendUrl = 'https://academy.multihat.dev',
 ): Promise<Buffer> {
   const templatePath = path.join(templateDir, 'certificate-template.pdf');
 
@@ -50,7 +51,7 @@ export async function generateCertificatePdf(
   page.drawText(`Issue Date: ${dateStr}`, {
     x: 100, y: 120, size: 10, font: regularFont, color: rgb(0.5, 0.5, 0.5),
   });
-  page.drawText(`Verify: https://academy.multihat.dev/verify/${certificateId}`, {
+  page.drawText(`Verify: ${frontendUrl.replace(/\/$/, '')}/verify/${certificateId}`, {
     x: 420, y: 120, size: 10, font: regularFont, color: rgb(0.5, 0.5, 0.5),
   });
 

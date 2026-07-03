@@ -16,7 +16,7 @@ flowchart TB
     cloudflare -->|"API requests\n(Cloudflare Origin SSL)"| droplet
 
     subgraph vercel["Vercel (Hobby Plan)"]
-        nextjs["Next.js 14\nApp Router\nSSG + SSR"]
+        nextjs["Next.js 15\nApp Router\nSSG + SSR"]
         vercel_cdn["Global Edge CDN\nAuto-HTTPS"]
     end
 

@@ -6,7 +6,7 @@ High-level system architecture for MultiHAT Academy (`academy.multihat.dev`).
 flowchart TB
     user["👤 User Browser"] --> cf["🛡️ Cloudflare\nDNS · CDN · DDoS Protection"]
 
-    cf --> vercel["▲ Vercel\nacademy.multihat.dev\nNext.js 14 — SSG/SSR"]
+    cf --> vercel["▲ Vercel\nacademy.multihat.dev\nNext.js 15 — SSG/SSR"]
     cf --> nginx
 
     vercel -->|"REST API calls\n/api/v1/*\n(JSON / HTTPS)"| nginx

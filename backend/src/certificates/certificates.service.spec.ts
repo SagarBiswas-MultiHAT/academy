@@ -35,7 +35,14 @@ describe('CertificatesService', () => {
       service.issueCertificate('user-1', 'attempt-1', 'User', 'user@example.com', 'Course'),
     ).resolves.toEqual({ certificateId: 'CERT-1' });
 
-    expect(mockedGenerateCertificatePdf).toHaveBeenCalledWith('User', 'Course', 'CERT-1', 'templates', 'generated/certificates');
+    expect(mockedGenerateCertificatePdf).toHaveBeenCalledWith(
+      'User',
+      'Course',
+      'CERT-1',
+      'templates',
+      'generated/certificates',
+      'https://academy.multihat.dev',
+    );
     expect(emailService.sendCertificateEmail).toHaveBeenCalledWith(
       'user@example.com',
       'User',

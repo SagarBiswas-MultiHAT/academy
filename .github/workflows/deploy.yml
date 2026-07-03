@@ -16,6 +16,9 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
 
       # Backend
       - name: Install Backend Deps
@@ -23,7 +26,7 @@ jobs:
       - name: Generate Prisma Client
         run: cd backend && npx prisma generate
       - name: Backend Lint & Test
-        run: cd backend && npm run lint && npm run test
+        run: cd backend && npm run lint && npm run test && npm run test:e2e
 
       # Frontend
       - name: Install Frontend Deps
@@ -44,8 +47,9 @@ jobs:
           script: |
             cd /var/www/academy/backend
             git pull origin main
-            npm install --production
+            npm ci
             npx prisma generate
             npx prisma migrate deploy
             npm run build
+            npm prune --omit=dev
             pm2 restart ecosystem.config.js --env production

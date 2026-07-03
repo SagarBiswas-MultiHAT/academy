@@ -89,9 +89,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-  "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-  },
   "overrides": {
     "multer": ">=2.2.0",
     "js-yaml": ">=5.1.0"

@@ -38,7 +38,7 @@
 
 - Docker Desktop (for local PostgreSQL)
 - Node.js 20+
-- Prisma v6 (`npm install prisma@6 @prisma/client@6`)
+- Prisma v6 from the backend's locked project dependencies (`npm ci`)
 
 ---
 
@@ -145,11 +145,9 @@ systemctl restart postgresql
 ```bash
 cd /var/www/academy/backend
 
-# Install production dependencies
-npm ci --production=false
+# Install locked dependencies, including build-time dev dependencies
+npm ci
 
-# Pin Prisma to v6 (required — v7 removed datasource.url from schema)
-npm install prisma@6 @prisma/client@6
 ```
 
 ### 4.2 Configure Environment
@@ -190,9 +188,14 @@ SENDER_EMAIL="academy@multihat.dev"
 
 # ─── URLs ────────────────────────────────────────────────────
 FRONTEND_URL="https://academy.multihat.dev"
+API_URL="https://api.multihat.dev/api/v1"
 
 # ─── Wallet ──────────────────────────────────────────────────
 WALLET_MIN_TOPUP_BDT="50"
+
+# PDF generation
+CERTIFICATE_TEMPLATE_DIR="templates"
+CERTIFICATE_OUTPUT_DIR="generated/certificates"
 ```
 
 ### 4.4 Run Migrations & Seed
@@ -581,7 +584,7 @@ cat ~/.ssh/academy_deploy
 |:-----|:------|:--------|
 | **DigitalOcean Monitoring** | Enable in Droplet settings → Monitoring tab | CPU, memory, disk, bandwidth alerts |
 | **PM2 Monitoring** | `pm2 monit` (built-in) | Real-time process metrics, restarts, logs |
-| **Sentry** (optional) | `npm install @sentry/nestjs` in backend | Error tracking with stack traces (10K events/month free) |
+| **Application logs** | `pm2 logs academy-backend` and `/var/log/nginx/*.log` | Runtime diagnostics using the deployed stack |
 | **Google Analytics 4** | Add `NEXT_PUBLIC_GA_ID` to frontend env | Page views, conversion funnels, UTM campaign tracking |
 | **Uptime Check** | DigitalOcean Uptime → add `https://api.multihat.dev/api/v1/books` | Alerts on API downtime via email/Slack |
 

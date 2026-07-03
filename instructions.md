@@ -99,8 +99,11 @@ academy/
 | `RESEND_API_KEY`         | `re_123456789`                                                                   | Resend API key for transactional email       |
 | `SENDER_EMAIL`           | `academy@multihat.dev`                                                           | From address for outgoing emails             |
 | `FRONTEND_URL`           | `http://localhost:3000`                                                          | Frontend origin (CORS + redirect URLs)       |
+| `API_URL`                | `http://localhost:5000/api/v1`                                                   | Public API URL used in generated links       |
 | `NODE_ENV`               | `development`                                                                    | Environment flag                             |
 | `WALLET_MIN_TOPUP_BDT`   | `50`                                                                             | Minimum wallet top-up amount in BDT          |
+| `CERTIFICATE_TEMPLATE_DIR` | `templates`                                                                    | Certificate template PDF directory           |
+| `CERTIFICATE_OUTPUT_DIR` | `generated/certificates`                                                         | Generated certificate PDF output directory   |
 
 ### Frontend (`frontend/.env.local`)
 
@@ -288,7 +291,7 @@ postgres-data/
 npx prisma init
 ```
 
-> Note: Pin Prisma to v6 because Prisma 7 removed `datasource.url` from `schema.prisma`. Install with `npm install prisma@6 @prisma/client@6`.
+> Note: Prisma is pinned to v6 in `backend/package.json` because Prisma 7 removed `datasource.url` from `schema.prisma`. Use the locked project install (`npm ci`) instead of upgrading Prisma independently.
 
 ### 2.2 Schema Definition
 
@@ -563,8 +566,11 @@ AAMARPAY_BASE_URL="https://sandbox.aamarpay.com"
 RESEND_API_KEY="re_123456789"
 SENDER_EMAIL="academy@multihat.dev"
 FRONTEND_URL="http://localhost:3000"
+API_URL="http://localhost:5000/api/v1"
 NODE_ENV="development"
 WALLET_MIN_TOPUP_BDT="50"
+CERTIFICATE_TEMPLATE_DIR="templates"
+CERTIFICATE_OUTPUT_DIR="generated/certificates"
 ```
 
 Create `frontend/.env.local`:
@@ -575,7 +581,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_GA_ID=
 ```
 
-> Note: The backend listens on port 5000 (from `backend/.env`). Use `http://localhost:5000/api/docs` for Swagger. If any local docs mention `localhost:3001`, update them to `localhost:5000`.
+> Note: The backend listens on port 5000 (from `backend/.env`). Use `http://localhost:5000/api/docs` for Swagger.
 
 ### 2.4 Run Migration & Generate Client
 
@@ -686,12 +692,13 @@ main()
   });
 ```
 
-Add to `backend/package.json`:
+Configure the seed command in `backend/prisma.config.ts`:
 
-```json
-"prisma": {
-  "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
-}
+```ts
+migrations: {
+  path: "prisma/migrations",
+  seed: "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
+},
 ```
 
 Run the seed:
@@ -3560,10 +3567,11 @@ jobs:
           script: |
             cd /var/www/academy/backend
             git pull origin main
-            npm install --production
+            npm ci
             npx prisma generate
             npx prisma migrate deploy
             npm run build
+            npm prune --omit=dev
             pm2 restart ecosystem.config.js --env production
 ```
 
@@ -3605,7 +3613,7 @@ crontab -e
 | :-------------------------- | :---------------------------------------------------------------- | :------------------------------------------------------ |
 | **DigitalOcean Monitoring** | Enable in Droplet settings → Monitoring tab                       | CPU, memory, disk, bandwidth alerts                     |
 | **PM2 Monitoring**          | `pm2 monit` (built-in)                                            | Real-time process metrics, restarts, logs               |
-| **Sentry** (optional)       | `npm install @sentry/nestjs` in backend                           | Error tracking with stack traces, 10K events/month free |
+| **PM2 + Nginx logs**        | `pm2 logs academy-backend` and `/var/log/nginx/*.log`             | Runtime diagnostics using the deployed stack |
 | **Google Analytics 4**      | Add `NEXT_PUBLIC_GA_ID` to frontend `.env.local`                  | Page views, conversion funnels, UTM campaign tracking   |
 | **Uptime Check**            | DigitalOcean Uptime → add `https://api.multihat.dev/api/v1/books` | Alerts on API downtime via email/Slack                  |
 

@@ -22,12 +22,14 @@ export class CertificatesService {
     try {
       const templateDir = this.configService.get<string>('CERTIFICATE_TEMPLATE_DIR', 'templates');
       const outputDir = this.configService.get<string>('CERTIFICATE_OUTPUT_DIR', 'generated/certificates');
+      const frontendUrl = this.configService.get<string>('FRONTEND_URL', 'https://academy.multihat.dev');
       const pdfBuffer = await generateCertificatePdf(
         holderName,
         courseTitle,
         certificate.certificateId,
         templateDir,
         outputDir,
+        frontendUrl,
       );
       await this.emailService.sendCertificateEmail(email, holderName, courseTitle, certificate.certificateId, pdfBuffer);
     } catch (error) {

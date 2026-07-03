@@ -173,7 +173,6 @@
 | **Google Analytics 4**          | Track page views, conversion funnels, UTM campaigns (including PDF bonus links). | Free         |
 | **Google Search Console**       | Index monitoring, sitemap submission, removal of accidental indexed pages.       | Free         |
 | **Vercel Analytics** (optional) | Lightweight, privacy‑friendly analytics built into Vercel.                       | Free (Hobby) |
-| **Sentry** (optional)           | Error monitoring and performance tracking for both frontend and backend.         | Free (10K events/month) |
 | **DigitalOcean Monitoring**     | Droplet CPU, memory, disk, and bandwidth monitoring with alerting.               | Free         |
 
 ---
@@ -271,7 +270,6 @@
 | Vercel Hosting (Frontend)     | Free (Hobby plan)                                       |
 | Resend Email                  | Free (100 emails/day)                                   |
 | aamarPay Fees                 | ~2% per transaction (only when you sell)                |
-| Sentry (optional)             | Free (10K events/month)                                 |
 | GitHub Actions CI/CD          | Free (2,000 minutes/month)                              |
 | All Other Tools & Libraries   | Open source, free                                       |
 
