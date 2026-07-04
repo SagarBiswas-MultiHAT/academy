@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { PrismaService } from '../prisma/prisma.service';
 import { CertificatesService } from '../certificates/certificates.service';
 
+
 @Injectable()
 export class QuizzesService {
   constructor(
@@ -76,5 +77,82 @@ export class QuizzesService {
     }
 
     return { score, total: totalQuestions, outcome: result, certId };
+  }
+
+  // ─── Admin Methods ───────────────────────────────────────────────────────────
+
+  async listQuestionsAdmin(bookSlug: string) {
+    const book = await this.prisma.book.findUnique({ where: { slug: bookSlug } });
+    if (!book) throw new NotFoundException('Book not found');
+    const questions = await this.prisma.quizQuestion.findMany({
+      where: { bookId: book.id },
+      orderBy: { sortOrder: 'asc' },
+    });
+    return { bookId: book.id, bookTitle: book.title, questions };
+  }
+
+  async listAllBooks() {
+    return this.prisma.book.findMany({
+      select: { id: true, title: true, slug: true, isPublished: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async createQuestion(dto: {
+    bookSlug: string;
+    prompt: string;
+    options: string[];
+    correctAnswer: string;
+    sortOrder?: number;
+  }) {
+    const book = await this.prisma.book.findUnique({ where: { slug: dto.bookSlug } });
+    if (!book) throw new NotFoundException('Book not found');
+
+    if (!dto.options.includes(dto.correctAnswer)) {
+      throw new BadRequestException('correctAnswer must be one of the provided options');
+    }
+
+    // Auto-assign sortOrder if not provided
+    let sortOrder = dto.sortOrder;
+    if (sortOrder === undefined) {
+      const last = await this.prisma.quizQuestion.findFirst({
+        where: { bookId: book.id },
+        orderBy: { sortOrder: 'desc' },
+      });
+      sortOrder = (last?.sortOrder ?? 0) + 1;
+    }
+
+    return this.prisma.quizQuestion.create({
+      data: {
+        bookId: book.id,
+        prompt: dto.prompt,
+        options: dto.options,
+        correctAnswer: dto.correctAnswer,
+        sortOrder,
+      },
+    });
+  }
+
+  async updateQuestion(
+    id: string,
+    dto: Partial<{ prompt: string; options: string[]; correctAnswer: string; sortOrder: number }>,
+  ) {
+    const question = await this.prisma.quizQuestion.findUnique({ where: { id } });
+    if (!question) throw new NotFoundException('Question not found');
+
+    const options = dto.options ?? (question.options as string[]);
+    const correctAnswer = dto.correctAnswer ?? question.correctAnswer;
+    if (!options.includes(correctAnswer)) {
+      throw new BadRequestException('correctAnswer must be one of the provided options');
+    }
+
+    return this.prisma.quizQuestion.update({ where: { id }, data: dto });
+  }
+
+  async deleteQuestion(id: string) {
+    const question = await this.prisma.quizQuestion.findUnique({ where: { id } });
+    if (!question) throw new NotFoundException('Question not found');
+    await this.prisma.quizQuestion.delete({ where: { id } });
+    return { deleted: true };
   }
 }

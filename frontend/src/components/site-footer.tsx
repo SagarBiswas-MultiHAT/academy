@@ -2,12 +2,24 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/lib/auth-context"
 
 export default function SiteFooter() {
   const { user } = useAuth()
+  const pathname = usePathname()
+
+  /** Returns null (hides the link) when the user is already on that page */
+  const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
+    if (pathname === href) return null
+    return (
+      <Link href={href} className="transition-colors duration-200 hover:text-foreground">
+        {children}
+      </Link>
+    )
+  }
 
   return (
     <footer className="relative border-t border-foreground/[0.05] dark:border-white/[0.05]">
@@ -57,8 +69,8 @@ export default function SiteFooter() {
           <div className="space-y-2 text-sm">
             <p className="font-semibold">Explore</p>
             <div className="flex flex-col gap-2 text-muted-foreground">
-              <Link href="/books" className="transition-colors duration-200 hover:text-foreground">Books</Link>
-              <Link href="/dashboard" className="transition-colors duration-200 hover:text-foreground">Dashboard</Link>
+              <NavLink href="/books">Books</NavLink>
+              <NavLink href="/dashboard">Dashboard</NavLink>
             </div>
           </div>
 
@@ -67,15 +79,15 @@ export default function SiteFooter() {
             <div className="flex flex-col gap-2 text-muted-foreground">
               {user ? (
                 <>
-                  <Link href="/dashboard" className="transition-colors duration-200 hover:text-foreground">My dashboard</Link>
-                  <Link href="/dashboard/wallet" className="transition-colors duration-200 hover:text-foreground">Wallet</Link>
-                  <Link href="/dashboard/referrals" className="transition-colors duration-200 hover:text-foreground">Referrals</Link>
+                  <NavLink href="/dashboard/wallet">Wallet</NavLink>
+                  <NavLink href="/dashboard/referrals">Referrals</NavLink>
+                  <NavLink href="/dashboard/showcase">Showcase rewards</NavLink>
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" className="transition-colors duration-200 hover:text-foreground">Sign in</Link>
-                  <Link href="/auth/register" className="transition-colors duration-200 hover:text-foreground">Create account</Link>
-                  <Link href="/dashboard/wallet" className="transition-colors duration-200 hover:text-foreground">Wallet</Link>
+                  <NavLink href="/auth/login">Sign in</NavLink>
+                  <NavLink href="/auth/register">Create account</NavLink>
+                  <NavLink href="/dashboard/wallet">Wallet</NavLink>
                 </>
               )}
             </div>

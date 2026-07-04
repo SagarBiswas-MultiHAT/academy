@@ -30,7 +30,7 @@ export default async function AdminLayout({
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               Admin console
             </p>
-            <p className="text-xs text-muted-foreground">Manage books, coupons, orders, and users.</p>
+            <p className="text-xs text-muted-foreground">Manage books, coupons, orders, users, and quizzes.</p>
           </div>
           <nav className="flex flex-wrap gap-2">
             <Button asChild size="sm" variant="outline" className="border-emerald-500/20 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400/15 dark:hover:border-emerald-400/30 dark:hover:shadow-[0_0_8px_rgba(52,211,153,0.08)]">
@@ -44,6 +44,9 @@ export default async function AdminLayout({
             </Button>
             <Button asChild size="sm" variant="outline" className="border-emerald-500/20 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400/15 dark:hover:border-emerald-400/30 dark:hover:shadow-[0_0_8px_rgba(52,211,153,0.08)]">
               <Link href="/admin/users">Users</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="border-emerald-500/20 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400/15 dark:hover:border-emerald-400/30 dark:hover:shadow-[0_0_8px_rgba(52,211,153,0.08)]">
+              <Link href="/admin/quizzes">Quizzes</Link>
             </Button>
           </nav>
         </div>

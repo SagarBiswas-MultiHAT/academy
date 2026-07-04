@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Award, BookOpen, CreditCard, Download, PackageCheck, TrendingUp, ArrowRight, Users } from "lucide-react";
+import { Award, BookOpen, CreditCard, Download, PackageCheck, TrendingUp, ArrowRight, Users, Share2 } from "lucide-react";
 
 import api from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
@@ -466,6 +466,43 @@ export default function DashboardPage() {
                   <Link href="/dashboard/referrals">View referral hub</Link>
                 </Button>
               </CardFooter>
+            </Card>
+
+            {/* Showcase Rewards */}
+            <Card className="hover-lift animate-fade-in-up delay-[400ms] border-t-2 border-t-cyan-500/30 dark:border-t-cyan-400/30 md:col-span-2 xl:col-span-4">
+              <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <div className="flex items-center justify-center size-8 rounded-lg bg-cyan-500/10">
+                      <Share2 className="size-4 text-cyan-500 dark:text-cyan-400" />
+                    </div>
+                    Showcase rewards
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    Share your certificate on social media and earn up to ৳100 in wallet credit after a 10-day verification.
+                  </CardDescription>
+                </div>
+                <Button asChild variant="outline" className="shrink-0 border-cyan-500/30 text-cyan-600 dark:text-cyan-400 dark:border-cyan-400/20 dark:hover:border-cyan-400/40">
+                  <Link href="/dashboard/showcase">
+                    Submit a post <ArrowRight className="ml-1.5 size-3.5" />
+                  </Link>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {([
+                    { platform: "LinkedIn", reward: "৳30", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
+                    { platform: "Twitter (X)", reward: "৳30", color: "bg-sky-500/10 text-sky-600 dark:text-sky-400" },
+                    { platform: "Facebook", reward: "৳20", color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" },
+                    { platform: "Instagram", reward: "৳20", color: "bg-pink-500/10 text-pink-600 dark:text-pink-400" },
+                  ] as const).map(({ platform, reward, color }) => (
+                    <div key={platform} className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium ${color}`}>
+                      <span>{platform}</span>
+                      <span className="font-semibold">{reward}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
             </Card>
           </div>
         )}

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BookOpen, Tag, ShoppingBag, Users, ArrowRight } from "lucide-react"
+import { BookOpen, Tag, ShoppingBag, Users, ArrowRight, ShieldCheck } from "lucide-react"
 
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,12 @@ export default function AdminIndexPage() {
       href: "/admin/users",
       icon: Users,
     },
+    {
+      title: "Quizzes",
+      description: "Add and manage quiz questions per book.",
+      href: "/admin/quizzes",
+      icon: ShieldCheck,
+    },
   ]
 
   return (
@@ -43,7 +49,7 @@ export default function AdminIndexPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {items.map((item, index) => (
           <Card
             key={item.title}
