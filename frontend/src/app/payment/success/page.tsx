@@ -22,6 +22,7 @@ const TOP_UP_FLAG = "walletTopUpPending";
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const tranId = searchParams.get("id") || "";
+  const verified = searchParams.get("verified") === "1" || !tranId;
 
   const isWalletTopUp = useMemo(() => tranId.startsWith("TOPUP-"), [tranId]);
 
@@ -43,10 +44,12 @@ function PaymentSuccessContent() {
               <CheckCircle2 className="size-8 text-emerald-500" />
             </div>
             <CardTitle className="text-2xl">
-              <span className="gradient-text">Payment successful!</span>
+              <span className="gradient-text">{verified ? "Payment verified!" : "Payment received"}</span>
             </CardTitle>
             <CardDescription>
-              {isWalletTopUp
+              {!verified
+                ? "We are waiting for final gateway verification. Your dashboard will update after confirmation."
+                : isWalletTopUp
                 ? "Your wallet top-up has been confirmed. The balance will refresh on the wallet page once the gateway callback is processed."
                 : "Your payment has been confirmed. The book is now available in your dashboard."}
             </CardDescription>

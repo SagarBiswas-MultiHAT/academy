@@ -41,3 +41,9 @@ fix_*.py
 script.js
 patch-*.js
 fix-*.js
+
+# Root package-lock (not a real workspace — each app has its own)
+/package-lock.json
+
+# Word temp files
+~$*.docx

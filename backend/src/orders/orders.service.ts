@@ -55,10 +55,10 @@ export class OrdersService {
     return {
       ...order,
       canDownloadPdf,
-      pdfFilename: canDownloadPdf ? premiumPdfProduct!.attachmentFilename : null,
+      pdfFilename: canDownloadPdf ? (premiumPdfProduct?.attachmentFilename ?? null) : null,
       hasPremiumPdf: Boolean(premiumPdfProduct),
       requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
-      book: this.enrichBook(order.book as { slug: string }),
+      book: this.enrichBook(order.book),
     };
   }
 

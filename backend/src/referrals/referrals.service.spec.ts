@@ -8,8 +8,9 @@ function createService() {
     referral: { findMany: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
   } as any;
   const walletService = { creditReward: jest.fn() } as any;
+  const emailService = { sendReferralRewardEmail: jest.fn() } as any;
 
-  return { service: new ReferralsService(prisma, walletService), prisma, walletService };
+  return { service: new ReferralsService(prisma, walletService, emailService), prisma, walletService, emailService };
 }
 
 describe('ReferralsService', () => {

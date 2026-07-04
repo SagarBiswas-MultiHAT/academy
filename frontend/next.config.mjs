@@ -22,7 +22,7 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               // Next.js requires unsafe-inline for its inline scripts/styles
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "script-src 'self' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               // Allow blob: for PDF download and data: for images

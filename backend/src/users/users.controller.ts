@@ -7,6 +7,8 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Role } from '@prisma/client';
 import { UpdateUserRoleDto } from './dto/update-role.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { parsePagination } from '../common/utils/pagination';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -21,7 +23,7 @@ export class UsersController {
   }
 
   @Patch('me')
-  updateProfile(@CurrentUser('id') userId: string, @Body() dto: { name?: string }) {
+  updateProfile(@CurrentUser('id') userId: string, @Body() dto: UpdateUserDto) {
     return this.usersService.updateProfile(userId, dto);
   }
 
@@ -29,7 +31,8 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   getAllUsers(@Query('page') page?: string, @Query('limit') limit?: string) {
-    return this.usersService.getAllUsers(Number(page) || 1, Number(limit) || 50);
+    const pagination = parsePagination(page, limit, 50, 100);
+    return this.usersService.getAllUsers(pagination.page, pagination.limit);
   }
 
   @Patch(':id/role')

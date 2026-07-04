@@ -9,12 +9,16 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('PaymentsService', () => {
   const config = {
-    get: jest.fn((key: string) => ({
-      AAMARPAY_STORE_ID: 'store',
-      AAMARPAY_SIGNATURE_KEY: 'sig',
-      AAMARPAY_BASE_URL: 'https://sandbox.aamarpay.com',
-      FRONTEND_URL: 'http://localhost:3000',
-    })[key]),
+    get: jest.fn((key: string, defaultValue?: string) => {
+      const values: Record<string, string> = {
+        AAMARPAY_STORE_ID: 'store',
+        AAMARPAY_SIGNATURE_KEY: 'sig',
+        AAMARPAY_BASE_URL: 'https://sandbox.aamarpay.com',
+        FRONTEND_URL: 'http://localhost:3000',
+        API_URL: 'http://localhost:5000/api/v1',
+      };
+      return values[key] ?? defaultValue;
+    }),
   } as any;
 
   let service: PaymentsService;
@@ -45,7 +49,7 @@ describe('PaymentsService', () => {
       expect.objectContaining({
         tran_id: 'TXN-1',
         amount: '100',
-        success_url: 'http://localhost:3000/payment/success?id=TXN-1',
+        success_url: 'http://localhost:5000/api/v1/payments/success?id=TXN-1',
       }),
     );
   });

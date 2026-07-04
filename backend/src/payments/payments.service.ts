@@ -11,7 +11,7 @@ export class PaymentsService {
     const storeId = this.configService.get<string>('AAMARPAY_STORE_ID');
     const signatureKey = this.configService.get<string>('AAMARPAY_SIGNATURE_KEY');
     const baseUrl = this.configService.get<string>('AAMARPAY_BASE_URL');
-    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+    const apiUrl = this.getApiUrl();
 
     const payload = {
       store_id: storeId,
@@ -23,9 +23,9 @@ export class PaymentsService {
       cus_name: customerName,
       cus_email: customerEmail,
       cus_phone: '01700000000',
-      success_url: `${frontendUrl}/payment/success?id=${tranId}`,
-      fail_url: `${frontendUrl}/payment/fail?id=${tranId}`,
-      cancel_url: `${frontendUrl}/payment/cancel?id=${tranId}`,
+      success_url: `${apiUrl}/payments/success?id=${encodeURIComponent(tranId)}`,
+      fail_url: `${apiUrl}/payments/fail?id=${encodeURIComponent(tranId)}`,
+      cancel_url: `${apiUrl}/payments/cancel?id=${encodeURIComponent(tranId)}`,
       type: 'json',
     };
 
@@ -53,6 +53,14 @@ export class PaymentsService {
     });
 
     return response.data;
+  }
+
+  getFrontendUrl() {
+    return this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000').replace(/\/$/, '');
+  }
+
+  private getApiUrl() {
+    return this.configService.get<string>('API_URL', 'http://localhost:5000/api/v1').replace(/\/$/, '');
   }
 
   verifyIpnSignature(payload: any): boolean {

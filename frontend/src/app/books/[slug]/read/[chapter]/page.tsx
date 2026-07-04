@@ -23,8 +23,22 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
+
+/** Extend the default GitHub sanitize schema to allow callout data-attributes and flowchart classes */
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    div: [
+      ...(defaultSchema.attributes?.div ?? []),
+      ["data-callout", "note", "important", "tip", "critical", "warning"],
+      ["className", "flowchart-container", "flowchart-step", "flowchart-step--accent", "flowchart-arrow"],
+    ],
+  },
+};
 
 import api from "@/lib/api";
 import SiteFooter from "@/components/site-footer";
@@ -656,7 +670,7 @@ export default function ChapterReaderPage({
             <div>
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
+                rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
                 components={getMarkdownComponents(data.bookSlug)}
               >
                 {data.content}

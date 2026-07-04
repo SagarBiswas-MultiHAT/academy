@@ -25,7 +25,7 @@ describe('ShowcasesService', () => {
     prisma.certificate.findUnique.mockResolvedValue({ id: 'cert-row-1', userId: 'user-1' });
     prisma.socialShowcase.findUnique.mockResolvedValue({ id: 'showcase-1' });
 
-    await expect(service.submitShowcase('user-1', 'CERT-1', 'LINKEDIN', 'https://example.com/post'))
+    await expect(service.submitShowcase('user-1', 'CERT-1', 'LINKEDIN', 'https://www.linkedin.com/posts/test-123'))
       .rejects.toThrow(BadRequestException);
   });
 
@@ -35,7 +35,7 @@ describe('ShowcasesService', () => {
     prisma.socialShowcase.findUnique.mockResolvedValue(null);
     prisma.socialShowcase.create.mockResolvedValue({ id: 'showcase-1' });
 
-    await expect(service.submitShowcase('user-1', 'CERT-1', 'FACEBOOK', 'https://example.com/post'))
+    await expect(service.submitShowcase('user-1', 'CERT-1', 'FACEBOOK', 'https://www.facebook.com/posts/test-123'))
       .resolves.toEqual({ id: 'showcase-1' });
 
     expect(prisma.socialShowcase.create).toHaveBeenCalledWith({
@@ -50,7 +50,7 @@ describe('ShowcasesService', () => {
         id: 'showcase-1',
         userId: 'user-1',
         platform: 'LINKEDIN',
-        postUrl: 'https://example.com/post',
+        postUrl: 'https://www.linkedin.com/posts/test-123',
         rewardAmount: new Decimal(30),
         user: { email: 'user@example.com', name: 'User' },
         certificate: {},

@@ -26,7 +26,7 @@ export class WalletService {
 
   async initiateTopUp(userId: string, amountBdt: number) {
     const minTopUp = Number(this.configService.get('WALLET_MIN_TOPUP_BDT', '50'));
-    if (amountBdt < minTopUp) {
+    if (!Number.isFinite(amountBdt) || amountBdt < minTopUp || amountBdt > 100000) {
       throw new BadRequestException(`Minimum top-up is ${formatUsdFromBdt(minTopUp)}`);
     }
 
@@ -86,6 +86,10 @@ export class WalletService {
   }
 
   async confirmTopUp(userId: string, tranId: string) {
+    if (!/^TOPUP-[A-Za-z0-9-]+$/.test(tranId) || tranId.length > 64) {
+      throw new BadRequestException('Invalid top-up transaction id');
+    }
+
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
@@ -109,8 +113,13 @@ export class WalletService {
     const statusCode = String(transaction?.status_code || '');
     const customerEmail = String(transaction?.cus_email || '').toLowerCase();
     const amount = String(transaction?.amount || transaction?.amount_bdt || '').trim();
+    const gatewayTranId = String(transaction?.mer_txnid || tranId).trim();
 
-    if (customerEmail && customerEmail !== user.email.toLowerCase()) {
+    if (gatewayTranId !== tranId) {
+      throw new BadRequestException('Transaction id does not match the requested top-up');
+    }
+
+    if (!customerEmail || customerEmail !== user.email.toLowerCase()) {
       throw new BadRequestException('Transaction email does not match the current user');
     }
 
@@ -118,7 +127,12 @@ export class WalletService {
       throw new BadRequestException('Transaction is not confirmed yet');
     }
 
-    await this.creditTopUp(userId, new Decimal(amount), tranId);
+    const creditAmount = new Decimal(amount);
+    if (!creditAmount.gt(0)) {
+      throw new BadRequestException('Transaction amount is invalid');
+    }
+
+    await this.creditTopUp(userId, creditAmount, tranId);
     return { status: 'CONFIRMED' };
   }
 

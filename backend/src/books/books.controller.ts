@@ -10,6 +10,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt-auth.guard';
 import { Role } from '@prisma/client';
+import { parsePagination } from '../common/utils/pagination';
 
 @ApiTags('Books')
 @Controller('books')
@@ -18,7 +19,17 @@ export class BooksController {
 
   @Get()
   findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
-    return this.booksService.findAll(Number(page) || 1, Number(limit) || 20);
+    const pagination = parsePagination(page, limit, 20, 100);
+    return this.booksService.findAll(pagination.page, pagination.limit);
+  }
+
+  @Get('admin/all')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  findAllAdmin(@Query('page') page?: string, @Query('limit') limit?: string) {
+    const pagination = parsePagination(page, limit, 50, 200);
+    return this.booksService.findAllAdmin(pagination.page, pagination.limit);
   }
 
   // IMPORTANT: This specific route must be declared BEFORE the generic :slug route

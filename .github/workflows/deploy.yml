@@ -42,7 +42,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DROPLET_IP }}
-          username: root
+          username: ${{ secrets.DEPLOY_USER || 'deploy' }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/academy/backend
@@ -53,3 +53,14 @@ jobs:
             npm run build
             npm prune --omit=dev
             pm2 restart ecosystem.config.js --env production
+
+      - name: Health Check
+        run: |
+          echo "Waiting 10s for app to start..."
+          sleep 10
+          STATUS=$(curl -sf -o /dev/null -w "%{http_code}" https://api.multihat.dev/api/v1/healthz || echo "000")
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Health check failed (HTTP $STATUS)"
+            exit 1
+          fi
+          echo "✅ Health check passed (HTTP $STATUS)"

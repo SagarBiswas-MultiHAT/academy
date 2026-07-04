@@ -87,7 +87,7 @@ export default function AdminBooksPage() {
     setError(null)
     setLoading(true)
     try {
-      const res = await api.get("/books", { params: { page: 1, limit: 100 } })
+      const res = await api.get("/books/admin/all", { params: { page: 1, limit: 200 } })
       const payload = res.data.data as { books: Book[] }
       setBooks(payload.books || [])
     } catch {

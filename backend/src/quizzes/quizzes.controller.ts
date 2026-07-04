@@ -15,6 +15,11 @@ import { QuizzesService } from './quizzes.service';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
+import {
+  CreateQuizQuestionDto,
+  SubmitQuizDto,
+  UpdateQuizQuestionDto,
+} from './dto/create-quiz.dto';
 
 @ApiTags('Quizzes')
 @ApiBearerAuth()
@@ -34,9 +39,9 @@ export class QuizzesController {
   submitQuiz(
     @Param('bookSlug') bookSlug: string,
     @CurrentUser('id') userId: string,
-    @Body('selectedAnswers') selectedAnswers: Record<string, string>,
+    @Body() dto: SubmitQuizDto,
   ) {
-    return this.quizzesService.submitQuiz(bookSlug, userId, selectedAnswers);
+    return this.quizzesService.submitQuiz(bookSlug, userId, dto.selectedAnswers);
   }
 
   // ─── Admin endpoints ──────────────────────────────────────────────────────
@@ -62,14 +67,7 @@ export class QuizzesController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   createQuestion(
-    @Body()
-    dto: {
-      bookSlug: string;
-      prompt: string;
-      options: string[];
-      correctAnswer: string;
-      sortOrder?: number;
-    },
+    @Body() dto: CreateQuizQuestionDto,
   ) {
     return this.quizzesService.createQuestion(dto);
   }
@@ -80,13 +78,7 @@ export class QuizzesController {
   @Roles(Role.ADMIN)
   updateQuestion(
     @Param('id') id: string,
-    @Body()
-    dto: Partial<{
-      prompt: string;
-      options: string[];
-      correctAnswer: string;
-      sortOrder: number;
-    }>,
+    @Body() dto: UpdateQuizQuestionDto,
   ) {
     return this.quizzesService.updateQuestion(id, dto);
   }

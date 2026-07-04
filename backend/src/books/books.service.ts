@@ -272,6 +272,19 @@ export class BooksService {
     return { books: books.map((book) => this.withComputedFlags(book)), total, page, limit };
   }
 
+  async findAllAdmin(page = 1, limit = 50) {
+    const skip = (page - 1) * limit;
+    const [books, total] = await Promise.all([
+      this.prisma.book.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.book.count(),
+    ]);
+    return { books: books.map((book) => this.withComputedFlags(book)), total, page, limit };
+  }
+
   async findBySlug(slug: string, userId?: string) {
     const book = await this.prisma.book.findUnique({ where: { slug } });
     if (!book) throw new NotFoundException('Book not found');

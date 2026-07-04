@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { APP_GUARD } from '@nestjs/core';
+import { HealthController } from './health.controller';
+import { validateEnvironment } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -20,7 +22,7 @@ import { ShowcasesModule } from './showcases/showcases.module';
 @Module({
   imports: [
     // Load .env globally
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, validate: validateEnvironment }),
 
     // Rate limiting: 100 requests per 60 seconds per IP (global default)
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
@@ -51,6 +53,7 @@ import { ShowcasesModule } from './showcases/showcases.module';
     // Apply throttler globally
     { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
 

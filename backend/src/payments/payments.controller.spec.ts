@@ -16,6 +16,8 @@ const mockedGetPremiumPdfShortRef = getPremiumPdfShortRef as jest.MockedFunction
 function createController() {
   const paymentsService = {
     verifyIpnSignature: jest.fn().mockReturnValue(true),
+    searchTransaction: jest.fn(),
+    getFrontendUrl: jest.fn().mockReturnValue('http://localhost:3000'),
   } as any;
   const prisma = {
     user: { findUnique: jest.fn() },
@@ -23,7 +25,7 @@ function createController() {
       findUnique: jest.fn(),
       update: jest.fn(),
     },
-    coupon: { update: jest.fn() },
+    coupon: { updateMany: jest.fn() },
   } as any;
   const emailService = {
     sendPurchaseReceipt: jest.fn(),
@@ -45,6 +47,8 @@ function createController() {
     referralsService,
   };
 }
+
+const flushImmediate = () => new Promise<void>((resolve) => setImmediate(resolve));
 
 function createOrder(overrides: Record<string, unknown> = {}) {
   return {
@@ -110,15 +114,13 @@ describe('PaymentsController IPN handling', () => {
     }));
 
     await expect(controller.handleIpn(payload)).resolves.toEqual({ status: 'SUCCESS' });
+    await flushImmediate();
 
     expect(prisma.order.update).toHaveBeenCalledWith({
       where: { id: 'order-1' },
       data: { status: 'PAID', gatewayResponse: payload },
     });
-    expect(prisma.coupon.update).toHaveBeenCalledWith({
-      where: { id: 'coupon-1' },
-      data: { usageCount: { increment: 1 } },
-    });
+    expect(prisma.coupon.updateMany).not.toHaveBeenCalled();
     expect(referralsService.updateCumulativeSpend).toHaveBeenCalledWith('user-1', new Decimal(1200));
     expect(emailService.sendPurchaseReceipt).toHaveBeenCalledWith('buyer@example.com', 'Buyer', 'Web Book');
   });
@@ -174,6 +176,7 @@ describe('PaymentsController IPN handling', () => {
     await expect(
       controller.handleIpn({ mer_txnid: 'TXN-1-PDF', amount: '1200', pay_status: 'Successful' }),
     ).resolves.toEqual({ status: 'SUCCESS' });
+    await flushImmediate();
 
     expect(mockedEnsurePremiumPdfFile).toHaveBeenCalledWith({
       product: expect.objectContaining({ slug: 'google-dorks-complete-handbook' }),

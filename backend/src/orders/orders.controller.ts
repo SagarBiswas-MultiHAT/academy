@@ -3,10 +3,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { PaymentMethod, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { createReadStream } from 'fs';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { parsePagination } from '../common/utils/pagination';
 
 @ApiTags('Orders')
 @ApiBearerAuth()
@@ -18,7 +20,7 @@ export class OrdersController {
   @Post()
   createOrder(
     @CurrentUser('id') userId: string,
-    @Body() dto: { bookId: string; paymentMethod?: PaymentMethod; couponCode?: string; includePrintablePdf?: boolean },
+    @Body() dto: CreateOrderDto,
   ) {
     return this.ordersService.createOrder(userId, dto.bookId, dto.paymentMethod, dto.couponCode, dto.includePrintablePdf);
   }
@@ -46,6 +48,7 @@ export class OrdersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   getAllOrders(@Query('page') page?: string, @Query('limit') limit?: string) {
-    return this.ordersService.getAllOrders(Number(page) || 1, Number(limit) || 50);
+    const pagination = parsePagination(page, limit, 50, 100);
+    return this.ordersService.getAllOrders(pagination.page, pagination.limit);
   }
 }
