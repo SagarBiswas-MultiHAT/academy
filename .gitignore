@@ -31,3 +31,13 @@ yarn-error.log*
 
 # Docker
 postgres-data/
+
+# Scratch / one-off dev scripts (never commit these)
+scratch*.js
+scratch*.ts
+scratch*.py
+fix_*.js
+fix_*.py
+script.js
+patch-*.js
+fix-*.js

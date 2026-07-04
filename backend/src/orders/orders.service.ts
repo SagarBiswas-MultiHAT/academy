@@ -16,6 +16,15 @@ import { usdToBdt } from '../common/utils/currency';
 
 const PRINTABLE_PDF_ADDON_USD = 10;
 
+type OrderWithBook = {
+  book: { slug: string };
+  status: string;
+  paymentMethod: string;
+  aamarpayTranId?: string | null;
+  includesPdf: boolean;
+  [key: string]: unknown;
+};
+
 @Injectable()
 export class OrdersService {
   constructor(
@@ -34,9 +43,14 @@ export class OrdersService {
     };
   }
 
-  private enrichOrder(order: any) {
+  private enrichOrder(order: OrderWithBook) {
     const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
-    const canDownloadPdf = Boolean(premiumPdfProduct) && order.status === 'PAID' && (order.includesPdf || (order.paymentMethod === 'GATEWAY' && Boolean(order.aamarpayTranId?.endsWith('-PDF'))));
+    const canDownloadPdf =
+      Boolean(premiumPdfProduct) &&
+      order.status === 'PAID' &&
+      (order.includesPdf ||
+        (order.paymentMethod === 'GATEWAY' &&
+          Boolean(order.aamarpayTranId?.endsWith('-PDF'))));
 
     return {
       ...order,
@@ -44,8 +58,26 @@ export class OrdersService {
       pdfFilename: canDownloadPdf ? premiumPdfProduct!.attachmentFilename : null,
       hasPremiumPdf: Boolean(premiumPdfProduct),
       requiresGatewayPayment: Boolean(premiumPdfProduct?.requiresGatewayPayment),
-      book: this.enrichBook(order.book),
+      book: this.enrichBook(order.book as { slug: string }),
     };
+  }
+
+  /**
+   * Atomically reserves one coupon usage slot.
+   * Uses Prisma updateMany with a WHERE condition so that only one concurrent
+   * request can increment past the limit. Returns false if the coupon is
+   * already exhausted (race condition safe).
+   */
+  private async reserveCouponUsage(couponId: string, usageLimit: number): Promise<boolean> {
+    const result = await this.prisma.coupon.updateMany({
+      where: {
+        id: couponId,
+        usageCount: { lt: usageLimit }, // Only update if still under limit
+        isActive: true,
+      },
+      data: { usageCount: { increment: 1 } },
+    });
+    return result.count === 1;
   }
 
   async createOrder(
@@ -63,13 +95,15 @@ export class OrdersService {
     const existingOrders = await this.prisma.order.findMany({
       where: { userId, bookId, status: 'PAID' },
     });
-    
+
     const alreadyOwnsBook = existingOrders.length > 0;
     const alreadyOwnsPdf = existingOrders.some(
-      o => o.includesPdf || (o.paymentMethod === 'GATEWAY' && Boolean(o.aamarpayTranId?.endsWith('-PDF')))
+      (o) =>
+        o.includesPdf ||
+        (o.paymentMethod === 'GATEWAY' && Boolean(o.aamarpayTranId?.endsWith('-PDF'))),
     );
 
-    // 3. Load coupon
+    // 3. Load coupon (preliminary fast-fail check — atomic reserve happens later)
     let couponId: string | null = null;
     let isPdfIncludedViaCoupon = false;
     let couponRef: Coupon | null = null;
@@ -78,15 +112,18 @@ export class OrdersService {
       const normalizedCode = couponCode.trim().toUpperCase();
       const coupon = await this.prisma.coupon.findUnique({ where: { code: normalizedCode } });
       if (!coupon || !coupon.isActive) throw new BadRequestException('Invalid coupon');
-      if (new Date() < coupon.validFrom || new Date() > coupon.validUntil) throw new BadRequestException('Coupon expired');
-      if (coupon.usageCount >= coupon.usageLimit) throw new BadRequestException('Coupon usage limit reached');
+      if (new Date() < coupon.validFrom || new Date() > coupon.validUntil)
+        throw new BadRequestException('Coupon expired');
+      if (coupon.usageCount >= coupon.usageLimit)
+        throw new BadRequestException('Coupon usage limit reached');
 
       couponRef = coupon;
       couponId = coupon.id;
       isPdfIncludedViaCoupon = coupon.includesPdf;
     }
 
-    const includePremiumPdfAddon = (includePrintablePdf && isPremiumPdfProduct(book.slug)) || isPdfIncludedViaCoupon;
+    const includePremiumPdfAddon =
+      (includePrintablePdf && isPremiumPdfProduct(book.slug)) || isPdfIncludedViaCoupon;
 
     // 4. Check valid purchase intents
     if (alreadyOwnsBook) {
@@ -98,26 +135,43 @@ export class OrdersService {
       }
     }
 
-    // 5. Enforce gateway-only restriction only when the printable PDF add-on is selected AND not covered by a coupon
+    // 5. Enforce gateway-only restriction when the printable PDF add-on is selected
+    // and not covered by a coupon
     if (paymentMethod === 'WALLET' && includePremiumPdfAddon && !isPdfIncludedViaCoupon) {
       throw new BadRequestException('Printable PDF add-on requires payment via aamarPay gateway');
     }
 
     const bookPriceToCharge = alreadyOwnsBook ? new Decimal(0) : book.price;
-    
+
     let actualDiscount = new Decimal(0);
     if (couponRef) {
-      actualDiscount = couponRef.discountType === 'PERCENTAGE'
-        ? bookPriceToCharge.mul(couponRef.discountValue).div(100)
-        : couponRef.discountValue;
+      actualDiscount =
+        couponRef.discountType === 'PERCENTAGE'
+          ? bookPriceToCharge.mul(couponRef.discountValue).div(100)
+          : couponRef.discountValue;
     }
 
-    const discountedBookAmount = Decimal.max(bookPriceToCharge.minus(actualDiscount), new Decimal(0));
-    const printablePdfAddonAmount = (includePremiumPdfAddon && !isPdfIncludedViaCoupon)
-      ? new Decimal(usdToBdt(PRINTABLE_PDF_ADDON_USD))
-      : new Decimal(0);
+    const discountedBookAmount = Decimal.max(
+      bookPriceToCharge.minus(actualDiscount),
+      new Decimal(0),
+    );
+    const printablePdfAddonAmount =
+      includePremiumPdfAddon && !isPdfIncludedViaCoupon
+        ? new Decimal(usdToBdt(PRINTABLE_PDF_ADDON_USD))
+        : new Decimal(0);
     const finalAmount = discountedBookAmount.plus(printablePdfAddonAmount);
 
+    // ─── ATOMIC COUPON RESERVATION ───────────────────────────────────────────
+    // Must happen BEFORE creating the order row so we don't leave orphaned orders
+    // if the coupon slot is already taken by a concurrent request (TOCTOU fix).
+    if (couponId && couponRef) {
+      const reserved = await this.reserveCouponUsage(couponId, couponRef.usageLimit);
+      if (!reserved) {
+        throw new BadRequestException('Coupon usage limit reached');
+      }
+    }
+
+    // ─── FREE ORDER (fully discounted) ───────────────────────────────────────
     if (finalAmount.lte(0)) {
       const order = await this.prisma.order.create({
         data: {
@@ -133,13 +187,6 @@ export class OrdersService {
         },
       });
 
-      if (couponId) {
-        await this.prisma.coupon.update({
-          where: { id: couponId },
-          data: { usageCount: { increment: 1 } },
-        });
-      }
-
       await this.referralsService.updateCumulativeSpend(userId, finalAmount);
 
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -148,7 +195,7 @@ export class OrdersService {
       return { orderId: order.id, paymentMethod: 'GATEWAY', status: 'PAID' };
     }
 
-    // ─── PATH A: WALLET PAYMENT (instant fulfillment) ───
+    // ─── PATH A: WALLET PAYMENT (instant fulfillment) ────────────────────────
     if (paymentMethod === 'WALLET') {
       const order = await this.prisma.order.create({
         data: {
@@ -163,7 +210,7 @@ export class OrdersService {
         },
       });
 
-      // Debit wallet (throws if insufficient balance)
+      // Debit wallet (throws BadRequestException if insufficient balance)
       await this.walletService.debitForPurchase(userId, finalAmount, order.id);
 
       await this.prisma.order.update({
@@ -171,25 +218,15 @@ export class OrdersService {
         data: { status: 'PAID' },
       });
 
-      // Update coupon usage
-      if (couponId) {
-        await this.prisma.coupon.update({
-          where: { id: couponId },
-          data: { usageCount: { increment: 1 } },
-        });
-      }
-
-      // Update referral cumulative spend
       await this.referralsService.updateCumulativeSpend(userId, finalAmount);
 
-      // Send purchase receipt
       const user = await this.prisma.user.findUnique({ where: { id: userId } });
       await this.emailService.sendPurchaseReceipt(user!.email, user!.name, book.title);
 
       return { orderId: order.id, paymentMethod: 'WALLET', status: 'PAID' };
     }
 
-    // ─── PATH B: GATEWAY PAYMENT (redirect to aamarPay) ───
+    // ─── PATH B: GATEWAY PAYMENT (redirect to aamarPay) ─────────────────────
     const order = await this.prisma.order.create({
       data: {
         userId,
@@ -221,7 +258,7 @@ export class OrdersService {
       include: { book: { select: { title: true, slug: true } } },
       orderBy: { createdAt: 'desc' },
     });
-    return orders.map((order) => this.enrichOrder(order));
+    return orders.map((order) => this.enrichOrder(order as OrderWithBook));
   }
 
   async getAllOrders(page = 1, limit = 50) {
@@ -238,7 +275,12 @@ export class OrdersService {
       }),
       this.prisma.order.count(),
     ]);
-    return { orders: orders.map((order) => this.enrichOrder(order)), total, page, limit };
+    return {
+      orders: orders.map((order) => this.enrichOrder(order as OrderWithBook)),
+      total,
+      page,
+      limit,
+    };
   }
 
   async downloadPremiumPdf(userId: string, orderId: string) {
@@ -247,24 +289,19 @@ export class OrdersService {
       include: { user: true, book: true },
     });
 
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
-
-    if (order.userId !== userId) {
-      throw new ForbiddenException('You do not have access to this order');
-    }
+    if (!order) throw new NotFoundException('Order not found');
+    if (order.userId !== userId) throw new ForbiddenException('You do not have access to this order');
 
     const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
-    if (!premiumPdfProduct) {
+    if (!premiumPdfProduct)
       throw new ForbiddenException('This order does not include a downloadable PDF');
-    }
 
-    if (order.status !== 'PAID') {
-      throw new ForbiddenException('Order is not paid');
-    }
+    if (order.status !== 'PAID') throw new ForbiddenException('Order is not paid');
 
-    if (!order.includesPdf && !(order.paymentMethod === 'GATEWAY' && order.aamarpayTranId?.endsWith('-PDF'))) {
+    if (
+      !order.includesPdf &&
+      !(order.paymentMethod === 'GATEWAY' && order.aamarpayTranId?.endsWith('-PDF'))
+    ) {
       throw new ForbiddenException('The PDF is only available after gateway payment is confirmed');
     }
 

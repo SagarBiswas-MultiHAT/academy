@@ -49,6 +49,7 @@ export class WalletService {
   /**
    * Called by IPN handler when a wallet top-up payment is confirmed.
    * Credits the wallet and records the transaction.
+   * The unique constraint on (walletId, gatewayTranId) acts as an idempotency guard.
    */
   async creditTopUp(userId: string, amount: Decimal, tranId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
@@ -76,10 +77,10 @@ export class WalletService {
         }),
       ]);
     } catch (error) {
+      // P2002 = unique constraint violation → duplicate IPN; safe to ignore
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         return;
       }
-
       throw error;
     }
   }
@@ -123,23 +124,31 @@ export class WalletService {
 
   /**
    * Debit wallet for a purchase. Called by OrdersService for wallet-eligible products.
+   *
+   * Uses an atomic conditional SQL UPDATE (WHERE balance_bdt >= amount) so that
+   * concurrent requests cannot both pass the balance check before decrementing.
+   * This eliminates the TOCTOU double-spend race condition.
    */
   async debitForPurchase(userId: string, amount: Decimal, orderId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
     if (!wallet) throw new NotFoundException('Wallet not found');
-    if (wallet.balanceBdt.lessThan(amount)) {
-      throw new BadRequestException('Insufficient wallet balance');
-    }
 
-    await this.prisma.$transaction([
-      this.prisma.wallet.update({
-        where: { userId },
-        data: {
-          balanceBdt: { decrement: amount },
-          lifetimeSpent: { increment: amount },
-        },
-      }),
-      this.prisma.walletTransaction.create({
+    await this.prisma.$transaction(async (tx) => {
+      // Atomic conditional decrement — only applies if balance >= amount
+      const affected = await tx.$executeRaw`
+        UPDATE wallets
+        SET balance_bdt    = balance_bdt - ${amount},
+            lifetime_spent = lifetime_spent + ${amount},
+            updated_at     = NOW()
+        WHERE user_id      = ${userId}::uuid
+          AND balance_bdt  >= ${amount}
+      `;
+
+      if (affected === 0) {
+        throw new BadRequestException('Insufficient wallet balance');
+      }
+
+      await tx.walletTransaction.create({
         data: {
           walletId: wallet.id,
           type: 'PURCHASE',
@@ -147,14 +156,20 @@ export class WalletService {
           description: `Purchase (Order: ${orderId})`,
           referenceId: orderId,
         },
-      }),
-    ]);
+      });
+    });
   }
 
   /**
    * Credit wallet for referral or showcase rewards.
    */
-  async creditReward(userId: string, amount: Decimal, type: 'REFERRAL_CREDIT' | 'SHOWCASE_CREDIT', description: string, referenceId?: string) {
+  async creditReward(
+    userId: string,
+    amount: Decimal,
+    type: 'REFERRAL_CREDIT' | 'SHOWCASE_CREDIT',
+    description: string,
+    referenceId?: string,
+  ) {
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
     if (!wallet) throw new NotFoundException('Wallet not found');
 

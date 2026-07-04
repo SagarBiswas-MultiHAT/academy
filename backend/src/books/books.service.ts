@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -654,8 +654,13 @@ export class BooksService {
   }
 
   // Admin: Create book
-  async create(data: { title: string; slug: string; description: string; price: number; chapterMetadata: any }) {
-    return this.prisma.book.create({ data });
+  async create(data: { title: string; slug: string; description: string; price: number; chapterMetadata?: any }) {
+    return this.prisma.book.create({
+      data: {
+        ...data,
+        chapterMetadata: data.chapterMetadata ?? [],
+      },
+    });
   }
 
   // Admin: Update book

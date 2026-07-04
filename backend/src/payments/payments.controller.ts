@@ -6,7 +6,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 import { WalletService } from '../wallet/wallet.service';
 import { ReferralsService } from '../referrals/referrals.service';
-import { ensurePremiumPdfFile, getPremiumPdfProductBySlug, getPremiumPdfShortRef } from '../common/utils/premium-pdf';
+import {
+  ensurePremiumPdfFile,
+  getPremiumPdfProductBySlug,
+  getPremiumPdfShortRef,
+} from '../common/utils/premium-pdf';
 import { Decimal } from '@prisma/client/runtime/library';
 
 @ApiTags('Payments')
@@ -31,14 +35,14 @@ export class PaymentsController {
       return { status: 'INVALID_TRANSACTION' };
     }
 
-    // 1. Verify signature
+    // 1. Verify IPN signature (timing-safe)
     if (!this.paymentsService.verifyIpnSignature(payload)) {
       return { status: 'INVALID_SIGNATURE' };
     }
 
     const isSuccessfulPayment = String(payload.pay_status || '').toLowerCase() === 'successful';
 
-    // ─── WALLET TOP-UP FLOW ───
+    // ─── WALLET TOP-UP FLOW ────────────────────────────────────────────────────
     // Top-up transactions use the "TOPUP-" prefix (see WalletService.initiateTopUp)
     if (tranId.startsWith('TOPUP-')) {
       if (isSuccessfulPayment) {
@@ -54,7 +58,7 @@ export class PaymentsController {
       return { status: 'TOPUP_FAILED' };
     }
 
-    // ─── PURCHASE ORDER FLOW ───
+    // ─── PURCHASE ORDER FLOW ───────────────────────────────────────────────────
     // 2. Idempotency: check if already processed
     const order = await this.prisma.order.findUnique({
       where: { aamarpayTranId: tranId },
@@ -64,75 +68,92 @@ export class PaymentsController {
       return { status: 'ALREADY_PROCESSED' };
     }
 
-    // 3. Update order status
-    if (isSuccessfulPayment) {
-      let paidAmount: Decimal;
-      try {
-        paidAmount = new Decimal(payload.amount);
-      } catch {
-        paidAmount = new Decimal(-1);
-      }
-
-      if (!paidAmount.equals(order.amount)) {
-        await this.prisma.order.update({
-          where: { id: order.id },
-          data: { status: 'FAILED', gatewayResponse: payload },
-        });
-        return { status: 'AMOUNT_MISMATCH' };
-      }
-
+    if (!isSuccessfulPayment) {
+      // Mark as failed and return immediately
       await this.prisma.order.update({
         where: { id: order.id },
-        data: { status: 'PAID', gatewayResponse: payload },
+        data: { status: 'FAILED', gatewayResponse: payload },
       });
-
-      // 4. Update coupon usage if applicable
-      if (order.couponId) {
-        await this.prisma.coupon.update({
-          where: { id: order.couponId },
-          data: { usageCount: { increment: 1 } },
-        });
-      }
-
-      // 5. Update referral cumulative spend
-      await this.referralsService.updateCumulativeSpend(order.userId, order.amount);
-
-      const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
-      const hasPdfAddon = Boolean(order.aamarpayTranId?.endsWith('-PDF'));
-
-      if (premiumPdfProduct && hasPdfAddon) {
-        try {
-          const pdfPath = await ensurePremiumPdfFile({
-            product: premiumPdfProduct,
-            orderId: order.id,
-            aamarpayTranId: order.aamarpayTranId,
-            buyerEmail: order.user.email,
-          });
-
-          await this.emailService.sendPremiumPdfDeliveryEmail(
-            order.user.email,
-            order.user.name,
-            order.book.title,
-            pdfPath,
-            premiumPdfProduct.attachmentFilename,
-            getPremiumPdfShortRef(order.id, order.aamarpayTranId),
-          );
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'Unknown error';
-          this.logger.error(`Premium PDF delivery failed for order ${order.id}: ${message}`);
-        }
-      } else {
-        await this.emailService.sendPurchaseReceipt(order.user.email, order.user.name, order.book.title);
-      }
-
-      return { status: 'SUCCESS' };
+      return { status: 'FAILED' };
     }
 
-    // Handle failed payment
+    // 3. Amount verification — reject if aamarPay reports a different amount
+    let paidAmount: Decimal;
+    try {
+      paidAmount = new Decimal(payload.amount);
+    } catch {
+      paidAmount = new Decimal(-1);
+    }
+
+    if (!paidAmount.equals(order.amount)) {
+      await this.prisma.order.update({
+        where: { id: order.id },
+        data: { status: 'FAILED', gatewayResponse: payload },
+      });
+      return { status: 'AMOUNT_MISMATCH' };
+    }
+
+    // 4. Mark order as PAID — must happen before background processing so that
+    //    any retry of the IPN hits the idempotency guard above.
     await this.prisma.order.update({
       where: { id: order.id },
-      data: { status: 'FAILED', gatewayResponse: payload },
+      data: { status: 'PAID', gatewayResponse: payload },
     });
-    return { status: 'FAILED' };
+
+    // NOTE: Coupon usageCount is NOT incremented here.
+    // It was already atomically reserved in OrdersService.reserveCouponUsage()
+    // when the order was first created. Incrementing again here would double-count.
+
+    // 5. Update referral cumulative spend (fast, DB-only)
+    await this.referralsService.updateCumulativeSpend(order.userId, order.amount);
+
+    // 6. Fire PDF generation + email delivery in the background so the IPN
+    //    response is returned to aamarPay immediately (avoids retry timeouts).
+    //    Any failure here is logged but does NOT affect the PAID status.
+    const premiumPdfProduct = getPremiumPdfProductBySlug(order.book.slug);
+    const hasPdfAddon = Boolean(order.aamarpayTranId?.endsWith('-PDF'));
+
+    setImmediate(() => {
+      this.deliverOrderAsync(order, premiumPdfProduct, hasPdfAddon).catch((err) => {
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        this.logger.error(`[IPN] Async post-payment delivery failed for order ${order.id}: ${msg}`);
+      });
+    });
+
+    return { status: 'SUCCESS' };
+  }
+
+  /**
+   * Runs PDF generation + email delivery asynchronously after returning the IPN response.
+   * PDF files are generated on first download and cached by ensurePremiumPdfFile.
+   */
+  private async deliverOrderAsync(
+    order: { id: string; aamarpayTranId: string | null; user: { email: string; name: string }; book: { title: string; slug: string } },
+    premiumPdfProduct: ReturnType<typeof getPremiumPdfProductBySlug>,
+    hasPdfAddon: boolean,
+  ) {
+    if (premiumPdfProduct && hasPdfAddon) {
+      const pdfPath = await ensurePremiumPdfFile({
+        product: premiumPdfProduct,
+        orderId: order.id,
+        aamarpayTranId: order.aamarpayTranId,
+        buyerEmail: order.user.email,
+      });
+
+      await this.emailService.sendPremiumPdfDeliveryEmail(
+        order.user.email,
+        order.user.name,
+        order.book.title,
+        pdfPath,
+        premiumPdfProduct.attachmentFilename,
+        getPremiumPdfShortRef(order.id, order.aamarpayTranId),
+      );
+    } else {
+      await this.emailService.sendPurchaseReceipt(
+        order.user.email,
+        order.user.name,
+        order.book.title,
+      );
+    }
   }
 }

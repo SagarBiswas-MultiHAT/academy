@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { BooksService } from './books.service';
+import { CreateBookDto } from './dto/create-book.dto';
+import { UpdateBookDto } from './dto/update-book.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt-auth.guard';
@@ -38,7 +40,18 @@ export class BooksController {
     @Req() req: any,
     @Res() res: any,
   ) {
-    const bookDir = path.resolve(process.cwd(), '..', 'books', 'Google_Dorks_Complete_Handbook');
+    // ── Safe allowlist: slug → directory name (prevents slug injection) ──
+    const BOOK_DIRS: Record<string, string> = {
+      'google-dorks-complete-handbook': 'Google_Dorks_Complete_Handbook',
+    };
+
+    const dirName = BOOK_DIRS[slug];
+    if (!dirName) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    const bookDir = path.resolve(process.cwd(), '..', 'books', dirName);
+    const mediaBase = path.resolve(bookDir, 'media');
 
     let mediaPath = req.params[0] || req.params['*'];
     if (!mediaPath) {
@@ -51,7 +64,13 @@ export class BooksController {
       return res.status(404).json({ message: 'Media path not provided' });
     }
 
-    const fullPath = path.join(bookDir, 'media', mediaPath);
+    const fullPath = path.resolve(mediaBase, mediaPath);
+
+    // ── Path traversal guard: resolved path must stay inside the media directory ──
+    if (!fullPath.startsWith(mediaBase + path.sep) && fullPath !== mediaBase) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
     if (!fs.existsSync(fullPath)) {
       return res.status(404).json({ message: 'Media file not found' });
     }
@@ -70,7 +89,7 @@ export class BooksController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
-  create(@Body() dto: any) {
+  create(@Body() dto: CreateBookDto) {
     return this.booksService.create(dto);
   }
 
@@ -78,7 +97,7 @@ export class BooksController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
-  update(@Param('id') id: string, @Body() dto: any) {
+  update(@Param('id') id: string, @Body() dto: UpdateBookDto) {
     return this.booksService.update(id, dto);
   }
 }

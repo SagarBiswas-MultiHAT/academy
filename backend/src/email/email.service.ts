@@ -64,6 +64,21 @@ export class EmailService {
 		});
 	}
 
+	async sendReferralRewardEmail(to: string, name: string, referredUserName: string, rewardBdt: number) {
+		const rewardUsd = formatUsdFromBdt(rewardBdt);
+		const frontendUrl = this.configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
+		await this.resend.emails.send({
+			from: this.senderEmail,
+			to,
+			subject: `🎉 Referral Reward Credited — MultiHAT Academy`,
+			html: `<h2>You earned a referral reward, ${name}!</h2>
+				<p>Your referred friend <strong>${referredUserName}</strong> has reached the spending threshold.</p>
+				<p><strong>${rewardUsd}</strong> has been credited to your Wallet automatically.</p>
+				<p><a href="${frontendUrl}/dashboard/referrals">View your referral dashboard</a></p>
+				<p>Keep sharing and keep earning! — MultiHAT Academy</p>`,
+		});
+	}
+
 	async sendShowcaseRewardEmail(to: string, name: string, platform: string, rewardBdt: number) {
 		const rewardUsd = formatUsdFromBdt(rewardBdt);
 		await this.resend.emails.send({

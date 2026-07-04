@@ -1,4 +1,4 @@
-﻿import { NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
@@ -11,12 +11,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  // â”€â”€ Security Headers â”€â”€
+  // ── Security Headers ──
   app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" }
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   }));
 
-  // â”€â”€ Strict CORS â”€â”€
+  // ── Strict CORS ──
   const frontendUrl = configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
   app.enableCors({
     origin: [frontendUrl, 'https://academy.multihat.dev'],
@@ -24,7 +24,7 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // â”€â”€ Global DTO Validation â”€â”€
+  // ── Global DTO Validation ──
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -34,26 +34,30 @@ async function bootstrap() {
   );
 
   app.useGlobalInterceptors(new ResponseInterceptor());
-
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // â”€â”€ Global API Prefix â”€â”€
+  // ── Global API Prefix ──
   app.setGlobalPrefix('api/v1');
 
-  // â”€â”€ Swagger / OpenAPI 3.0 Documentation â”€â”€
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('MultiHAT Academy API')
-    .setDescription('RESTful API for the MultiHAT Academy micro-credential platform')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
-
-  // â”€â”€ Start Server â”€â”€
+  // ── Swagger / OpenAPI 3.0 Documentation (development only) ──
+  // Disabled in production to avoid leaking the full API surface to attackers.
+  const nodeEnv = configService.get<string>('NODE_ENV', 'development');
   const port = configService.get<number>('PORT', 5000);
+
+  if (nodeEnv !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('MultiHAT Academy API')
+      .setDescription('RESTful API for the MultiHAT Academy micro-credential platform')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+    console.log(`📄 Swagger docs at http://localhost:${port}/api/docs`);
+  }
+
+  // ── Start Server ──
   await app.listen(port);
-  console.log(`ðŸš€ Academy API running on http://localhost:${port}`);
-  console.log(`ðŸ“„ Swagger docs at http://localhost:${port}/api/docs`);
+  console.log(`🚀 Academy API running on http://localhost:${port}`);
 }
 void bootstrap();
