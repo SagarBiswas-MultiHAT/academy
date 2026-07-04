@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+    let apiOrigin = 'http://localhost:5000';
+
+    try {
+      apiOrigin = new URL(apiUrl).origin;
+    } catch {
+      apiOrigin = 'http://localhost:5000';
+    }
+
     return [
       {
         source: '/(.*)',
@@ -21,8 +31,9 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Next.js requires unsafe-inline for its inline scripts/styles
-              "script-src 'self' 'unsafe-inline'",
+              // Next.js dev overlay / React Refresh needs unsafe-eval.
+              // Keep production stricter by only allowing it outside prod.
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               // Allow blob: for PDF download and data: for images
@@ -30,7 +41,7 @@ const nextConfig = {
               // Allow media blobs for certificate PDF streaming
               "media-src 'self' blob:",
               // API and WebSocket connections
-              `connect-src 'self' ${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'} https://api.multihat.dev`,
+              `connect-src 'self' ${apiOrigin} https://api.multihat.dev`,
               // PDF/cert downloads open in new tab
               "frame-ancestors 'none'",
             ].join('; '),

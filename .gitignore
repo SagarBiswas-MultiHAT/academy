@@ -47,3 +47,7 @@ fix-*.js
 
 # Word temp files
 ~$*.docx
+
+# Premium source files — protect IP from version control exposure
+books/**/*.pdf
+books/**/*.docx

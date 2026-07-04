@@ -58,7 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     const res = await api.post('/auth/login', { email, password });
     localStorage.setItem('accessToken', res.data.data.accessToken);
-    localStorage.setItem('refreshToken', res.data.data.refreshToken);
     setAuthCookie(res.data.data.accessToken);
     try {
       await hydrateProfile();
@@ -70,7 +69,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, email: string, password: string, referralCode?: string) => {
     const res = await api.post('/auth/register', { name, email, password, referralCode });
     localStorage.setItem('accessToken', res.data.data.accessToken);
-    localStorage.setItem('refreshToken', res.data.data.refreshToken);
     setAuthCookie(res.data.data.accessToken);
     try {
       await hydrateProfile();
@@ -81,7 +79,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
     setAuthCookie(null);
     setUser(null);
   };
