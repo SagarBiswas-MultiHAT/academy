@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { JwtStrategy } from '../src/auth/strategies/jwt.strategy';
 import { EmailService } from '../src/email/email.service';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
@@ -28,6 +29,10 @@ describe('API smoke (e2e)', () => {
         sendCertificateEmail: jest.fn(),
         sendReferralRewardEmail: jest.fn(),
         sendShowcaseRewardEmail: jest.fn(),
+      })
+      .overrideProvider(JwtStrategy)
+      .useValue({
+        validate: jest.fn(),
       })
       .compile();
 
