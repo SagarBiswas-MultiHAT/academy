@@ -37,14 +37,18 @@ jobs:
   deploy-backend:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: ${{ secrets.DROPLET_IP != '' && secrets.SSH_PRIVATE_KEY != '' }}
+    env:
+      DROPLET_IP: ${{ secrets.DROPLET_IP }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
     steps:
       - name: SSH Deploy to DigitalOcean
+        if: ${{ env.DROPLET_IP != '' && env.SSH_PRIVATE_KEY != '' }}
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.DEPLOY_USER || 'deploy' }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ env.DROPLET_IP }}
+          username: ${{ env.DEPLOY_USER || 'deploy' }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/academy/backend
             git pull origin main
@@ -56,6 +60,7 @@ jobs:
             pm2 restart ecosystem.config.js --env production
 
       - name: Health Check
+        if: ${{ env.DROPLET_IP != '' && env.SSH_PRIVATE_KEY != '' }}
         run: |
           echo "Waiting 10s for app to start..."
           sleep 10
