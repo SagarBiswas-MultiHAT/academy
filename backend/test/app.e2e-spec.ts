@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { EmailService } from '../src/email/email.service';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { ResponseInterceptor } from '../src/common/interceptors/response.interceptor';
 
@@ -19,6 +20,14 @@ describe('API smoke (e2e)', () => {
           findMany: jest.fn().mockResolvedValue([]),
           count: jest.fn().mockResolvedValue(0),
         },
+      })
+      .overrideProvider(EmailService)
+      .useValue({
+        sendPurchaseReceipt: jest.fn(),
+        sendPremiumPdfDeliveryEmail: jest.fn(),
+        sendCertificateEmail: jest.fn(),
+        sendReferralRewardEmail: jest.fn(),
+        sendShowcaseRewardEmail: jest.fn(),
       })
       .compile();
 
