@@ -350,6 +350,155 @@
 
 ---
 
+## Part 10 — Continuous Deployment (GitHub Actions)
+
+Since your frontend is on Vercel, the deployment flow is usually:
+
+Push to GitHub
+      │
+      ▼
+Vercel detects the new commit
+      │
+      ▼
+Builds the frontend
+      │
+      ▼
+Deploys it automatically
+
+So Vercel handles the frontend deployment.
+
+### The Backend
+
+Your workflow then runs this:
+
+```yaml
+script: |
+  cd /var/www/academy/backend
+  git pull origin main
+  npm ci
+  npx prisma generate
+  npx prisma migrate deploy
+  npm run build
+  npm prune --omit=dev
+  pm2 restart ecosystem.config.js --env production
+```
+
+These commands execute on your DigitalOcean server.
+
+So the backend deployment flow is:
+
+Push to GitHub
+      │
+      ▼
+GitHub Actions
+      │
+      ▼
+SSH into DigitalOcean
+      │
+      ▼
+/var/www/academy/backend
+      │
+      ├── git pull
+      ├── install dependencies
+      ├── run migrations
+      ├── build
+      └── restart PM2
+
+### Overall Architecture
+
+```text
+                GitHub
+                   │
+      ┌────────────┴────────────┐
+      │                         │
+      ▼                         ▼
+   Vercel                GitHub Actions
+ (Frontend)                     │
+                                ▼
+                      DigitalOcean Droplet
+                         (Backend API)
+                                │
+                                ▼
+                            Database
+```
+
+This is a very standard production setup.
+
+### Before GitHub Actions can deploy
+
+You need to do the initial deployment manually once.
+
+Think of it like this:
+
+**First deployment (manual)**
+GitHub
+    │
+    ▼
+Clone repository onto server
+
+**Future deployments (automatic)**
+GitHub
+    │
+    ▼
+GitHub Actions
+    │
+git pull
+
+GitHub Actions cannot `git pull` something that doesn't exist yet.
+
+### What you need to do once
+
+On the server, you'll need to clone the repository for the first time.
+
+It will look something like:
+
+```bash
+cd /var/www
+git clone git@github.com:SagarBiswas-MultiHAT/academy.git
+```
+
+After that you'll have:
+
+```text
+/var/www
+├── promptvault
+├── phishguard
+└── academy
+```
+
+Then GitHub Actions can do:
+
+```bash
+cd /var/www/academy/backend
+git pull origin main
+```
+
+forever after.
+
+### Before we clone anything
+
+I want to verify one thing to avoid cloning into the wrong repository.
+
+Run this command on your server:
+
+```bash
+ssh -T git@github.com
+```
+
+Then paste the output.
+
+**Why?**
+
+If it says something like:
+
+> Hi SagarBiswas-MultiHAT! You've successfully authenticated...
+
+then your server is already authorized to clone your private repositories, and we can safely clone `academy`.
+
+If it doesn't, we'll fix that first.
+
+---
+
 ## Quick Reference
 
 ```bash
