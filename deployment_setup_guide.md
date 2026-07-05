@@ -17,7 +17,7 @@
    | Type | Name | Content | Proxy |
    |------|------|---------|-------|
    | `A` | `academy` | `YOUR_DROPLET_IP` | **Proxied** (orange cloud) |
-   | `CNAME` | `www.academy` | `academy.multihat.dev` | **DNS Only** (gray cloud) |
+   | `CNAME` | `www.academy` | `academy.multihat.dev` | **Proxied** (orange cloud) |
 
    > The `A` record routes all `academy.multihat.dev` traffic through Cloudflare to your Droplet.  
    > You will add a second record for Vercel **after** Part 3.
