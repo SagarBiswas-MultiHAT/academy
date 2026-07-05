@@ -37,6 +37,7 @@ jobs:
   deploy-backend:
     needs: build-and-test
     runs-on: ubuntu-latest
+    if: ${{ secrets.DROPLET_IP != '' && secrets.SSH_PRIVATE_KEY != '' }}
     steps:
       - name: SSH Deploy to DigitalOcean
         uses: appleboy/ssh-action@master
