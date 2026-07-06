@@ -26,31 +26,20 @@ export async function requireAdmin(): Promise<AdminSession> {
   const url = `${baseUrl}/users/me`;
   console.log("FETCH URL:", url);
 
-  const res = await fetch(url, {
+  const res = await fetch(`${baseUrl}/users/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
     cache: "no-store",
   });
 
-  console.log("STATUS:", res.status);
-  console.log("CONTENT-TYPE:", res.headers.get("content-type"));
+  const text = await res.text();
 
-  const body = await res.text();
-  console.log("BODY:", body);
-
-  // শুধু debug-এর জন্য
-  const payload = JSON.parse(body);
-  console.log("PAYLOAD:", payload);
-
-  if (!res.ok) redirect("/dashboard");
-
-  const user = payload.data;
-
-  if (user.role !== "ADMIN") {
-    console.log("NOT ADMIN");
-    redirect("/dashboard");
-  }
-
-  return { token, user };
+  throw new Error(
+    JSON.stringify({
+      status: res.status,
+      contentType: res.headers.get("content-type"),
+      body: text.substring(0, 500),
+    })
+  );
 }
