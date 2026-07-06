@@ -9,19 +9,12 @@ export type AdminSession = {
 export async function requireAdmin(): Promise<AdminSession> {
   const token = (await cookies()).get("accessToken")?.value;
 
-  console.log("TOKEN EXISTS:", !!token);
-
   if (!token) {
-    console.log("NO TOKEN");
     redirect("/dashboard");
   }
 
-  console.log("ENV NEXT_PUBLIC_API_URL =", process.env.NEXT_PUBLIC_API_URL);
-
   const baseUrl =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-
-  console.log("BASE URL:", baseUrl);
 
   const res = await fetch(`${baseUrl}/users/me`, {
     headers: {
