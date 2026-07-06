@@ -23,9 +23,6 @@ export async function requireAdmin(): Promise<AdminSession> {
 
   console.log("BASE URL:", baseUrl);
 
-  const url = `${baseUrl}/users/me`;
-  console.log("FETCH URL:", url);
-
   const res = await fetch(`${baseUrl}/users/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -33,13 +30,19 @@ export async function requireAdmin(): Promise<AdminSession> {
     cache: "no-store",
   });
 
-  const text = await res.text();
+  if (!res.ok) {
+    redirect("/dashboard");
+  }
 
-  throw new Error(
-    JSON.stringify({
-      status: res.status,
-      contentType: res.headers.get("content-type"),
-      body: text.substring(0, 500),
-    })
-  );
+  const payload = await res.json();
+  const user = payload.data;
+
+  if (!user || user.role !== "ADMIN") {
+    redirect("/dashboard");
+  }
+
+  return {
+    token,
+    user,
+  };
 }
