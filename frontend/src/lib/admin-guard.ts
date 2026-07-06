@@ -16,6 +16,8 @@ export async function requireAdmin(): Promise<AdminSession> {
     redirect("/dashboard");
   }
 
+  console.log("ENV NEXT_PUBLIC_API_URL =", process.env.NEXT_PUBLIC_API_URL);
+
   const baseUrl =
     process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
