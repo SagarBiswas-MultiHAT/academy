@@ -23,7 +23,10 @@ export async function requireAdmin(): Promise<AdminSession> {
 
   console.log("BASE URL:", baseUrl);
 
-  const res = await fetch(`${baseUrl}/users/me`, {
+  const url = `${baseUrl}/users/me`;
+  console.log("FETCH URL:", url);
+
+  const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -31,8 +34,13 @@ export async function requireAdmin(): Promise<AdminSession> {
   });
 
   console.log("STATUS:", res.status);
+  console.log("CONTENT-TYPE:", res.headers.get("content-type"));
 
-  const payload = await res.json();
+  const body = await res.text();
+  console.log("BODY:", body);
+
+  // শুধু debug-এর জন্য
+  const payload = JSON.parse(body);
   console.log("PAYLOAD:", payload);
 
   if (!res.ok) redirect("/dashboard");
