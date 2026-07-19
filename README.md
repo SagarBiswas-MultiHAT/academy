@@ -21,31 +21,39 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 ## Tech Stack
 
 | Layer | Technology | Purpose |
-|:------|:-----------|:--------|
-| **Frontend** | Next.js 15 · React 19 · TypeScript · Tailwind CSS | SSG/SSR web application |
+|:------|:-----------|:-------|
+| **Frontend** | Next.js 15 · React 19 · TypeScript · Tailwind CSS 3 | SSG/SSR web application |
+| **UI Components** | shadcn/ui · Radix UI · Lucide React | Accessible, composable component library |
 | **Backend** | NestJS 11 · TypeScript | RESTful API server |
-| **Database** | PostgreSQL · Prisma ORM | Relational data storage |
+| **Database** | PostgreSQL 16 · Prisma ORM | Relational data storage |
 | **API** | REST (JSON/HTTPS) | Frontend ↔ Backend communication |
-| **Payments** | aamarPay | bKash · Nagad · Cards |
-| **Auth** | JWT + Passport.js | Stateless authentication |
+| **Payments** | aamarPay | bKash · Nagad · Rocket · Cards |
+| **Auth** | JWT + Passport.js · bcrypt | Stateless authentication + password hashing |
 | **Email** | Resend | Transactional email delivery |
-| **PDFs** | pdf-lib | Watermarked e-books + certificates |
-| **Scheduling** | @nestjs/schedule | Cron jobs (showcase verification, referral checks) |
+| **PDFs** | pdf-lib | Watermarked e-books + programmatic certificates |
+| **Validation** | class-validator · class-transformer · Zod | Server-side DTO + client-side form validation |
+| **Scheduling** | @nestjs/schedule | Cron jobs (showcase verification) |
+| **Markdown** | react-markdown · remark-gfm · rehype-raw | Chapter content rendering |
+| **Charts** | Recharts | Dashboard data visualisation |
+| **Security** | Helmet · @nestjs/throttler | Security headers + rate limiting |
 | **Hosting** | Vercel + DigitalOcean Droplet | Frontend CDN + backend VPS |
 | **DNS/CDN** | Cloudflare (free plan) | DNS · DDoS protection · CDN |
+| **SSL** | Let's Encrypt (API) · Cloudflare (frontend) | HTTPS certificates |
+| **Process Manager** | PM2 | Production process management |
 | **CI/CD** | GitHub Actions | Automated testing & deployment |
+| **Containerisation** | Docker Compose | Local PostgreSQL development |
 
 ---
 
 ## Infrastructure
 
 ```
-  User → Cloudflare → Vercel (Next.js 15)
+  User → Cloudflare → Vercel (Next.js 15 — SSG/SSR)
                     ↘
               DigitalOcean Droplet (1 vCPU · 1 GB · 25 GB)
-              ├── Nginx (Reverse Proxy + Cloudflare Origin SSL)
-              ├── PM2 → NestJS 11 (REST API)
-              └── Prisma ORM → PostgreSQL
+              ├── Nginx (Reverse Proxy + Let's Encrypt SSL)
+              ├── PM2 (fork mode · 800M restart) → NestJS 11 (:5001)
+              └── Prisma ORM → PostgreSQL 16
                        ↓                  ↓
                    aamarPay            Resend
 ```
@@ -54,20 +62,21 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 
 ## Key Features
 
-- **📚 Premium E-books** — Watermarked PDFs with buyer's email embedded on every page
-- **📖 Free Previews** — First 3 chapters of each book available without login
-- **📖 Paid Web Chapters** — Premium gated web content purchasable individually or via Wallet
-- **📝 Interactive Quizzes** — Multiple-choice assessments per book
-- **🎓 Verifiable Certificates** — PDF certificates with public verification at `/verify/:certID`
+- **📚 Premium E-books** — Watermarked PDFs with buyer's email tiled diagonally on every page (opacity 0.065, -45°)
+- **📖 Free Previews** — First 4 chapters of each book available without login (configurable via `chapterMetadata.isFree`)
+- **📖 Paid Web Chapters** — Premium gated web content purchasable via Wallet or payment gateway
+- **📝 Interactive Quizzes** — Multiple-choice assessments per book (70% pass threshold — hardcoded)
+- **🎓 Verifiable Certificates** — Programmatic PDF certificates (pdf-lib, A4 landscape) with public verification at `/verify/:certID`
 - **💰 User Wallet** — Cash-in only wallet for platform purchases; funded via aamarPay top-ups, referral credits, and showcase rewards
-- **🤝 Referral Program** — Earn ৳100/$0.80 per qualified referral (referred user must spend ≥ ৳500/$4)
-- **📣 Certification Showcase** — Earn Wallet credits by sharing certifications on LinkedIn, Twitter/X, Facebook, and Instagram (10-day verification)
-- **💳 Local Payments** — aamarPay integration (bKash, Nagad, Rocket, cards)
+- **🤝 Referral Program** — Earn ৳100/$0.80 per qualified referral (referred user must spend ≥ ৳500/$4); 3-step state machine: PENDING → QUALIFIED → CREDITED
+- **📣 Certification Showcase** — Earn Wallet credits by sharing certifications on LinkedIn (৳30), Twitter/X (৳30), Facebook (৳20), and Instagram (৳20); 10-day automated cron verification via HTTP HEAD
+- **💳 Local Payments** — aamarPay integration (bKash, Nagad, Rocket, cards) with IPN webhook + idempotency guards
 - **🔒 Anti-Piracy** — Dynamic watermarks, UTM-tracked links, Google Alerts
-- **🌙 Dark Mode** — Full dark/light theme support
-- **📊 User Dashboard** — Purchase history, quiz scores, certificates, wallet balance
-- **🏷️ Coupon System** — Percentage and fixed-amount discount codes
-- **📧 Email Delivery** — Automatic PDF and receipt delivery via Resend
+- **🏷️ Coupon System** — Percentage and fixed-amount discount codes with `includes_pdf` flag; codes auto-normalised to UPPERCASE
+- **🌙 Dark Mode** — Full dark/light theme support (next-themes)
+- **📊 User Dashboard** — Purchase history, quiz scores, certificates, wallet balance, showcase submissions
+- **📧 Email Delivery** — Automatic watermarked PDF and purchase receipt delivery via Resend
+- **🛡️ Security** — Helmet headers, global rate limiting (100 req/60s), login throttle (10/min), DTO whitelist validation, CORS strict origin, Swagger disabled in production
 
 ---
 
@@ -78,7 +87,7 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 - [Docker](https://www.docker.com/) & Docker Compose
 
 ### 1. Database Setup
-Start the PostgreSQL database using the provided `docker-compose.yml`:
+Start the PostgreSQL 16 database using the provided `docker-compose.yml`:
 ```bash
 docker-compose up -d
 ```
@@ -98,18 +107,30 @@ Edit `.env` and set the following for local development:
 ```
 DATABASE_URL="postgresql://postgres:localpassword123@localhost:5432/academy_db?schema=public"
 NODE_ENV="development"
+PORT=5000
 FRONTEND_URL="http://localhost:3000"
+API_URL="http://localhost:5000/api/v1"
 JWT_ACCESS_SECRET="any-local-secret"
 JWT_REFRESH_SECRET="any-other-local-secret"
+WALLET_MIN_TOPUP_BDT="50"
+
+# aamarPay sandbox (included in .env.example):
+AAMARPAY_STORE_ID="aamarpaytest"
+AAMARPAY_SIGNATURE_KEY="dbb74894e82415a2f7ff0ec3a97e4183"
+AAMARPAY_BASE_URL="https://sandbox.aamarpay.com"
+
+# Resend (replace with your API key):
+RESEND_API_KEY="re_123456789"
+SENDER_EMAIL="sagarbiswas@multihat.dev"
 ```
 Then run migrations and start the server:
 ```bash
 npx prisma migrate dev
-npx prisma db seed  # Optional: seed initial data
+npx prisma db seed  # Seeds: admin user, sample book, 10 quiz questions
 npm run start:dev
 ```
 The backend will be accessible at `http://localhost:5000`.
-Swagger will be accessible at `http://localhost:5000/api/docs`.
+Swagger docs will be accessible at `http://localhost:5000/api/docs` (development only — disabled in production).
 
 ### 3. Frontend Setup
 Open another terminal, navigate to the `frontend` directory, and start the Next.js app:
@@ -122,6 +143,7 @@ Edit `.env.local` to point to the local backend:
 ```
 NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_GA_ID=
 ```
 Then start the development server:
 ```bash
@@ -133,7 +155,7 @@ The frontend will typically be accessible at `http://localhost:3000`.
 
 ## Converting Notebooks (.docx → Markdown)
 
-Source notebooks are authored in Word (`.docx`) and converted to Markdown with [Pandoc](https://pandoc.org/) before being published on the platform. See [FinalTechStack&Tools.md](./FinalTechStack&Tools.md) and the [content pipeline diagram](./diagrams/08-course-lesson-management.md) for the full workflow.
+Source notebooks are authored in Word (`.docx`) and converted to Markdown with [Pandoc](https://pandoc.org/) before being published on the platform. See [FinalTechStack&Tools.md](./docs/FinalTechStack&Tools.md) and the [content pipeline diagram](./diagrams/08-course-lesson-management.md) for the full workflow.
 
 ### Folder layout
 
@@ -143,6 +165,7 @@ Each book lives under `books/<BookName>/`:
 books/Google_Dorks_Complete_Handbook/
 ├── Google_Dorks_Complete_Handbook.docx   # source
 ├── Google_Dorks_Complete_Handbook.md     # converted
+├── Google_Dorks_Complete_Handbook.pdf    # source PDF (master — never served directly)
 └── media/
     ├── image1.png
     └── ...
@@ -184,11 +207,11 @@ Install Pandoc if needed: `winget install JohnMacFarlane.Pandoc` (Windows) or `b
 ### After conversion
 
 1. Review formatting — fix broken tables, callouts, and code blocks.
-2. Ensure chapter headings use `# Chapter N: Title` (the reader splits on these).
-3. Define `chapterMetadata` in the DB seed or admin (`index`, `title`, `isFree`).
-4. Add quiz questions for the book.
+2. Ensure chapter headings use `# Chapter N: Title` (the reader splits on these dynamically at serve-time).
+3. Define `chapterMetadata` in the DB seed or admin API — `[{index, title, isFree}]`.
+4. Add quiz questions for the book via `POST /quizzes/admin/questions`.
 
-The backend post-processes common Pandoc artifacts at render time (grid tables, `{.underline}` spans, trailing backslashes) in `backend/src/books/books.service.ts`.
+The backend post-processes common Pandoc artifacts at render time (grid tables, `{.underline}` spans, trailing backslashes, callout detection, image URL rewriting) in `backend/src/books/books.service.ts` — see [diagram 08](./diagrams/08-course-lesson-management.md) for the full 9-step pipeline.
 
 ---
 
@@ -197,22 +220,29 @@ The backend post-processes common Pandoc artifacts at render time (grid tables, 
 ```
 academy/
 ├── backend/                  # NestJS REST API
+│   ├── prisma/               #   Prisma schema, migrations, seed.ts
+│   ├── src/                  #   Source code (12 feature modules)
+│   └── ecosystem.config.js   #   PM2 production config
 ├── frontend/                 # Next.js web application
-├── books/                    # Source notebooks (.docx) and converted Markdown
-├── CaseStudy.md              # Business case study & technical architecture
-├── FinalTechStack&Tools.md   # Complete tech stack inventory
-├── README.md                 # This file
-└── diagrams/                 # Mermaid architecture & flow diagrams
-    ├── 01-architecture-overview.md
-    ├── 02-payment-flow.md
-    ├── 03-user-journey.md
-    ├── 04-data-model.md
-    ├── 05-deployment-topology.md
-    ├── 06-admin-workflow.md
-    ├── 07-certificate-issuance-flow.md
-    ├── 08-course-lesson-management.md
-    ├── 09-wallet-and-referral-flow.md
-    └── 10-showcase-verification-flow.md
+├── books/                    # Source notebooks (.docx), converted Markdown, and media
+├── docs/                     # Project documentation
+│   ├── CaseStudy.md          #   Business case study & technical architecture
+│   ├── FinalTechStack&Tools.md #  Complete tech stack inventory
+│   └── deployment_setup_guide_final.md # Production deployment guide
+├── diagrams/                 # 10 Mermaid architecture & flow diagrams
+│   ├── 01-architecture-overview.md
+│   ├── 02-payment-flow.md
+│   ├── 03-user-journey.md
+│   ├── 04-data-model.md
+│   ├── 05-deployment-topology.md
+│   ├── 06-admin-workflow.md
+│   ├── 07-certificate-issuance-flow.md
+│   ├── 08-course-lesson-management.md
+│   ├── 09-wallet-and-referral-flow.md
+│   └── 10-showcase-verification-flow.md
+├── docker-compose.yml        # Local PostgreSQL 16 (development)
+├── .github/workflows/        # CI/CD pipeline (deploy.yml)
+└── README.md                 # This file
 ```
 
 ---
@@ -221,56 +251,87 @@ academy/
 
 | Document | Description |
 |:---------|:------------|
-| [CaseStudy.md](./CaseStudy.md) | Full business case study: motivation, revenue model (6-tier products, Wallet, Referral, Showcase), technical architecture, security, marketing strategy, and risk mitigation |
-| [FinalTechStack&Tools.md](./FinalTechStack&Tools.md) | Complete inventory of every tool, library, and service with versions, roles, and costs |
+| [CaseStudy.md](./docs/CaseStudy.md) | Full business case study: motivation, revenue model (6-tier products, Wallet, Referral, Showcase), technical architecture, security, marketing strategy, and risk mitigation |
+| [FinalTechStack&Tools.md](./docs/FinalTechStack&Tools.md) | Complete inventory of every tool, library, and service with versions, roles, and costs |
+| [Deployment Guide](./docs/deployment_setup_guide_final.md) | Production deployment: Nginx config, Let's Encrypt SSL, PM2, Cloudflare DNS, and environment variables |
 | [diagrams/](./diagrams/) | 10 Mermaid diagrams covering architecture, payment flow, user journey, data model, deployment, admin workflow, certificate issuance, content management, wallet & referral flow, and showcase verification |
 
 ---
 
 ## REST API Endpoints
 
-| Group | Method | Endpoint | Auth |
-|:------|:-------|:---------|:-----|
-| Auth | `POST` | `/api/v1/auth/register` | No |
-| | `POST` | `/api/v1/auth/login` | No |
-| | `POST` | `/api/v1/auth/refresh` | Refresh token |
-| Books | `GET` | `/api/v1/books` | No |
-| | `GET` | `/api/v1/books/:slug` | No |
-| Orders | `POST` | `/api/v1/orders` | Yes |
-| | `GET` | `/api/v1/orders/my` | Yes |
-| | `GET` | `/api/v1/orders/:orderId/pdf` | Yes |
-| | `GET` | `/api/v1/orders` | Admin |
-| Payments | `POST` | `/api/v1/payments/ipn` | Webhook |
-| Quizzes | `GET` | `/api/v1/quizzes/:bookSlug/questions` | Yes |
-| | `POST` | `/api/v1/quizzes/:bookSlug/submit` | Yes |
-| Certificates | `GET` | `/api/v1/certificates/my` | Yes |
-| | `GET` | `/api/v1/certificates/verify/:certId` | No |
-| Users | `GET` | `/api/v1/users/me` | Yes |
-| | `PATCH` | `/api/v1/users/me` | Yes |
-| | `GET` | `/api/v1/users` | Admin |
-| | `PATCH` | `/api/v1/users/:id/role` | Admin |
-| Wallet | `GET` | `/api/v1/wallet/balance` | Yes |
-| | `POST` | `/api/v1/wallet/topup` | Yes |
-| | `POST` | `/api/v1/wallet/topup/confirm` | Yes |
-| | `GET` | `/api/v1/wallet/transactions` | Yes |
-| Coupons | `GET` | `/api/v1/coupons/verify/:code` | No |
-| | `POST` | `/api/v1/coupons` | Admin |
-| | `GET` | `/api/v1/coupons` | Admin |
-| | `PATCH` | `/api/v1/coupons/:id` | Admin |
-| | `DELETE` | `/api/v1/coupons/:id` | Admin |
-| Referrals | `GET` | `/api/v1/referrals/code` | Yes |
-| | `GET` | `/api/v1/referrals/stats` | Yes |
-| Showcases | `POST` | `/api/v1/showcases/submit` | Yes |
-| | `GET` | `/api/v1/showcases/my` | Yes |
+All endpoints are prefixed with `/api/v1`. Global rate limit: 100 requests per 60 seconds per IP.
+
+| Group | Method | Endpoint | Auth | Notes |
+|:------|:-------|:---------|:-----|:------|
+| **Auth** | `POST` | `/auth/register` | No | Accepts optional `referralCode` |
+| | `POST` | `/auth/login` | No | Throttled: 10 attempts/minute |
+| | `POST` | `/auth/refresh` | Refresh token | |
+| **Books** | `GET` | `/books` | No | Published only · paginated (default 20 · max 100) |
+| | `GET` | `/books/admin/all` | Admin | All books incl. unpublished (default 50 · max 200) |
+| | `GET` | `/books/:slug` | Optional | Returns `isOwned`, `ownsPdf` if authenticated |
+| | `GET` | `/books/:slug/chapters/:index` | Optional | Free chapters: no auth · Paid: 403 without order |
+| | `GET` | `/books/:slug/media/*` | No | Image serving with SSRF + path-traversal guard |
+| | `POST` | `/books` | Admin | Create book |
+| | `PATCH` | `/books/:id` | Admin | Update book fields |
+| **Coupons** | `GET` | `/coupons/verify/:code` | No | Learner validates coupon before checkout |
+| | `GET` | `/coupons` | Admin | List all coupons |
+| | `GET` | `/coupons/:id` | Admin | Single coupon |
+| | `POST` | `/coupons` | Admin | Create — code UPPER-normalised |
+| | `PATCH` | `/coupons/:id` | Admin | Partial update |
+| | `DELETE` | `/coupons/:id` | Admin | Soft cascade — SetNull on orders |
+| **Orders** | `POST` | `/orders` | Yes | Create order (gateway or wallet) |
+| | `GET` | `/orders/my` | Yes | Own order history |
+| | `GET` | `/orders/:orderId/pdf` | Yes | Stream watermarked e-book PDF |
+| | `GET` | `/orders` | Admin | All orders paginated |
+| **Payments** | `POST` | `/payments/ipn` | Webhook | aamarPay IPN — idempotent, signature-verified |
+| | `GET/POST` | `/payments/success` | Redirect | Gateway return — verifies via search API |
+| | `GET/POST` | `/payments/fail` | Redirect | Marks order FAILED, releases coupon |
+| | `GET/POST` | `/payments/cancel` | Redirect | Same as fail with reason "cancelled" |
+| **Quizzes** | `GET` | `/quizzes/:bookSlug/questions` | Yes | Without correct answers (requires PAID order) |
+| | `POST` | `/quizzes/:bookSlug/submit` | Yes | Returns score + optional certificate |
+| | `GET` | `/quizzes/admin/books` | Admin | Book selector list |
+| | `GET` | `/quizzes/admin/:bookSlug` | Admin | Questions with correct answers |
+| | `POST` | `/quizzes/admin/questions` | Admin | Create question |
+| | `PATCH` | `/quizzes/admin/questions/:id` | Admin | Update question |
+| | `DELETE` | `/quizzes/admin/questions/:id` | Admin | Delete question |
+| **Certificates** | `GET` | `/certificates/my` | Yes | Own certificates |
+| | `GET` | `/certificates/:certId/pdf` | No | Re-generate & stream certificate PDF |
+| | `GET` | `/certificates/verify/:certId` | No | Public verification |
+| **Users** | `GET` | `/users/me` | Yes | Own profile |
+| | `PATCH` | `/users/me` | Yes | Update own name |
+| | `GET` | `/users` | Admin | All users paginated (default 50 · max 100) |
+| | `PATCH` | `/users/:id/role` | Admin | Role promotion/demotion |
+| **Wallet** | `GET` | `/wallet/balance` | Yes | `{balanceBdt, lifetimeEarned, lifetimeSpent}` |
+| | `POST` | `/wallet/topup` | Yes | Initiate top-up → aamarPay URL |
+| | `POST` | `/wallet/topup/confirm` | Yes | Confirm via aamarPay search API |
+| | `GET` | `/wallet/transactions` | Yes | Paginated history (default 20 · max 100) |
+| **Referrals** | `GET` | `/referrals/code` | Yes | `{referralCode, referralLink}` |
+| | `GET` | `/referrals/stats` | Yes | `{total, pending, qualified, credited, totalEarned}` |
+| **Showcases** | `POST` | `/showcases/submit` | Yes | 3 guards: SSRF → ownership → duplicate |
+| | `GET` | `/showcases/my` | Yes | Own submissions with status |
+| **Health** | `GET` | `/healthz` | No | `{status: "ok", uptime}` |
+
+---
+
+## CI/CD Pipeline
+
+Triggered on push to `main` via [GitHub Actions](./.github/workflows/deploy.yml):
+
+| Job | Steps |
+|:----|:------|
+| **build-and-test** | `npm ci` → `prisma generate` → `lint` → `test` → `test:e2e` (backend) · `npm ci` → `build` (frontend) |
+| **deploy-backend** | SSH to Droplet → `git pull` → `npm ci` → `prisma generate` → `prisma migrate deploy` → `npm run build` → `npm prune --omit=dev` → `pm2 restart` |
+| **health-check** | Wait 10s → `curl` `GET /healthz` → fail pipeline if non-200 |
 
 ---
 
 ## Verification Status
 
-- Local backend tests: `npm test -- --runInBand`
-- Backend build: `npm run build`
-- Frontend build: `npm run build`
-- DNS audit on July 3, 2026: `academy.multihat.dev` and `api.multihat.dev` returned NXDOMAIN via `nslookup`; configure Cloudflare records before production deployment.
+- Local backend tests: `cd backend && npm test -- --runInBand`
+- Backend build: `cd backend && npm run build`
+- Frontend build: `cd frontend && npm run build`
+- DNS audit on July 3, 2026: `academy.multihat.dev` and `academy-api.multihat.dev` returned NXDOMAIN via `nslookup`; configure Cloudflare DNS records before production deployment.
 - Production-only checks still require live access to Cloudflare, Vercel, the DigitalOcean droplet, aamarPay, and Resend.
 
 ---
@@ -284,6 +345,7 @@ academy/
 | DigitalOcean Droplet | $0 additional — existing |
 | Vercel Hosting | Free (Hobby) |
 | Resend Email | Free (100/day) |
+| Let's Encrypt SSL | $0 — free |
 | aamarPay Fees | ~2% per transaction |
 
 **Total additional fixed cost: $0/year**
