@@ -410,10 +410,13 @@ academy/
 
 ---
 
-Data Model
+## Data Model
 
-[Data Model](diagrams/04-data-model.md)
+The PostgreSQL database is managed via Prisma ORM. The schema is built around 11 core entities, designed with strict referential integrity (Cascade / SetNull) and financial safety (Decimal types, raw SQL atomic decrements).
 
+> **Full Schema Details:** For the complete Entity Relationship Diagram (ERD), constraints, cascade rules, and key design notes (like idempotency and concurrency handling), see the full **[Data Model Architecture Diagram](./diagrams/04-data-model.md)**.
+
+---
 
 ## REST API Endpoints
 
