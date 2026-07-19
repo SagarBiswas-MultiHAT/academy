@@ -1,4 +1,33 @@
+# Department Of Computer Science 
+
+<div align="right">
+
+Project Proposal Summer 25-26
+
+</div>
+
+**Course Title:** Advanced Programming in Web Technology
+&nbsp;
+**Section:** A
+&nbsp;
+**Group:** 2
+
+**Member:**
+**Student ID:** 22-47929-2
+&nbsp;
+**Name:** Sagar Biswas
+
+**Course Teacher:** Md. Khairul Alam Mazumder
+
+**Project Title:** MultiHAT Academy
+
+---
+
+<br>
+
 # MultiHAT Academy
+
+<div align="right">
 
 ![Next.js](https://img.shields.io/badge/Next.js_15-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![NestJS](https://img.shields.io/badge/NestJS_11-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
@@ -6,13 +35,16 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://academy.multihat.dev)
+
+</div>
+
 > A full-stack micro-credential & e-commerce platform that transforms technical notebooks into premium, verifiable digital learning products.
 
 **Live URL:** `academy.multihat.dev`
 
 ---
 
-## Overview
+## Project Overview
 
 MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, offers paid web chapters and interactive quizzes, issues verifiable certificates of completion, and features a User Wallet ecosystem with Referral and Certification Showcase Rewards for organic growth. Built by [Sagar Biswas (MultiHAT)](https://github.com/SagarBiswas-MultiHAT) as both a revenue-generating platform and a university course project.
 
@@ -60,6 +92,39 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 
 ---
 
+## System Architecture
+
+Architecture is not a single choice — it is a set of independent decisions across four dimensions. MultiHAT Academy makes a deliberate choice in each.
+
+| Dimension | Question | Decision | Rationale |
+|:----------|:---------|:---------|:----------|
+| **Rendering Strategy** | How and when is the HTML built? | **Hybrid Rendering** | Next.js 15 statically generates marketing and book-listing pages at build time (SSG) and server-renders user-specific pages per request (SSR): dashboard, payment confirmation, certificate viewer |
+| **Application Structure** | How is the backend organised? | **Full-Stack Web App** (Headless/Decoupled pattern) | One NestJS monolith (12 modules, single PM2 process, one PostgreSQL 16 database) serves one frontend exclusively via a REST API contract — frontend and backend are independently deployed |
+| **Delivery Philosophy** | Is content pre-built or fetched live? | **Jamstack** | The Next.js frontend is pre-built and served from Vercel's global CDN. All dynamic behaviour (purchases, quizzes, wallet, auth) is delegated to the NestJS REST API — no backend logic lives inside the frontend |
+| **Infrastructure** | Where does the code run? | **VPS (backend) + CDN (frontend)** | The API runs on a DigitalOcean Droplet (single VPS — no edge functions or serverless). The frontend static assets are served from Vercel's CDN, providing low-latency delivery globally for pre-rendered pages without edge computing for the API layer |
+
+### How the four decisions work together
+
+```
+Browser
+  │
+  ├─► Vercel CDN (edge PoP nearest to user)
+  │     └── Next.js 15 — Hybrid Rendering
+  │           ├── SSG: home · book listing · book detail   (pre-built — served instantly)
+  │           └── SSR: dashboard · payment · certificate   (built per request — user-specific)
+  │                         │
+  │                         │  REST API (JSON/HTTPS) — Jamstack API layer
+  │                         ▼
+  └─► DigitalOcean Droplet (single VPS)
+        Nginx → PM2 → NestJS 11 Monolith (:5001)
+          ├── 12 feature modules (auth · books · orders · payments · quizzes
+          │                       certificates · wallet · referrals · showcases
+          │                       users · coupons · email)
+          └── Prisma ORM → PostgreSQL 16
+```
+
+> **Not used:** Microservices (overkill for current scale — a monolith is easier to deploy, debug, and maintain on a 1 GB Droplet), Edge Computing for the API (not needed — the API is not globally distributed; only the frontend CDN provides geographic edge delivery).
+
 ## Key Features
 
 - **📚 Premium E-books** — Watermarked PDFs with buyer's email tiled diagonally on every page (opacity 0.065, -45°)
@@ -80,7 +145,94 @@ MultiHAT Academy sells premium e-books with buyer-specific dynamic watermarks, o
 
 ---
 
+## User Types & Features
+
+### Types of User
+
+MultiHAT Academy has three distinct user types, determined by authentication state and database role:
+
+| Type | Auth State | Role | How to become one |
+|:-----|:-----------|:-----|:-----------------|
+| **Guest** | Not logged in | — | Visit the site without an account |
+| **Registered User** | JWT authenticated | `USER` | `POST /auth/register` (default role) |
+| **Admin** | JWT authenticated | `ADMIN` | Role set manually via `PATCH /users/:id/role` or DB seed |
+
+---
+
+### Common Features (Available to All Users — No Login Required)
+
+These endpoints work without a JWT token:
+
+| Feature | Endpoint | Notes |
+|:--------|:---------|:------|
+| Browse published books | `GET /books` | Paginated list |
+| View book detail | `GET /books/:slug` | No ownership flags returned |
+| Read free chapters | `GET /books/:slug/chapters/:index` | Only chapters where `isFree: true` |
+| View chapter media | `GET /books/:slug/media/*` | SSRF + path-traversal guarded |
+| Validate a coupon | `GET /coupons/verify/:code` | Returns discount type and value |
+| Verify a certificate | `GET /certificates/verify/:certId` | Returns `{valid, holderName, courseTitle, issueDate}` |
+| Download a certificate | `GET /certificates/:certId/pdf` | Returns 404 if revoked |
+| Register | `POST /auth/register` | Accepts optional `referralCode` |
+| Log in | `POST /auth/login` | Throttled: 10 attempts/minute |
+| Refresh session | `POST /auth/refresh` | Uses refresh token |
+
+---
+
+### Features by User Type
+
+#### 👤 Registered User (`Role.USER`)
+
+All common features above, plus:
+
+| Feature | Endpoint | Notes |
+|:--------|:---------|:------|
+| View own profile | `GET /users/me` | `{id, email, name, role, createdAt}` |
+| Update own name | `PATCH /users/me` | `{name}` |
+| Book detail with ownership | `GET /books/:slug` | Returns `isOwned`, `ownsPdf`, `hasPremiumPdf` |
+| Read paid chapters | `GET /books/:slug/chapters/:index` | Requires at least one PAID order for the book |
+| Purchase a book | `POST /orders` | Gateway (aamarPay) or Wallet debit |
+| View own orders | `GET /orders/my` | Full purchase history |
+| Download watermarked e-book | `GET /orders/:orderId/pdf` | Ownership verified; PDF watermarked per buyer |
+| Take a quiz | `GET /quizzes/:bookSlug/questions` | Requires PAID order; correct answers hidden |
+| Submit quiz answers | `POST /quizzes/:bookSlug/submit` | Returns `{score, total, outcome, certId?}`; 70% = PASS → auto-issues certificate |
+| View own certificates | `GET /certificates/my` | Ordered by date descending |
+| Submit a showcase | `POST /showcases/submit` | 3-layer guard: SSRF → ownership → no duplicate |
+| View own showcase submissions | `GET /showcases/my` | Includes verification status |
+| Wallet balance | `GET /wallet/balance` | `{balanceBdt, lifetimeEarned, lifetimeSpent}` |
+| Top up wallet | `POST /wallet/topup` | Initiates aamarPay payment → redirects to gateway |
+| Confirm wallet top-up | `POST /wallet/topup/confirm` | Polls aamarPay search API as a fallback |
+| Wallet transaction history | `GET /wallet/transactions` | Paginated (default 20 · max 100) |
+| Get referral link | `GET /referrals/code` | `{referralCode, referralLink}` |
+| Referral statistics | `GET /referrals/stats` | `{total, pending, qualified, credited, totalEarned}` |
+
+#### 🛡️ Admin (`Role.ADMIN`)
+
+All registered user features above, plus exclusive admin-only access:
+
+| Feature | Endpoint | Notes |
+|:--------|:---------|:------|
+| List all books (incl. unpublished) | `GET /books/admin/all` | Paginated (default 50 · max 200) |
+| Create a book | `POST /books` | `{title, slug, description, price, chapterMetadata}` |
+| Update a book | `PATCH /books/:id` | Toggle `is_published`, update price, metadata |
+| List all coupons | `GET /coupons` | Ordered by `created_at` desc |
+| Get a single coupon | `GET /coupons/:id` | |
+| Create a coupon | `POST /coupons` | Code auto-normalised to UPPERCASE; `PERCENTAGE` or `FIXED` |
+| Update a coupon | `PATCH /coupons/:id` | All fields patchable; code re-normalised if changed |
+| Delete a coupon | `DELETE /coupons/:id` | `coupon_id` set to NULL on existing orders (history preserved) |
+| View all orders | `GET /orders` | Paginated (default 50 · max 100) |
+| List all users | `GET /users` | Paginated (default 50 · max 100) |
+| Change a user's role | `PATCH /users/:id/role` | `{role: "USER" \| "ADMIN"}` |
+| Book selector for quiz admin | `GET /quizzes/admin/books` | `{id, title, slug, isPublished}` |
+| List questions with answers | `GET /quizzes/admin/:bookSlug` | Includes `correct_answer` + `sort_order` |
+| Create a quiz question | `POST /quizzes/admin/questions` | `correct_answer` must be in `options[]` |
+| Update a quiz question | `PATCH /quizzes/admin/questions/:id` | Validates `correct_answer ∈ options` |
+| Delete a quiz question | `DELETE /quizzes/admin/questions/:id` | Returns `{deleted: true}` |
+| Revoke a certificate | DB / Prisma Studio directly | Set `is_valid = false`; no dedicated API endpoint |
+
+---
+
 ## How to Run Locally
+
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) 20 LTS
@@ -257,6 +409,11 @@ academy/
 | [diagrams/](./diagrams/) | 10 Mermaid diagrams covering architecture, payment flow, user journey, data model, deployment, admin workflow, certificate issuance, content management, wallet & referral flow, and showcase verification |
 
 ---
+
+Data Model
+
+[Data Model](diagrams/04-data-model.md)
+
 
 ## REST API Endpoints
 
