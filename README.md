@@ -269,7 +269,7 @@ All endpoints are prefixed with `/api/v1`. Global rate limit: 100 requests per 6
 | | `POST` | `/auth/refresh` | Refresh token | |
 | **Books** | `GET` | `/books` | No | Published only · paginated (default 20 · max 100) |
 | | `GET` | `/books/admin/all` | Admin | All books incl. unpublished (default 50 · max 200) |
-| | `GET` | `/books/:slug` | Optional | Returns `isOwned`, `ownsPdf` if authenticated |
+| | `GET` | `/books/:slug` | Optional | Returns `isOwned`, `ownsPdf`, `hasPremiumPdf`, `requiresGatewayPayment` |
 | | `GET` | `/books/:slug/chapters/:index` | Optional | Free chapters: no auth · Paid: 403 without order |
 | | `GET` | `/books/:slug/media/*` | No | Image serving with SSRF + path-traversal guard |
 | | `POST` | `/books` | Admin | Create book |
